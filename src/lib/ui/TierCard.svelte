@@ -69,8 +69,8 @@
 	let popupCounter = $state(0);
 
 	// Track previous producing state to detect completion
-	let prevProducing = $state(tier.producing);
-	let prevProgress = $state(tier.progress);
+	let prevProducing = $state(false);
+	let prevProgress = $state(0);
 
 	// Listen for production completion (progress went from high to low/stopped)
 	$effect(() => {
