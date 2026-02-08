@@ -28,10 +28,13 @@ export function calculateRevenue(config: ProductionConfig, count: number, level:
 /**
  * Calculate production time with automation bonuses
  * chiefLevel 0 = manual (no auto), 1-6 = increasingly fast
+ * Uses ChiefSystem for speed multipliers
  */
 export function calculateProductionTime(config: ProductionConfig, chiefLevel: number): number {
 	if (chiefLevel === 0) return config.baseTime; // manual only
-	const speedMultiplier = [1, 1, 2, 5, 10, 50][chiefLevel - 1] ?? 1;
+	// Import inline to avoid circular deps — speed multipliers: 1, 2, 5, 10, 50, 100
+	const speedMultipliers = [1, 2, 5, 10, 50, 100];
+	const speedMultiplier = speedMultipliers[chiefLevel - 1] ?? 1;
 	return config.baseTime / speedMultiplier;
 }
 

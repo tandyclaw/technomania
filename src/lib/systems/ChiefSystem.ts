@@ -1,0 +1,136 @@
+/**
+ * ChiefSystem.ts — Division Chief / Key Hire automation system
+ * 
+ * The "Manager" mechanic from Adventure Capitalist — THE most important unlock.
+ * Each division gets named Key Hires inspired by real executives.
+ * Hiring a chief auto-runs production for that division.
+ * 
+ * Chief levels provide escalating speed boosts:
+ * Level 1: 1x speed (basic automation — no more tapping!)
+ * Level 2: 2x speed
+ * Level 3: 5x speed  
+ * Level 4: 10x speed
+ * Level 5: 50x speed
+ * Level 6: 100x speed (full autonomy)
+ */
+
+export interface ChiefData {
+	name: string;
+	title: string;
+	inspired: string; // Real person they're inspired by
+	quip: string; // One-liner on hire
+	portrait: string; // Emoji portrait
+}
+
+export interface ChiefLevelData {
+	level: number;
+	cost: number;
+	speedMultiplier: number;
+	label: string;
+	description: string;
+}
+
+/** Chief characters per division */
+export const DIVISION_CHIEFS: Record<string, ChiefData> = {
+	teslaenergy: {
+		name: 'Drew Brightfield',
+		title: 'VP of Energy Operations',
+		inspired: 'Drew Baglino',
+		quip: '"The sun never stops. Neither do I."',
+		portrait: '⚡',
+	},
+	spacex: {
+		name: 'Gwynne Sterling',
+		title: 'President & COO',
+		inspired: 'Gwynne Shotwell',
+		quip: '"Rockets don\'t build themselves. Well, now they do."',
+		portrait: '🚀',
+	},
+	tesla: {
+		name: 'JB Strasser',
+		title: 'Chief Technical Officer',
+		inspired: 'JB Straubel',
+		quip: '"Every electron counts. I\'ll make sure of it."',
+		portrait: '🔋',
+	},
+};
+
+/** Chief upgrade levels — same for all divisions */
+export const CHIEF_LEVELS: ChiefLevelData[] = [
+	{
+		level: 1,
+		cost: 1000, // Significant but reachable in ~5 min
+		speedMultiplier: 1,
+		label: 'Hired',
+		description: 'Basic automation — production runs automatically',
+	},
+	{
+		level: 2,
+		cost: 25000,
+		speedMultiplier: 2,
+		label: 'Experienced',
+		description: '2x production speed',
+	},
+	{
+		level: 3,
+		cost: 500000,
+		speedMultiplier: 5,
+		label: 'Expert',
+		description: '5x production speed',
+	},
+	{
+		level: 4,
+		cost: 15000000,
+		speedMultiplier: 10,
+		label: 'Legendary',
+		description: '10x production speed',
+	},
+	{
+		level: 5,
+		cost: 500000000,
+		speedMultiplier: 50,
+		label: 'Visionary',
+		description: '50x production speed',
+	},
+	{
+		level: 6,
+		cost: 50000000000,
+		speedMultiplier: 100,
+		label: 'Full Autonomy',
+		description: '100x production speed — runs itself',
+	},
+];
+
+/**
+ * Get the cost for the next chief level
+ * Returns null if already at max level
+ */
+export function getNextChiefCost(currentLevel: number): number | null {
+	if (currentLevel >= CHIEF_LEVELS.length) return null;
+	return CHIEF_LEVELS[currentLevel].cost;
+}
+
+/**
+ * Get the speed multiplier for a chief level
+ */
+export function getChiefSpeedMultiplier(chiefLevel: number): number {
+	if (chiefLevel === 0) return 0; // No chief = no automation
+	const levelData = CHIEF_LEVELS[chiefLevel - 1];
+	return levelData?.speedMultiplier ?? 1;
+}
+
+/**
+ * Get the current chief level data
+ */
+export function getChiefLevelData(chiefLevel: number): ChiefLevelData | null {
+	if (chiefLevel === 0) return null;
+	return CHIEF_LEVELS[chiefLevel - 1] ?? null;
+}
+
+/**
+ * Get the next chief level data
+ */
+export function getNextChiefLevelData(chiefLevel: number): ChiefLevelData | null {
+	if (chiefLevel >= CHIEF_LEVELS.length) return null;
+	return CHIEF_LEVELS[chiefLevel] ?? null;
+}

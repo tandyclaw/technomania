@@ -20,6 +20,7 @@
 12. [MVP Scope](#12-mvp-scope)
 13. [Development Phases](#13-development-phases)
 14. [Appendices](#14-appendices)
+15. [Game Feel & Fun Mechanics](#15-game-feel--fun-mechanics)
 
 ---
 
@@ -694,4 +695,272 @@ See `RESEARCH_ELON.md` for comprehensive research on Elon Musk's vision, company
 
 ---
 
-*Last updated: 2026-02-08 — v2.0 "Being Elon" rebrand*
+## 15. Game Feel & Fun Mechanics
+
+> *"The math makes it addictive. The narrative makes it meaningful."*
+> See full research: [RESEARCH_GAME_DESIGN.md](./RESEARCH_GAME_DESIGN.md)
+
+This section codifies the specific design principles that make this game **actually fun** — not just a tech demo with idle mechanics bolted on. Every decision here is grounded in analysis of Adventure Capitalist, Cookie Clicker, Egg Inc., and proven idle game design research.
+
+---
+
+### 15.1 The AdCap-Style Progression Loop (Mapped to Being Elon)
+
+The core loop follows the same neurological pattern that makes AdCap addictive, but with real-tech content providing narrative meaning:
+
+```
+TAP to build first rocket engine ($50K) → BUY more workbenches → 
+HIRE key executive (automation!) → RESEARCH better alloys → 
+HIT bottleneck (engine yield rate) → SOLVE IT (metallurgy research) → 
+BREAKTHROUGH (3x engine production!) → SCALE to first launch → 
+EARN launch contract revenue → UNLOCK next company division → 
+REPEAT loop with new division → SYNERGY discovered (shared batteries!) → 
+HIT growth ceiling → IPO (prestige!) → RESTART 10x stronger → 
+BLAST through early game in minutes → PUSH deeper → REPEAT
+```
+
+**Key emotional beats mapped to real tech milestones:**
+
+| Emotional Beat | AdCap Equivalent | Being Elon Moment |
+|---------------|-----------------|-------------------|
+| First satisfying tap | Squeezing lemonade | Hand-building first rocket engine |
+| First automation | Hiring manager | Recruiting your first Chief of Operations |
+| First breakthrough | x2 milestone multiplier | Solving heat shield tile adhesion |
+| First "oh wow" number | Hitting $1M | First successful orbital launch ($60M contract) |
+| First strategic decision | "Which business to invest in?" | "More power or more rockets?" |
+| First prestige | Claiming angel investors | The IPO — company goes public |
+| Post-prestige rush | Numbers go BRRR with angels | Blast from garage to gigafactory in 10 minutes |
+
+---
+
+### 15.2 Unlock Cadence Chart
+
+**Something new MUST happen at every interval. Dead time = lost player.**
+
+| Time | Event | Player Emotion |
+|------|-------|---------------|
+| 0:00 | Tutorial starts. Tap to assemble first rocket engine component. | Curiosity |
+| 0:15 | First component assembled! +$500. Buy another workbench. | Satisfaction |
+| 0:30 | First upgrade available: Better Tools (+50% tap speed). | Empowerment |
+| 0:45 | Second workbench running. Revenue visible on counter. | Progress! |
+| 1:00 | First complete engine built. Flavor text: "It's ugly, but it works." | Humor + pride |
+| 1:30 | Power division unlocked: "You need electricity. Build a solar panel." | New system! |
+| 2:00 | Solar panel generating power. Power bar visible. | Understanding mechanics |
+| 3:00 | First engine SOLD ($50K). Revenue counter jumps. Number popup: "+$50,000!" | 💰 Dopamine hit |
+| 4:00 | Can afford 3rd workbench. Production rate noticeably faster. | Scaling feeling |
+| 5:00 | **KEY MOMENT**: Division Chief available! Portrait appears. Cost: $200K. | Anticipation |
+| 6:00 | Chief hired. Rocket production now AUTOMATIC. Hands off the keyboard. | Relief + power |
+| 8:00 | EV division unlocked. "You've got cash. Time to build cars." | New content! |
+| 10:00 | First EV assembled. Two divisions running simultaneously. | Empire feeling |
+| 12:00 | First milestone: 10 rocket engines → x2 multiplier! Numbers surge. | BREAKTHROUGH! |
+| 15:00 | First bottleneck appears: "Engine yield rate dropping — metallurgy research needed." | Challenge |
+| 18:00 | Research started (takes 3 min real-time). Meanwhile, optimize EV production. | Strategic thinking |
+| 20:00 | Research complete! Bottleneck solved. Production jumps 3x. | 💥 Breakthrough euphoria |
+| 25:00 | First LAUNCH! Full-screen rocket animation with countdown. Revenue: $2M. | 🚀 Peak moment |
+| 30:00 | AI or another division teased. Synergy hint: "Your AI could optimize launches..." | Curiosity for future |
+| 45:00 | Multiple divisions running. Power becomes THE bottleneck. Strategic choice time. | Depth revealed |
+| 60:00 | IPO meter appears. "You could go public for 15 Vision Points..." | Prestige temptation |
+| 90:00 | **First prestige viable.** IPO animation. Restart with +30% everything. | Prestige rush |
+| 91:00 | Post-prestige: Buying first engine in 2 seconds instead of 5 minutes. Numbers go BRRR. | "I am GOD" feeling |
+| 120:00 | Deep into 2nd run. New bottlenecks, new synergies, pushing further. | Mastery + exploration |
+
+**Rule: If 5 minutes of active play passes with NOTHING new happening, the pacing is broken. Fix it.**
+
+---
+
+### 15.3 Economy Balancing Principles
+
+Based on analysis of AdCap's actual numbers and Pecorella's mathematical framework (see RESEARCH_GAME_DESIGN.md for full formulas):
+
+#### Cost Curves
+```
+cost_next = cost_base × (coefficient)^owned
+```
+
+| Division Building Type | Base Cost | Coefficient | Notes |
+|----------------------|-----------|-------------|-------|
+| Tier 1 (Workbench/Panel) | $500 | 1.08 | Cheap, scales gently. Player's bread and butter early. |
+| Tier 2 (Small Facility) | $25K | 1.10 | Meaningful investment, faster cost scaling |
+| Tier 3 (Factory) | $500K | 1.12 | Major purchase, costs rise quickly |
+| Tier 4 (Mega Facility) | $25M | 1.13 | Late-game money sink |
+| Tier 5 (Complex) | $2B | 1.14 | End-game, prestige-funded |
+| Tier 6 (Mega Complex) | $500B | 1.15 | Post-prestige territory |
+
+#### Milestone Multipliers
+Milestone breakthroughs at unit counts: **5, 10, 25, 50, 100, 200, 500**
+
+| Count | Multiplier | Also Gets |
+|-------|-----------|-----------|
+| 5 | x2 revenue | — |
+| 10 | x2 revenue | Production time halved |
+| 25 | x3 revenue | — |
+| 50 | x2 revenue | Production time halved again |
+| 100 | x5 revenue | Production time halved again |
+| 200 | x5 revenue | Production time halved again |
+| 500 | x10 revenue | Production time halved again |
+
+#### Cross-Division Priority Shifting
+By staggering milestone multiplier schedules across divisions, different divisions become "optimal" at different times:
+
+- **Minutes 0-10**: Rockets dominate (first division, big early multipliers)
+- **Minutes 10-25**: Energy surges (power milestone gives global boost)
+- **Minutes 25-45**: EVs take over (production hits milestone multiplier cascade)
+- **Minutes 45-75**: AI or new division becomes optimal
+- **Minutes 75+**: Multi-division synergies become the dominant strategy
+
+This prevents "just dump everything into one division" and makes the game feel dynamic.
+
+---
+
+### 15.4 Prestige System: "The IPO" — Detailed Design
+
+#### Layer 1: Vision Points (Primary Prestige)
+
+**Earning Formula:**
+```
+vision_points = floor(150 × sqrt(lifetime_earnings / 1e12)) - current_vision_points
+```
+
+**Effect:** Each Vision Point gives **+2% to ALL revenue** (multiplicative). 50 points = 2.65x multiplier. 100 points = 7.24x. 500 points = 21,916x.
+
+**Optimal Timing Indicator:**
+- 🔴 "Too early" (< 50% of projected max gain)
+- 🟡 "Decent" (50-80%)
+- 🟢 "Great time!" (80-95%)
+- ⭐ "Optimal window!" (95-100% of diminishing returns curve)
+
+**What Resets:** All division buildings, cash, RP, power, Division Chiefs, bottleneck states.
+**What Persists:** Vision Points, tech tree unlocks, achievements, Pioneer Tokens, unlocked divisions.
+
+**IPO Tiers (New Features per Prestige):**
+
+| IPO # | Vision Points Earned | New Feature Unlocked |
+|--------|---------------------|---------------------|
+| 1 | 10-50 | All MVP divisions available immediately at start |
+| 2 | 50-200 | "Board of Advisors" — global multiplier managers |
+| 3 | 200-1000 | "Vertical Integration" — automated supply chains between divisions |
+| 4 | 1000-5000 | Mars Colony expansion world |
+| 5+ | 5000+ | Escalating permanent bonuses, cosmetic unlocks, leaderboard tiers |
+
+#### Layer 2: Vision Point Spending (Angel Sacrifice Equivalent)
+
+Players can SPEND Vision Points on permanent upgrades:
+- **Research Accelerator** (100 VP): -25% all research times forever
+- **Talent Scout** (200 VP): Division Chiefs cost 50% less
+- **Power Grid Legacy** (150 VP): Start each run with Tier 3 power
+- **Engineering Mastery** (300 VP): +50% bottleneck resolution speed
+- **Startup Capital** (500 VP): Start each run with $10M cash
+
+**The Tension:** Spending VP reduces your revenue multiplier. This creates genuine strategic decisions — short-term multiplier vs. permanent structural advantage.
+
+#### Layer 3: Mars Colony (Long-Term Prestige)
+
+After IPO 4, Mars Colony is a second "world" with its own businesses, currency (Mars Credits), prestige system, and unique bottlenecks (radiation, dust storms, supply from Earth). Provides month-long engagement.
+
+---
+
+### 15.5 "Juice" — Visual/Audio Feedback Specification
+
+#### Tap Feedback (Per Division)
+
+| Division | Tap Animation | Tap Sound | Idle Animation |
+|----------|-------------|-----------|---------------|
+| Rockets | Orange sparks + metal clank particles | Metallic hammer ring | Rocket on pad with steam venting |
+| EVs | Blue electricity arcs from tap point | Electric zap + hum | Assembly line with cars moving |
+| AI | Green data stream particles flowing upward | Digital processing chirp | Server racks with blinking lights |
+| Tunnels | Brown dirt/rock chunks flying | Drilling rumble + crack | TBM slowly advancing in cross-section |
+| Neural | White neuron firing pulse | Soft synapse spark sound | Brain scan with activity patterns |
+| Satellites | Cyan satellite dish signal waves | Radio beep/static burst | Constellation map with moving dots |
+| Energy | Golden sun ray beams | Warm power-up charge tone | Solar panels tracking the sun |
+
+#### Milestone Celebration Tiers
+
+| Milestone Type | Animation Level |
+|---------------|----------------|
+| Minor (buy 5th building) | Number popup + small particle puff |
+| Medium (25th building, x3 multiplier) | Popup + screen pulse + brief confetti |
+| Major (first launch, first $1M) | Full animation (rocket launch, champagne pop) + unique sound + achievement toast |
+| Epic (prestige, Mars unlock, synergy discovery) | Full-screen takeover, dramatic music sting, 3-5 seconds of spectacle |
+
+#### Sound Design Principles
+1. **Layer ambient sounds**: Each active division contributes to ambient soundscape
+2. **Pitch escalation**: As revenue increases, ambient tone subtly rises in pitch
+3. **Silence for drama**: 0.5s silence before major milestone → then BOOM
+4. **Always optional**: Full mute toggle. Never punish muted players.
+
+---
+
+### 15.6 Player Retention Hooks
+
+#### Daily Return Loop
+1. **Offline Earnings Screen**: Big number reveal + breakdown by division + "Double it?" option
+2. **Daily Bonus**: Login streak → escalating rewards (Day 1: $10K, Day 7: Time Warp, Day 30: Pioneer Token)
+3. **Research Completion**: "Your metallurgy research completed while you were away! Tap to apply."
+4. **Permit Resolution**: "The FTA approved your launch license!"
+
+#### Weekly Engagement
+1. **Mission Contracts**: "5 satellite launches by Sunday. Reward: $500M + 50 RP"
+2. **Limited Events**: Themed challenges ("Space Race Week" — rocket production boosted)
+3. **Prestige Cycle**: Active players should hit prestige roughly once per day
+
+#### Monthly Engagement
+1. **Mars Colony Progress**: Long-term goal visible from early game
+2. **Deep Prestige Upgrades**: Vision Point spending tree
+3. **Achievement Long Tail**: 200+ achievements, some requiring weeks
+4. **Seasonal Content**: Holiday events, special themes
+
+#### The "One More Thing" Pattern
+Every session should end with the player seeing something JUST out of reach:
+- "2 more engines and you unlock the x3 multiplier..."
+- "Your research completes in 45 minutes..."
+- "You're 80% of the way to your next IPO..."
+
+**Never let the player close the game feeling "done." Always leave a thread to pull them back.**
+
+---
+
+### 15.7 The "AdCap But Better" Checklist
+
+For every feature, ask: "Is this at least as fun as AdCap's version, plus something AdCap can't do?"
+
+| AdCap Feature | Our Version | What's Better |
+|--------------|-------------|--------------|
+| Tap to produce | Tap to build real tech | Narrative context makes it meaningful |
+| Generic managers | Named characters with portraits | Emotional connection to your team |
+| Arbitrary businesses | Real tech companies/divisions | Educational + internally consistent |
+| Flat milestone multipliers | Bottleneck → Breakthrough cycle | More dramatic, more satisfying |
+| No cross-business interaction | Deep synergy system | Strategic depth layer |
+| Angel investors (flat bonus) | Vision Points + spending tree | More strategic prestige decisions |
+| Moon/Mars (same mechanics, new skin) | Mars Colony (unique mechanics) | Genuinely different gameplay |
+| Random events (gold rain) | Real-tech events (production hell, launch failure) | Narratively grounded, more varied |
+| No sound design | Division-specific audio + ambient layering | Full sensory experience |
+| No story | Building a real tech empire | Players learn AND play |
+
+---
+
+### 15.8 Design Commandments
+
+1. **Numbers must ALWAYS be going up.** A static screen is a dead game.
+2. **Something new every 30 seconds (early) to 5 minutes (mid).** Silence kills.
+3. **Walls set up breakthroughs.** No bottleneck without a satisfying payoff.
+4. **Automation changes the game, not ends it.** Post-automation = strategy phase.
+5. **Prestige is a power-up, not a punishment.** Post-prestige should be the best moment.
+6. **Show, don't tell.** Rockets launch. Cars roll. Tunnels grow. Don't just increment counters.
+7. **Make every tap juicy.** Sound, particles, number popups, screen reaction.
+8. **Real tech > made-up tech.** Reality is more interesting than fiction.
+9. **Multiple paths, no wrong answers.** 2-3 viable strategies at any time.
+10. **Respect the player's time AND wallet.** No pay gates, no dark patterns.
+11. **The first 5 minutes sell the entire game.** Polish the opening to a mirror shine.
+12. **Offline progress = Christmas morning.** The welcome-back screen should feel amazing.
+13. **Humor prevents tedium.** "Rapid unscheduled disassembly" > "Rocket exploded."
+14. **Synergies reward curiosity.** Hidden connections feel like earning a secret.
+15. **The game is the numbers. The soul is the story.**
+
+---
+
+*Section added: February 8, 2026*
+*Research basis: [RESEARCH_GAME_DESIGN.md](./RESEARCH_GAME_DESIGN.md)*
+
+---
+
+*Last updated: 2026-02-08 — v2.1 Added Game Feel & Fun Mechanics section*

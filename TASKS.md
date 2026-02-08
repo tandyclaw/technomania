@@ -44,14 +44,14 @@
 | T017 | Helios division screen with 6 tiers | DONE | MERGED | P0 | T013, T014, T015 |
 | T018 | Tap-to-produce mechanic for Helios tiers | DONE | MERGED | P0 | T017, T001 |
 | T019 | Power generation tracking (MW produced vs consumed) | DONE | MERGED | P0 | T017 |
-| T020 | Division Chief hiring UI + automation logic | PLANNED | PLAN | P0 | T017, T018 |
-| T021 | Tier unlock progression (cash gating) | PLANNED | PLAN | P0 | T017, T006 |
+| T020 | Division Chief hiring UI + automation logic | DONE | MERGED | P0 | T017, T018 |
+| T021 | Tier unlock progression (cash gating) | DONE | MERGED | P0 | T017, T006 |
 
 ## 4. Second Vertical — Apex Rocketry
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T022 | Apex division screen with 6 tiers | PLANNED | PLAN | P0 | T013, T019 |
+| T022 | SpaceX division screen with 6 tiers | DONE | MERGED | P0 | T013, T019 |
 | T023 | Tap-to-produce + automation for Apex | PLANNED | PLAN | P0 | T022, T020 |
 | T024 | Launch cadence mechanic (launches/month) | PLANNED | PLAN | P1 | T022 |
 | T025 | Power consumption for rocket facilities | PLANNED | PLAN | P0 | T022, T019 |
@@ -117,9 +117,13 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 33 | 16 | 17 |
+| P0 | 33 | 19 | 14 |
 | P1 | 11 | 0 | 11 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **50** | **16** | **34** |
+| **Total** | **50** | **19** | **31** |
 
-**Next task to pick up:** T020 (Division Chief hiring) or T021 (Tier unlock progression) — both are P0 with met deps.
+**Next task to pick up:** T023 (SpaceX tap-to-produce + automation) or T016 (Notification system).
+
+| T051 | Bitcoin/crypto treasury investment mechanic | PLANNED | PLAN | P1 | T007 |
+| T052 | BTC price simulation (volatile, cyclical) | PLANNED | PLAN | P1 | T051 |
+| T053 | DOGE meme coin side investment (Elon tweet pump mechanic) | PLANNED | PLAN | P2 | T051 |

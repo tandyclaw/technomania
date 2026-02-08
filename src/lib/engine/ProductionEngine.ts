@@ -24,6 +24,8 @@ import { gameState, type GameState, type TierState } from '$lib/stores/gameState
 import { DIVISIONS, type DivisionMeta } from '$lib/divisions';
 import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
+import { getNextChiefCost } from '$lib/systems/ChiefSystem';
+import { getDivisionUnlockCost } from '$lib/systems/DivisionUnlockSystem';
 import { eventBus } from './EventBus';
 
 const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla'] as const;
@@ -250,11 +252,6 @@ export function purchaseTier(divisionId: string, tierIndex: number): boolean {
 		newState.cash -= cost;
 		newTier.count += 1;
 
-		// Unlock next tier if this is the first purchase
-		if (newTier.count === 1 && tierIndex + 1 < newDivState.tiers.length) {
-			newDivState.tiers[tierIndex + 1].unlocked = true;
-		}
-
 		// Recalculate power after purchase (new facility adds generation or consumption)
 		const { generated, consumed } = calculatePowerBalance(newState);
 		newState.powerGenerated = generated;
@@ -266,6 +263,148 @@ export function purchaseTier(divisionId: string, tierIndex: number): boolean {
 			division: divisionId,
 			tier: tierIndex,
 			level: newTier.level,
+		});
+
+		return newState;
+	});
+
+	return success;
+}
+
+/**
+ * Hire or upgrade a division chief
+ * Returns the new chief level, or 0 if purchase failed
+ */
+export function hireChief(divisionId: string): number {
+	let newLevel = 0;
+
+	gameState.update((state) => {
+		const divState = state.divisions[divisionId as DivisionId];
+		if (!divState?.unlocked) return state;
+
+		const cost = getNextChiefCost(divState.chiefLevel);
+		if (cost === null) return state; // Already max level
+		if (state.cash < cost) return state;
+
+		// Clone state
+		const newState = cloneState(state);
+		const newDivState = newState.divisions[divisionId as DivisionId];
+
+		// Deduct cost and upgrade chief
+		newState.cash -= cost;
+		newDivState.chiefLevel += 1;
+		newLevel = newDivState.chiefLevel;
+
+		// When chief is first hired (level 0 → 1), start production on all tiers that have units
+		if (newLevel === 1) {
+			for (const tier of newDivState.tiers) {
+				if (tier.unlocked && tier.count > 0 && !tier.producing) {
+					tier.producing = true;
+					tier.progress = 0;
+				}
+			}
+		}
+
+		eventBus.emit('chief:hired', {
+			division: divisionId,
+			level: newLevel,
+		});
+
+		return newState;
+	});
+
+	return newLevel;
+}
+
+/**
+ * Unlock a locked tier by spending cash
+ * Returns true if unlock succeeded
+ */
+export function unlockTier(divisionId: string, tierIndex: number): boolean {
+	let success = false;
+
+	gameState.update((state) => {
+		const divState = state.divisions[divisionId as DivisionId];
+		if (!divState?.unlocked) return state;
+
+		const tier = divState.tiers[tierIndex];
+		if (!tier || tier.unlocked) return state; // Already unlocked or doesn't exist
+
+		const divMeta = DIVISIONS[divisionId];
+		const tierData = divMeta?.tiers[tierIndex];
+		if (!tierData) return state;
+
+		// Calculate unlock cost (2x the base cost of the tier)
+		const unlockCost = getUnlockCost(divisionId, tierIndex);
+		if (state.cash < unlockCost) return state;
+
+		// Clone state
+		const newState = cloneState(state);
+		const newDivState = newState.divisions[divisionId as DivisionId];
+		const newTier = newDivState.tiers[tierIndex];
+
+		// Deduct cost and unlock
+		newState.cash -= unlockCost;
+		newTier.unlocked = true;
+
+		success = true;
+
+		eventBus.emit('tier:unlocked', {
+			division: divisionId,
+			tier: tierIndex,
+		});
+
+		return newState;
+	});
+
+	return success;
+}
+
+/**
+ * Get the unlock cost for a locked tier
+ * Tier 0: free (always unlocked)
+ * Tier 1+: scales exponentially based on tier index
+ */
+export function getUnlockCost(divisionId: string, tierIndex: number): number {
+	if (tierIndex === 0) return 0; // First tier is always free
+
+	const divMeta = DIVISIONS[divisionId];
+	if (!divMeta) return Infinity;
+
+	const tierData = divMeta.tiers[tierIndex];
+	if (!tierData) return Infinity;
+
+	// Unlock cost = 5x the base cost of the tier (feels like a significant gate)
+	return tierData.config.baseCost * 5;
+}
+
+/**
+ * Unlock a locked division by spending cash
+ * Returns true if unlock succeeded
+ */
+export function unlockDivision(divisionId: string): boolean {
+	let success = false;
+
+	gameState.update((state) => {
+		const divState = state.divisions[divisionId as DivisionId];
+		if (!divState) return state;
+		if (divState.unlocked) return state; // Already unlocked
+
+		const cost = getDivisionUnlockCost(divisionId);
+		if (state.cash < cost) return state;
+
+		// Clone state
+		const newState = cloneState(state);
+		const newDivState = newState.divisions[divisionId as DivisionId];
+
+		// Deduct cost and unlock
+		newState.cash -= cost;
+		newDivState.unlocked = true;
+
+		success = true;
+
+		eventBus.emit('division:unlocked', {
+			division: divisionId,
 		});
 
 		return newState;

@@ -2,6 +2,9 @@
 	import type { DivisionState } from '$lib/stores/gameState';
 	import type { DivisionMeta } from '$lib/divisions';
 	import TierCard from './TierCard.svelte';
+	import TierUnlockCard from './TierUnlockCard.svelte';
+	import ChiefCard from './ChiefCard.svelte';
+	import { getUnlockCost } from '$lib/engine/ProductionEngine';
 
 	let {
 		division,
@@ -9,12 +12,16 @@
 		cash = 0,
 		onBuyTier,
 		onTapTier,
+		onHireChief,
+		onUnlockTier,
 	}: {
 		division: DivisionMeta;
 		state: DivisionState;
 		cash?: number;
 		onBuyTier?: (tierIndex: number) => void;
 		onTapTier?: (tierIndex: number) => number;
+		onHireChief?: () => void;
+		onUnlockTier?: (tierIndex: number) => void;
 	} = $props();
 
 	// Calculate overall division progress
@@ -24,6 +31,13 @@
 
 	// Total owned units across all tiers
 	let totalOwned = $derived(state.tiers.reduce((sum, t) => sum + t.count, 0));
+
+	// Check if previous tier is owned (has count > 0) for unlock gating
+	function isPreviousTierOwned(tierIndex: number): boolean {
+		if (tierIndex === 0) return true; // First tier always available
+		const prevTier = state.tiers[tierIndex - 1];
+		return prevTier ? prevTier.count > 0 : false;
+	}
 </script>
 
 <div class="division-detail space-y-4">
@@ -75,6 +89,17 @@
 		</div>
 	{/if}
 
+	<!-- Chief card (THE key hire mechanic) -->
+	{#if state.unlocked}
+		<ChiefCard
+			divisionId={division.id}
+			chiefLevel={state.chiefLevel}
+			color={division.color}
+			{cash}
+			onHire={onHireChief}
+		/>
+	{/if}
+
 	<!-- Tier list (scrollable area) -->
 	{#if state.unlocked}
 		<div class="tier-list space-y-2.5">
@@ -82,43 +107,29 @@
 				Production Tiers
 			</h2>
 			{#each state.tiers as tier, i}
-				<TierCard
-					{tier}
-					tierData={division.tiers[i]}
-					tierIndex={i}
-					chiefLevel={state.chiefLevel}
-					color={division.color}
-					{cash}
-					onBuy={() => onBuyTier?.(i)}
-					onTap={onTapTier ? () => onTapTier(i) : undefined}
-				/>
+				{#if tier.unlocked}
+					<TierCard
+						{tier}
+						tierData={division.tiers[i]}
+						tierIndex={i}
+						chiefLevel={state.chiefLevel}
+						color={division.color}
+						{cash}
+						onBuy={() => onBuyTier?.(i)}
+						onTap={onTapTier ? () => onTapTier(i) : undefined}
+					/>
+				{:else}
+					<TierUnlockCard
+						tierData={division.tiers[i]}
+						tierIndex={i}
+						unlockCost={getUnlockCost(division.id, i)}
+						color={division.color}
+						{cash}
+						onUnlock={() => onUnlockTier?.(i)}
+						isPreviousTierOwned={isPreviousTierOwned(i)}
+					/>
+				{/if}
 			{/each}
-		</div>
-
-		<!-- Division chief card -->
-		<div class="bg-bg-secondary/30 rounded-xl p-4 border border-white/5">
-			<div class="flex items-center justify-between">
-				<div>
-					<h3 class="text-sm font-semibold text-text-primary flex items-center gap-1.5">
-						<span aria-hidden="true">👔</span>
-						Division Chief
-					</h3>
-					<p class="text-xs text-text-muted mt-0.5">
-						{#if state.chiefLevel > 0}
-							Level {state.chiefLevel} · Automating production
-						{:else}
-							Hire a chief to automate production
-						{/if}
-					</p>
-				</div>
-				<button
-					class="hire-button px-3.5 py-2 rounded-lg text-xs font-semibold
-						   bg-neural-purple/15 text-neural-purple border border-neural-purple/20
-						   transition-all duration-150 active:scale-95 touch-manipulation"
-				>
-					{state.chiefLevel > 0 ? 'Upgrade' : 'Hire'}
-				</button>
-			</div>
 		</div>
 	{:else}
 		<!-- Division locked state -->
@@ -129,9 +140,3 @@
 		</div>
 	{/if}
 </div>
-
-<style>
-	.hire-button {
-		min-height: 40px;
-	}
-</style>
