@@ -22,7 +22,7 @@
 | T005 | Offline progress calculator (up to 8h) | DONE | MERGED | P0 | T001, T003 |
 | T006 | Number formatting (K, M, B, T, etc.) | DONE | MERGED | P0 | T002 |
 | T007 | Game state initialization and reset logic | DONE | MERGED | P0 | T001, T003 |
-| T008 | Auto-save integration with game loop | IN_PROGRESS | IMPLEMENT | P0 | T001, T003 |
+| T008 | Auto-save integration with game loop | DONE | MERGED | P0 | T001, T003 |
 
 ## 2. UI Shell
 
@@ -117,9 +117,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 33 | 12 | 21 |
+| P0 | 33 | 13 | 20 |
 | P1 | 11 | 0 | 11 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **50** | **12** | **38** |
+| **Total** | **50** | **13** | **37** |
 
 **Next task to pick up:** T008 (Auto-save integration) or T017 (Helios division screen) — both are P0 with met deps.
