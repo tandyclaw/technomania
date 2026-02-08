@@ -43,7 +43,7 @@
 |----|-------------|--------|-------|----------|------|
 | T017 | Helios division screen with 6 tiers | DONE | MERGED | P0 | T013, T014, T015 |
 | T018 | Tap-to-produce mechanic for Helios tiers | DONE | MERGED | P0 | T017, T001 |
-| T019 | Power generation tracking (MW produced vs consumed) | PLANNED | PLAN | P0 | T017 |
+| T019 | Power generation tracking (MW produced vs consumed) | DONE | MERGED | P0 | T017 |
 | T020 | Division Chief hiring UI + automation logic | PLANNED | PLAN | P0 | T017, T018 |
 | T021 | Tier unlock progression (cash gating) | PLANNED | PLAN | P0 | T017, T006 |
 
@@ -117,9 +117,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 33 | 15 | 18 |
+| P0 | 33 | 16 | 17 |
 | P1 | 11 | 0 | 11 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **50** | **15** | **35** |
+| **Total** | **50** | **16** | **34** |
 
-**Next task to pick up:** T019 (Power generation tracking) or T020 (Division Chief hiring) — both are P0 with met deps.
+**Next task to pick up:** T020 (Division Chief hiring) or T021 (Tier unlock progression) — both are P0 with met deps.
