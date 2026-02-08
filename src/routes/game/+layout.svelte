@@ -4,17 +4,21 @@
 	import DivisionTabBar from '$lib/ui/DivisionTabBar.svelte';
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameManager } from '$lib/engine/GameManager';
+	import { formatCurrency } from '$lib/engine/BigNumber';
+	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
 
 	let { children } = $props();
 	let loading = $state(true);
 	let isNewGame = $state(false);
 	let offlineMs = $state(0);
+	let offlineReport = $state<OfflineReport | null>(null);
 	let showWelcomeBack = $state(false);
 
 	onMount(async () => {
 		const result = await gameManager.initialize();
 		isNewGame = result.isNewGame;
 		offlineMs = result.offlineMs;
+		offlineReport = result.offlineReport;
 
 		// Show welcome back screen if returning after >5 minutes
 		if (!isNewGame && offlineMs > 5 * 60 * 1000) {
@@ -64,10 +68,39 @@
 			<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-white/10 text-center">
 				<div class="text-4xl mb-3">👋</div>
 				<h2 class="text-xl font-bold text-text-primary mb-2">Welcome Back, Founder</h2>
-				<p class="text-sm text-text-secondary mb-4">
+				<p class="text-sm text-text-secondary mb-2">
 					You were away for <span class="text-solar-gold font-semibold">{formatOfflineTime(offlineMs)}</span>.
-					Your divisions kept working while you were gone.
 				</p>
+
+				{#if offlineReport && (offlineReport.cashEarned > 0 || offlineReport.researchPointsEarned > 0)}
+					<div class="bg-bg-tertiary/50 rounded-xl p-3 mb-4 space-y-1.5">
+						<p class="text-xs text-text-muted uppercase tracking-wider">While you were away</p>
+						{#if offlineReport.cashEarned > 0}
+							<div class="flex items-center justify-center gap-1.5">
+								<span>💰</span>
+								<span class="text-sm font-bold text-bio-green">
+									+{formatCurrency(offlineReport.cashEarned)}
+								</span>
+							</div>
+						{/if}
+						{#if offlineReport.researchPointsEarned > 0}
+							<div class="flex items-center justify-center gap-1.5">
+								<span>🔬</span>
+								<span class="text-sm font-bold text-neural-purple">
+									+{offlineReport.researchPointsEarned} RP
+								</span>
+							</div>
+						{/if}
+						<p class="text-[10px] text-text-muted">
+							{Math.round(offlineReport.efficiency * 100)}% offline efficiency
+						</p>
+					</div>
+				{:else}
+					<p class="text-sm text-text-secondary mb-4">
+						Hire Division Chiefs to earn while you're away!
+					</p>
+				{/if}
+
 				<button
 					onclick={dismissWelcomeBack}
 					class="w-full py-3 px-6 rounded-xl bg-electric-blue text-white font-semibold

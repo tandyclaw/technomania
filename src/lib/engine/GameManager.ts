@@ -8,6 +8,7 @@ import { gameState, createDefaultState, type GameState } from '$lib/stores/gameS
 import { gameLoop } from './GameLoop';
 import { saveGame, loadGame, deleteSave } from './SaveManager';
 import { eventBus } from './EventBus';
+import { calculateOfflineProgress, applyOfflineReport, type OfflineReport } from './OfflineCalculator';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 1;
@@ -26,13 +27,14 @@ class GameManager {
 	 * Initialize the game — load saved state or create new, start systems
 	 * Call this once when the game view mounts
 	 */
-	async initialize(): Promise<{ isNewGame: boolean; offlineMs: number }> {
+	async initialize(): Promise<{ isNewGame: boolean; offlineMs: number; offlineReport: OfflineReport | null }> {
 		if (this.initialized || typeof window === 'undefined') {
-			return { isNewGame: false, offlineMs: 0 };
+			return { isNewGame: false, offlineMs: 0, offlineReport: null };
 		}
 
 		let isNewGame = false;
 		let offlineMs = 0;
+		let offlineReport: OfflineReport | null = null;
 
 		// Try loading saved state
 		const savedState = await loadGame();
@@ -49,13 +51,15 @@ class GameManager {
 			migrated.lastPlayed = now;
 			migrated.stats.sessionsPlayed += 1;
 
+			// Calculate and apply offline progress if enabled and meaningful (> 60s)
+			if (migrated.settings.offlineProgressEnabled && offlineMs > 60_000) {
+				const prestigeMult = this.getPrestigeMultiplier(migrated);
+				offlineReport = calculateOfflineProgress(migrated, offlineMs, prestigeMult);
+				applyOfflineReport(migrated, offlineReport);
+			}
+
 			// Apply loaded state
 			gameState.set(migrated);
-
-			// Calculate offline progress if enabled and meaningful (> 60s)
-			if (migrated.settings.offlineProgressEnabled && offlineMs > 60_000) {
-				gameLoop.calculateOffline(offlineMs);
-			}
 		} else {
 			// New game — start fresh
 			isNewGame = true;
@@ -83,7 +87,7 @@ class GameManager {
 		this.initialized = true;
 		eventBus.emit('save:loaded', {});
 
-		return { isNewGame, offlineMs };
+		return { isNewGame, offlineMs, offlineReport };
 	}
 
 	/**

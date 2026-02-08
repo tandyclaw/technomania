@@ -19,7 +19,7 @@
 | T002 | BigNumber integration (break_infinity.js) with formatting | DONE | MERGED | P0 | — |
 | T003 | Save/Load system (IndexedDB auto-save every 30s) | DONE | MERGED | P0 | — |
 | T004 | Event bus for cross-system communication | DONE | MERGED | P0 | — |
-| T005 | Offline progress calculator (up to 8h) | PLANNED | PLAN | P0 | T001, T003 |
+| T005 | Offline progress calculator (up to 8h) | IN_PROGRESS | IMPLEMENT | P0 | T001, T003 |
 | T006 | Number formatting (K, M, B, T, etc.) | DONE | MERGED | P0 | T002 |
 | T007 | Game state initialization and reset logic | DONE | MERGED | P0 | T001, T003 |
 | T008 | Auto-save integration with game loop | PLANNED | PLAN | P0 | T001, T003 |
