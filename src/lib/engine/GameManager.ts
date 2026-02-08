@@ -10,6 +10,7 @@ import { saveGame, loadGame, deleteSave } from './SaveManager';
 import { eventBus } from './EventBus';
 import { calculateOfflineProgress, applyOfflineReport, type OfflineReport } from './OfflineCalculator';
 import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
+import { tickProduction } from './ProductionEngine';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 1;
@@ -39,14 +40,21 @@ class GameManager {
 		let offlineMs = 0;
 		let offlineReport: OfflineReport | null = null;
 
-		// Try loading saved state (with corrupted save handling)
+		// Try loading saved state (with corrupted save handling + timeout)
 		let savedState: GameState | null = null;
 		try {
-			savedState = await loadGame();
+			// Wrap loadGame in a timeout to prevent infinite hang on blocked DB
+			savedState = await Promise.race([
+				loadGame(),
+				new Promise<null>((resolve) => setTimeout(() => {
+					console.warn('[GameManager] Load timed out — starting fresh');
+					resolve(null);
+				}, 5000))
+			]);
 			// Validate the loaded state has required structure
 			if (savedState && !this.isValidState(savedState)) {
 				console.warn('[GameManager] Corrupted save detected — resetting to default');
-				await deleteSave();
+				try { await deleteSave(); } catch { /* ignore timeout */ }
 				savedState = null;
 			}
 		} catch (err) {
@@ -93,12 +101,16 @@ class GameManager {
 		this.addBrowserListeners();
 		gameLoop.start();
 
-		// Wire up game tick to update play time
+		// Wire up game tick to update play time and tick production
 		gameLoop.onTick((deltaMs) => {
-			gameState.update((s) => {
-				s.stats.playTimeMs += deltaMs;
-				return s;
-			});
+			// Tick production engine (processes all division tiers)
+			tickProduction(deltaMs);
+
+			// Update play time (create new ref for Svelte 5 reactivity)
+			gameState.update((s) => ({
+				...s,
+				stats: { ...s.stats, playTimeMs: s.stats.playTimeMs + deltaMs }
+			}));
 		});
 
 		this.initialized = true;

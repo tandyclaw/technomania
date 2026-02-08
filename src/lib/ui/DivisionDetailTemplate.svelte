@@ -6,9 +6,15 @@
 	let {
 		division,
 		state,
+		cash = 0,
+		onBuyTier,
+		onTapTier,
 	}: {
 		division: DivisionMeta;
 		state: DivisionState;
+		cash?: number;
+		onBuyTier?: (tierIndex: number) => void;
+		onTapTier?: (tierIndex: number) => number;
 	} = $props();
 
 	// Calculate overall division progress
@@ -82,6 +88,9 @@
 					tierIndex={i}
 					chiefLevel={state.chiefLevel}
 					color={division.color}
+					{cash}
+					onBuy={() => onBuyTier?.(i)}
+					onTap={onTapTier ? () => onTapTier(i) : undefined}
 				/>
 			{/each}
 		</div>
