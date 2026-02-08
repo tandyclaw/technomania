@@ -5,7 +5,7 @@
 </script>
 
 {#key $activeTab}
-	<div class="view-container" role="tabpanel" id="tab-panel-{$activeTab}">
+	<div class="view-container">
 		{#if $activeTab === 'dashboard'}
 			<DashboardView />
 		{:else}

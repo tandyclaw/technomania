@@ -27,7 +27,6 @@
 <header
 	class="fixed top-0 left-0 right-0 z-50 bg-bg-primary/90 backdrop-blur-md border-b border-white/5"
 	style="padding-top: env(safe-area-inset-top, 0px);"
-	role="banner"
 	aria-label="Player resources"
 >
 	<div class="flex items-center justify-between px-3 h-[3.25rem] max-w-2xl mx-auto gap-2">

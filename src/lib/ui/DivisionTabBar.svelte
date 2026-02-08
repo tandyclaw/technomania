@@ -24,7 +24,6 @@
 <nav
 	class="fixed bottom-0 left-0 right-0 z-50 bg-bg-primary/95 backdrop-blur-md border-t border-white/5"
 	style="padding-bottom: env(safe-area-inset-bottom, 0px);"
-	role="tablist"
 	aria-label="Division navigation"
 >
 	<div class="flex items-stretch justify-around max-w-2xl mx-auto">
@@ -36,10 +35,8 @@
 					   py-2 px-1 flex-1
 					   transition-all duration-200
 					   active:scale-90 touch-manipulation"
-				role="tab"
-				aria-selected={isActive}
+				aria-current={isActive ? 'page' : undefined}
 				aria-label={tab.name}
-				aria-controls="tab-panel-{tab.id}"
 			>
 				<!-- Active indicator line -->
 				{#if isActive}
