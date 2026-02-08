@@ -2,6 +2,9 @@
  * TeslaEnergy.ts — Energy & Solar division
  * Real Tesla Energy / SolarCity product progression
  * THE FOUNDATION: powers everything else
+ *
+ * cycleDuration = how long one production cycle takes (in seconds)
+ * Revenue is earned ONLY when the cycle completes (Adventure Capitalist style)
  */
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
@@ -11,37 +14,37 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; powerMW: n
 		name: 'Solar Panels',
 		description: 'Residential rooftop solar. Everyone starts somewhere.',
 		powerMW: 0.005, // 5 kW
-		config: { baseCost: 15, baseRevenue: 2, baseTime: 1200, costMultiplier: 1.15, revenueMultiplier: 1.1 }
+		config: { baseCost: 15, baseRevenue: 2, cycleDuration: 0.5, costMultiplier: 1.15, revenueMultiplier: 1.1 }
 	},
 	{
 		name: 'Powerwall',
 		description: 'Home battery. Store solar energy for nighttime use.',
 		powerMW: 0.01, // 10 kW storage
-		config: { baseCost: 200, baseRevenue: 20, baseTime: 3500, costMultiplier: 1.14, revenueMultiplier: 1.12 }
+		config: { baseCost: 200, baseRevenue: 20, cycleDuration: 3, costMultiplier: 1.14, revenueMultiplier: 1.12 }
 	},
 	{
-		name: 'SolarCity Commercial',
-		description: 'Business-scale solar installations across the country.',
+		name: 'Megapack',
+		description: 'Grid-scale battery storage. Utility-scale power.',
 		powerMW: 0.5,
-		config: { baseCost: 3000, baseRevenue: 250, baseTime: 8000, costMultiplier: 1.13, revenueMultiplier: 1.15 }
+		config: { baseCost: 3000, baseRevenue: 250, cycleDuration: 6, costMultiplier: 1.13, revenueMultiplier: 1.15 }
 	},
 	{
 		name: 'Solar Roof',
 		description: 'Integrated solar shingles. Sleek, invisible power.',
 		powerMW: 0.02,
-		config: { baseCost: 50000, baseRevenue: 3000, baseTime: 12000, costMultiplier: 1.12, revenueMultiplier: 1.18 }
+		config: { baseCost: 50000, baseRevenue: 3000, cycleDuration: 12, costMultiplier: 1.12, revenueMultiplier: 1.18 }
 	},
 	{
-		name: 'Gigafactory',
-		description: 'Massive battery cell factory. LFP cells at scale.',
+		name: 'Grid Battery',
+		description: 'Massive grid-connected battery farms. Stabilize entire cities.',
 		powerMW: 5,
-		config: { baseCost: 1000000, baseRevenue: 50000, baseTime: 25000, costMultiplier: 1.11, revenueMultiplier: 1.2 }
+		config: { baseCost: 1000000, baseRevenue: 50000, cycleDuration: 24, costMultiplier: 1.11, revenueMultiplier: 1.2 }
 	},
 	{
-		name: 'Megapack',
-		description: 'Grid-scale battery storage. Power the world.',
+		name: 'Virtual Power Plant',
+		description: 'Network of distributed batteries acting as one. The future of energy.',
 		powerMW: 50,
-		config: { baseCost: 20000000, baseRevenue: 800000, baseTime: 45000, costMultiplier: 1.10, revenueMultiplier: 1.25 }
+		config: { baseCost: 20000000, baseRevenue: 800000, cycleDuration: 48, costMultiplier: 1.10, revenueMultiplier: 1.25 }
 	}
 ];
 

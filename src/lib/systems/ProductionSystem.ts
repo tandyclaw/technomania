@@ -1,12 +1,16 @@
 /**
  * ProductionSystem.ts — Core production calculations
- * Handles tap-to-produce, automated production, and revenue generation
+ * Adventure Capitalist-style timed production cycles.
+ *
+ * cycleDuration = seconds for one full production cycle
+ * Tap starts a cycle → progress bar fills → cash awarded on completion
  */
 
 export interface ProductionConfig {
 	baseCost: number;
 	baseRevenue: number;
-	baseTime: number; // ms to produce one unit
+	/** Duration of one production cycle in SECONDS (Adventure Capitalist style) */
+	cycleDuration: number;
 	costMultiplier: number; // cost increase per purchase
 	revenueMultiplier: number; // revenue increase per level
 }
@@ -20,27 +24,33 @@ export function calculateCost(config: ProductionConfig, count: number): number {
 
 /**
  * Calculate revenue per production cycle for a tier
+ * Revenue = baseRevenue * count * revenueMultiplier^level
  */
 export function calculateRevenue(config: ProductionConfig, count: number, level: number): number {
 	return config.baseRevenue * count * Math.pow(config.revenueMultiplier, level);
 }
 
 /**
- * Calculate production time with automation bonuses
- * chiefLevel 0 = manual (no auto), 1-6 = increasingly fast
- * Uses ChiefSystem for speed multipliers
+ * Get cycle duration in milliseconds, with chief speed bonus applied
+ * chiefLevel 0 = manual (base duration), 1-6 = increasingly fast
  */
-export function calculateProductionTime(config: ProductionConfig, chiefLevel: number): number {
-	if (chiefLevel === 0) return config.baseTime; // manual only
-	// Import inline to avoid circular deps — speed multipliers: 1, 2, 5, 10, 50, 100
+export function getCycleDurationMs(config: ProductionConfig, chiefLevel: number): number {
+	const baseMs = config.cycleDuration * 1000;
+	if (chiefLevel === 0) return baseMs;
 	const speedMultipliers = [1, 2, 5, 10, 50, 100];
 	const speedMultiplier = speedMultipliers[chiefLevel - 1] ?? 1;
-	return config.baseTime / speedMultiplier;
+	return baseMs / speedMultiplier;
+}
+
+/**
+ * @deprecated Use getCycleDurationMs instead. Kept for backward compat during migration.
+ */
+export function calculateProductionTime(config: ProductionConfig, chiefLevel: number): number {
+	return getCycleDurationMs(config, chiefLevel);
 }
 
 /**
  * Calculate total cost to buy N units starting from currentCount
- * Uses geometric series: sum = baseCost * mult^start * (mult^N - 1) / (mult - 1)
  */
 export function calculateBulkCost(config: ProductionConfig, currentCount: number, quantity: number): number {
 	let total = 0;
@@ -61,7 +71,6 @@ export function calculateMaxBuyable(config: ProductionConfig, currentCount: numb
 		if (totalCost + nextCost > budget) break;
 		totalCost += nextCost;
 		count++;
-		// Safety cap at 10000 to prevent infinite loops
 		if (count >= 10000) break;
 	}
 	return count;

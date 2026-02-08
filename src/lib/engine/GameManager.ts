@@ -13,7 +13,7 @@ import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
 import { tickProduction } from './ProductionEngine';
 
 /** Current save version — increment when state schema changes */
-const CURRENT_VERSION = 1;
+const CURRENT_VERSION = 2;
 
 /** Auto-save interval in milliseconds */
 const AUTO_SAVE_INTERVAL_MS = 30_000;
@@ -102,15 +102,21 @@ class GameManager {
 		gameLoop.start();
 
 		// Wire up game tick to update play time and tick production
+		let playTimeAccumulator = 0;
 		gameLoop.onTick((deltaMs) => {
-			// Tick production engine (processes all division tiers)
+			// Tick production engine every tick (100ms) for smooth progress bars
 			tickProduction(deltaMs);
 
-			// Update play time (create new ref for Svelte 5 reactivity)
-			gameState.update((s) => ({
-				...s,
-				stats: { ...s.stats, playTimeMs: s.stats.playTimeMs + deltaMs }
-			}));
+			// Update play time only every ~1s to reduce store churn
+			playTimeAccumulator += deltaMs;
+			if (playTimeAccumulator >= 1000) {
+				const elapsed = playTimeAccumulator;
+				playTimeAccumulator = 0;
+				gameState.update((s) => ({
+					...s,
+					stats: { ...s.stats, playTimeMs: s.stats.playTimeMs + elapsed }
+				}));
+			}
 		});
 
 		this.initialized = true;
@@ -276,8 +282,30 @@ class GameManager {
 			migrated.foundersVision = migrated.foundersVision ?? 0;
 		}
 
-		// Future migrations go here:
-		// if (migrated.version < 2) { ... migrated.version = 2; }
+		// Version 1 → Version 2: Tesla gets 6th tier (Cybertruck), cycleDuration replaces baseTime
+		if (migrated.version < 2) {
+			// Add Cybertruck tier to Tesla if only 5 tiers
+			if (migrated.divisions.tesla && migrated.divisions.tesla.tiers.length < 6) {
+				migrated.divisions.tesla.tiers.push({
+					unlocked: false,
+					count: 0,
+					level: 0,
+					producing: false,
+					progress: 0,
+				});
+			}
+			// Reset any in-progress production since timing model changed
+			for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+				const div = migrated.divisions[divId];
+				if (div) {
+					for (const tier of div.tiers) {
+						tier.producing = false;
+						tier.progress = 0;
+					}
+				}
+			}
+			migrated.version = 2;
+		}
 
 		migrated.version = CURRENT_VERSION;
 		return migrated;

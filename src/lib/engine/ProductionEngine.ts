@@ -1,12 +1,15 @@
 /**
- * ProductionEngine.ts — Manages production cycles for all divisions
- * Hooks into the game loop to tick progress bars and award revenue
+ * ProductionEngine.ts — Adventure Capitalist-style timed production cycles
  *
  * Production flow:
- * 1. Player taps a tier → starts a production cycle (progress 0→1 over baseTime ms)
- * 2. When progress reaches 1.0, revenue is awarded and progress resets
- * 3. If chiefLevel > 0, production auto-restarts after completion
- * 4. Manual taps instantly complete one cycle (tap-to-produce)
+ * 1. Player taps a tier → starts a production cycle (progress 0→1 over cycleDuration)
+ * 2. Progress bar fills smoothly over cycleDuration seconds
+ * 3. When progress reaches 1.0, revenue is awarded (cash payout)
+ * 4. If chiefLevel > 0, production auto-restarts immediately
+ * 5. If no chief, player must tap again to start the next cycle
+ *
+ * CRITICAL: tapProduce() NO LONGER gives instant cash.
+ * It only starts a production cycle. Cash comes from completion.
  *
  * Power system (T019):
  * - Tesla Energy tiers generate power (positive powerMW)
@@ -15,14 +18,12 @@
  * - Minimum 10% efficiency to avoid total standstill
  *
  * IMPORTANT: All state mutations create new object references for Svelte 5 reactivity.
- * gameState.update() with in-place mutation doesn't trigger $derived recomputation
- * because Svelte 5 tracks object identity for non-$state objects.
  */
 
 import { get } from 'svelte/store';
 import { gameState, type GameState, type TierState } from '$lib/stores/gameState';
 import { DIVISIONS, type DivisionMeta } from '$lib/divisions';
-import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+import { calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSystem';
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { getNextChiefCost } from '$lib/systems/ChiefSystem';
 import { getDivisionUnlockCost } from '$lib/systems/DivisionUnlockSystem';
@@ -57,19 +58,22 @@ function cloneState(state: GameState): GameState {
 }
 
 /**
- * Tick all active production cycles forward by deltaMs
- * Called every game tick (1s) from the game loop
+ * Tick all active production cycles forward by deltaMs.
+ * Called every game tick from the game loop.
+ *
+ * This is the ONLY place where cash is awarded from production.
+ * No more instant cash from tapping.
  */
 export function tickProduction(deltaMs: number): void {
 	gameState.update((state) => {
 		const newState = cloneState(state);
 		let changed = false;
 
-		// Calculate power balance from current state for efficiency multiplier
+		// Calculate power balance for efficiency multiplier
 		const { generated, consumed } = calculatePowerBalance(state);
 		const powerEfficiency = calculatePowerEfficiency(generated, consumed);
 
-		// Update power tracking in state
+		// Update power tracking
 		newState.powerGenerated = generated;
 		newState.powerConsumed = consumed;
 		if (generated !== state.powerGenerated || consumed !== state.powerConsumed) {
@@ -84,33 +88,32 @@ export function tickProduction(deltaMs: number): void {
 			if (!divMeta) continue;
 
 			// Power deficit slows non-Tesla Energy divisions
-			// Tesla Energy always runs at full speed (it generates the power!)
 			const efficiencyMult = divId === 'teslaenergy' ? 1 : powerEfficiency;
 
 			for (let i = 0; i < divState.tiers.length; i++) {
 				const tier = divState.tiers[i];
 				if (!tier.unlocked || tier.count === 0) continue;
-				if (!tier.producing) {
-					// Auto-start production if chief is hired
-					if (divState.chiefLevel > 0) {
-						tier.producing = true;
-						tier.progress = 0;
-						changed = true;
-					}
-					continue;
+
+				// Auto-start production if chief is hired and tier is idle
+				if (!tier.producing && divState.chiefLevel > 0) {
+					tier.producing = true;
+					tier.progress = 0;
+					changed = true;
 				}
+
+				if (!tier.producing) continue;
 
 				const tierData = divMeta.tiers[i];
 				if (!tierData) continue;
 
-				const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-				// Apply power efficiency to production speed
-				const effectiveProdTimeMs = prodTimeMs / efficiencyMult;
-				const progressDelta = deltaMs / effectiveProdTimeMs;
+				const cycleDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
+				// Apply power efficiency to production speed (slower if power deficit)
+				const effectiveDurationMs = cycleDurationMs / efficiencyMult;
+				const progressDelta = deltaMs / effectiveDurationMs;
 				tier.progress += progressDelta;
 				changed = true;
 
-				// Check for production completion
+				// Check for cycle completion
 				if (tier.progress >= 1.0) {
 					const completedCycles = Math.floor(tier.progress);
 					const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
@@ -126,12 +129,11 @@ export function tickProduction(deltaMs: number): void {
 						amount: totalRevenue,
 					});
 
-					// Reset progress (keep fractional remainder for smooth cycling)
 					if (divState.chiefLevel > 0) {
-						// Auto-restart: keep remainder
+						// Auto-restart: keep fractional remainder for smooth cycling
 						tier.progress = tier.progress - completedCycles;
 					} else {
-						// Manual: stop after completion
+						// Manual: stop after completion, player must tap again
 						tier.progress = 0;
 						tier.producing = false;
 					}
@@ -144,11 +146,16 @@ export function tickProduction(deltaMs: number): void {
 }
 
 /**
- * Tap-to-produce: instantly complete one production cycle for a tier
- * Returns the revenue earned from the tap
+ * Tap to start a production cycle (Adventure Capitalist style).
+ *
+ * Does NOT award instant cash. Instead:
+ * - If idle: starts a new production cycle (progress bar begins filling)
+ * - If already producing: does nothing (can't speed it up by mashing)
+ *
+ * Returns true if a cycle was started, false if already producing or can't produce.
  */
-export function tapProduce(divisionId: string, tierIndex: number): number {
-	let earned = 0;
+export function tapProduce(divisionId: string, tierIndex: number): boolean {
+	let started = false;
 
 	gameState.update((state) => {
 		const divState = state.divisions[divisionId as DivisionId];
@@ -157,67 +164,35 @@ export function tapProduce(divisionId: string, tierIndex: number): number {
 		const tier = divState.tiers[tierIndex];
 		if (!tier?.unlocked || tier.count === 0) return state;
 
-		const divMeta = DIVISIONS[divisionId];
-		const tierData = divMeta?.tiers[tierIndex];
-		if (!tierData) return state;
+		// Already producing — can't start another cycle
+		if (tier.producing) return state;
 
-		// Calculate revenue for one cycle
-		const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-		earned = revenue;
-
-		// Clone state with new references
+		// Clone state and start production
 		const newState = cloneState(state);
 		const newTier = newState.divisions[divisionId as DivisionId].tiers[tierIndex];
-
-		// Award revenue
-		newState.cash += revenue;
-		newState.totalValueEarned += revenue;
-		newState.stats.totalCashEarned += revenue;
+		newTier.producing = true;
+		newTier.progress = 0;
 		newState.stats.totalTaps += 1;
 
-		// If currently producing, reset progress; otherwise start+complete
-		newTier.progress = 0;
-		newTier.producing = false; // Will restart on next tap or auto if chief hired
+		started = true;
 
-		// Recalculate power after state change
-		const { generated, consumed } = calculatePowerBalance(newState);
-		newState.powerGenerated = generated;
-		newState.powerConsumed = consumed;
-
-		eventBus.emit('production:complete', {
+		eventBus.emit('production:started', {
 			division: divisionId,
 			tier: tierIndex,
-			amount: revenue,
 		});
 
 		return newState;
 	});
 
-	return earned;
+	return started;
 }
 
 /**
  * Start a production cycle for a tier (tap to begin, fills over time)
+ * Alias for tapProduce for backward compatibility.
  */
 export function startProduction(divisionId: string, tierIndex: number): void {
-	gameState.update((state) => {
-		const divState = state.divisions[divisionId as DivisionId];
-		if (!divState?.unlocked) return state;
-
-		const tier = divState.tiers[tierIndex];
-		if (!tier?.unlocked || tier.count === 0) return state;
-
-		// Start producing if not already
-		if (!tier.producing) {
-			const newState = cloneState(state);
-			const newTier = newState.divisions[divisionId as DivisionId].tiers[tierIndex];
-			newTier.producing = true;
-			newTier.progress = 0;
-			return newState;
-		}
-
-		return state;
-	});
+	tapProduce(divisionId, tierIndex);
 }
 
 /**
@@ -252,7 +227,13 @@ export function purchaseTier(divisionId: string, tierIndex: number): boolean {
 		newState.cash -= cost;
 		newTier.count += 1;
 
-		// Recalculate power after purchase (new facility adds generation or consumption)
+		// If this is the first unit and chief is hired, auto-start production
+		if (newTier.count === 1 && newDivState.chiefLevel > 0 && !newTier.producing) {
+			newTier.producing = true;
+			newTier.progress = 0;
+		}
+
+		// Recalculate power after purchase
 		const { generated, consumed } = calculatePowerBalance(newState);
 		newState.powerGenerated = generated;
 		newState.powerConsumed = consumed;
@@ -283,7 +264,7 @@ export function hireChief(divisionId: string): number {
 		if (!divState?.unlocked) return state;
 
 		const cost = getNextChiefCost(divState.chiefLevel);
-		if (cost === null) return state; // Already max level
+		if (cost === null) return state;
 		if (state.cash < cost) return state;
 
 		// Clone state
@@ -295,7 +276,7 @@ export function hireChief(divisionId: string): number {
 		newDivState.chiefLevel += 1;
 		newLevel = newDivState.chiefLevel;
 
-		// When chief is first hired (level 0 → 1), start production on all tiers that have units
+		// When chief is first hired (level 0 → 1), start production on all idle tiers
 		if (newLevel === 1) {
 			for (const tier of newDivState.tiers) {
 				if (tier.unlocked && tier.count > 0 && !tier.producing) {
@@ -328,13 +309,12 @@ export function unlockTier(divisionId: string, tierIndex: number): boolean {
 		if (!divState?.unlocked) return state;
 
 		const tier = divState.tiers[tierIndex];
-		if (!tier || tier.unlocked) return state; // Already unlocked or doesn't exist
+		if (!tier || tier.unlocked) return state;
 
 		const divMeta = DIVISIONS[divisionId];
 		const tierData = divMeta?.tiers[tierIndex];
 		if (!tierData) return state;
 
-		// Calculate unlock cost (2x the base cost of the tier)
 		const unlockCost = getUnlockCost(divisionId, tierIndex);
 		if (state.cash < unlockCost) return state;
 
@@ -343,7 +323,6 @@ export function unlockTier(divisionId: string, tierIndex: number): boolean {
 		const newDivState = newState.divisions[divisionId as DivisionId];
 		const newTier = newDivState.tiers[tierIndex];
 
-		// Deduct cost and unlock
 		newState.cash -= unlockCost;
 		newTier.unlocked = true;
 
@@ -363,10 +342,10 @@ export function unlockTier(divisionId: string, tierIndex: number): boolean {
 /**
  * Get the unlock cost for a locked tier
  * Tier 0: free (always unlocked)
- * Tier 1+: scales exponentially based on tier index
+ * Tier 1+: 5x base cost of the tier
  */
 export function getUnlockCost(divisionId: string, tierIndex: number): number {
-	if (tierIndex === 0) return 0; // First tier is always free
+	if (tierIndex === 0) return 0;
 
 	const divMeta = DIVISIONS[divisionId];
 	if (!divMeta) return Infinity;
@@ -374,7 +353,6 @@ export function getUnlockCost(divisionId: string, tierIndex: number): number {
 	const tierData = divMeta.tiers[tierIndex];
 	if (!tierData) return Infinity;
 
-	// Unlock cost = 5x the base cost of the tier (feels like a significant gate)
 	return tierData.config.baseCost * 5;
 }
 
@@ -388,7 +366,7 @@ export function unlockDivision(divisionId: string): boolean {
 	gameState.update((state) => {
 		const divState = state.divisions[divisionId as DivisionId];
 		if (!divState) return state;
-		if (divState.unlocked) return state; // Already unlocked
+		if (divState.unlocked) return state;
 
 		const cost = getDivisionUnlockCost(divisionId);
 		if (state.cash < cost) return state;
@@ -397,7 +375,6 @@ export function unlockDivision(divisionId: string): boolean {
 		const newState = cloneState(state);
 		const newDivState = newState.divisions[divisionId as DivisionId];
 
-		// Deduct cost and unlock
 		newState.cash -= cost;
 		newDivState.unlocked = true;
 

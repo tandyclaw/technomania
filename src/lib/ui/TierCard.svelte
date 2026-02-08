@@ -2,7 +2,8 @@
 	import type { TierState } from '$lib/stores/gameState';
 	import type { TierData } from '$lib/divisions';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { calculateCost, calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+	import { calculateCost, calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSystem';
+	import SmoothProgressBar from './SmoothProgressBar.svelte';
 
 	let {
 		tier,
@@ -21,58 +22,86 @@
 		color: string;
 		cash?: number;
 		onBuy?: () => void;
-		onTap?: () => number;
+		onTap?: () => boolean;
 	} = $props();
 
 	let cost = $derived(calculateCost(tierData.config, tier.count));
 	let revenue = $derived(calculateRevenue(tierData.config, tier.count, tier.level));
-	let prodTimeMs = $derived(calculateProductionTime(tierData.config, chiefLevel));
-	let revenuePerSec = $derived(tier.count > 0 ? (revenue / prodTimeMs) * 1000 : 0);
+	let cycleDurationMs = $derived(getCycleDurationMs(tierData.config, chiefLevel));
+	let revenuePerSec = $derived(tier.count > 0 ? (revenue / cycleDurationMs) * 1000 : 0);
 	let canAfford = $derived(cash >= cost);
 
 	let costDisplay = $derived(formatCurrency(cost));
 	let revenueDisplay = $derived(formatCurrency(revenuePerSec, 1));
 	let revenuePerCycle = $derived(formatCurrency(revenue));
 
+	// Format cycle duration for display
+	let cycleDurationDisplay = $derived(formatCycleDuration(cycleDurationMs));
+
+	function formatCycleDuration(ms: number): string {
+		if (ms < 1000) return `${Math.round(ms)}ms`;
+		if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+		const mins = Math.floor(ms / 60000);
+		const secs = Math.floor((ms % 60000) / 1000);
+		return `${mins}:${secs.toString().padStart(2, '0')}`;
+	}
+
+	// Time remaining display
+	let timeRemainingMs = $derived(
+		tier.producing ? Math.max(0, (1 - tier.progress) * cycleDurationMs) : 0
+	);
+	let timeDisplay = $derived(formatTimeRemaining(timeRemainingMs));
+
+	function formatTimeRemaining(ms: number): string {
+		if (ms <= 0) return '0.0s';
+		if (ms < 1000) return `0.${Math.ceil(ms / 100)}s`;
+		if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+		const mins = Math.floor(ms / 60000);
+		const secs = Math.floor((ms % 60000) / 1000);
+		return `${mins}:${secs.toString().padStart(2, '0')}`;
+	}
+
 	// Tap feedback state
 	let tapRipple = $state(false);
-	let earnPopups = $state<{ id: number; amount: string; x: number; y: number }[]>([]);
+
+	// Payout popup state
+	let payoutPopups = $state<{ id: number; amount: string; x: number; y: number }[]>([]);
 	let popupCounter = $state(0);
+
+	// Track previous producing state to detect completion
+	let prevProducing = $state(tier.producing);
+	let prevProgress = $state(tier.progress);
+
+	// Listen for production completion (progress went from high to low/stopped)
+	$effect(() => {
+		const justCompleted = prevProducing && !tier.producing && prevProgress > 0.5;
+		const cycleCompleted = tier.producing && tier.progress < prevProgress && prevProgress > 0.8;
+
+		if ((justCompleted || cycleCompleted) && revenue > 0) {
+			// Show payout popup at center of card
+			const id = ++popupCounter;
+			payoutPopups = [...payoutPopups, { id, amount: `+${formatCurrency(revenue)}`, x: 50, y: 30 }];
+			setTimeout(() => {
+				payoutPopups = payoutPopups.filter(p => p.id !== id);
+			}, 1200);
+		}
+
+		prevProducing = tier.producing;
+		prevProgress = tier.progress;
+	});
 
 	function handleTap(event: MouseEvent | TouchEvent) {
 		if (!tier.unlocked || tier.count === 0 || !onTap) return;
 
-		const earned = onTap();
-		if (earned <= 0) return;
+		// If already producing, tap does nothing (AdCap style)
+		if (tier.producing) return;
+
+		const started = onTap();
+		if (!started) return;
 
 		// Trigger ripple
 		tapRipple = true;
 		setTimeout(() => { tapRipple = false; }, 400);
-
-		// Create earn popup at tap position
-		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-		let clientX: number, clientY: number;
-		if ('touches' in event && event.touches.length > 0) {
-			clientX = event.touches[0].clientX;
-			clientY = event.touches[0].clientY;
-		} else if ('clientX' in event) {
-			clientX = event.clientX;
-			clientY = event.clientY;
-		} else {
-			clientX = rect.left + rect.width / 2;
-			clientY = rect.top + rect.height / 2;
-		}
-
-		const x = clientX - rect.left;
-		const y = clientY - rect.top;
-		const id = ++popupCounter;
-
-		earnPopups = [...earnPopups, { id, amount: `+${formatCurrency(earned)}`, x, y }];
-
-		// Remove popup after animation
-		setTimeout(() => {
-			earnPopups = earnPopups.filter(p => p.id !== id);
-		}, 1000);
 	}
 
 	function handleBuy(event: MouseEvent) {
@@ -97,11 +126,11 @@
 		<div class="tap-ripple absolute inset-0 pointer-events-none z-10" style="background-color: {color};"></div>
 	{/if}
 
-	<!-- Earn popups -->
-	{#each earnPopups as popup (popup.id)}
+	<!-- Payout popups -->
+	{#each payoutPopups as popup (popup.id)}
 		<div
-			class="earn-popup absolute pointer-events-none z-20 font-bold text-sm font-mono whitespace-nowrap"
-			style="left: {popup.x}px; top: {popup.y}px; color: {color};"
+			class="payout-popup absolute pointer-events-none z-20 font-bold text-sm font-mono whitespace-nowrap"
+			style="left: {popup.x}%; top: {popup.y}%; color: {color};"
 		>
 			{popup.amount}
 		</div>
@@ -148,7 +177,7 @@
 
 			{#if tier.unlocked}
 				<!-- Stats row -->
-				<div class="flex items-center gap-3 mt-2">
+				<div class="flex items-center gap-3 mt-2 flex-wrap">
 					{#if tier.count > 0}
 						<!-- Revenue per cycle -->
 						<div class="flex items-center gap-1">
@@ -158,7 +187,15 @@
 							</span>
 						</div>
 
-						<!-- Production rate (if automated) -->
+						<!-- Cycle duration -->
+						<div class="flex items-center gap-1">
+							<span class="text-[10px] text-text-muted uppercase tracking-wider">Cycle</span>
+							<span class="text-xs font-semibold tabular-nums text-text-secondary">
+								{cycleDurationDisplay}
+							</span>
+						</div>
+
+						<!-- Revenue per second (if automated or fast enough) -->
 						{#if chiefLevel > 0}
 							<div class="flex items-center gap-1">
 								<span class="text-[10px] text-text-muted uppercase tracking-wider">Rate</span>
@@ -166,7 +203,7 @@
 									{revenueDisplay}/s
 								</span>
 							</div>
-						{:else}
+						{:else if !tier.producing}
 							<div class="flex items-center gap-1">
 								<span class="text-[10px] text-text-muted uppercase tracking-wider">Tap</span>
 								<span class="text-xs font-semibold text-text-secondary">to produce</span>
@@ -187,6 +224,41 @@
 						{/if}
 					{/if}
 				</div>
+
+				<!-- Production progress bar (always visible when count > 0) -->
+				{#if tier.count > 0}
+					<div class="mt-2">
+						{#if tier.producing}
+							<div class="flex items-center justify-between mb-1">
+								<span class="text-[10px] text-text-muted uppercase tracking-wider font-medium">
+									Producing...
+								</span>
+								<span
+									class="text-[10px] font-mono tabular-nums font-semibold"
+									style="color: {color};"
+								>
+									{timeDisplay}
+								</span>
+							</div>
+						{/if}
+						<div
+							class="w-full rounded-full overflow-hidden"
+							style="height: 8px; background-color: var(--color-bg-tertiary);"
+							role="progressbar"
+							aria-valuenow={Math.round(tier.progress * 100)}
+							aria-valuemin={0}
+							aria-valuemax={100}
+							aria-label="Production progress"
+						>
+							<SmoothProgressBar
+								producing={tier.producing}
+								progress={tier.progress}
+								{cycleDurationMs}
+								{color}
+							/>
+						</div>
+					</div>
+				{/if}
 
 				<!-- Buy button -->
 				<div class="mt-2.5">
@@ -210,16 +282,6 @@
 			{/if}
 		</div>
 	</div>
-
-	<!-- Production progress bar -->
-	{#if tier.producing && tier.unlocked && tier.count > 0}
-		<div class="h-1.5 bg-bg-tertiary/30">
-			<div
-				class="h-full transition-all duration-200 ease-linear"
-				style="width: {Math.min(tier.progress * 100, 100)}%; background-color: {color};"
-			></div>
-		</div>
-	{/if}
 </div>
 
 <style>
@@ -241,22 +303,25 @@
 		100% { opacity: 0; }
 	}
 
-	.earn-popup {
-		animation: floatUp 1s ease-out forwards;
+	.payout-popup {
+		animation: payoutFloat 1.2s ease-out forwards;
 		transform: translate(-50%, -100%);
 	}
 
-	@keyframes floatUp {
+	@keyframes payoutFloat {
 		0% {
 			opacity: 1;
-			transform: translate(-50%, -100%) translateY(0);
+			transform: translate(-50%, -100%) translateY(0) scale(1);
+		}
+		20% {
+			transform: translate(-50%, -100%) translateY(-5px) scale(1.2);
 		}
 		70% {
 			opacity: 1;
 		}
 		100% {
 			opacity: 0;
-			transform: translate(-50%, -100%) translateY(-40px);
+			transform: translate(-50%, -100%) translateY(-45px) scale(0.9);
 		}
 	}
 

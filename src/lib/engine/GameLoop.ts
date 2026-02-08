@@ -1,6 +1,9 @@
 /**
  * GameLoop.ts — Core game loop using requestAnimationFrame
  * Handles delta time, tick rate, and offline calculation
+ *
+ * Tick rate: ~100ms (10 ticks/sec) for smooth progress bars on fast cycles
+ * (Solar Panels = 0.5s cycle, needs multiple visual updates per cycle)
  */
 
 export type TickCallback = (deltaMs: number) => void;
@@ -11,8 +14,8 @@ export class GameLoop {
 	private animFrameId: number | null = null;
 	private tickCallbacks: TickCallback[] = [];
 
-	/** Target tick rate in ms (default: ~60fps for UI, game logic at 1s intervals) */
-	private readonly GAME_TICK_MS = 1000;
+	/** Game logic tick interval in ms — 100ms for smooth progress on fast tiers */
+	private readonly GAME_TICK_MS = 100;
 	private accumulator = 0;
 
 	constructor() {}
@@ -49,15 +52,15 @@ export class GameLoop {
 	 * Used when returning to the game after being away
 	 */
 	calculateOffline(durationMs: number): void {
-		// Cap at 8 hours (28,800,000 ms) by default
 		const maxOfflineMs = 8 * 60 * 60 * 1000;
 		const cappedDuration = Math.min(durationMs, maxOfflineMs);
 
-		// Simulate in 1-second ticks for accuracy
-		const ticks = Math.floor(cappedDuration / this.GAME_TICK_MS);
+		// Simulate in 1-second ticks for offline (no need for 100ms granularity)
+		const OFFLINE_TICK_MS = 1000;
+		const ticks = Math.floor(cappedDuration / OFFLINE_TICK_MS);
 		for (let i = 0; i < ticks; i++) {
 			for (const cb of this.tickCallbacks) {
-				cb(this.GAME_TICK_MS);
+				cb(OFFLINE_TICK_MS);
 			}
 		}
 	}

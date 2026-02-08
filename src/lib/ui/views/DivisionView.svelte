@@ -21,7 +21,7 @@
 		purchaseTier(divisionId, tierIndex);
 	}
 
-	function handleTapTier(tierIndex: number): number {
+	function handleTapTier(tierIndex: number): boolean {
 		return tapProduce(divisionId, tierIndex);
 	}
 

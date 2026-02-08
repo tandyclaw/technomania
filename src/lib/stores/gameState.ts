@@ -94,7 +94,7 @@ export function createDefaultState(): GameState {
 
 		divisions: {
 			spacex: createDefaultDivision(6),
-			tesla: createDefaultDivision(5),
+			tesla: createDefaultDivision(6),
 			teslaenergy: createDefaultDivision(6)
 		},
 

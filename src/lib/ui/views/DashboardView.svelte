@@ -4,7 +4,8 @@
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
 	import { activeTab } from '$lib/stores/navigation';
-	import ProductionProgressBar from '$lib/ui/ProductionProgressBar.svelte';
+	import SmoothProgressBar from '$lib/ui/SmoothProgressBar.svelte';
+	import { getCycleDurationMs } from '$lib/systems/ProductionSystem';
 
 	// Division ordering for display
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla'] as const;
@@ -206,14 +207,17 @@
 						{@const tierIndex = div.divState.tiers.indexOf(div.activeTier)}
 						{@const tierData = div.meta.tiers[tierIndex]}
 						<div class="px-4 pb-2">
-							<ProductionProgressBar
-								progress={div.activeTier.progress}
-								durationMs={tierData ? calculateProductionTime(tierData.config, div.divState.chiefLevel) : 1000}
-								producing={div.activeTier.producing}
-								color={div.meta.color}
-								height="xs"
-								showTimeRemaining={false}
-							/>
+							<div
+								class="w-full rounded-full overflow-hidden"
+								style="height: 2px; background-color: var(--color-bg-tertiary);"
+							>
+								<SmoothProgressBar
+									producing={div.activeTier.producing}
+									progress={div.activeTier.progress}
+									cycleDurationMs={tierData ? getCycleDurationMs(tierData.config, div.divState.chiefLevel) : 1000}
+									color={div.meta.color}
+								/>
+							</div>
 						</div>
 					{/if}
 				</button>

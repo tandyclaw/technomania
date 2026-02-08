@@ -26,7 +26,7 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 	tesla: {
 		cost: 2000,
 		description: 'Invest in electric vehicles before anyone else believes in them.',
-		flavorText: '"The overarching purpose of Tesla is to accelerate sustainable energy."',
+		flavorText: '"The overarching purpose of Tesla is to help accelerate the transition to sustainable energy."',
 	},
 };
 

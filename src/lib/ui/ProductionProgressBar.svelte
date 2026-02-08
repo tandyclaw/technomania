@@ -58,7 +58,6 @@
 		if (clampedProgress < 0.05 && prevProgress > 0.9) {
 			// Progress reset — skip transition so bar doesn't animate backwards
 			skipTransition = true;
-			// Re-enable transition on next frame
 			requestAnimationFrame(() => {
 				skipTransition = false;
 			});
@@ -78,6 +77,15 @@
 				style="color: {color};"
 			>
 				{timeDisplay}
+			</span>
+		</div>
+	{:else if showTimeRemaining && !producing && clampedProgress === 0}
+		<div class="flex items-center justify-between mb-1">
+			<span class="text-[10px] text-text-muted uppercase tracking-wider font-medium">
+				Ready
+			</span>
+			<span class="text-[10px] text-text-muted font-mono tabular-nums">
+				Tap to start
 			</span>
 		</div>
 	{/if}
@@ -111,7 +119,7 @@
 
 <style>
 	.transition-width {
-		transition: width 200ms linear;
+		transition: width 120ms linear;
 	}
 
 	.shimmer-overlay::after {

@@ -19,7 +19,7 @@
 		state: DivisionState;
 		cash?: number;
 		onBuyTier?: (tierIndex: number) => void;
-		onTapTier?: (tierIndex: number) => number;
+		onTapTier?: (tierIndex: number) => boolean;
 		onHireChief?: () => void;
 		onUnlockTier?: (tierIndex: number) => void;
 	} = $props();
@@ -116,7 +116,7 @@
 						color={division.color}
 						{cash}
 						onBuy={() => onBuyTier?.(i)}
-						onTap={onTapTier ? () => onTapTier(i) : undefined}
+						onTap={onTapTier ? (() => onTapTier(i)) : undefined}
 					/>
 				{:else}
 					<TierUnlockCard
