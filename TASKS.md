@@ -30,7 +30,7 @@
 |----|-------------|--------|-------|----------|------|
 | T009 | Mobile-first responsive layout shell | DONE | MERGED | P0 | — |
 | T010 | Resource bar (cash, RP, power — always visible) | DONE | MERGED | P0 | T007 |
-| T011 | Division tab bar (bottom navigation) | PLANNED | PLAN | P0 | T009 |
+| T011 | Division tab bar (bottom navigation) | IN_PROGRESS | IMPLEMENT | P0 | T009 |
 | T012 | Dashboard overview screen | PLANNED | PLAN | P0 | T009, T010, T011 |
 | T013 | Division detail view template | PLANNED | PLAN | P0 | T009 |
 | T014 | Upgrade/purchase button component | PLANNED | PLAN | P0 | T006 |
