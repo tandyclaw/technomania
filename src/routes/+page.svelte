@@ -5,13 +5,13 @@
 	let launched = $state(false);
 
 	const divisions = [
-		{ id: 'apex', name: 'Apex Rocketry', icon: '🚀', color: '#FF4444', desc: 'Reusable rockets & space exploration' },
-		{ id: 'volt', name: 'Volt Motors', icon: '🔋', color: '#4488FF', desc: 'Electric vehicles & gigafactories' },
-		{ id: 'nexus', name: 'Nexus AI', icon: '🧠', color: '#9944FF', desc: 'GPU clusters & frontier models' },
-		{ id: 'underpass', name: 'Underpass Co.', icon: '🕳️', color: '#FF8844', desc: 'Tunnel boring & urban transit' },
-		{ id: 'synapse', name: 'Synapse Labs', icon: '🧬', color: '#44FF88', desc: 'Neural interfaces & BCIs' },
-		{ id: 'orbital', name: 'Orbital Net', icon: '🛰️', color: '#44DDFF', desc: 'Satellite internet constellation' },
-		{ id: 'helios', name: 'Helios Power', icon: '☀️', color: '#FFCC44', desc: 'Solar, batteries & grid storage' }
+		{ id: 'spacex', name: 'SpaceX', icon: '🚀', color: '#FF4444', desc: 'Reusable rockets & Mars colonization' },
+		{ id: 'tesla', name: 'Tesla', icon: '🔋', color: '#4488FF', desc: 'Electric vehicles & Gigafactories' },
+		{ id: 'xai', name: 'xAI', icon: '🧠', color: '#9944FF', desc: 'Grok, Colossus & frontier AI' },
+		{ id: 'boring', name: 'The Boring Company', icon: '🕳️', color: '#FF8844', desc: 'Tunnel boring & Vegas Loop' },
+		{ id: 'neuralink', name: 'Neuralink', icon: '🧬', color: '#44FF88', desc: 'Brain-computer interfaces' },
+		{ id: 'starlink', name: 'Starlink', icon: '🛰️', color: '#44DDFF', desc: 'Satellite internet constellation' },
+		{ id: 'teslaenergy', name: 'Tesla Energy', icon: '☀️', color: '#FFCC44', desc: 'Solar, Powerwall & Megapack' }
 	];
 
 	function handleStart() {
@@ -21,8 +21,8 @@
 </script>
 
 <svelte:head>
-	<title>Technomania — Idle Tech Tycoon</title>
-	<meta name="description" content="Build rockets. Train AI. Bore tunnels. Wire the planet. Colonize Mars. One tap at a time." />
+	<title>Being Elon — Build the Future</title>
+	<meta name="description" content="Live the journey. Build SpaceX. Scale Tesla. Launch Starlink. Colonize Mars. One tap at a time." />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -39,25 +39,27 @@
 		<div class="relative z-10 max-w-5xl mx-auto px-4 pt-16 pb-12 md:pt-24 md:pb-20 text-center">
 			<!-- Logo / Title -->
 			<div class="mb-2 text-sm font-mono text-text-secondary tracking-[0.3em] uppercase">
-				Frontier Industries Presents
+				An Idle Tycoon Experience
 			</div>
 
 			<h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4">
 				<span class="bg-gradient-to-r from-electric-blue via-neural-purple to-rocket-red bg-clip-text text-transparent">
-					TECHNO
-				</span><span class="bg-gradient-to-r from-solar-gold via-tunnel-orange to-rocket-red bg-clip-text text-transparent">
-					MANIA
+					BEING
+				</span>
+				<br />
+				<span class="bg-gradient-to-r from-solar-gold via-tunnel-orange to-rocket-red bg-clip-text text-transparent">
+					ELON
 				</span>
 			</h1>
 
 			<p class="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-3 font-light">
-				Build rockets. Train AI. Bore tunnels. Wire the planet.
+				Build SpaceX. Scale Tesla. Launch Starlink.
 				<br class="hidden md:block" />
 				Colonize Mars. <span class="text-solar-gold font-medium">One tap at a time.</span>
 			</p>
 
 			<p class="text-sm text-text-muted mb-10 font-mono">
-				An idle tycoon game where real engineering meets addictive mechanics
+				Live the journey from PayPal to Mars colony
 			</p>
 
 			<!-- Start Button -->
@@ -85,7 +87,7 @@
 	<!-- Divisions Grid -->
 	<section class="max-w-5xl mx-auto px-4 py-12 md:py-20 w-full">
 		<h2 class="text-center text-text-secondary text-sm font-mono tracking-[0.2em] uppercase mb-8">
-			Seven Divisions · One Empire
+			Seven Companies · One Vision · Mars
 		</h2>
 
 		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
@@ -123,24 +125,24 @@
 				<div class="text-2xl mb-2">🔧</div>
 				<h3 class="font-bold text-base mb-2 text-text-primary">Real Engineering</h3>
 				<p class="text-sm text-text-secondary leading-relaxed">
-					Every bottleneck mirrors real challenges. Heat shields crack. Battery yields crater.
-					GPUs fail mid-training. Solve them like a real engineer.
+					Every bottleneck is real. Falcon 1 fails three times. Production Hell hits Model 3.
+					Heat shields crack on Starship. Solve them like Elon did.
 				</p>
 			</div>
 			<div class="text-center md:text-left">
 				<div class="text-2xl mb-2">🔗</div>
-				<h3 class="font-bold text-base mb-2 text-text-primary">Connected Empire</h3>
+				<h3 class="font-bold text-base mb-2 text-text-primary">The Master Plan</h3>
 				<p class="text-sm text-text-secondary leading-relaxed">
-					Your rockets launch your satellites. Your batteries power your AI.
-					Your AI drives your cars. Everything connects.
+					SpaceX launches Starlink. Tesla batteries power everything.
+					xAI optimizes the fleet. Everything feeds into Mars.
 				</p>
 			</div>
 			<div class="text-center md:text-left">
 				<div class="text-2xl mb-2">⚡</div>
-				<h3 class="font-bold text-base mb-2 text-text-primary">Power Is Everything</h3>
+				<h3 class="font-bold text-base mb-2 text-text-primary">Sustainable Energy</h3>
 				<p class="text-sm text-text-secondary leading-relaxed">
-					Every facility needs electricity. Go solar, go nuclear, or burn gas —
-					your energy strategy shapes everything.
+					Tesla Energy is the foundation. Solar, Powerwall, Megapack —
+					your energy strategy powers every company you build.
 				</p>
 			</div>
 		</div>
@@ -149,7 +151,7 @@
 	<!-- Footer -->
 	<footer class="mt-auto py-8 text-center">
 		<p class="text-xs text-text-muted">
-			Technomania v0.1.0 · Built by Frontier Industries
+			Being Elon v0.2.0 · Make life multi-planetary
 		</p>
 	</footer>
 </div>

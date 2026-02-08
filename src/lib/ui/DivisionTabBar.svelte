@@ -11,9 +11,9 @@
 
 	const tabs: TabItem[] = [
 		{ id: 'dashboard', name: 'Dashboard', shortName: 'Home', icon: '📊', color: '#e8ecf1' },
-		{ id: 'apex', name: 'Apex Rocketry', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
-		{ id: 'volt', name: 'Volt Motors', shortName: 'EVs', icon: '🔋', color: '#4488FF' },
-		{ id: 'helios', name: 'Helios Power', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
+		{ id: 'spacex', name: 'SpaceX', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
+		{ id: 'tesla', name: 'Tesla', shortName: 'EVs', icon: '🔋', color: '#4488FF' },
+		{ id: 'teslaenergy', name: 'Tesla Energy', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
 	];
 
 	function handleTabClick(tabId: string) {

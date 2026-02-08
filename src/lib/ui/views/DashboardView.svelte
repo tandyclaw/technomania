@@ -7,7 +7,7 @@
 	import ProductionProgressBar from '$lib/ui/ProductionProgressBar.svelte';
 
 	// Division ordering for display
-	const divisionIds = ['helios', 'apex', 'volt'] as const;
+	const divisionIds = ['teslaenergy', 'spacex', 'tesla'] as const;
 
 	let state = $derived($gameState);
 	let prestigeCount = $derived(state.prestigeCount);
@@ -62,12 +62,12 @@
 <div class="dashboard space-y-5">
 	<!-- Welcome header -->
 	<div>
-		<h1 class="text-xl font-bold text-text-primary">Frontier Industries</h1>
+		<h1 class="text-xl font-bold text-text-primary">Being Elon</h1>
 		<p class="text-sm text-text-secondary mt-0.5">
 			{#if prestigeCount > 0}
-				IPO #{prestigeCount} · Building the future, again
+				Timeline #{prestigeCount + 1} · The next big bet
 			{:else}
-				Welcome, Founder. Build your empire.
+				Make life multi-planetary. One tap at a time.
 			{/if}
 		</p>
 	</div>

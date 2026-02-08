@@ -5,11 +5,12 @@ test.describe('Landing Page', () => {
 		await page.goto('/');
 
 		// Check page title
-		await expect(page).toHaveTitle(/Technomania/);
+		await expect(page).toHaveTitle(/Being Elon/);
 
 		// Check hero text
-		await expect(page.getByText('TECHNOMANIA').first()).toBeVisible();
-		await expect(page.getByText('Build rockets. Train AI. Bore tunnels.')).toBeVisible();
+		await expect(page.getByText('BEING').first()).toBeVisible();
+		await expect(page.getByText('ELON').first()).toBeVisible();
+		await expect(page.getByText('Build SpaceX. Scale Tesla. Launch Starlink.')).toBeVisible();
 
 		// Check start button
 		const startButton = page.getByRole('button', { name: /Start Game/i });
@@ -20,13 +21,13 @@ test.describe('Landing Page', () => {
 		await page.goto('/');
 
 		const divisionNames = [
-			'Apex Rocketry',
-			'Volt Motors',
-			'Nexus AI',
-			'Underpass Co.',
-			'Synapse Labs',
-			'Orbital Net',
-			'Helios Power',
+			'SpaceX',
+			'Tesla',
+			'xAI',
+			'The Boring Company',
+			'Neuralink',
+			'Starlink',
+			'Tesla Energy',
 		];
 
 		for (const name of divisionNames) {

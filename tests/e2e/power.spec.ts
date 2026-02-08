@@ -6,9 +6,9 @@ test.describe('Power System (T019)', () => {
 		await freshGame(page);
 	});
 
-	test('buying Helios tier increases power generation', async ({ page }) => {
-		// Navigate to Helios and buy a Rooftop Solar
-		await getTabButton(page, 'Helios Power').click();
+	test('buying Tesla Energy tier increases power generation', async ({ page }) => {
+		// Navigate to Tesla Energy and buy Solar Panels
+		await getTabButton(page, 'Tesla Energy').click();
 		const buildButton = page.getByRole('button', { name: /Build/i }).first();
 		await buildButton.click();
 
@@ -16,7 +16,7 @@ test.describe('Power System (T019)', () => {
 		await page.waitForTimeout(1500);
 
 		// The tier card should show a power stat (⚡ with MW value)
-		// Rooftop Solar generates 0.005 MW per unit = +0.01 MW shown
+		// Solar Panels generates 0.005 MW per unit
 		await expect(page.getByText('MW').first()).toBeVisible();
 	});
 
@@ -27,13 +27,13 @@ test.describe('Power System (T019)', () => {
 	});
 
 	test('power status is green when balanced', async ({ page }) => {
-		// Navigate to Helios and buy some solar
-		await getTabButton(page, 'Helios Power').click();
+		// Navigate to Tesla Energy and buy some solar
+		await getTabButton(page, 'Tesla Energy').click();
 		const buildButton = page.getByRole('button', { name: /Build/i }).first();
 		await buildButton.click();
 		await page.waitForTimeout(1500);
 
-		// With only Helios generation and no consumers, should be green (ok status)
+		// With only Tesla Energy generation and no consumers, should be green (ok status)
 		const powerValue = page.locator('header[aria-label="Player resources"]')
 			.locator('.text-bio-green');
 		await expect(powerValue).toBeVisible();
@@ -41,8 +41,8 @@ test.describe('Power System (T019)', () => {
 
 	test('power deficit shows red warning banner', async ({ page }) => {
 		// Craft a game state with more consumption than generation.
-		// Helios: 1 Rooftop Solar = 0.005 MW generated
-		// Apex: 10 Sounding Rockets = 10 * 0.01 = 0.1 MW consumed
+		// Tesla Energy: 1 Solar Panels = 0.005 MW generated
+		// SpaceX: 10 Falcon 9 = 10 * 0.01 = 0.1 MW consumed
 		// => Deficit: 0.005 MW gen vs 0.1 MW consumed
 		await page.evaluate(() => {
 			return new Promise<void>((resolve) => {
@@ -57,7 +57,7 @@ test.describe('Power System (T019)', () => {
 					powerGenerated: 0.005,
 					powerConsumed: 0.1,
 					divisions: {
-						apex: {
+						spacex: {
 							unlocked: true,
 							tiers: [
 								{ unlocked: true, count: 0, level: 0, producing: false, progress: 0 },
@@ -70,7 +70,7 @@ test.describe('Power System (T019)', () => {
 							chiefLevel: 0,
 							bottlenecks: []
 						},
-						volt: {
+						tesla: {
 							unlocked: false,
 							tiers: [
 								{ unlocked: true, count: 0, level: 0, producing: false, progress: 0 },
@@ -82,7 +82,7 @@ test.describe('Power System (T019)', () => {
 							chiefLevel: 0,
 							bottlenecks: []
 						},
-						helios: {
+						teslaenergy: {
 							unlocked: true,
 							tiers: [
 								{ unlocked: true, count: 1, level: 0, producing: false, progress: 0 },
@@ -116,7 +116,7 @@ test.describe('Power System (T019)', () => {
 					}
 				};
 
-				const request = indexedDB.open('technomania', 1);
+				const request = indexedDB.open('being-elon', 1);
 				request.onupgradeneeded = () => {
 					const db = request.result;
 					if (!db.objectStoreNames.contains('saves')) {

@@ -90,8 +90,8 @@ class GameManager {
 			const freshState = createDefaultState();
 			freshState.stats.sessionsPlayed = 1;
 
-			// Unlock Helios Power by default (foundation division)
-			freshState.divisions.helios.unlocked = true;
+			// Unlock Tesla Energy by default (foundation division)
+			freshState.divisions.teslaenergy.unlocked = true;
 
 			gameState.set(freshState);
 		}
@@ -182,9 +182,9 @@ class GameManager {
 
 		// After first prestige, all MVP divisions start unlocked
 		if (fresh.prestigeCount >= 1) {
-			fresh.divisions.helios.unlocked = true;
-			fresh.divisions.apex.unlocked = true;
-			fresh.divisions.volt.unlocked = true;
+			fresh.divisions.teslaenergy.unlocked = true;
+			fresh.divisions.spacex.unlocked = true;
+			fresh.divisions.tesla.unlocked = true;
 		}
 
 		gameState.set(fresh);
@@ -213,7 +213,7 @@ class GameManager {
 		// Reset to fresh state
 		const fresh = createDefaultState();
 		fresh.stats.sessionsPlayed = 1;
-		fresh.divisions.helios.unlocked = true;
+		fresh.divisions.teslaenergy.unlocked = true;
 		gameState.set(fresh);
 
 		// Restart systems
@@ -316,7 +316,7 @@ class GameManager {
 			// Use sendBeacon for reliable save on close (navigator.sendBeacon doesn't work with IndexedDB)
 			// Fall back to synchronous localStorage snapshot for beforeunload
 			try {
-				localStorage.setItem('technomania_emergency_save', data);
+				localStorage.setItem('being_elon_emergency_save', data);
 			} catch {
 				// Storage full or unavailable — nothing we can do
 			}
@@ -362,11 +362,11 @@ class GameManager {
 		if (!s.divisions || typeof s.divisions !== 'object') return false;
 
 		const divisions = s.divisions as Record<string, unknown>;
-		if (!divisions.helios || typeof divisions.helios !== 'object') return false;
+		if (!divisions.teslaenergy || typeof divisions.teslaenergy !== 'object') return false;
 
-		// Check helios has tiers array
-		const helios = divisions.helios as Record<string, unknown>;
-		if (!Array.isArray(helios.tiers)) return false;
+		// Check teslaenergy has tiers array
+		const teslaenergy = divisions.teslaenergy as Record<string, unknown>;
+		if (!Array.isArray(teslaenergy.tiers)) return false;
 
 		return true;
 	}

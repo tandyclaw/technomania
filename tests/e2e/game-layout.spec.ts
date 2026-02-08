@@ -22,13 +22,13 @@ test.describe('Game Layout', () => {
 
 		// Check all tab buttons exist (scoped to nav)
 		await expect(getTabButton(page, 'Dashboard')).toBeVisible();
-		await expect(getTabButton(page, 'Apex Rocketry')).toBeVisible();
-		await expect(getTabButton(page, 'Volt Motors')).toBeVisible();
-		await expect(getTabButton(page, 'Helios Power')).toBeVisible();
+		await expect(getTabButton(page, 'SpaceX')).toBeVisible();
+		await expect(getTabButton(page, 'Tesla')).toBeVisible();
+		await expect(getTabButton(page, 'Tesla Energy')).toBeVisible();
 	});
 
 	test('renders main content area with dashboard by default', async ({ page }) => {
-		await expect(page.getByText('Frontier Industries')).toBeVisible();
-		await expect(page.getByText('Welcome, Founder. Build your empire.')).toBeVisible();
+		await expect(page.getByText('Being Elon')).toBeVisible();
+		await expect(page.getByText('Make life multi-planetary. One tap at a time.')).toBeVisible();
 	});
 });

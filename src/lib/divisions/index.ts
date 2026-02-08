@@ -1,11 +1,13 @@
 /**
  * divisions/index.ts — Centralized division metadata and tier data
  * Used by the DivisionDetailTemplate and other UI components
+ *
+ * REBRAND: Real company names — SpaceX, Tesla, Tesla Energy
  */
 
-import { APEX_TIERS, APEX_COLOR, APEX_ICON, APEX_NAME } from './ApexRocketry';
-import { VOLT_TIERS, VOLT_COLOR, VOLT_ICON, VOLT_NAME } from './VoltMotors';
-import { HELIOS_TIERS, HELIOS_COLOR, HELIOS_ICON, HELIOS_NAME } from './HeliosPower';
+import { SPACEX_TIERS, SPACEX_COLOR, SPACEX_ICON, SPACEX_NAME } from './SpaceX';
+import { TESLA_TIERS, TESLA_COLOR, TESLA_ICON, TESLA_NAME } from './Tesla';
+import { TESLA_ENERGY_TIERS, TESLA_ENERGY_COLOR, TESLA_ENERGY_ICON, TESLA_ENERGY_NAME } from './TeslaEnergy';
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export interface TierData {
@@ -25,29 +27,29 @@ export interface DivisionMeta {
 }
 
 export const DIVISIONS: Record<string, DivisionMeta> = {
-	apex: {
-		id: 'apex',
-		name: APEX_NAME,
-		icon: APEX_ICON,
-		color: APEX_COLOR,
-		description: 'Reusable rockets & space exploration',
-		tiers: APEX_TIERS,
+	spacex: {
+		id: 'spacex',
+		name: SPACEX_NAME,
+		icon: SPACEX_ICON,
+		color: SPACEX_COLOR,
+		description: 'Reusable rockets & Mars colonization',
+		tiers: SPACEX_TIERS,
 	},
-	volt: {
-		id: 'volt',
-		name: VOLT_NAME,
-		icon: VOLT_ICON,
-		color: VOLT_COLOR,
-		description: 'Electric vehicles & gigafactories',
-		tiers: VOLT_TIERS,
+	tesla: {
+		id: 'tesla',
+		name: TESLA_NAME,
+		icon: TESLA_ICON,
+		color: TESLA_COLOR,
+		description: 'Electric vehicles & Gigafactories',
+		tiers: TESLA_TIERS,
 	},
-	helios: {
-		id: 'helios',
-		name: HELIOS_NAME,
-		icon: HELIOS_ICON,
-		color: HELIOS_COLOR,
-		description: 'Solar energy, batteries & grid storage',
-		tiers: HELIOS_TIERS,
+	teslaenergy: {
+		id: 'teslaenergy',
+		name: TESLA_ENERGY_NAME,
+		icon: TESLA_ENERGY_ICON,
+		color: TESLA_ENERGY_COLOR,
+		description: 'Solar energy, Powerwall & Megapack',
+		tiers: TESLA_ENERGY_TIERS,
 	},
 };
 

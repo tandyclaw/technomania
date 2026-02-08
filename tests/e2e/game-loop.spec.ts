@@ -7,10 +7,10 @@ test.describe('Game Loop Progression', () => {
 	});
 
 	test('automated production generates cash over time', async ({ page }) => {
-		// Navigate to Helios
-		await getTabButton(page, 'Helios Power').click();
+		// Navigate to Tesla Energy
+		await getTabButton(page, 'Tesla Energy').click();
 
-		// Buy a Rooftop Solar
+		// Buy Solar Panels
 		const buildButton = page.getByRole('button', { name: /Build/i }).first();
 		await buildButton.click();
 		await page.waitForTimeout(200);
@@ -37,10 +37,10 @@ test.describe('Game Loop Progression', () => {
 	});
 
 	test('multiple taps accumulate cash', async ({ page }) => {
-		// Navigate to Helios
-		await getTabButton(page, 'Helios Power').click();
+		// Navigate to Tesla Energy
+		await getTabButton(page, 'Tesla Energy').click();
 
-		// Buy a Rooftop Solar
+		// Buy Solar Panels
 		const buildButton = page.getByRole('button', { name: /Build/i }).first();
 		await buildButton.click();
 		await page.waitForTimeout(200);
@@ -61,7 +61,7 @@ test.describe('Game Loop Progression', () => {
 		const finalCashText = await cashElement.getAttribute('aria-label');
 		const finalCash = parseFloat(finalCashText!.replace('Cash: $', '').replace(/[^0-9.]/g, ''));
 
-		// Should have earned 5× baseRevenue ($2 per tap for Rooftop Solar with count=1)
+		// Should have earned 5× baseRevenue ($2 per tap for Solar Panels with count=1)
 		expect(finalCash).toBeGreaterThan(initialCash + 5);
 	});
 });

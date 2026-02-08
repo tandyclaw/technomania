@@ -2,22 +2,22 @@
  * PowerSystem.ts — Power generation/consumption balance
  * The meta-game: every facility needs electricity
  *
- * Helios tiers GENERATE power (positive powerMW)
- * Apex & Volt tiers CONSUME power (negative powerMW)
+ * Tesla Energy tiers GENERATE power (positive powerMW)
+ * SpaceX & Tesla tiers CONSUME power (negative powerMW)
  *
  * When consumption > generation, a power deficit exists.
- * Deficit reduces production speed for all non-Helios divisions.
+ * Deficit reduces production speed for all non-Tesla Energy divisions.
  */
 
 import type { GameState } from '$lib/stores/gameState';
 import { DIVISIONS } from '$lib/divisions';
 
-const DIVISION_IDS = ['helios', 'apex', 'volt'] as const;
+const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla'] as const;
 
 /**
  * Recalculate total power generated and consumed from current game state.
- * Helios tiers have positive powerMW (generation).
- * Apex/Volt tiers have negative powerMW (consumption).
+ * Tesla Energy tiers have positive powerMW (generation).
+ * SpaceX/Tesla tiers have negative powerMW (consumption).
  * Returns { generated, consumed } in MW.
  */
 export function calculatePowerBalance(state: GameState): { generated: number; consumed: number } {

@@ -12,9 +12,9 @@ test.describe('Dashboard', () => {
 		await expect(divisionCards).toHaveCount(3);
 
 		// Division names should be visible
-		await expect(page.locator('.division-card').filter({ hasText: 'Helios Power' })).toBeVisible();
-		await expect(page.locator('.division-card').filter({ hasText: 'Apex Rocketry' })).toBeVisible();
-		await expect(page.locator('.division-card').filter({ hasText: 'Volt Motors' })).toBeVisible();
+		await expect(page.locator('.division-card').filter({ hasText: 'Tesla Energy' })).toBeVisible();
+		await expect(page.locator('.division-card').filter({ hasText: 'SpaceX' })).toBeVisible();
+		await expect(page.locator('.division-card').filter({ hasText: 'Tesla' }).first()).toBeVisible();
 	});
 
 	test('shows quick stats grid', async ({ page }) => {
@@ -27,12 +27,12 @@ test.describe('Dashboard', () => {
 	});
 
 	test('clicking a division card navigates to that division', async ({ page }) => {
-		// Click Helios card
-		const heliosCard = page.locator('.division-card').filter({ hasText: 'Helios Power' });
-		await heliosCard.click();
+		// Click Tesla Energy card
+		const teslaEnergyCard = page.locator('.division-card').filter({ hasText: 'Tesla Energy' });
+		await teslaEnergyCard.click();
 
-		// Should navigate to Helios view
-		await expect(page.getByText('Solar energy, batteries & grid storage')).toBeVisible();
+		// Should navigate to Tesla Energy view
+		await expect(page.getByText('Solar energy, Powerwall & Megapack')).toBeVisible();
 		await expect(page.getByText('Production Tiers')).toBeVisible();
 	});
 });

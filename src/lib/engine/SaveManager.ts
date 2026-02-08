@@ -6,7 +6,7 @@
 
 import type { GameState } from '$lib/stores/gameState';
 
-const DB_NAME = 'technomania';
+const DB_NAME = 'being-elon';
 const DB_VERSION = 1;
 const STORE_NAME = 'saves';
 const AUTO_SAVE_KEY = 'autosave';
@@ -107,16 +107,16 @@ export async function loadGame(key = AUTO_SAVE_KEY): Promise<GameState | null> {
 
 		if (idbResult) {
 			// Clean up emergency save if we have a good IDB save
-			try { localStorage.removeItem('technomania_emergency_save'); } catch { /* ignore */ }
+			try { localStorage.removeItem('being_elon_emergency_save'); } catch { /* ignore */ }
 			return idbResult;
 		}
 
 		// Fall back to emergency localStorage save (from beforeunload)
 		try {
-			const emergency = localStorage.getItem('technomania_emergency_save');
+			const emergency = localStorage.getItem('being_elon_emergency_save');
 			if (emergency) {
 				const parsed = JSON.parse(emergency) as GameState;
-				localStorage.removeItem('technomania_emergency_save');
+				localStorage.removeItem('being_elon_emergency_save');
 				// Persist the recovered save to IndexedDB
 				await saveGame(parsed, key);
 				return parsed;
@@ -130,10 +130,10 @@ export async function loadGame(key = AUTO_SAVE_KEY): Promise<GameState | null> {
 		// IndexedDB completely failed — try emergency save
 		db?.close();
 		try {
-			const emergency = localStorage.getItem('technomania_emergency_save');
+			const emergency = localStorage.getItem('being_elon_emergency_save');
 			if (emergency) {
 				const parsed = JSON.parse(emergency) as GameState;
-				localStorage.removeItem('technomania_emergency_save');
+				localStorage.removeItem('being_elon_emergency_save');
 				return parsed;
 			}
 		} catch { /* ignore */ }

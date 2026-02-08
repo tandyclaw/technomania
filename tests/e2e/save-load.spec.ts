@@ -5,9 +5,9 @@ test.describe('Save/Load', () => {
 	test('game state persists after page refresh', async ({ page }) => {
 		await freshGame(page);
 
-		// Navigate to Helios
-		await getTabButton(page, 'Helios Power').click();
-		await expect(page.getByText('Rooftop Solar')).toBeVisible();
+		// Navigate to Tesla Energy
+		await getTabButton(page, 'Tesla Energy').click();
+		await expect(page.getByText('Solar Panels')).toBeVisible();
 
 		// Buy a tier
 		const buildButton = page.getByRole('button', { name: /Build/i }).first();
@@ -38,8 +38,8 @@ test.describe('Save/Load', () => {
 			await welcomeBackBtn.click();
 		}
 
-		// Navigate back to Helios
-		await getTabButton(page, 'Helios Power').click();
+		// Navigate back to Tesla Energy
+		await getTabButton(page, 'Tesla Energy').click();
 
 		// The tier count should still be 1
 		await expect(page.getByText('×1')).toBeVisible({ timeout: 5_000 });

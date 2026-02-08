@@ -1,30 +1,30 @@
 import { test, expect } from '@playwright/test';
 import { freshGame, getTabButton } from './helpers';
 
-test.describe('Helios Division', () => {
+test.describe('Tesla Energy Division', () => {
 	test.beforeEach(async ({ page }) => {
 		await freshGame(page);
 
-		// Navigate to Helios tab
-		await getTabButton(page, 'Helios Power').click();
+		// Navigate to Tesla Energy tab
+		await getTabButton(page, 'Tesla Energy').click();
 	});
 
 	test('loads and shows division header', async ({ page }) => {
 		// Division header in the content area
-		await expect(page.locator('.division-detail').getByText('Helios Power')).toBeVisible();
-		await expect(page.getByText('Solar energy, batteries & grid storage')).toBeVisible();
+		await expect(page.locator('.division-detail').getByText('Tesla Energy')).toBeVisible();
+		await expect(page.getByText('Solar energy, Powerwall & Megapack')).toBeVisible();
 	});
 
 	test('shows tier cards', async ({ page }) => {
 		// First tier should be unlocked
-		await expect(page.getByText('Rooftop Solar')).toBeVisible();
+		await expect(page.getByText('Solar Panels')).toBeVisible();
 
 		// Should show Build button for first tier
 		await expect(page.getByRole('button', { name: /Build/i }).first()).toBeVisible();
 	});
 
 	test('tapping a tier produces cash', async ({ page }) => {
-		// First, buy a Rooftop Solar
+		// First, buy a Solar Panels
 		const buildButton = page.getByRole('button', { name: /Build/i }).first();
 		await buildButton.click();
 

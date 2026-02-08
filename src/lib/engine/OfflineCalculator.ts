@@ -40,21 +40,21 @@ export interface DivisionOfflineReport {
  * For now, these are reasonable defaults for the MVP
  */
 const TIER_BASE_REVENUE: Record<string, number[]> = {
-	helios: [0.5, 3, 15, 80, 400, 2000],    // Solar → Grid storage
-	apex:   [1, 8, 50, 300, 1500, 8000],     // Hobby rocket → Heavy lifter
-	volt:   [2, 12, 60, 350, 2000],          // Garage EV → Mass market SUV
+	teslaenergy: [0.5, 3, 15, 80, 400, 2000],    // Solar Panels → Megapack
+	spacex:      [1, 8, 50, 300, 1500, 8000],     // Falcon 1 → Mars Lander
+	tesla:       [2, 12, 60, 350, 2000],           // Roadster → Model Y
 };
 
 const TIER_BASE_PRODUCTION: Record<string, number[]> = {
-	helios: [0.1, 0.5, 2, 10, 50, 200],     // MW generation contribution
-	apex:   [0.01, 0.05, 0.2, 1, 5, 20],    // Launches/period contribution
-	volt:   [0.02, 0.1, 0.5, 3, 15],        // Vehicles/period contribution
+	teslaenergy: [0.1, 0.5, 2, 10, 50, 200],     // MW generation contribution
+	spacex:      [0.01, 0.05, 0.2, 1, 5, 20],     // Launches/period contribution
+	tesla:       [0.02, 0.1, 0.5, 3, 15],          // Vehicles/period contribution
 };
 
 const DIVISION_NAMES: Record<string, string> = {
-	helios: 'Helios Power',
-	apex: 'Apex Rocketry',
-	volt: 'Volt Motors',
+	teslaenergy: 'Tesla Energy',
+	spacex: 'SpaceX',
+	tesla: 'Tesla',
 };
 
 /**
@@ -96,8 +96,8 @@ export function calculateOfflineProgress(
 		divisionReports.push(report);
 		totalCashEarned += report.cashEarned;
 
-		// Helios Power generates power (MW) that other divisions need
-		if (divId === 'helios') {
+		// Tesla Energy generates power (MW) that other divisions need
+		if (divId === 'teslaenergy') {
 			totalPowerGenerated += calculatePowerGeneration(divState, offlineSeconds);
 		}
 	}
@@ -174,13 +174,13 @@ function calculateDivisionOffline(
 }
 
 /**
- * Calculate power generation from Helios Power during offline time
+ * Calculate power generation from Tesla Energy during offline time
  */
 function calculatePowerGeneration(
 	divState: DivisionState,
 	offlineSeconds: number
 ): number {
-	const productionRates = TIER_BASE_PRODUCTION['helios'] ?? [];
+	const productionRates = TIER_BASE_PRODUCTION['teslaenergy'] ?? [];
 	let totalMW = 0;
 
 	for (let i = 0; i < divState.tiers.length; i++) {

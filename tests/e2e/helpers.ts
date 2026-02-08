@@ -11,13 +11,26 @@ export function getTabButton(page: Page, name: string): Locator {
 
 /**
  * Navigate to a fresh game, clearing all saved state.
+ * Uses a blank page for IDB cleanup to avoid conflicts with the game's DB connections.
  */
 export async function freshGame(page: Page): Promise<void> {
-	await page.goto('/game');
+	// Navigate to a page that won't open the game DB
+	await page.goto('/');
+
+	// Clean up saved state while NOT on the game page
 	await page.evaluate(() => {
-		indexedDB.deleteDatabase('technomania');
-		localStorage.clear();
+		return new Promise<void>((resolve) => {
+			localStorage.clear();
+			const req = indexedDB.deleteDatabase('being-elon');
+			req.onsuccess = () => resolve();
+			req.onerror = () => resolve();
+			req.onblocked = () => resolve();
+			// Safety timeout
+			setTimeout(resolve, 2000);
+		});
 	});
+
+	// Now navigate to the game — DB will be created fresh
 	await page.goto('/game');
 	await page.locator('.game-shell').waitFor({ state: 'visible', timeout: 10_000 });
 }

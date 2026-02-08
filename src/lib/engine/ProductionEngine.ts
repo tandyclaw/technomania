@@ -9,9 +9,9 @@
  * 4. Manual taps instantly complete one cycle (tap-to-produce)
  *
  * Power system (T019):
- * - Helios tiers generate power (positive powerMW)
- * - Apex/Volt tiers consume power (negative powerMW)
- * - When consumed > generated, non-Helios production speed is reduced
+ * - Tesla Energy tiers generate power (positive powerMW)
+ * - SpaceX/Tesla tiers consume power (negative powerMW)
+ * - When consumed > generated, non-Tesla Energy production speed is reduced
  * - Minimum 10% efficiency to avoid total standstill
  *
  * IMPORTANT: All state mutations create new object references for Svelte 5 reactivity.
@@ -26,7 +26,7 @@ import { calculateRevenue, calculateProductionTime } from '$lib/systems/Producti
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { eventBus } from './EventBus';
 
-const DIVISION_IDS = ['helios', 'apex', 'volt'] as const;
+const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla'] as const;
 type DivisionId = (typeof DIVISION_IDS)[number];
 
 /**
@@ -38,17 +38,17 @@ function cloneState(state: GameState): GameState {
 		...state,
 		stats: { ...state.stats },
 		divisions: {
-			helios: {
-				...state.divisions.helios,
-				tiers: state.divisions.helios.tiers.map(t => ({ ...t })),
+			teslaenergy: {
+				...state.divisions.teslaenergy,
+				tiers: state.divisions.teslaenergy.tiers.map(t => ({ ...t })),
 			},
-			apex: {
-				...state.divisions.apex,
-				tiers: state.divisions.apex.tiers.map(t => ({ ...t })),
+			spacex: {
+				...state.divisions.spacex,
+				tiers: state.divisions.spacex.tiers.map(t => ({ ...t })),
 			},
-			volt: {
-				...state.divisions.volt,
-				tiers: state.divisions.volt.tiers.map(t => ({ ...t })),
+			tesla: {
+				...state.divisions.tesla,
+				tiers: state.divisions.tesla.tiers.map(t => ({ ...t })),
 			},
 		},
 	};
@@ -81,9 +81,9 @@ export function tickProduction(deltaMs: number): void {
 			const divMeta = DIVISIONS[divId];
 			if (!divMeta) continue;
 
-			// Power deficit slows non-Helios divisions
-			// Helios always runs at full speed (it generates the power!)
-			const efficiencyMult = divId === 'helios' ? 1 : powerEfficiency;
+			// Power deficit slows non-Tesla Energy divisions
+			// Tesla Energy always runs at full speed (it generates the power!)
+			const efficiencyMult = divId === 'teslaenergy' ? 1 : powerEfficiency;
 
 			for (let i = 0; i < divState.tiers.length; i++) {
 				const tier = divState.tiers[i];

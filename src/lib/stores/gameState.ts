@@ -59,9 +59,9 @@ export interface GameState {
 
 	// Divisions
 	divisions: {
-		apex: DivisionState;
-		volt: DivisionState;
-		helios: DivisionState;
+		spacex: DivisionState;
+		tesla: DivisionState;
+		teslaenergy: DivisionState;
 	};
 
 	// Research
@@ -93,9 +93,9 @@ export function createDefaultState(): GameState {
 		powerConsumed: 0,
 
 		divisions: {
-			apex: createDefaultDivision(6),
-			volt: createDefaultDivision(5),
-			helios: createDefaultDivision(6)
+			spacex: createDefaultDivision(6),
+			tesla: createDefaultDivision(5),
+			teslaenergy: createDefaultDivision(6)
 		},
 
 		unlockedResearch: [],

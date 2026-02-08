@@ -8,23 +8,23 @@ test.describe('Tab Navigation', () => {
 
 	test('switching tabs shows different division views', async ({ page }) => {
 		// Start on dashboard
-		await expect(page.getByText('Frontier Industries')).toBeVisible();
+		await expect(page.getByText('Being Elon')).toBeVisible();
 
-		// Navigate to Helios
-		await getTabButton(page, 'Helios Power').click();
-		await expect(page.getByText('Solar energy, batteries & grid storage')).toBeVisible();
+		// Navigate to Tesla Energy
+		await getTabButton(page, 'Tesla Energy').click();
+		await expect(page.getByText('Solar energy, Powerwall & Megapack')).toBeVisible();
 
-		// Navigate to Apex
-		await getTabButton(page, 'Apex Rocketry').click();
-		await expect(page.getByText('Reusable rockets & space exploration')).toBeVisible();
+		// Navigate to SpaceX
+		await getTabButton(page, 'SpaceX').click();
+		await expect(page.getByText('Reusable rockets & Mars colonization')).toBeVisible();
 
-		// Navigate to Volt
-		await getTabButton(page, 'Volt Motors').click();
-		await expect(page.getByText('Electric vehicles & gigafactories')).toBeVisible();
+		// Navigate to Tesla
+		await getTabButton(page, 'Tesla').click();
+		await expect(page.getByText('Electric vehicles & Gigafactories')).toBeVisible();
 
 		// Back to Dashboard
 		await getTabButton(page, 'Dashboard').click();
-		await expect(page.getByText('Frontier Industries')).toBeVisible();
+		await expect(page.getByText('Being Elon')).toBeVisible();
 	});
 
 	test('active tab has visual indicator', async ({ page }) => {
@@ -32,10 +32,10 @@ test.describe('Tab Navigation', () => {
 		const dashboardTab = getTabButton(page, 'Dashboard');
 		await expect(dashboardTab).toHaveAttribute('aria-current', 'page');
 
-		// Click Helios - it should become active
-		const heliosTab = getTabButton(page, 'Helios Power');
-		await heliosTab.click();
-		await expect(heliosTab).toHaveAttribute('aria-current', 'page');
+		// Click Tesla Energy - it should become active
+		const teslaEnergyTab = getTabButton(page, 'Tesla Energy');
+		await teslaEnergyTab.click();
+		await expect(teslaEnergyTab).toHaveAttribute('aria-current', 'page');
 
 		// Dashboard should no longer be active
 		await expect(dashboardTab).not.toHaveAttribute('aria-current', 'page');
