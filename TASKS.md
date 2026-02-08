@@ -21,7 +21,7 @@
 | T004 | Event bus for cross-system communication | DONE | MERGED | P0 | — |
 | T005 | Offline progress calculator (up to 8h) | PLANNED | PLAN | P0 | T001, T003 |
 | T006 | Number formatting (K, M, B, T, etc.) | DONE | MERGED | P0 | T002 |
-| T007 | Game state initialization and reset logic | IN_PROGRESS | IMPLEMENT | P0 | T001, T003 |
+| T007 | Game state initialization and reset logic | DONE | MERGED | P0 | T001, T003 |
 | T008 | Auto-save integration with game loop | PLANNED | PLAN | P0 | T001, T003 |
 
 ## 2. UI Shell
@@ -117,9 +117,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 33 | 5 | 28 |
+| P0 | 33 | 6 | 27 |
 | P1 | 11 | 0 | 11 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **50** | **5** | **45** |
+| **Total** | **50** | **6** | **44** |
 
 **Next task to pick up:** T005 (Offline progress calculator) or T007 (Game state init) — both are P0 with met deps.
