@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	let hoveredDivision: string | null = $state(null);
 	let launched = $state(false);
 
@@ -14,7 +16,7 @@
 
 	function handleStart() {
 		launched = true;
-		// Will route to game screen in future
+		setTimeout(() => goto('/game'), 300);
 	}
 </script>
 

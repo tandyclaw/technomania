@@ -28,7 +28,7 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T009 | Mobile-first responsive layout shell | PLANNED | PLAN | P0 | — |
+| T009 | Mobile-first responsive layout shell | IN_PROGRESS | IMPLEMENT | P0 | — |
 | T010 | Resource bar (cash, RP, power — always visible) | PLANNED | PLAN | P0 | T007 |
 | T011 | Division tab bar (bottom navigation) | PLANNED | PLAN | P0 | T009 |
 | T012 | Dashboard overview screen | PLANNED | PLAN | P0 | T009, T010, T011 |

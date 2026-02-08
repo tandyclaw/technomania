@@ -23,7 +23,7 @@ export function formatNumber(value: Decimal | number, decimals = 2): string {
 		return dec.toFixed(dec.lt(10) ? decimals : 0);
 	}
 
-	const exp = Math.floor(dec.log10().toNumber());
+	const exp = Math.floor(dec.log10());
 	const suffixIndex = Math.floor(exp / 3);
 
 	if (suffixIndex < SUFFIXES.length) {
