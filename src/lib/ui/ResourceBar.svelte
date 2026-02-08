@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { gameState } from '$lib/stores/gameState';
-	import { formatCurrency, formatNumber, formatPower } from '$lib/engine/BigNumber';
+	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 
 	let cash = $derived($gameState.cash);
 	let rp = $derived($gameState.researchPoints);
@@ -8,51 +8,70 @@
 	let powerCon = $derived($gameState.powerConsumed);
 
 	let powerRatio = $derived(powerGen > 0 ? Math.min(powerCon / powerGen, 1) : 0);
-	let powerStatus = $derived(
-		powerCon > powerGen ? 'deficit' : powerCon > powerGen * 0.8 ? 'warning' : 'ok'
+	let powerStatus = $derived<'ok' | 'warning' | 'deficit'>(
+		powerGen === 0 && powerCon === 0
+			? 'ok'
+			: powerCon > powerGen
+				? 'deficit'
+				: powerCon > powerGen * 0.8
+					? 'warning'
+					: 'ok'
 	);
+
+	// Formatted values — will update reactively as gameState ticks
+	let cashDisplay = $derived(formatCurrency(cash));
+	let rpDisplay = $derived(formatNumber(rp, 0));
+	let powerDisplay = $derived(`${formatNumber(powerCon, 0)}/${formatNumber(powerGen, 0)}`);
 </script>
 
 <header
 	class="fixed top-0 left-0 right-0 z-50 bg-bg-primary/90 backdrop-blur-md border-b border-white/5"
 	style="padding-top: env(safe-area-inset-top, 0px);"
+	role="banner"
+	aria-label="Player resources"
 >
-	<div class="flex items-center justify-between px-3 h-12 max-w-2xl mx-auto">
+	<div class="flex items-center justify-between px-3 h-[3.25rem] max-w-2xl mx-auto gap-2">
 		<!-- Cash -->
-		<div class="flex items-center gap-1.5 min-w-0">
-			<span class="text-base leading-none">💰</span>
+		<div class="flex items-center gap-1.5 min-w-0 flex-1" aria-label="Cash: {cashDisplay}">
+			<span class="text-base leading-none shrink-0" aria-hidden="true">💰</span>
 			<div class="flex flex-col min-w-0">
-				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider">Cash</span>
-				<span class="text-sm font-bold text-text-primary tabular-nums truncate">
-					{formatCurrency(cash)}
+				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Cash</span>
+				<span class="text-sm font-bold text-text-primary tabular-nums truncate font-mono">
+					{cashDisplay}
 				</span>
 			</div>
 		</div>
+
+		<!-- Divider -->
+		<div class="w-px h-6 bg-white/5 shrink-0"></div>
 
 		<!-- Research Points -->
-		<div class="flex items-center gap-1.5 min-w-0">
-			<span class="text-base leading-none">🔬</span>
+		<div class="flex items-center gap-1.5 min-w-0 flex-1 justify-center" aria-label="Research Points: {rpDisplay}">
+			<span class="text-base leading-none shrink-0" aria-hidden="true">🔬</span>
 			<div class="flex flex-col min-w-0">
-				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider">Research</span>
-				<span class="text-sm font-bold text-text-primary tabular-nums truncate">
-					{formatNumber(rp, 0)}
+				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Research</span>
+				<span class="text-sm font-bold text-neural-purple tabular-nums truncate font-mono">
+					{rpDisplay}
 				</span>
 			</div>
 		</div>
 
+		<!-- Divider -->
+		<div class="w-px h-6 bg-white/5 shrink-0"></div>
+
 		<!-- Power -->
-		<div class="flex items-center gap-1.5 min-w-0">
-			<span class="text-base leading-none">⚡</span>
+		<div class="flex items-center gap-1.5 min-w-0 flex-1 justify-end" aria-label="Power: {powerDisplay} MW">
+			<span class="text-base leading-none shrink-0" aria-hidden="true">⚡</span>
 			<div class="flex flex-col min-w-0">
-				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider">Power</span>
+				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Power</span>
 				<div class="flex items-center gap-1">
 					<span
-						class="text-sm font-bold tabular-nums truncate"
-						class:text-text-primary={powerStatus === 'ok'}
+						class="text-sm font-bold tabular-nums truncate font-mono"
+						class:text-bio-green={powerStatus === 'ok'}
 						class:text-solar-gold={powerStatus === 'warning'}
 						class:text-rocket-red={powerStatus === 'deficit'}
 					>
-						{powerCon.toFixed(0)}/{powerGen.toFixed(0)}
+						{powerDisplay}
 					</span>
 					<span class="text-[10px] text-text-muted">MW</span>
 				</div>
@@ -60,14 +79,19 @@
 		</div>
 	</div>
 
-	<!-- Power usage bar -->
-	<div class="h-[2px] bg-bg-tertiary/50">
+	<!-- Power usage indicator bar -->
+	<div class="h-[2px] bg-bg-tertiary/30">
 		<div
 			class="h-full transition-all duration-500 ease-out"
 			class:bg-bio-green={powerStatus === 'ok'}
 			class:bg-solar-gold={powerStatus === 'warning'}
 			class:bg-rocket-red={powerStatus === 'deficit'}
-			style="width: {Math.min(powerRatio * 100, 100)}%"
+			style="width: {powerGen === 0 && powerCon === 0 ? 0 : Math.min(powerRatio * 100, 100)}%"
+			role="progressbar"
+			aria-valuenow={powerCon}
+			aria-valuemin={0}
+			aria-valuemax={powerGen}
+			aria-label="Power usage"
 		></div>
 	</div>
 </header>
