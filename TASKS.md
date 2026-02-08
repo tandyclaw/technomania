@@ -31,7 +31,7 @@
 | T009 | Mobile-first responsive layout shell | DONE | MERGED | P0 | — |
 | T010 | Resource bar (cash, RP, power — always visible) | DONE | MERGED | P0 | T007 |
 | T011 | Division tab bar (bottom navigation) | DONE | MERGED | P0 | T009 |
-| T012 | Dashboard overview screen | IN_PROGRESS | IMPLEMENT | P0 | T009, T010, T011 |
+| T012 | Dashboard overview screen | DONE | MERGED | P0 | T009, T010, T011 |
 | T013 | Division detail view template | DONE | MERGED | P0 | T009 |
 | T014 | Upgrade/purchase button component | DONE | MERGED | P0 | T006 |
 | T015 | Progress bar component (production progress) | DONE | MERGED | P0 | — |
@@ -117,9 +117,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 33 | 9 | 24 |
+| P0 | 33 | 12 | 21 |
 | P1 | 11 | 0 | 11 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **50** | **9** | **41** |
+| **Total** | **50** | **12** | **38** |
 
-**Next task to pick up:** T005 (Offline progress calculator) or T007 (Game state init) — both are P0 with met deps.
+**Next task to pick up:** T008 (Auto-save integration) or T017 (Helios division screen) — both are P0 with met deps.
