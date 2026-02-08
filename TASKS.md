@@ -28,7 +28,7 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T009 | Mobile-first responsive layout shell | IN_PROGRESS | IMPLEMENT | P0 | — |
+| T009 | Mobile-first responsive layout shell | DONE | MERGED | P0 | — |
 | T010 | Resource bar (cash, RP, power — always visible) | PLANNED | PLAN | P0 | T007 |
 | T011 | Division tab bar (bottom navigation) | PLANNED | PLAN | P0 | T009 |
 | T012 | Dashboard overview screen | PLANNED | PLAN | P0 | T009, T010, T011 |
@@ -117,9 +117,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 33 | 4 | 29 |
+| P0 | 33 | 5 | 28 |
 | P1 | 11 | 0 | 11 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **50** | **4** | **46** |
+| **Total** | **50** | **5** | **45** |
 
 **Next task to pick up:** T005 (Offline progress calculator) or T007 (Game state init) — both are P0 with met deps.
