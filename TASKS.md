@@ -34,7 +34,7 @@
 | T012 | Dashboard overview screen | PLANNED | PLAN | P0 | T009, T010, T011 |
 | T013 | Division detail view template | DONE | MERGED | P0 | T009 |
 | T014 | Upgrade/purchase button component | DONE | MERGED | P0 | T006 |
-| T015 | Progress bar component (production progress) | PLANNED | PLAN | P0 | — |
+| T015 | Progress bar component (production progress) | IN_PROGRESS | IMPLEMENT | P0 | — |
 | T016 | Notification/toast system for events | PLANNED | PLAN | P1 | T004 |
 
 ## 3. First Vertical — Helios Power (Foundation)
