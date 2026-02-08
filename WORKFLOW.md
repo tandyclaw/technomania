@@ -119,3 +119,42 @@ static/           — Static assets (icons, manifest, etc.)
 - **Performance budget** — bundle < 200KB gzipped, 60fps animations
 - **Accessibility** — touch targets ≥ 44px, color-blind friendly
 - **State persistence** — game state survives page refresh and browser close
+
+---
+
+## Testing Strategy (OBSESSIVE)
+
+### Every Task Must Include QA
+No task is DONE without testing. QA is not optional — it's the most important phase.
+
+### E2E Browser Testing
+- Use real browser automation (Playwright or the openclaw browser tool) to test every feature
+- Navigate to the game, interact with UI elements, verify state changes
+- Test on mobile viewport (375px) and desktop (1280px)
+- Check for console errors after every interaction
+
+### Fake Timers for Game Logic
+- Use fake/mock timers in tests to simulate game progression
+- Fast-forward time to verify: production cycles complete, offline progress calculates correctly, auto-save triggers, prestige math works
+- Don't rely on real-time waits — inject time to test deterministically
+
+### QA Checklist (run for every task):
+1. ✅ `npm run build` — zero errors, zero warnings
+2. ✅ `npm run check` — TypeScript passes
+3. ✅ Open in real browser — page loads, no console errors
+4. ✅ Navigate through all routes — nothing broken
+5. ✅ Test the specific feature — does it actually work?
+6. ✅ Test edge cases — empty state, max values, rapid clicks
+7. ✅ Mobile viewport — layout doesn't break
+8. ✅ Save/load — state persists after refresh
+9. ✅ Performance — no jank, no memory leaks in game loop
+
+### Regression Testing
+- After every 5 tasks, do a full regression pass through the entire app
+- Start fresh (clear save), play through the whole game flow
+- Document any bugs found, create fix tasks
+
+### Continuous Improvement
+- Never stop. Every heartbeat should improve something.
+- If there are no new features to build, optimize performance, fix bugs, improve UX
+- The app should get better with every single commit
