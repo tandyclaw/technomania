@@ -1,4 +1,4 @@
-# TASKS.md — Technomania Development Tracker
+# TASKS.md — Being Elon Development Tracker
 
 > Pick the next PLANNED task, move through PLAN → IMPLEMENT → QA/REVIEW → MERGED.
 > See WORKFLOW.md for the full SDLC process.
@@ -23,6 +23,8 @@
 | T006 | Number formatting (K, M, B, T, etc.) | DONE | MERGED | P0 | T002 |
 | T007 | Game state initialization and reset logic | DONE | MERGED | P0 | T001, T003 |
 | T008 | Auto-save integration with game loop | DONE | MERGED | P0 | T001, T003 |
+| T054 | **AdCap-style timed production cycles** (tap→fill→payout) | DONE | MERGED | P0 | T001, T018 |
+| T055 | Smooth 60fps progress bars (CSS animation-driven) | DONE | MERGED | P0 | T054, T015 |
 
 ## 2. UI Shell
 
@@ -37,33 +39,33 @@
 | T015 | Progress bar component (production progress) | DONE | MERGED | P0 | — |
 | T016 | Notification/toast system for events | PLANNED | PLAN | P1 | T004 |
 
-## 3. First Vertical — Helios Power (Foundation)
+## 3. First Vertical — Tesla Energy (Foundation)
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T017 | Helios division screen with 6 tiers | DONE | MERGED | P0 | T013, T014, T015 |
-| T018 | Tap-to-produce mechanic for Helios tiers | DONE | MERGED | P0 | T017, T001 |
+| T017 | Tesla Energy division screen with 6 tiers (Solar Panels→Virtual Power Plant) | DONE | MERGED | P0 | T013, T014, T015 |
+| T018 | Timed production mechanic for Tesla Energy tiers | DONE | MERGED | P0 | T017, T001, T054 |
 | T019 | Power generation tracking (MW produced vs consumed) | DONE | MERGED | P0 | T017 |
 | T020 | Division Chief hiring UI + automation logic | DONE | MERGED | P0 | T017, T018 |
 | T021 | Tier unlock progression (cash gating) | DONE | MERGED | P0 | T017, T006 |
 
-## 4. Second Vertical — Apex Rocketry
+## 4. Second Vertical — SpaceX
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T022 | SpaceX division screen with 6 tiers | DONE | MERGED | P0 | T013, T019 |
-| T023 | Tap-to-produce + automation for Apex | PLANNED | PLAN | P0 | T022, T020 |
+| T022 | SpaceX division screen with 6 tiers (Falcon 1→Mars Lander) | DONE | MERGED | P0 | T013, T019 |
+| T023 | Timed production + chief automation for SpaceX | DONE | MERGED | P0 | T022, T020, T054 |
 | T024 | Launch cadence mechanic (launches/month) | PLANNED | PLAN | P1 | T022 |
-| T025 | Power consumption for rocket facilities | PLANNED | PLAN | P0 | T022, T019 |
+| T025 | Power consumption for rocket facilities | DONE | MERGED | P0 | T022, T019 |
 
-## 5. Third Vertical — Volt Motors
+## 5. Third Vertical — Tesla (EVs)
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T026 | Volt division screen with 5 tiers | PLANNED | PLAN | P0 | T013, T019 |
-| T027 | Tap-to-produce + automation for Volt | PLANNED | PLAN | P0 | T026, T020 |
+| T026 | Tesla division screen with 6 tiers (Roadster→Cybertruck) | DONE | MERGED | P0 | T013, T019 |
+| T027 | Timed production + chief automation for Tesla | DONE | MERGED | P0 | T026, T020, T054 |
 | T028 | Production rate mechanic (vehicles/week) | PLANNED | PLAN | P1 | T026 |
-| T029 | Power consumption for EV factories | PLANNED | PLAN | P0 | T026, T019 |
+| T029 | Power consumption for EV factories | DONE | MERGED | P0 | T026, T019 |
 
 ## 6. Bottleneck System
 
@@ -72,7 +74,7 @@
 | T030 | Bottleneck detection engine (trigger on thresholds) | PLANNED | PLAN | P0 | T017, T022, T026 |
 | T031 | Bottleneck resolution UI (research/money/time paths) | PLANNED | PLAN | P0 | T030 |
 | T032 | 3-5 bottlenecks per division (data definitions) | PLANNED | PLAN | P0 | T030 |
-| T033 | "Production Hell" event for Volt Motors | PLANNED | PLAN | P1 | T027, T030 |
+| T033 | "Production Hell" event for Tesla | PLANNED | PLAN | P1 | T027, T030 |
 
 ## 7. Cross-Vertical Synergies
 
@@ -80,7 +82,7 @@
 |----|-------------|--------|-------|----------|------|
 | T034 | Synergy detection engine | PLANNED | PLAN | P0 | T017, T022, T026 |
 | T035 | Synergy notification UI ("SYNERGY DISCOVERED!") | PLANNED | PLAN | P1 | T034, T016 |
-| T036 | MVP synergies: Helios→Apex power, Volt↔Helios batteries | PLANNED | PLAN | P0 | T034 |
+| T036 | MVP synergies: Tesla Energy→SpaceX power, Tesla↔Tesla Energy batteries | PLANNED | PLAN | P0 | T034 |
 
 ## 8. Research & Prestige
 
@@ -111,19 +113,23 @@
 | T049 | Cloudflare Pages deployment pipeline | PLANNED | PLAN | P1 | — |
 | T050 | Balance pass — playtest all 3 divisions for 2-4h flow | PLANNED | PLAN | P0 | T017-T042 |
 
+## 11. Future Features
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T051 | Bitcoin/crypto treasury investment mechanic | PLANNED | PLAN | P1 | T007 |
+| T052 | BTC price simulation (volatile, cyclical) | PLANNED | PLAN | P1 | T051 |
+| T053 | DOGE meme coin side investment (Elon tweet pump mechanic) | PLANNED | PLAN | P2 | T051 |
+
 ---
 
 ## Summary
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 33 | 19 | 14 |
+| P0 | 35 | 27 | 8 |
 | P1 | 11 | 0 | 11 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **50** | **19** | **31** |
+| **Total** | **52** | **27** | **25** |
 
-**Next task to pick up:** T023 (SpaceX tap-to-produce + automation) or T016 (Notification system).
-
-| T051 | Bitcoin/crypto treasury investment mechanic | PLANNED | PLAN | P1 | T007 |
-| T052 | BTC price simulation (volatile, cyclical) | PLANNED | PLAN | P1 | T051 |
-| T053 | DOGE meme coin side investment (Elon tweet pump mechanic) | PLANNED | PLAN | P2 | T051 |
+**Next task to pick up:** T030 (Bottleneck system) or T016 (Notification/toast system).
