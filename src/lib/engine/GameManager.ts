@@ -9,6 +9,7 @@ import { gameLoop } from './GameLoop';
 import { saveGame, loadGame, deleteSave } from './SaveManager';
 import { eventBus } from './EventBus';
 import { calculateOfflineProgress, applyOfflineReport, type OfflineReport } from './OfflineCalculator';
+import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 1;
@@ -22,6 +23,8 @@ const MAX_OFFLINE_MS = 8 * 60 * 60 * 1000;
 class GameManager {
 	private autoSaveTimer: ReturnType<typeof setInterval> | null = null;
 	private initialized = false;
+	private boundBeforeUnload: (() => void) | null = null;
+	private boundVisibilityChange: (() => void) | null = null;
 
 	/**
 	 * Initialize the game — load saved state or create new, start systems
@@ -36,8 +39,21 @@ class GameManager {
 		let offlineMs = 0;
 		let offlineReport: OfflineReport | null = null;
 
-		// Try loading saved state
-		const savedState = await loadGame();
+		// Try loading saved state (with corrupted save handling)
+		let savedState: GameState | null = null;
+		try {
+			savedState = await loadGame();
+			// Validate the loaded state has required structure
+			if (savedState && !this.isValidState(savedState)) {
+				console.warn('[GameManager] Corrupted save detected — resetting to default');
+				await deleteSave();
+				savedState = null;
+			}
+		} catch (err) {
+			console.warn('[GameManager] Failed to load save — resetting to default:', err);
+			try { await deleteSave(); } catch { /* ignore */ }
+			savedState = null;
+		}
 
 		if (savedState) {
 			// Migrate if needed
@@ -74,6 +90,7 @@ class GameManager {
 
 		// Start systems
 		this.startAutoSave();
+		this.addBrowserListeners();
 		gameLoop.start();
 
 		// Wire up game tick to update play time
@@ -98,6 +115,7 @@ class GameManager {
 		if (typeof window === 'undefined') return;
 		gameLoop.stop();
 		this.stopAutoSave();
+		this.removeBrowserListeners();
 		await this.save();
 		this.initialized = false;
 	}
@@ -106,9 +124,16 @@ class GameManager {
 	 * Manual save
 	 */
 	async save(): Promise<void> {
-		const state = get(gameState);
-		await saveGame(state);
-		eventBus.emit('save:complete', {});
+		try {
+			saveStatus.set('saving');
+			const state = get(gameState);
+			await saveGame(state);
+			eventBus.emit('save:complete', {});
+			flashSaveIndicator('saved');
+		} catch (err) {
+			console.error('[GameManager] Save failed:', err);
+			flashSaveIndicator('error');
+		}
 	}
 
 	/**
@@ -264,6 +289,74 @@ class GameManager {
 			clearInterval(this.autoSaveTimer);
 			this.autoSaveTimer = null;
 		}
+	}
+
+	/**
+	 * Add browser event listeners for save-on-close and save-on-hide
+	 */
+	private addBrowserListeners(): void {
+		if (typeof window === 'undefined') return;
+
+		this.boundBeforeUnload = () => {
+			// Synchronous save attempt on tab close
+			const state = get(gameState);
+			const data = JSON.stringify({ ...state, lastSaved: Date.now() });
+			// Use sendBeacon for reliable save on close (navigator.sendBeacon doesn't work with IndexedDB)
+			// Fall back to synchronous localStorage snapshot for beforeunload
+			try {
+				localStorage.setItem('technomania_emergency_save', data);
+			} catch {
+				// Storage full or unavailable — nothing we can do
+			}
+		};
+
+		this.boundVisibilityChange = () => {
+			if (document.visibilityState === 'hidden') {
+				// Save when tab goes to background
+				this.save();
+			}
+		};
+
+		window.addEventListener('beforeunload', this.boundBeforeUnload);
+		document.addEventListener('visibilitychange', this.boundVisibilityChange);
+	}
+
+	/**
+	 * Remove browser event listeners
+	 */
+	private removeBrowserListeners(): void {
+		if (typeof window === 'undefined') return;
+
+		if (this.boundBeforeUnload) {
+			window.removeEventListener('beforeunload', this.boundBeforeUnload);
+			this.boundBeforeUnload = null;
+		}
+		if (this.boundVisibilityChange) {
+			document.removeEventListener('visibilitychange', this.boundVisibilityChange);
+			this.boundVisibilityChange = null;
+		}
+	}
+
+	/**
+	 * Validate that a loaded state has the minimum required structure
+	 * Returns false if the save appears corrupted
+	 */
+	private isValidState(state: unknown): state is GameState {
+		if (!state || typeof state !== 'object') return false;
+		const s = state as Record<string, unknown>;
+
+		// Check for essential fields
+		if (typeof s.cash !== 'number' || isNaN(s.cash)) return false;
+		if (!s.divisions || typeof s.divisions !== 'object') return false;
+
+		const divisions = s.divisions as Record<string, unknown>;
+		if (!divisions.helios || typeof divisions.helios !== 'object') return false;
+
+		// Check helios has tiers array
+		const helios = divisions.helios as Record<string, unknown>;
+		if (!Array.isArray(helios.tiers)) return false;
+
+		return true;
 	}
 }
 

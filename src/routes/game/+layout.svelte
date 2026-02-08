@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import ResourceBar from '$lib/ui/ResourceBar.svelte';
 	import DivisionTabBar from '$lib/ui/DivisionTabBar.svelte';
+	import SaveIndicator from '$lib/ui/SaveIndicator.svelte';
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency } from '$lib/engine/BigNumber';
@@ -115,6 +116,7 @@
 	<div class="game-shell min-h-screen bg-bg-primary flex flex-col">
 		<!-- Fixed top resource bar -->
 		<ResourceBar />
+		<SaveIndicator />
 
 		<!-- Main scrollable content area -->
 		<main

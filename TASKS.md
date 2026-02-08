@@ -22,7 +22,7 @@
 | T005 | Offline progress calculator (up to 8h) | DONE | MERGED | P0 | T001, T003 |
 | T006 | Number formatting (K, M, B, T, etc.) | DONE | MERGED | P0 | T002 |
 | T007 | Game state initialization and reset logic | DONE | MERGED | P0 | T001, T003 |
-| T008 | Auto-save integration with game loop | PLANNED | PLAN | P0 | T001, T003 |
+| T008 | Auto-save integration with game loop | IN_PROGRESS | IMPLEMENT | P0 | T001, T003 |
 
 ## 2. UI Shell
 

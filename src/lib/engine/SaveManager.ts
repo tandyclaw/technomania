@@ -46,21 +46,56 @@ export async function saveGame(state: GameState, key = AUTO_SAVE_KEY): Promise<v
 export async function loadGame(key = AUTO_SAVE_KEY): Promise<GameState | null> {
 	try {
 		const db = await openDB();
-		return new Promise((resolve, reject) => {
+		const idbResult = await new Promise<GameState | null>((resolve, reject) => {
 			const tx = db.transaction(STORE_NAME, 'readonly');
 			const store = tx.objectStore(STORE_NAME);
 			const request = store.get(key);
 
 			request.onsuccess = () => {
 				if (request.result) {
-					resolve(JSON.parse(request.result));
+					try {
+						resolve(JSON.parse(request.result));
+					} catch {
+						resolve(null);
+					}
 				} else {
 					resolve(null);
 				}
 			};
 			request.onerror = () => reject(request.error);
 		});
+
+		if (idbResult) {
+			// Clean up emergency save if we have a good IDB save
+			try { localStorage.removeItem('technomania_emergency_save'); } catch { /* ignore */ }
+			return idbResult;
+		}
+
+		// Fall back to emergency localStorage save (from beforeunload)
+		try {
+			const emergency = localStorage.getItem('technomania_emergency_save');
+			if (emergency) {
+				const parsed = JSON.parse(emergency) as GameState;
+				localStorage.removeItem('technomania_emergency_save');
+				// Persist the recovered save to IndexedDB
+				await saveGame(parsed, key);
+				return parsed;
+			}
+		} catch {
+			// Emergency save corrupted — ignore
+		}
+
+		return null;
 	} catch {
+		// IndexedDB completely failed — try emergency save
+		try {
+			const emergency = localStorage.getItem('technomania_emergency_save');
+			if (emergency) {
+				const parsed = JSON.parse(emergency) as GameState;
+				localStorage.removeItem('technomania_emergency_save');
+				return parsed;
+			}
+		} catch { /* ignore */ }
 		return null;
 	}
 }
