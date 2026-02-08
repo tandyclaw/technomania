@@ -1,6 +1,7 @@
 /**
  * SaveManager.ts — Auto-save, manual save/load, import/export
  * Uses IndexedDB for persistent local storage
+ * All DB connections are properly closed after each operation
  */
 
 import type { GameState } from '$lib/stores/gameState';
@@ -10,44 +11,79 @@ const DB_VERSION = 1;
 const STORE_NAME = 'saves';
 const AUTO_SAVE_KEY = 'autosave';
 
+/** Open timeout — if DB doesn't open within 3s, reject */
+const OPEN_TIMEOUT_MS = 3000;
+
 function openDB(): Promise<IDBDatabase> {
 	return new Promise((resolve, reject) => {
-		const request = indexedDB.open(DB_NAME, DB_VERSION);
+		const timeout = setTimeout(() => {
+			reject(new Error('IndexedDB open timed out'));
+		}, OPEN_TIMEOUT_MS);
 
-		request.onerror = () => reject(request.error);
-		request.onsuccess = () => resolve(request.result);
+		try {
+			const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-		request.onupgradeneeded = () => {
-			const db = request.result;
-			if (!db.objectStoreNames.contains(STORE_NAME)) {
-				db.createObjectStore(STORE_NAME);
-			}
-		};
+			request.onerror = () => {
+				clearTimeout(timeout);
+				reject(request.error);
+			};
+
+			request.onsuccess = () => {
+				clearTimeout(timeout);
+				resolve(request.result);
+			};
+
+			request.onblocked = () => {
+				clearTimeout(timeout);
+				reject(new Error('IndexedDB open blocked'));
+			};
+
+			request.onupgradeneeded = () => {
+				const db = request.result;
+				if (!db.objectStoreNames.contains(STORE_NAME)) {
+					db.createObjectStore(STORE_NAME);
+				}
+			};
+		} catch (err) {
+			clearTimeout(timeout);
+			reject(err);
+		}
 	});
 }
 
 export async function saveGame(state: GameState, key = AUTO_SAVE_KEY): Promise<void> {
-	const db = await openDB();
-	return new Promise((resolve, reject) => {
-		const tx = db.transaction(STORE_NAME, 'readwrite');
-		const store = tx.objectStore(STORE_NAME);
+	let db: IDBDatabase | null = null;
+	try {
+		db = await openDB();
+		return await new Promise((resolve, reject) => {
+			const tx = db!.transaction(STORE_NAME, 'readwrite');
+			const store = tx.objectStore(STORE_NAME);
 
-		const saveData = {
-			...state,
-			lastSaved: Date.now()
-		};
+			const saveData = {
+				...state,
+				lastSaved: Date.now()
+			};
 
-		const request = store.put(JSON.stringify(saveData), key);
-		request.onsuccess = () => resolve();
-		request.onerror = () => reject(request.error);
-	});
+			const request = store.put(JSON.stringify(saveData), key);
+			request.onsuccess = () => resolve();
+			request.onerror = () => reject(request.error);
+
+			// Close DB when transaction completes
+			tx.oncomplete = () => db?.close();
+			tx.onerror = () => db?.close();
+		});
+	} catch (err) {
+		db?.close();
+		throw err;
+	}
 }
 
 export async function loadGame(key = AUTO_SAVE_KEY): Promise<GameState | null> {
+	let db: IDBDatabase | null = null;
 	try {
-		const db = await openDB();
+		db = await openDB();
 		const idbResult = await new Promise<GameState | null>((resolve, reject) => {
-			const tx = db.transaction(STORE_NAME, 'readonly');
+			const tx = db!.transaction(STORE_NAME, 'readonly');
 			const store = tx.objectStore(STORE_NAME);
 			const request = store.get(key);
 
@@ -63,6 +99,10 @@ export async function loadGame(key = AUTO_SAVE_KEY): Promise<GameState | null> {
 				}
 			};
 			request.onerror = () => reject(request.error);
+
+			// Close DB when transaction completes
+			tx.oncomplete = () => db?.close();
+			tx.onerror = () => db?.close();
 		});
 
 		if (idbResult) {
@@ -88,6 +128,7 @@ export async function loadGame(key = AUTO_SAVE_KEY): Promise<GameState | null> {
 		return null;
 	} catch {
 		// IndexedDB completely failed — try emergency save
+		db?.close();
 		try {
 			const emergency = localStorage.getItem('technomania_emergency_save');
 			if (emergency) {
@@ -113,12 +154,21 @@ export function importSave(encoded: string): GameState | null {
 }
 
 export async function deleteSave(key = AUTO_SAVE_KEY): Promise<void> {
-	const db = await openDB();
-	return new Promise((resolve, reject) => {
-		const tx = db.transaction(STORE_NAME, 'readwrite');
-		const store = tx.objectStore(STORE_NAME);
-		const request = store.delete(key);
-		request.onsuccess = () => resolve();
-		request.onerror = () => reject(request.error);
-	});
+	let db: IDBDatabase | null = null;
+	try {
+		db = await openDB();
+		return await new Promise((resolve, reject) => {
+			const tx = db!.transaction(STORE_NAME, 'readwrite');
+			const store = tx.objectStore(STORE_NAME);
+			const request = store.delete(key);
+			request.onsuccess = () => resolve();
+			request.onerror = () => reject(request.error);
+
+			tx.oncomplete = () => db?.close();
+			tx.onerror = () => db?.close();
+		});
+	} catch (err) {
+		db?.close();
+		throw err;
+	}
 }
