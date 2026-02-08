@@ -1,51 +1,75 @@
 /**
  * PowerSystem.ts — Power generation/consumption balance
  * The meta-game: every facility needs electricity
+ *
+ * Helios tiers GENERATE power (positive powerMW)
+ * Apex & Volt tiers CONSUME power (negative powerMW)
+ *
+ * When consumption > generation, a power deficit exists.
+ * Deficit reduces production speed for all non-Helios divisions.
  */
 
-export interface PowerSource {
-	id: string;
-	name: string;
-	outputMW: number;
-	capacityFactor: number; // 0-1, actual output vs nameplate
-	type: 'solar' | 'wind' | 'gas' | 'nuclear' | 'battery' | 'geothermal';
-}
+import type { GameState } from '$lib/stores/gameState';
+import { DIVISIONS } from '$lib/divisions';
 
-export interface PowerConsumer {
-	divisionId: string;
-	facilityName: string;
-	demandMW: number;
+const DIVISION_IDS = ['helios', 'apex', 'volt'] as const;
+
+/**
+ * Recalculate total power generated and consumed from current game state.
+ * Helios tiers have positive powerMW (generation).
+ * Apex/Volt tiers have negative powerMW (consumption).
+ * Returns { generated, consumed } in MW.
+ */
+export function calculatePowerBalance(state: GameState): { generated: number; consumed: number } {
+	let generated = 0;
+	let consumed = 0;
+
+	for (const divId of DIVISION_IDS) {
+		const divState = state.divisions[divId];
+		if (!divState.unlocked) continue;
+
+		const divMeta = DIVISIONS[divId];
+		if (!divMeta) continue;
+
+		for (let i = 0; i < divState.tiers.length; i++) {
+			const tier = divState.tiers[i];
+			if (!tier.unlocked || tier.count === 0) continue;
+
+			const tierData = divMeta.tiers[i];
+			if (!tierData?.powerMW) continue;
+
+			const totalPower = tierData.powerMW * tier.count;
+			if (totalPower > 0) {
+				generated += totalPower;
+			} else {
+				consumed += Math.abs(totalPower);
+			}
+		}
+	}
+
+	return { generated, consumed };
 }
 
 /**
- * Calculate net power (generation - consumption)
- * Negative = power shortage, facilities run at reduced capacity
+ * Calculate efficiency multiplier based on power availability.
+ * - surplus or balanced → 1.0 (full speed)
+ * - deficit → generated / consumed (e.g. 0.5 = 50% speed)
+ * - no consumers → 1.0
+ *
+ * Minimum efficiency is 0.1 (10%) to prevent complete standstill.
  */
-export function calculateNetPower(sources: PowerSource[], consumers: PowerConsumer[]): number {
-	const totalGeneration = sources.reduce(
-		(sum, s) => sum + s.outputMW * s.capacityFactor,
-		0
-	);
-	const totalConsumption = consumers.reduce((sum, c) => sum + c.demandMW, 0);
-	return totalGeneration - totalConsumption;
+export function calculatePowerEfficiency(generated: number, consumed: number): number {
+	if (consumed === 0) return 1;
+	if (generated >= consumed) return 1;
+	return Math.max(0.1, generated / consumed);
 }
 
 /**
- * Calculate efficiency multiplier based on power availability
- * If power surplus: 1.0 (full speed)
- * If power deficit: proportionally slower
+ * Determine power status for UI display.
  */
-export function calculatePowerEfficiency(
-	sources: PowerSource[],
-	consumers: PowerConsumer[]
-): number {
-	const totalGeneration = sources.reduce(
-		(sum, s) => sum + s.outputMW * s.capacityFactor,
-		0
-	);
-	const totalConsumption = consumers.reduce((sum, c) => sum + c.demandMW, 0);
-
-	if (totalConsumption === 0) return 1;
-	if (totalGeneration >= totalConsumption) return 1;
-	return totalGeneration / totalConsumption;
+export function getPowerStatus(generated: number, consumed: number): 'ok' | 'warning' | 'deficit' {
+	if (generated === 0 && consumed === 0) return 'ok';
+	if (consumed > generated) return 'deficit';
+	if (consumed > generated * 0.8) return 'warning';
+	return 'ok';
 }

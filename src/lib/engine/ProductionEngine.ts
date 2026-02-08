@@ -8,6 +8,12 @@
  * 3. If chiefLevel > 0, production auto-restarts after completion
  * 4. Manual taps instantly complete one cycle (tap-to-produce)
  *
+ * Power system (T019):
+ * - Helios tiers generate power (positive powerMW)
+ * - Apex/Volt tiers consume power (negative powerMW)
+ * - When consumed > generated, non-Helios production speed is reduced
+ * - Minimum 10% efficiency to avoid total standstill
+ *
  * IMPORTANT: All state mutations create new object references for Svelte 5 reactivity.
  * gameState.update() with in-place mutation doesn't trigger $derived recomputation
  * because Svelte 5 tracks object identity for non-$state objects.
@@ -17,6 +23,7 @@ import { get } from 'svelte/store';
 import { gameState, type GameState, type TierState } from '$lib/stores/gameState';
 import { DIVISIONS, type DivisionMeta } from '$lib/divisions';
 import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { eventBus } from './EventBus';
 
 const DIVISION_IDS = ['helios', 'apex', 'volt'] as const;
@@ -56,12 +63,27 @@ export function tickProduction(deltaMs: number): void {
 		const newState = cloneState(state);
 		let changed = false;
 
+		// Calculate power balance from current state for efficiency multiplier
+		const { generated, consumed } = calculatePowerBalance(state);
+		const powerEfficiency = calculatePowerEfficiency(generated, consumed);
+
+		// Update power tracking in state
+		newState.powerGenerated = generated;
+		newState.powerConsumed = consumed;
+		if (generated !== state.powerGenerated || consumed !== state.powerConsumed) {
+			changed = true;
+		}
+
 		for (const divId of DIVISION_IDS) {
 			const divState = newState.divisions[divId];
 			if (!divState.unlocked) continue;
 
 			const divMeta = DIVISIONS[divId];
 			if (!divMeta) continue;
+
+			// Power deficit slows non-Helios divisions
+			// Helios always runs at full speed (it generates the power!)
+			const efficiencyMult = divId === 'helios' ? 1 : powerEfficiency;
 
 			for (let i = 0; i < divState.tiers.length; i++) {
 				const tier = divState.tiers[i];
@@ -80,7 +102,9 @@ export function tickProduction(deltaMs: number): void {
 				if (!tierData) continue;
 
 				const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-				const progressDelta = deltaMs / prodTimeMs;
+				// Apply power efficiency to production speed
+				const effectiveProdTimeMs = prodTimeMs / efficiencyMult;
+				const progressDelta = deltaMs / effectiveProdTimeMs;
 				tier.progress += progressDelta;
 				changed = true;
 
@@ -110,19 +134,6 @@ export function tickProduction(deltaMs: number): void {
 						tier.producing = false;
 					}
 				}
-			}
-
-			// Recalculate power generation for Helios
-			if (divId === 'helios') {
-				let totalPower = 0;
-				for (let i = 0; i < divState.tiers.length; i++) {
-					const tier = divState.tiers[i];
-					const tierData = divMeta.tiers[i];
-					if (tier.unlocked && tier.count > 0 && tierData?.powerMW) {
-						totalPower += tierData.powerMW * tier.count;
-					}
-				}
-				newState.powerGenerated = totalPower;
 			}
 		}
 
@@ -165,6 +176,11 @@ export function tapProduce(divisionId: string, tierIndex: number): number {
 		// If currently producing, reset progress; otherwise start+complete
 		newTier.progress = 0;
 		newTier.producing = false; // Will restart on next tap or auto if chief hired
+
+		// Recalculate power after state change
+		const { generated, consumed } = calculatePowerBalance(newState);
+		newState.powerGenerated = generated;
+		newState.powerConsumed = consumed;
 
 		eventBus.emit('production:complete', {
 			division: divisionId,
@@ -238,6 +254,11 @@ export function purchaseTier(divisionId: string, tierIndex: number): boolean {
 		if (newTier.count === 1 && tierIndex + 1 < newDivState.tiers.length) {
 			newDivState.tiers[tierIndex + 1].unlocked = true;
 		}
+
+		// Recalculate power after purchase (new facility adds generation or consumption)
+		const { generated, consumed } = calculatePowerBalance(newState);
+		newState.powerGenerated = generated;
+		newState.powerConsumed = consumed;
 
 		success = true;
 

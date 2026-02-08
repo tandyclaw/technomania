@@ -174,10 +174,14 @@
 						{/if}
 
 						{#if tierData.powerMW}
+							{@const totalPower = tierData.powerMW * tier.count}
 							<div class="flex items-center gap-1">
 								<span class="text-[10px]" aria-hidden="true">⚡</span>
-								<span class="text-xs font-semibold text-solar-gold tabular-nums">
-									{formatNumber(tierData.powerMW * tier.count, 1)} MW
+								<span class="text-xs font-semibold tabular-nums"
+									class:text-solar-gold={totalPower > 0}
+									class:text-rocket-red={totalPower < 0}
+								>
+									{totalPower > 0 ? '+' : ''}{formatNumber(Math.abs(totalPower), 2)} MW
 								</span>
 							</div>
 						{/if}

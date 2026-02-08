@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { gameState } from '$lib/stores/gameState';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
+	import { getPowerStatus, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 
 	let cash = $derived($gameState.cash);
 	let rp = $derived($gameState.researchPoints);
@@ -8,20 +9,16 @@
 	let powerCon = $derived($gameState.powerConsumed);
 
 	let powerRatio = $derived(powerGen > 0 ? Math.min(powerCon / powerGen, 1) : 0);
-	let powerStatus = $derived<'ok' | 'warning' | 'deficit'>(
-		powerGen === 0 && powerCon === 0
-			? 'ok'
-			: powerCon > powerGen
-				? 'deficit'
-				: powerCon > powerGen * 0.8
-					? 'warning'
-					: 'ok'
-	);
+	let powerStatus = $derived(getPowerStatus(powerGen, powerCon));
+	let powerEff = $derived(calculatePowerEfficiency(powerGen, powerCon));
 
 	// Formatted values — will update reactively as gameState ticks
 	let cashDisplay = $derived(formatCurrency(cash));
 	let rpDisplay = $derived(formatNumber(rp, 0));
-	let powerDisplay = $derived(`${formatNumber(powerCon, 0)}/${formatNumber(powerGen, 0)}`);
+	let powerDisplay = $derived(`${formatNumber(powerCon, 1)}/${formatNumber(powerGen, 1)}`);
+
+	// Pulsing deficit animation
+	let deficitPulse = $derived(powerStatus === 'deficit');
 </script>
 
 <header
@@ -59,10 +56,20 @@
 		<div class="w-px h-6 bg-white/5 shrink-0"></div>
 
 		<!-- Power -->
-		<div class="flex items-center gap-1.5 min-w-0 flex-1 justify-end" aria-label="Power: {powerDisplay} MW">
+		<div
+			class="flex items-center gap-1.5 min-w-0 flex-1 justify-end"
+			class:deficit-pulse={deficitPulse}
+			aria-label="Power: {powerDisplay} MW"
+		>
 			<span class="text-base leading-none shrink-0" aria-hidden="true">⚡</span>
 			<div class="flex flex-col min-w-0">
-				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Power</span>
+				<span class="text-[10px] leading-none uppercase tracking-wider font-medium"
+					class:text-text-muted={powerStatus === 'ok'}
+					class:text-solar-gold={powerStatus === 'warning'}
+					class:text-rocket-red={powerStatus === 'deficit'}
+				>
+					{powerStatus === 'deficit' ? '⚠ Power' : 'Power'}
+				</span>
 				<div class="flex items-center gap-1">
 					<span
 						class="text-sm font-bold tabular-nums truncate font-mono"
@@ -93,4 +100,39 @@
 			aria-label="Power usage"
 		></div>
 	</div>
+
+	<!-- Power deficit banner -->
+	{#if powerStatus === 'deficit'}
+		<div class="deficit-banner flex items-center justify-center gap-2 px-3 py-1 bg-rocket-red/10 border-b border-rocket-red/20" data-testid="power-deficit-banner">
+			<span class="text-[10px] font-semibold text-rocket-red uppercase tracking-wider">
+				⚠ Power Deficit — Production at {Math.round(powerEff * 100)}%
+			</span>
+		</div>
+	{/if}
 </header>
+
+<style>
+	.deficit-pulse {
+		animation: pulse-red 2s ease-in-out infinite;
+	}
+
+	@keyframes pulse-red {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.7; }
+	}
+
+	.deficit-banner {
+		animation: slideDown 0.3s ease-out;
+	}
+
+	@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>
