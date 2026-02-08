@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+:root {
+	/* Division Colors */
+	--color-rocket-red: #FF4444;
+	--color-electric-blue: #4488FF;
+	--color-neural-purple: #9944FF;
+	--color-tunnel-orange: #FF8844;
+	--color-bio-green: #44FF88;
+	--color-sky-cyan: #44DDFF;
+	--color-solar-gold: #FFCC44;
+
+	/* UI Colors */
+	--color-bg-primary: #0f1729;
+	--color-bg-secondary: #1a2332;
+	--color-bg-tertiary: #243044;
+	--color-text-primary: #e8ecf1;
+	--color-text-secondary: #8899aa;
+	--color-text-muted: #556677;
+	--color-accent: #4488FF;
+	--color-success: #44FF88;
+	--color-warning: #FFCC44;
+	--color-danger: #FF4444;
+}
+
+@theme {
+	--color-rocket-red: #FF4444;
+	--color-electric-blue: #4488FF;
+	--color-neural-purple: #9944FF;
+	--color-tunnel-orange: #FF8844;
+	--color-bio-green: #44FF88;
+	--color-sky-cyan: #44DDFF;
+	--color-solar-gold: #FFCC44;
+
+	--color-bg-primary: #0f1729;
+	--color-bg-secondary: #1a2332;
+	--color-bg-tertiary: #243044;
+	--color-text-primary: #e8ecf1;
+	--color-text-secondary: #8899aa;
+	--color-text-muted: #556677;
+}
+
+html {
+	background-color: var(--color-bg-primary);
+	color: var(--color-text-primary);
+	font-family: 'Inter', system-ui, -apple-system, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+/* Touch-friendly defaults */
+button, a, [role="button"] {
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-bg-tertiary);
+	border-radius: 3px;
+}

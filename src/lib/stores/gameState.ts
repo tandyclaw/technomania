@@ -1,0 +1,144 @@
+/**
+ * gameState.ts — Central game state using Svelte 5 runes
+ * Reactive state with save/load integration
+ */
+
+import { writable } from 'svelte/store';
+
+export interface TierState {
+	unlocked: boolean;
+	count: number;
+	level: number;
+	producing: boolean;
+	progress: number; // 0-1
+}
+
+export interface BottleneckState {
+	id: string;
+	active: boolean;
+	severity: number; // 0-1
+	resolved: boolean;
+}
+
+export interface DivisionState {
+	unlocked: boolean;
+	tiers: TierState[];
+	chiefLevel: number; // 0 = no chief, 1-6 = automation tiers
+	bottlenecks: BottleneckState[];
+}
+
+export interface GameStats {
+	totalTaps: number;
+	totalCashEarned: number;
+	totalResearchCompleted: number;
+	playTimeMs: number;
+	sessionsPlayed: number;
+}
+
+export interface GameSettings {
+	musicEnabled: boolean;
+	sfxEnabled: boolean;
+	notificationsEnabled: boolean;
+	offlineProgressEnabled: boolean;
+}
+
+export interface GameState {
+	version: number;
+	lastSaved: number;
+	lastPlayed: number;
+
+	// Currencies
+	cash: number;
+	researchPoints: number;
+	influence: number;
+	foundersVision: number;
+
+	// Power
+	powerGenerated: number; // MW
+	powerConsumed: number; // MW
+
+	// Divisions
+	divisions: {
+		apex: DivisionState;
+		volt: DivisionState;
+		helios: DivisionState;
+	};
+
+	// Research
+	unlockedResearch: string[];
+	activeResearch: { id: string; progress: number } | null;
+
+	// Prestige
+	prestigeCount: number;
+	totalValueEarned: number;
+
+	// Meta
+	achievements: string[];
+	stats: GameStats;
+	settings: GameSettings;
+}
+
+export function createDefaultState(): GameState {
+	return {
+		version: 1,
+		lastSaved: Date.now(),
+		lastPlayed: Date.now(),
+
+		cash: 0,
+		researchPoints: 0,
+		influence: 0,
+		foundersVision: 0,
+
+		powerGenerated: 0,
+		powerConsumed: 0,
+
+		divisions: {
+			apex: createDefaultDivision(6),
+			volt: createDefaultDivision(5),
+			helios: createDefaultDivision(6)
+		},
+
+		unlockedResearch: [],
+		activeResearch: null,
+
+		prestigeCount: 0,
+		totalValueEarned: 0,
+
+		achievements: [],
+		stats: {
+			totalTaps: 0,
+			totalCashEarned: 0,
+			totalResearchCompleted: 0,
+			playTimeMs: 0,
+			sessionsPlayed: 0
+		},
+		settings: {
+			musicEnabled: true,
+			sfxEnabled: true,
+			notificationsEnabled: true,
+			offlineProgressEnabled: true
+		}
+	};
+}
+
+function createDefaultDivision(tierCount: number): DivisionState {
+	const tiers: TierState[] = [];
+	for (let i = 0; i < tierCount; i++) {
+		tiers.push({
+			unlocked: i === 0, // Only first tier unlocked
+			count: 0,
+			level: 0,
+			producing: false,
+			progress: 0
+		});
+	}
+	return {
+		unlocked: false,
+		tiers,
+		chiefLevel: 0,
+		bottlenecks: []
+	};
+}
+
+// Create the writable store
+export const gameState = writable<GameState>(createDefaultState());
