@@ -133,6 +133,39 @@
 	<!-- Synergies -->
 	<SynergyPanel />
 
+	<!-- Mars Colony Progress -->
+	<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4">
+		<div class="flex items-center justify-between mb-2">
+			<div class="flex items-center gap-2">
+				<span class="text-lg">🔴</span>
+				<h2 class="text-sm font-semibold text-text-primary">Mars Colony</h2>
+			</div>
+			<span class="text-xs font-bold tabular-nums font-mono text-solar-gold">
+				{marsProgress.toFixed(1)}%
+			</span>
+		</div>
+		<div class="w-full h-3 rounded-full bg-bg-tertiary overflow-hidden">
+			<div
+				class="h-full rounded-full transition-all duration-500"
+				style="width: {marsProgress}%; background: linear-gradient(90deg, #EF4444, #F97316, #FFD93D);"
+			></div>
+		</div>
+		<p class="text-[10px] text-text-muted mt-1.5">
+			{#if marsCompleted}
+				🎉 Colony established!
+				<button onclick={() => showVictory = true} class="text-electric-blue underline ml-1">View Victory</button>
+			{:else if marsProgress >= 75}
+				Almost there — final preparations underway
+			{:else if marsProgress >= 50}
+				Colony infrastructure taking shape
+			{:else if marsProgress >= 25}
+				Supply lines established
+			{:else}
+				Build your empire to fund the Mars mission
+			{/if}
+		</p>
+	</div>
+
 	<!-- Division Cards -->
 	<div>
 		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">
@@ -273,6 +306,56 @@
 		{/if}
 	</div>
 </div>
+
+<!-- Victory Screen -->
+{#if showVictory}
+	<div
+		class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] px-4"
+		role="dialog"
+		aria-modal="true"
+	>
+		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-solar-gold/30 text-center">
+			<div class="text-5xl mb-3">🏆</div>
+			<h2 class="text-xl font-bold text-solar-gold mb-1">Mars Colony Established!</h2>
+			<p class="text-sm text-text-secondary mb-4">Humanity is now multi-planetary.</p>
+
+			<div class="bg-bg-tertiary/50 rounded-xl p-4 space-y-2 mb-4 text-left">
+				<div class="flex justify-between text-sm">
+					<span class="text-text-muted">Time Played</span>
+					<span class="text-text-primary font-mono tabular-nums">
+						{Math.floor(state.stats.playTimeMs / 3600000)}h {Math.floor((state.stats.playTimeMs % 3600000) / 60000)}m
+					</span>
+				</div>
+				<div class="flex justify-between text-sm">
+					<span class="text-text-muted">Total Cash Earned</span>
+					<span class="text-text-primary font-mono tabular-nums">{formatCurrency(state.stats.totalCashEarned)}</span>
+				</div>
+				<div class="flex justify-between text-sm">
+					<span class="text-text-muted">Total Taps</span>
+					<span class="text-text-primary font-mono tabular-nums">{formatNumber(state.stats.totalTaps, 0)}</span>
+				</div>
+				<div class="flex justify-between text-sm">
+					<span class="text-text-muted">Prestiges</span>
+					<span class="text-text-primary font-mono tabular-nums">{state.stats.totalPrestiges}</span>
+				</div>
+				<div class="flex justify-between text-sm">
+					<span class="text-text-muted">Achievements</span>
+					<span class="text-text-primary font-mono tabular-nums">{state.achievements.length}</span>
+				</div>
+			</div>
+
+			<div class="flex gap-3">
+				<button
+					onclick={() => showVictory = false}
+					class="flex-1 py-3 px-4 rounded-xl bg-bg-tertiary text-text-secondary font-semibold text-sm
+						   transition-all active:scale-95 touch-manipulation"
+				>
+					Continue
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.division-card {
