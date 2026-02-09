@@ -1,9 +1,9 @@
 <script lang="ts">
 	/**
-	 * LaunchCadencePanel.svelte — T024: SpaceX launch cadence display
+	 * LaunchCadencePanel.svelte — Rockets launch cadence display
 	 *
 	 * Shows launches/month counter, total launches, and a mini log of recent launches.
-	 * Displayed on the SpaceX division screen.
+	 * Displayed on the Rockets division screen.
 	 */
 	import { gameState } from '$lib/stores/gameState';
 	import {

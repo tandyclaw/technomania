@@ -1,62 +1,52 @@
 /**
- * BottleneckSystem.ts — Dynamic bottleneck detection engine
+ * BottleneckSystem.ts — Dynamic bottleneck events that slow production
  *
- * Monitors game state and triggers bottleneck events when the player hits
- * real-world-inspired production constraints. Each bottleneck:
- *   - Activates when a threshold is met (e.g., too many units, power deficit)
- *   - Applies a production speed penalty to the affected division
- *   - Can be resolved by spending cash (investment) or meeting other conditions
+ * Bottlenecks trigger when certain thresholds are met (tier counts, etc.)
+ * and can be resolved in three ways:
+ *   1. Spend cash (instant fix)
+ *   2. Spend research points (instant fix, cheaper in cash)
+ *   3. Wait it out (real-time countdown)
  *
- * Bottlenecks fire EventBus events so the toast system (T016) can notify players.
+ * Each bottleneck has:
+ *   - Severity: how much it slows production (0.0 - 1.0)
+ *   - resolveCost: cash to instantly fix
+ *   - researchCost: RP to instantly fix
+ *   - waitDurationMs: how long to wait if you don't pay
  *
- * Check frequency: called from GameManager tick, throttled to once per 2s.
+ * Some bottlenecks are "Production Hell" — major events with extra flavor.
  */
 
 import { get } from 'svelte/store';
 import { gameState, type GameState, type BottleneckState } from '$lib/stores/gameState';
-import { DIVISIONS } from '$lib/divisions';
-import { calculatePowerBalance, calculatePowerEfficiency } from './PowerSystem';
 import { eventBus } from '$lib/engine/EventBus';
+import { calculatePowerBalance } from './PowerSystem';
 
-// ─── Bottleneck Definitions ─────────────────────────────────────────────────
+export type BottleneckCategory = 'engineering' | 'supply_chain' | 'regulatory' | 'scaling' | 'power';
 
 export interface BottleneckDef {
 	id: string;
 	name: string;
 	description: string;
-	division: string;
-	category: 'engineering' | 'power' | 'supply_chain' | 'regulatory' | 'scaling';
-	/** Severity: fraction of production speed lost (0.0–1.0). 0.3 = 30% slowdown. */
-	severity: number;
-	/** Cash cost to resolve the bottleneck */
-	resolveCost: number;
-	/** Research point cost to resolve (alternative resolution path) */
-	researchCost?: number;
-	/** Time to wait for auto-resolution in ms */
-	waitDurationMs?: number;
-	/** Flavor text shown when bottleneck triggers */
-	flavorText: string;
-	/**
-	 * T033: "Production Hell" — special bottleneck with extra flavor.
-	 * Gets unique UI treatment (pulsing red, extra text, harder to resolve).
-	 */
-	isProductionHell?: boolean;
-	/** Extra flavor text lines shown for Production Hell events */
-	productionHellFlavor?: string[];
-	/** Real-world tooltip explaining the engineering concept behind this bottleneck */
+	division: 'teslaenergy' | 'spacex' | 'tesla' | 'all';
+	category: BottleneckCategory;
+	severity: number; // 0.0 = no effect, 1.0 = total stop
+	resolveCost: number; // cash to fix instantly
+	researchCost?: number; // RP to fix instantly (optional)
+	waitDurationMs?: number; // time to wait it out (if allowed)
+	flavorText?: string;
 	tooltip?: string;
-	/** Return true if the bottleneck should activate given current game state */
+	isProductionHell?: boolean;
+	productionHellFlavor?: string[];
 	shouldActivate: (state: GameState) => boolean;
-	/** Return true if the bottleneck auto-resolves (e.g., player fixes the underlying cause) */
 	autoResolveCheck?: (state: GameState) => boolean;
 }
 
 /**
  * All bottleneck definitions.
- * 3-5 per division with real-world flavor (T032).
+ * 3-5 per division with engineering/industry flavor.
  */
 export const BOTTLENECK_DEFS: BottleneckDef[] = [
-	// ── Tesla Energy (5 bottlenecks) ──────────────────────────────────────────
+	// ── Energy Division (5 bottlenecks) ──────────────────────────────────────
 	{
 		id: 'te_grid_overload',
 		name: 'Grid Overload',
@@ -66,9 +56,9 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		severity: 0.25,
 		resolveCost: 5000,
 		researchCost: 3,
-		waitDurationMs: 120_000, // 2 minutes
+		waitDurationMs: 120_000,
 		flavorText: 'Utility companies are pushing back on net metering.',
-		tooltip: 'The "duck curve" — California\'s grid sees huge solar oversupply at midday and steep demand ramps at sunset. Too much distributed solar without storage can cause voltage instability and frequency deviations.',
+		tooltip: 'The "duck curve" — grids see huge solar oversupply at midday and steep demand ramps at sunset. Too much distributed solar without storage can cause voltage instability.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			return tiers[0].count + tiers[1].count > 50;
@@ -77,15 +67,15 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	{
 		id: 'te_supply_shortage',
 		name: 'Battery Cell Shortage',
-		description: 'Global lithium-ion cell supply can\'t keep up with Megapack demand.',
+		description: 'Global lithium-ion cell supply can\'t keep up with demand.',
 		division: 'teslaenergy',
 		category: 'supply_chain',
 		severity: 0.30,
 		resolveCost: 50000,
 		researchCost: 8,
-		waitDurationMs: 300_000, // 5 minutes
-		flavorText: 'Every automaker wants the same battery cells you do.',
-		tooltip: 'The global battery cell supply chain depends on lithium, cobalt, nickel, and manganese. As of 2024, demand for EV and storage batteries is growing ~30% annually, outpacing mining and refining capacity.',
+		waitDurationMs: 300_000,
+		flavorText: 'Every company wants the same battery cells you do.',
+		tooltip: 'The global battery supply chain depends on lithium, cobalt, nickel, and manganese. Demand is growing ~30% annually, outpacing mining capacity.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			return tiers[2].count > 20;
@@ -100,9 +90,9 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		severity: 0.35,
 		resolveCost: 200000,
 		researchCost: 15,
-		waitDurationMs: 600_000, // 10 minutes
+		waitDurationMs: 600_000,
 		flavorText: 'Environmental impact studies take forever.',
-		tooltip: 'In the US, utility-scale energy projects often wait 4-5 years in interconnection queues. Environmental impact assessments, zoning permits, and grid studies create massive delays for clean energy deployment.',
+		tooltip: 'Utility-scale energy projects often wait 4-5 years in interconnection queues. Environmental assessments and zoning permits create massive delays.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			return tiers[4].count > 5;
@@ -117,12 +107,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		severity: 0.20,
 		resolveCost: 15000,
 		researchCost: 5,
-		waitDurationMs: 180_000, // 3 minutes
-		flavorText: 'TSMC is at max capacity. Everyone wants chips.',
-		tooltip: 'Solar inverters convert DC from panels to AC for the grid. They rely on IGBTs and MOSFETs — power semiconductors that faced severe shortages in 2021-2023 due to auto industry competition and fab capacity limits.',
+		waitDurationMs: 180_000,
+		flavorText: 'Chip fabs are at max capacity. Everyone wants semiconductors.',
+		tooltip: 'Solar inverters rely on power semiconductors (IGBTs, MOSFETs) that face supply constraints due to auto industry competition.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
-			// Triggers when Solar Roof count > 15
 			return tiers[3].count > 15;
 		},
 	},
@@ -135,17 +124,16 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		severity: 0.30,
 		resolveCost: 350000,
 		researchCost: 20,
-		waitDurationMs: 480_000, // 8 minutes
+		waitDurationMs: 480_000,
 		flavorText: 'There are 2,000 GW of projects waiting in line ahead of you.',
-		tooltip: 'As of 2024, over 2,600 GW of generation and storage projects sit in US interconnection queues — 5x the entire current grid capacity. Average wait time is 5 years. This is the #1 bottleneck for clean energy growth.',
+		tooltip: 'Over 2,600 GW of generation and storage projects sit in interconnection queues — 5x the entire current grid capacity. Average wait time is 5 years.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
-			// Triggers when Virtual Power Plant count > 3
 			return tiers[5].count > 3;
 		},
 	},
 
-	// ── SpaceX (5 bottlenecks) ────────────────────────────────────────────────
+	// ── Rockets Division (5 bottlenecks) ─────────────────────────────────────
 	{
 		id: 'sx_launch_cadence',
 		name: 'Launch Pad Congestion',
@@ -155,9 +143,9 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		severity: 0.25,
 		resolveCost: 8000,
 		researchCost: 4,
-		waitDurationMs: 150_000, // 2.5 minutes
+		waitDurationMs: 150_000,
 		flavorText: 'FAA wants a word about your launch frequency.',
-		tooltip: 'SpaceX operates pads at Cape Canaveral (LC-40), KSC (LC-39A), and Vandenberg (SLC-4E). Turnaround between launches requires pad refurbishment, propellant loading, and range safety clearance — limiting cadence to ~every 3 days per pad.',
+		tooltip: 'Launch pads require turnaround time for refurbishment, propellant loading, and range safety clearance — limiting cadence.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
 			return tiers[1].count > 30;
@@ -166,15 +154,15 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	{
 		id: 'sx_heat_shield',
 		name: 'Heat Shield Cracking',
-		description: 'Starship\'s thermal protection tiles keep falling off during reentry.',
+		description: 'Thermal protection tiles keep falling off during reentry.',
 		division: 'spacex',
 		category: 'engineering',
 		severity: 0.35,
 		resolveCost: 150000,
 		researchCost: 12,
-		waitDurationMs: 420_000, // 7 minutes
+		waitDurationMs: 420_000,
 		flavorText: 'Each tile is hand-applied. There are 18,000 of them.',
-		tooltip: 'Starship uses ~18,000 hexagonal heat shield tiles made of silica fiber. Unlike the Space Shuttle\'s unique tiles, SpaceX uses uniform shapes for manufacturability. Tiles must survive 1,400°C during reentry at Mach 25.',
+		tooltip: 'Reusable rockets need heat shield tiles made of silica fiber that survive 1,400°C during reentry at Mach 25.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
 			return tiers[4].count > 5;
@@ -189,7 +177,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		severity: 0.40,
 		resolveCost: 500000,
 		researchCost: 25,
-		waitDurationMs: 900_000, // 15 minutes
+		waitDurationMs: 900_000,
 		flavorText: '"We need to study the impact on the lesser prairie chicken."',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
@@ -198,54 +186,52 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'sx_raptor_reliability',
-		name: 'Raptor Engine Reliability',
-		description: 'Raptor engines keep RUD-ing on the test stand. Production yield is abysmal.',
+		name: 'Engine Reliability Crisis',
+		description: 'Engines keep exploding on the test stand. Production yield is abysmal.',
 		division: 'spacex',
 		category: 'engineering',
 		severity: 0.25,
 		resolveCost: 40000,
 		researchCost: 6,
-		waitDurationMs: 240_000, // 4 minutes
+		waitDurationMs: 240_000,
 		flavorText: 'Full-flow staged combustion: theoretically optimal, practically nightmarish.',
-		tooltip: 'Raptor is the first operational full-flow staged combustion engine — both turbopumps run fuel-rich and oxidizer-rich preburners. This is thermodynamically optimal but incredibly hard to build. Each Starship uses 33 Raptors on the booster alone.',
+		tooltip: 'Full-flow staged combustion engines are thermodynamically optimal but incredibly hard to build. Each super-heavy rocket uses 30+ engines.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
-			// Triggers when Heavy Falcon count > 15
 			return tiers[2].count > 15;
 		},
 	},
 	{
 		id: 'sx_range_safety',
 		name: 'Range Safety Shutdown',
-		description: 'Space Force has grounded launches due to range scheduling conflicts.',
+		description: 'Military has grounded launches due to range scheduling conflicts.',
 		division: 'spacex',
 		category: 'regulatory',
 		severity: 0.20,
 		resolveCost: 20000,
 		researchCost: 5,
-		waitDurationMs: 180_000, // 3 minutes
-		flavorText: 'Cape Canaveral can only handle so many launches per week.',
-		tooltip: 'The Eastern Range at Cape Canaveral is managed by the US Space Force. All launches share the same airspace and tracking assets. SpaceX\'s rapid launch cadence has pushed the range to adopt autonomous flight safety systems (AFSS) to reduce scheduling conflicts.',
+		waitDurationMs: 180_000,
+		flavorText: 'The launch range can only handle so many launches per week.',
+		tooltip: 'Launch ranges are managed by military. All launches share the same airspace and tracking assets, creating scheduling conflicts.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
-			// Triggers when Falcon 1 count > 40
 			return tiers[0].count > 40;
 		},
 	},
 
-	// ── Tesla EVs (5 bottlenecks) ─────────────────────────────────────────────
+	// ── EVs Division (6 bottlenecks) ─────────────────────────────────────────
 	{
 		id: 'ts_production_hell',
 		name: '🔥 PRODUCTION HELL 🔥',
-		description: 'Model 3 production line is a nightmare. Robots are fighting each other. Humans are sleeping on the floor. Welcome to the machine.',
+		description: 'Mass market EV production is a nightmare. Robots fighting robots. Workers sleeping on floors.',
 		division: 'tesla',
 		category: 'scaling',
 		severity: 0.50,
 		resolveCost: 250000,
 		researchCost: 20,
-		waitDurationMs: 600_000, // 10 minutes — much longer than normal
-		flavorText: '"I\'m sleeping on the factory floor." — Elon, 2018.',
-		tooltip: 'In 2018, Tesla nearly went bankrupt trying to scale Model 3 production. The team slept on the factory floor for months. They scrapped an over-automated assembly line and rebuilt with more human workers. Production went from 2,000 to 5,000/week in 3 months.',
+		waitDurationMs: 600_000,
+		flavorText: 'Manufacturing at scale is war. The factory floor becomes home.',
+		tooltip: 'Scaling from thousands to hundreds of thousands of vehicles per year is brutally hard. Over-automation backfires. You need to rebuild processes from scratch.',
 		isProductionHell: true,
 		productionHellFlavor: [
 			'The paint shop is a disaster. Every car needs rework.',
@@ -261,16 +247,16 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_panel_gaps',
-		name: 'Panel Gap Crisis',
-		description: 'Quality control issues are piling up. Customers are complaining.',
+		name: 'Quality Control Crisis',
+		description: 'Build quality issues are piling up. Customers are complaining.',
 		division: 'tesla',
 		category: 'engineering',
 		severity: 0.20,
 		resolveCost: 25000,
 		researchCost: 4,
-		waitDurationMs: 150_000, // 2.5 minutes
-		flavorText: 'Reddit is not happy about the panel gaps.',
-		tooltip: 'Panel gaps — the uneven spacing between body panels — became a meme for Tesla quality issues. Traditional automakers use decades of stamping expertise; Tesla prioritized speed over fit-and-finish, leading to inconsistent panel alignment.',
+		waitDurationMs: 150_000,
+		flavorText: 'Social media is roasting your panel gaps.',
+		tooltip: 'Panel gaps and fit-and-finish issues plague fast-scaling manufacturers. Traditional automakers have decades of stamping expertise.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[0].count + tiers[1].count + tiers[2].count > 60;
@@ -278,16 +264,16 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_gigafactory_scaling',
-		name: 'Gigafactory Scaling',
+		name: 'Factory Scaling Crisis',
 		description: 'Building cars at scale requires an entirely new factory paradigm.',
 		division: 'tesla',
 		category: 'scaling',
 		severity: 0.35,
 		resolveCost: 300000,
 		researchCost: 18,
-		waitDurationMs: 540_000, // 9 minutes
+		waitDurationMs: 540_000,
 		flavorText: 'The factory IS the product.',
-		tooltip: 'Tesla\'s Gigafactories are among the largest buildings by footprint on Earth. Giga Nevada alone covers 5.3 million sq ft. "The machine that builds the machine" philosophy means factory design is as important as car design.',
+		tooltip: 'Gigafactories are among the largest buildings on Earth. "The machine that builds the machine" philosophy means factory design is as important as car design.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[4].count > 8;
@@ -295,52 +281,50 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_autopilot_recall',
-		name: 'Autopilot Recall',
-		description: 'NHTSA has issued a safety recall on Full Self-Driving. All hands on deck.',
+		name: 'Self-Driving Recall',
+		description: 'NHTSA has issued a safety recall on your autonomous driving system.',
 		division: 'tesla',
 		category: 'regulatory',
 		severity: 0.25,
 		resolveCost: 100000,
 		researchCost: 8,
-		waitDurationMs: 300_000, // 5 minutes
-		flavorText: '"It\'s a software update, not really a recall." — Elon',
-		tooltip: 'NHTSA has investigated Tesla\'s Autopilot/FSD system multiple times. In 2023, Tesla issued an OTA software recall affecting 2 million vehicles. Unlike traditional recalls requiring dealer visits, Tesla can fix software issues remotely.',
+		waitDurationMs: 300_000,
+		flavorText: 'It\'s technically a software update, not a physical recall.',
+		tooltip: 'Regulators investigate autonomous driving systems frequently. Unlike traditional recalls, software issues can be fixed over-the-air.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
-			// Triggers when Model S + Model X count > 40
 			return tiers[1].count + tiers[2].count > 40;
 		},
 	},
 	{
-		id: 'ts_cybertruck_glass',
+		id: 'ts_truck_glass',
 		name: 'Armor Glass Failure',
-		description: 'The "unbreakable" Cybertruck windows keep shattering during demos.',
+		description: 'The "unbreakable" truck windows keep shattering during demos.',
 		division: 'tesla',
 		category: 'engineering',
 		severity: 0.30,
 		resolveCost: 200000,
 		researchCost: 12,
-		waitDurationMs: 360_000, // 6 minutes
+		waitDurationMs: 360_000,
 		flavorText: 'The infamous window shatter. Live on stage. Millions watching.',
-		tooltip: 'At the Nov 2019 Cybertruck reveal, Franz von Holzhausen threw a steel ball at the "armor glass" windows — which promptly shattered on live TV. Elon\'s stunned "Oh my f***ing God" became one of the most memed product launch moments ever.',
+		tooltip: 'Demonstrating "unbreakable" glass on stage is risky. When it fails publicly, it becomes a meme.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
-			// Triggers when Cybertruck count > 5
 			return tiers[5].count > 5;
 		},
 	},
 	{
-		id: 'ts_cybertruck_production_hell',
-		name: '🔥 CYBERTRUCK HELL 🔥',
-		description: 'Stainless steel is nearly impossible to stamp. Every panel is a custom job. The entire factory is a bottleneck.',
+		id: 'ts_truck_production_hell',
+		name: '🔥 TRUCK HELL 🔥',
+		description: 'Stainless steel is nearly impossible to stamp. Every panel is a custom job.',
 		division: 'tesla',
 		category: 'scaling',
 		severity: 0.55,
 		resolveCost: 500000,
 		researchCost: 30,
-		waitDurationMs: 900_000, // 15 minutes — the hardest bottleneck in the game
+		waitDurationMs: 900_000,
 		flavorText: 'The best product ever. Also the hardest to build.',
-		tooltip: 'Cybertruck uses 3mm ultra-hard 30X stainless steel that can\'t be stamped like normal auto body panels. Each panel must be laser-cut and precisely folded. The exoskeleton design means the body IS the frame — no room for error.',
+		tooltip: 'Stainless steel exoskeleton trucks can\'t be stamped like normal panels. Each piece must be laser-cut and precisely folded.',
 		isProductionHell: true,
 		productionHellFlavor: [
 			'Stainless steel body panels require a completely new stamping process.',
@@ -351,12 +335,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		],
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
-			// Triggers when Cybertruck count >= 10
 			return tiers[5].count >= 10;
 		},
 	},
 
-	// ── Cross-cutting: Power ──────────────────────────────────────────────────
+	// ── Cross-cutting: Power ─────────────────────────────────────────────────
 	{
 		id: 'power_deficit',
 		name: 'Power Deficit',
@@ -365,8 +348,8 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'power',
 		severity: 0.0,
 		resolveCost: 0,
-		flavorText: 'Build more Tesla Energy infrastructure to restore full speed.',
-		tooltip: 'Modern factories and rocket facilities consume enormous amounts of power. Tesla\'s Gigafactory Nevada alone uses ~250 MW — enough for a small city. Vertical integration of energy production is key to scaling.',
+		flavorText: 'Build more Energy infrastructure to restore full speed.',
+		tooltip: 'Modern factories and rocket facilities consume enormous amounts of power. Vertical integration of energy production is key to scaling.',
 		shouldActivate: (state) => {
 			const { generated, consumed } = calculatePowerBalance(state);
 			return consumed > generated && consumed > 0;
@@ -378,335 +361,388 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 ];
 
-// ─── Bottleneck Engine ──────────────────────────────────────────────────────
-
-/** Lookup table for quick access by id */
-const BOTTLENECK_MAP = new Map<string, BottleneckDef>(
-	BOTTLENECK_DEFS.map((b) => [b.id, b])
-);
-
-/** Track which bottlenecks we've already notified about (to avoid repeat toasts) */
-const notifiedBottlenecks = new Set<string>();
-
-/** Last time we ran the check */
-let lastCheckMs = 0;
-const CHECK_INTERVAL_MS = 2000;
+/**
+ * Get the bottleneck definition by ID.
+ */
+export function getBottleneckDef(id: string): BottleneckDef | null {
+	return BOTTLENECK_DEFS.find((b) => b.id === id) ?? null;
+}
 
 /**
- * Tick the bottleneck detection engine. Called from the game loop.
- * Throttled to run every CHECK_INTERVAL_MS.
+ * Check and activate bottlenecks for a given division.
+ * Called from the game loop.
+ */
+export function checkBottlenecks(divisionId: string): void {
+	const state = get(gameState);
+
+	for (const def of BOTTLENECK_DEFS) {
+		// Skip bottlenecks for other divisions
+		if (def.division !== 'all' && def.division !== divisionId) continue;
+
+		// Check if this bottleneck is already active
+		const divState = divisionId === 'all' ? null : state.divisions[divisionId as keyof typeof state.divisions];
+		if (!divState && def.division !== 'all') continue;
+
+		const existingBottleneck = divState?.bottlenecks.find((b) => b.id === def.id);
+
+		// If already resolved, skip
+		if (existingBottleneck?.resolved) continue;
+
+		// If already active, skip
+		if (existingBottleneck?.active) continue;
+
+		// Check activation condition
+		if (def.shouldActivate(state)) {
+			activateBottleneck(divisionId, def.id);
+		}
+	}
+}
+
+/**
+ * Activate a bottleneck.
+ */
+export function activateBottleneck(divisionId: string, bottleneckId: string): void {
+	const def = getBottleneckDef(bottleneckId);
+	if (!def) return;
+
+	gameState.update((s) => {
+		if (def.division === 'all') {
+			// Power deficit is global — apply to all divisions
+			for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+				const divState = s.divisions[divId];
+				const existing = divState.bottlenecks.find((b) => b.id === bottleneckId);
+				if (!existing) {
+					divState.bottlenecks.push({
+						id: bottleneckId,
+						active: true,
+						severity: def.severity,
+						resolved: false,
+					});
+				} else if (!existing.active && !existing.resolved) {
+					existing.active = true;
+				}
+			}
+		} else {
+			const divState = s.divisions[divisionId as keyof typeof s.divisions];
+			if (!divState) return s;
+
+			const existing = divState.bottlenecks.find((b) => b.id === bottleneckId);
+			if (!existing) {
+				divState.bottlenecks.push({
+					id: bottleneckId,
+					active: true,
+					severity: def.severity,
+					resolved: false,
+				});
+			} else if (!existing.active && !existing.resolved) {
+				existing.active = true;
+			}
+		}
+
+		// Emit event for toast
+		eventBus.emit('bottleneck:hit', {
+			division: divisionId,
+			bottleneckId,
+			description: def.description,
+		});
+
+		return { ...s };
+	});
+}
+
+/**
+ * Resolve a bottleneck by spending cash.
+ */
+export function resolveBottleneck(divisionId: string, bottleneckId: string): boolean {
+	const def = getBottleneckDef(bottleneckId);
+	if (!def) return false;
+
+	const state = get(gameState);
+	if (state.cash < def.resolveCost) return false;
+
+	gameState.update((s) => {
+		s.cash -= def.resolveCost;
+
+		const divState = s.divisions[divisionId as keyof typeof s.divisions];
+		if (!divState) return s;
+
+		const bottleneck = divState.bottlenecks.find((b) => b.id === bottleneckId);
+		if (bottleneck) {
+			bottleneck.active = false;
+			bottleneck.resolved = true;
+		}
+
+		eventBus.emit('bottleneck:resolved', {
+			division: divisionId,
+			bottleneckId,
+			type: 'cash',
+		});
+
+		return { ...s };
+	});
+
+	return true;
+}
+
+/**
+ * Resolve a bottleneck by spending research points.
+ */
+export function resolveBottleneckWithRP(divisionId: string, bottleneckId: string): boolean {
+	const def = getBottleneckDef(bottleneckId);
+	if (!def || !def.researchCost) return false;
+
+	const state = get(gameState);
+	if (state.researchPoints < def.researchCost) return false;
+
+	gameState.update((s) => {
+		s.researchPoints -= def.researchCost!;
+
+		const divState = s.divisions[divisionId as keyof typeof s.divisions];
+		if (!divState) return s;
+
+		const bottleneck = divState.bottlenecks.find((b) => b.id === bottleneckId);
+		if (bottleneck) {
+			bottleneck.active = false;
+			bottleneck.resolved = true;
+		}
+
+		eventBus.emit('bottleneck:resolved', {
+			division: divisionId,
+			bottleneckId,
+			type: 'research',
+		});
+
+		return { ...s };
+	});
+
+	return true;
+}
+
+/**
+ * Start waiting out a bottleneck.
+ */
+export function startBottleneckWait(divisionId: string, bottleneckId: string): void {
+	const def = getBottleneckDef(bottleneckId);
+	if (!def || !def.waitDurationMs) return;
+
+	gameState.update((s) => {
+		const divState = s.divisions[divisionId as keyof typeof s.divisions];
+		if (!divState) return s;
+
+		const bottleneck = divState.bottlenecks.find((b) => b.id === bottleneckId);
+		if (bottleneck && bottleneck.active) {
+			bottleneck.waitStartedAt = Date.now();
+		}
+
+		return { ...s };
+	});
+}
+
+/**
+ * Check if a bottleneck's wait timer has completed.
+ * Called from game loop tick.
+ */
+export function tickBottleneckWaits(divisionId: string): void {
+	const state = get(gameState);
+	const divState = state.divisions[divisionId as keyof typeof state.divisions];
+	if (!divState) return;
+
+	for (const bottleneck of divState.bottlenecks) {
+		if (!bottleneck.active || !bottleneck.waitStartedAt) continue;
+
+		const def = getBottleneckDef(bottleneck.id);
+		if (!def || !def.waitDurationMs) continue;
+
+		const elapsed = Date.now() - bottleneck.waitStartedAt;
+		if (elapsed >= def.waitDurationMs) {
+			// Wait complete — resolve it
+			gameState.update((s) => {
+				const div = s.divisions[divisionId as keyof typeof s.divisions];
+				const b = div?.bottlenecks.find((x) => x.id === bottleneck.id);
+				if (b) {
+					b.active = false;
+					b.resolved = true;
+					b.waitStartedAt = undefined;
+				}
+
+				eventBus.emit('bottleneck:resolved', {
+					division: divisionId,
+					bottleneckId: bottleneck.id,
+					type: 'wait',
+				});
+
+				return { ...s };
+			});
+		}
+	}
+}
+
+/**
+ * Check for auto-resolving bottlenecks (like power deficit when power is restored).
+ */
+export function checkAutoResolveBottlenecks(): void {
+	const state = get(gameState);
+
+	for (const def of BOTTLENECK_DEFS) {
+		if (!def.autoResolveCheck) continue;
+
+		// Check if condition for auto-resolve is met
+		if (def.autoResolveCheck(state)) {
+			// Mark as resolved in all divisions
+			gameState.update((s) => {
+				for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+					const divState = s.divisions[divId];
+					const bottleneck = divState.bottlenecks.find((b) => b.id === def.id);
+					if (bottleneck && bottleneck.active) {
+						bottleneck.active = false;
+						bottleneck.resolved = false; // Can reactivate if condition triggers again
+					}
+				}
+				return { ...s };
+			});
+		}
+	}
+}
+
+/**
+ * Get active bottlenecks for a division.
+ */
+export function getActiveBottlenecks(
+	divisionId: string,
+	state: GameState
+): { state: BottleneckState; def: BottleneckDef }[] {
+	const divState = state.divisions[divisionId as keyof typeof state.divisions];
+	if (!divState) return [];
+
+	return divState.bottlenecks
+		.filter((b) => b.active)
+		.map((b) => ({
+			state: b,
+			def: getBottleneckDef(b.id)!,
+		}))
+		.filter((x) => x.def !== null);
+}
+
+/**
+ * Calculate the production multiplier for a division based on active bottlenecks.
+ * Returns a number between 0.1 and 1.0.
+ */
+export function getBottleneckMultiplier(divisionId: string, state: GameState): number {
+	const active = getActiveBottlenecks(divisionId, state);
+	if (active.length === 0) return 1.0;
+
+	// Combine severities — each bottleneck reduces production by its severity
+	let multiplier = 1.0;
+	for (const { def } of active) {
+		multiplier *= 1 - def.severity;
+	}
+
+	// Floor at 10% — never completely stop production
+	return Math.max(0.1, multiplier);
+}
+
+// --- Tick Functions for Game Loop ---
+
+/** How often to check bottleneck conditions (ms) */
+const CHECK_INTERVAL_MS = 2000;
+let lastCheckMs = 0;
+
+/** Track which bottlenecks we've already notified about (to avoid spam) */
+const notifiedBottlenecks = new Set<string>();
+
+/**
+ * Handle global bottlenecks (like power deficit) that affect all divisions.
+ */
+function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
+	const shouldBeActive = def.shouldActivate(state);
+	const shouldAutoResolve = def.autoResolveCheck?.(state) ?? false;
+
+	if (shouldAutoResolve) {
+		// Auto-resolve in all divisions
+		for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+			gameState.update((s) => {
+				const bottleneck = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
+				if (bottleneck?.active) {
+					bottleneck.active = false;
+				}
+				return s;
+			});
+		}
+		return;
+	}
+
+	if (shouldBeActive) {
+		// Activate in all divisions
+		for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+			gameState.update((s) => {
+				const existing = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
+				if (!existing) {
+					s.divisions[divId].bottlenecks.push({
+						id: def.id,
+						active: true,
+						severity: def.severity,
+						resolved: false,
+					});
+				} else if (!existing.active && !existing.resolved) {
+					existing.active = true;
+				}
+				return s;
+			});
+		}
+	}
+}
+
+/**
+ * Main tick function — check and update bottleneck states.
+ * Called from game loop.
  */
 export function tickBottlenecks(deltaMs: number): void {
 	lastCheckMs += deltaMs;
 	if (lastCheckMs < CHECK_INTERVAL_MS) return;
 	lastCheckMs = 0;
 
-	gameState.update((state) => {
-		let changed = false;
-		const newState = { ...state };
+	const state = get(gameState);
 
-		// Deep clone divisions to mutate bottleneck arrays
-		newState.divisions = {
-			teslaenergy: { ...state.divisions.teslaenergy, bottlenecks: [...state.divisions.teslaenergy.bottlenecks] },
-			spacex: { ...state.divisions.spacex, bottlenecks: [...state.divisions.spacex.bottlenecks] },
-			tesla: { ...state.divisions.tesla, bottlenecks: [...state.divisions.tesla.bottlenecks] },
-		};
-
-		for (const def of BOTTLENECK_DEFS) {
-			// Skip 'all' division bottlenecks in the division loop — handle separately
-			if (def.division === 'all') {
-				handleGlobalBottleneck(def, state);
-				continue;
-			}
-
-			const divId = def.division as 'teslaenergy' | 'spacex' | 'tesla';
-			const divState = newState.divisions[divId];
-			if (!divState.unlocked) continue;
-
-			const existingIdx = divState.bottlenecks.findIndex((b) => b.id === def.id);
-			const existing = existingIdx >= 0 ? divState.bottlenecks[existingIdx] : null;
-
-			const shouldBeActive = def.shouldActivate(state);
-
-			if (shouldBeActive && (!existing || !existing.active)) {
-				// Check if already resolved — once resolved, stays resolved unless state changes
-				if (existing?.resolved) {
-					// Already resolved, don't re-trigger
-					continue;
-				}
-
-				// Activate bottleneck
-				const bottleneckState: BottleneckState = {
-					id: def.id,
-					active: true,
-					severity: def.severity,
-					resolved: false,
-				};
-
-				if (existingIdx >= 0) {
-					divState.bottlenecks[existingIdx] = bottleneckState;
-				} else {
-					divState.bottlenecks.push(bottleneckState);
-				}
-
-				changed = true;
-
-				// Emit event (only if not already notified)
-				if (!notifiedBottlenecks.has(def.id)) {
-					notifiedBottlenecks.add(def.id);
-					eventBus.emit('bottleneck:hit', {
-						division: def.division,
-						type: def.name,
-						description: def.description,
-					});
-				}
-			} else if (!shouldBeActive && existing?.active && !existing.resolved) {
-				// Auto-resolve: condition no longer met (shouldn't normally happen unless player sells)
-				// Keep it active — they still need to pay to resolve
-			}
-
-			// Check auto-resolve conditions
-			if (existing?.active && !existing.resolved && def.autoResolveCheck?.(state)) {
-				const resolved: BottleneckState = { ...existing, active: false, resolved: true, waitStartedAt: 0 };
-				divState.bottlenecks[existingIdx] = resolved;
-				changed = true;
-				notifiedBottlenecks.delete(def.id);
-				eventBus.emit('bottleneck:resolved', {
-					division: def.division,
-					type: def.name,
-				});
-			}
-
-			// Check wait-it-out timer resolution
-			if (existing?.active && !existing.resolved && existing.waitStartedAt && existing.waitStartedAt > 0 && def.waitDurationMs) {
-				const elapsed = Date.now() - existing.waitStartedAt;
-				if (elapsed >= def.waitDurationMs) {
-					const resolved: BottleneckState = { ...existing, active: false, resolved: true, severity: 0, waitStartedAt: 0 };
-					divState.bottlenecks[existingIdx] = resolved;
-					changed = true;
-					notifiedBottlenecks.delete(def.id);
-					eventBus.emit('bottleneck:resolved', {
-						division: def.division,
-						type: def.name,
-					});
-				}
-			}
+	for (const def of BOTTLENECK_DEFS) {
+		// Handle global bottlenecks separately
+		if (def.division === 'all') {
+			handleGlobalBottleneck(def, state);
+			continue;
 		}
 
-		return changed ? newState : state;
-	});
-}
-
-/**
- * Handle global (cross-division) bottlenecks like power deficit.
- * These don't attach to a specific division's bottleneck array.
- */
-function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
-	const isActive = def.shouldActivate(state);
-	const wasNotified = notifiedBottlenecks.has(def.id);
-
-	if (isActive && !wasNotified) {
-		notifiedBottlenecks.add(def.id);
-		eventBus.emit('bottleneck:hit', {
-			division: 'all',
-			type: def.name,
-			description: def.description,
-		});
-	} else if (!isActive && wasNotified) {
-		notifiedBottlenecks.delete(def.id);
-		eventBus.emit('bottleneck:resolved', {
-			division: 'all',
-			type: def.name,
-		});
-	}
-}
-
-/**
- * Resolve a bottleneck by spending cash.
- * Returns true if resolution succeeded.
- */
-export function resolveBottleneck(divisionId: string, bottleneckId: string): boolean {
-	const def = BOTTLENECK_MAP.get(bottleneckId);
-	if (!def || def.resolveCost <= 0) return false;
-
-	let success = false;
-
-	gameState.update((state) => {
-		if (state.cash < def.resolveCost) return state;
-
-		const divId = divisionId as 'teslaenergy' | 'spacex' | 'tesla';
+		const divId = def.division as 'teslaenergy' | 'spacex' | 'tesla';
 		const divState = state.divisions[divId];
-		if (!divState) return state;
+		if (!divState.unlocked) continue;
 
-		const idx = divState.bottlenecks.findIndex((b) => b.id === bottleneckId && b.active);
-		if (idx < 0) return state;
+		const existing = divState.bottlenecks.find((b) => b.id === def.id);
 
-		// Clone state
-		const newState = {
-			...state,
-			cash: state.cash - def.resolveCost,
-			divisions: {
-				...state.divisions,
-				[divId]: {
-					...divState,
-					bottlenecks: divState.bottlenecks.map((b, i) =>
-						i === idx ? { ...b, active: false, resolved: true, severity: 0, waitStartedAt: 0 } : b
-					),
-				},
-			},
-		};
+		// Skip if already resolved
+		if (existing?.resolved) continue;
 
-		success = true;
-		notifiedBottlenecks.delete(bottleneckId);
+		const shouldBeActive = def.shouldActivate(state);
 
-		eventBus.emit('bottleneck:resolved', {
-			division: divisionId,
-			type: def.name,
-		});
+		if (shouldBeActive && !existing?.active) {
+			// Activate this bottleneck
+			activateBottleneck(divId, def.id);
 
-		return newState;
-	});
-
-	return success;
-}
-
-/**
- * Resolve a bottleneck by spending research points.
- * Returns true if resolution succeeded.
- */
-export function resolveBottleneckWithRP(divisionId: string, bottleneckId: string): boolean {
-	const def = BOTTLENECK_MAP.get(bottleneckId);
-	if (!def || !def.researchCost || def.researchCost <= 0) return false;
-
-	let success = false;
-
-	gameState.update((state) => {
-		if (state.researchPoints < def.researchCost!) return state;
-
-		const divId = divisionId as 'teslaenergy' | 'spacex' | 'tesla';
-		const divState = state.divisions[divId];
-		if (!divState) return state;
-
-		const idx = divState.bottlenecks.findIndex((b) => b.id === bottleneckId && b.active);
-		if (idx < 0) return state;
-
-		const newState = {
-			...state,
-			researchPoints: state.researchPoints - def.researchCost!,
-			divisions: {
-				...state.divisions,
-				[divId]: {
-					...divState,
-					bottlenecks: divState.bottlenecks.map((b, i) =>
-						i === idx ? { ...b, active: false, resolved: true, severity: 0, waitStartedAt: 0 } : b
-					),
-				},
-			},
-		};
-
-		success = true;
-		notifiedBottlenecks.delete(bottleneckId);
-
-		eventBus.emit('bottleneck:resolved', {
-			division: divisionId,
-			type: def.name,
-		});
-
-		return newState;
-	});
-
-	return success;
-}
-
-/**
- * Start the "wait it out" timer on a bottleneck.
- * The bottleneck will auto-resolve after its waitDurationMs elapses.
- */
-export function startBottleneckWait(divisionId: string, bottleneckId: string): boolean {
-	const def = BOTTLENECK_MAP.get(bottleneckId);
-	if (!def || !def.waitDurationMs || def.waitDurationMs <= 0) return false;
-
-	let success = false;
-
-	gameState.update((state) => {
-		const divId = divisionId as 'teslaenergy' | 'spacex' | 'tesla';
-		const divState = state.divisions[divId];
-		if (!divState) return state;
-
-		const idx = divState.bottlenecks.findIndex((b) => b.id === bottleneckId && b.active && !b.resolved);
-		if (idx < 0) return state;
-
-		// Already waiting?
-		if (divState.bottlenecks[idx].waitStartedAt && divState.bottlenecks[idx].waitStartedAt! > 0) return state;
-
-		const newState = {
-			...state,
-			divisions: {
-				...state.divisions,
-				[divId]: {
-					...divState,
-					bottlenecks: divState.bottlenecks.map((b, i) =>
-						i === idx ? { ...b, waitStartedAt: Date.now() } : b
-					),
-				},
-			},
-		};
-
-		success = true;
-		return newState;
-	});
-
-	return success;
-}
-
-/**
- * Get the total severity penalty for a division from active bottlenecks.
- * Returns a multiplier (e.g., 0.7 = 30% total slowdown).
- * Penalties stack additively then cap at 0.8 (never more than 80% slowdown).
- */
-export function getBottleneckMultiplier(divisionId: string, state: GameState): number {
-	const divId = divisionId as 'teslaenergy' | 'spacex' | 'tesla';
-	const divState = state.divisions[divId];
-	if (!divState) return 1;
-
-	let totalSeverity = 0;
-	for (const b of divState.bottlenecks) {
-		if (b.active && !b.resolved) {
-			totalSeverity += b.severity;
+			// Notify once
+			if (!notifiedBottlenecks.has(def.id)) {
+				notifiedBottlenecks.add(def.id);
+			}
 		}
 	}
 
-	// Cap at 80% slowdown (multiplier never below 0.2)
-	return Math.max(0.2, 1 - Math.min(totalSeverity, 0.8));
-}
-
-/**
- * Get all active (unresolved) bottlenecks for a division.
- */
-export function getActiveBottlenecks(divisionId: string, state: GameState): { state: BottleneckState; def: BottleneckDef }[] {
-	const divId = divisionId as 'teslaenergy' | 'spacex' | 'tesla';
-	const divState = state.divisions[divId];
-	if (!divState) return [];
-
-	const results: { state: BottleneckState; def: BottleneckDef }[] = [];
-	for (const b of divState.bottlenecks) {
-		if (b.active && !b.resolved) {
-			const def = BOTTLENECK_MAP.get(b.id);
-			if (def) results.push({ state: b, def });
-		}
+	// Check wait timers
+	for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+		tickBottleneckWaits(divId);
 	}
-	return results;
+
+	// Check auto-resolve conditions
+	checkAutoResolveBottlenecks();
 }
 
 /**
- * Get a bottleneck definition by id.
- */
-export function getBottleneckDef(id: string): BottleneckDef | undefined {
-	return BOTTLENECK_MAP.get(id);
-}
-
-/**
- * Reset notification tracking (e.g., on prestige).
+ * Reset notification tracking (called on game reset/load).
  */
 export function resetBottleneckNotifications(): void {
 	notifiedBottlenecks.clear();

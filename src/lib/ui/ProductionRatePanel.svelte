@@ -1,9 +1,9 @@
 <script lang="ts">
 	/**
-	 * ProductionRatePanel.svelte — T028: Tesla vehicle production rate display
+	 * ProductionRatePanel.svelte — EVs vehicle production rate display
 	 *
 	 * Shows vehicles/week counter, total vehicles produced, and a mini log.
-	 * Displayed on the Tesla division screen.
+	 * Displayed on the EVs division screen.
 	 */
 	import { gameState } from '$lib/stores/gameState';
 	import {

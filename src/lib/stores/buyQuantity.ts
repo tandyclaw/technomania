@@ -7,7 +7,7 @@ import { writable } from 'svelte/store';
 
 export type BuyQuantity = 1 | 10 | 100 | 'max';
 
-const STORAGE_KEY = 'being_elon_buy_qty';
+const STORAGE_KEY = 'tech_tycoon_buy_qty';
 
 function loadQuantity(): BuyQuantity {
 	if (typeof window === 'undefined') return 1;

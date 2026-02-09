@@ -2,8 +2,6 @@
  * SynergySystem.ts — Cross-division bonus calculations
  * Synergies are discovered by developing multiple divisions simultaneously
  *
- * REBRAND: Real company synergies as Elon describes them
- *
  * How synergies work:
  * - Each synergy has a source and target division
  * - Activation requires minimum tier count (units owned) in both divisions
@@ -38,7 +36,7 @@ export interface Synergy {
 	id: string;
 	name: string;
 	description: string;
-	/** Flavor text — Elon-style justification */
+	/** Flavor text explanation */
 	flavorText: string;
 	icon: string;
 	requirement: SynergyRequirement;
@@ -57,8 +55,8 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'teslaenergy_spacex_power',
 		name: 'Powered Launch Complex',
-		description: 'Tesla Energy supplies clean power to SpaceX facilities, reducing the power deficit penalty on SpaceX production.',
-		flavorText: '"Starbase runs on solar. Every launch powered by the sun." — Elon',
+		description: 'Clean energy powers rocket facilities, reducing power deficit penalties.',
+		flavorText: 'Launch sites run on solar. Every rocket powered by the sun.',
 		icon: '⚡🚀',
 		requirement: {
 			sourceDivision: 'teslaenergy',
@@ -71,8 +69,8 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'tesla_teslaenergy_batteries',
 		name: 'Shared Battery Supply Chain',
-		description: 'Tesla and Tesla Energy share battery cell manufacturing at Gigafactory Nevada, boosting production for both.',
-		flavorText: '"Same cells, same factory, two products. Vertical integration." — Elon',
+		description: 'EVs and Energy share battery cell manufacturing, boosting production for both.',
+		flavorText: 'Same cells, same factory, two products. Vertical integration.',
 		icon: '🔋☀️',
 		requirement: {
 			sourceDivision: 'tesla',
@@ -85,8 +83,8 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'teslaenergy_tesla_batteries',
 		name: 'Gigafactory Synergy',
-		description: 'Tesla Energy battery tech feeds back into Tesla vehicle range and manufacturing efficiency.',
-		flavorText: '"4680 cells changed everything. Energy density is destiny." — Elon',
+		description: 'Energy battery tech feeds back into vehicle range and manufacturing efficiency.',
+		flavorText: 'Next-gen cells change everything. Energy density is destiny.',
 		icon: '☀️🔋',
 		requirement: {
 			sourceDivision: 'teslaenergy',
@@ -99,8 +97,8 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'spacex_tesla_materials',
 		name: 'Aerospace Materials Transfer',
-		description: 'SpaceX rocket-grade alloys and manufacturing tech improve Tesla vehicle construction.',
-		flavorText: '"Stainless steel expertise from Starship → Cybertruck. Obviously." — Elon',
+		description: 'Rocket-grade alloys and manufacturing tech improve vehicle construction.',
+		flavorText: 'Stainless steel expertise from rockets to trucks.',
 		icon: '🚀🔋',
 		requirement: {
 			sourceDivision: 'spacex',
@@ -113,8 +111,8 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'teslaenergy_spacex_supercharger',
 		name: 'Solar-Powered Mission Control',
-		description: 'Tesla Energy Megapacks provide backup power for SpaceX mission-critical systems.',
-		flavorText: '"Redundancy is everything when you\'re landing rockets." — Elon',
+		description: 'Battery farms provide backup power for mission-critical launch systems.',
+		flavorText: 'Redundancy is everything when you\'re landing rockets.',
 		icon: '☀️🚀',
 		requirement: {
 			sourceDivision: 'teslaenergy',

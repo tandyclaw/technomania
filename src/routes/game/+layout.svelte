@@ -65,7 +65,7 @@
 </script>
 
 <svelte:head>
-	<title>Being Elon — Playing</title>
+	<title>Tech Tycoon — Playing</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -76,7 +76,7 @@
 	<div class="fixed inset-0 bg-bg-primary flex items-center justify-center z-[100]">
 		<div class="text-center">
 			<div class="text-4xl mb-4 animate-pulse">⚡</div>
-			<p class="text-text-secondary text-sm">Loading Being Elon...</p>
+			<p class="text-text-secondary text-sm">Loading Tech Tycoon...</p>
 		</div>
 	</div>
 {:else}

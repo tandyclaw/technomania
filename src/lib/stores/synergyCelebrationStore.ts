@@ -8,7 +8,7 @@
 import { writable, get } from 'svelte/store';
 import type { Synergy } from '$lib/systems/SynergySystem';
 
-const STORAGE_KEY = 'being_elon_celebrated_synergies';
+const STORAGE_KEY = 'tech_tycoon_celebrated_synergies';
 
 interface CelebrationState {
 	/** The synergy currently being celebrated (null = no modal shown) */

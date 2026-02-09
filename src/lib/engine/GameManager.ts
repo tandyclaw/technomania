@@ -246,7 +246,7 @@ class GameManager {
 
 		// Clear tutorial completion flag so it replays
 		try {
-			localStorage.removeItem('being_elon_tutorial_done');
+			localStorage.removeItem('tech_tycoon_tutorial_done');
 		} catch {
 			// ignore
 		}
@@ -361,8 +361,8 @@ class GameManager {
 				dogeOwned: 0,
 				dogePriceHistory: [0.08],
 				dogeTotalInvested: 0,
-				elonTweetPumpMs: 0,
-				elonTweetMultiplier: 1,
+				memePumpMs: 0,
+				memePumpMultiplier: 1,
 			};
 		}
 
@@ -373,8 +373,8 @@ class GameManager {
 			if (c.dogeOwned === undefined) c.dogeOwned = 0;
 			if (c.dogePriceHistory === undefined) c.dogePriceHistory = [0.08];
 			if (c.dogeTotalInvested === undefined) c.dogeTotalInvested = 0;
-			if (c.elonTweetPumpMs === undefined) c.elonTweetPumpMs = 0;
-			if (c.elonTweetMultiplier === undefined) c.elonTweetMultiplier = 1;
+			if (c.memePumpMs === undefined) c.memePumpMs = 0;
+			if (c.memePumpMultiplier === undefined) c.memePumpMultiplier = 1;
 		}
 
 		// Ensure activeResearch field exists (added with research system)
@@ -429,7 +429,7 @@ class GameManager {
 			// Use sendBeacon for reliable save on close (navigator.sendBeacon doesn't work with IndexedDB)
 			// Fall back to synchronous localStorage snapshot for beforeunload
 			try {
-				localStorage.setItem('being_elon_emergency_save', data);
+				localStorage.setItem('tech_tycoon_emergency_save', data);
 			} catch {
 				// Storage full or unavailable — nothing we can do
 			}
