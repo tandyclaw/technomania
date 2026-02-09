@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	let deferredPrompt: any = null;
+	let deferredPrompt: BeforeInstallPromptEvent | null = null;
 	let showPrompt = $state(false);
 	let dismissed = $state(false);
 

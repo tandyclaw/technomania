@@ -68,6 +68,7 @@ export interface HallOfFameStats {
 
 export interface GameSettings {
 	musicEnabled: boolean;
+	musicVolume: number;
 	sfxEnabled: boolean;
 	notificationsEnabled: boolean;
 	offlineProgressEnabled: boolean;
@@ -297,7 +298,8 @@ export function createDefaultState(): GameState {
 			highestIncomePerSec: 0,
 		},
 		settings: {
-			musicEnabled: true,
+			musicEnabled: false,
+			musicVolume: 0.5,
 			sfxEnabled: true,
 			notificationsEnabled: true,
 			offlineProgressEnabled: true,

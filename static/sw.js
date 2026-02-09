@@ -68,7 +68,24 @@ self.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	// For static assets (JS, CSS, images, fonts): cache-first
+	// Immutable hashed assets (_app/immutable/): cache-first, no revalidation needed
+	if (request.url.includes('/_app/immutable/')) {
+		event.respondWith(
+			caches.match(request).then((cached) => {
+				if (cached) return cached;
+				return fetch(request).then((response) => {
+					if (response.ok) {
+						const clone = response.clone();
+						caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+					}
+					return response;
+				});
+			})
+		);
+		return;
+	}
+
+	// Other static assets (images, fonts): stale-while-revalidate
 	event.respondWith(
 		caches.match(request).then((cached) => {
 			if (cached) {

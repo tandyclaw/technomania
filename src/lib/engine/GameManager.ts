@@ -18,6 +18,7 @@ import { tickTreasury, resetTreasuryAccumulators } from '$lib/systems/TreasurySy
 import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefaultFlavorStats } from '$lib/systems/FlavorMechanics';
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 import { initSoundListeners } from '$lib/systems/SoundManager';
+import { initMusicSystem, onPrestige as musicOnPrestige } from '$lib/systems/MusicManager';
 import { DIVISIONS } from '$lib/divisions';
 import { calculateVisionPoints, getStartingCashBonus, getAutoChiefsLevel, getPlanetInfo } from '$lib/systems/PrestigeSystem';
 import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
@@ -118,6 +119,7 @@ class GameManager {
 		this.addBrowserListeners();
 		initFlavorMechanics();
 		this.cleanupSounds = initSoundListeners();
+		this.cleanupMusic = initMusicSystem();
 		gameLoop.start();
 
 		// Wire up game tick to update play time, production, and bottlenecks
@@ -462,7 +464,7 @@ class GameManager {
 	 */
 	private calculateTotalIncomePerSec(state: GameState): number {
 		let total = 0;
-		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics', 'robotics'] as const) {
+		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
 			const divState = state.divisions[divId];
 			const divMeta = DIVISIONS[divId];
 			if (!divState?.unlocked || !divMeta) continue;
@@ -494,7 +496,7 @@ class GameManager {
 		}
 
 		// All divisions unlocked (15%)
-		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics', 'robotics'] as const;
+		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
 		let unlockedDivs = 0;
 		for (const id of divIds) {
 			if (state.divisions[id].unlocked) unlockedDivs++;

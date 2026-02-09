@@ -3,8 +3,6 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { getPlanetInfo, calculateVisionPoints, MEGA_UPGRADES, getMegaUpgradeCategories, type MegaUpgrade, type PlanetInfo } from '$lib/systems/PrestigeSystem';
-	import { eventBus } from '$lib/engine/EventBus';
-
 	let gs = $derived($gameState);
 	let colonyTech = $derived(gs.colonyTech);
 	let prestigeCount = $derived(gs.prestigeCount);
