@@ -141,10 +141,10 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T060 | Achievement data definitions (30+ achievements: first purchase, first million, all chiefs, etc.) | PLANNED | — | P1 | — |
-| T061 | Achievement tracker engine (event-driven, persisted) | PLANNED | — | P1 | T060 |
-| T062 | Achievement notification UI (toast + badge on tab) | PLANNED | — | P1 | T061, T016 |
-| T063 | Achievements screen (grid with locked/unlocked states) | PLANNED | — | P1 | T062 |
+| T060 | Achievement data definitions (30+ achievements: first purchase, first million, all chiefs, etc.) | DONE | — | P1 | — |
+| T061 | Achievement tracker engine (event-driven, persisted) | DONE | — | P1 | T060 |
+| T062 | Achievement notification UI (toast + badge on tab) | DONE | — | P1 | T061, T016 |
+| T063 | Achievements screen (grid with locked/unlocked states) | DONE | — | P1 | T062 |
 
 ## 15. Statistics & Activity Feed
 
@@ -152,7 +152,7 @@
 |----|-------------|--------|-------|----------|------|
 | T064 | Statistics tracking (total earned, time played, taps, productions, etc.) | PLANNED | — | P1 | T007 |
 | T065 | Statistics view in Settings or dedicated tab | PLANNED | — | P1 | T064 |
-| T066 | Live activity feed on Dashboard (last 10 events: purchases, unlocks, milestones) | PLANNED | — | P1 | T004 |
+| T066 | Live activity feed on Dashboard (last 10 events: purchases, unlocks, milestones) | DONE | — | P1 | T004 |
 
 ## 16. Visual Polish & Juice
 
@@ -161,7 +161,7 @@
 | T067 | Particle effects on big purchases/milestones (confetti, sparks) | PLANNED | — | P2 | — |
 | T068 | Tier card visual upgrade (glow effects, rarity borders at high levels) | PLANNED | — | P2 | T017 |
 | T069 | Dashboard income graph (sparkline of last 60s income) | PLANNED | — | P2 | T012 |
-| T070 | Floating "+$X" text on production payouts | PLANNED | — | P1 | T054 |
+| T070 | Floating "+$X" text on production payouts | DONE | — | P1 | T054 |
 | T071 | Haptic feedback on mobile (navigator.vibrate) | PLANNED | — | P2 | — |
 
 ## 17. Endgame — Mars Colony

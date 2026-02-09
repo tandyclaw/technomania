@@ -15,6 +15,9 @@
 	let state = $derived($gameState);
 	let prestigeCount = $derived(state.prestigeCount);
 	let colonyTech = $derived(state.colonyTech);
+	let marsProgress = $derived(state.marsColony?.progress ?? 0);
+	let marsCompleted = $derived(state.marsColony?.completed ?? false);
+	let showVictory = $state(false);
 
 	// Calculate per-division income/s
 	function getDivisionIncomePerSec(divMeta: DivisionMeta, divState: DivisionState): number {

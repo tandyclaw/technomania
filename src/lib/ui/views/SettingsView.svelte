@@ -21,6 +21,7 @@
 	let sfxEnabled = $derived($gameState.settings.sfxEnabled);
 	let notificationsEnabled = $derived($gameState.settings.notificationsEnabled);
 	let offlineProgressEnabled = $derived($gameState.settings.offlineProgressEnabled);
+	let floatingTextEnabled = $derived($gameState.settings.floatingTextEnabled ?? true);
 
 	function toggleSetting(key: keyof GameState['settings']) {
 		gameState.update((s) => ({
@@ -228,6 +229,27 @@
 					<span class="toggle-thumb" class:active={offlineProgressEnabled}></span>
 				</button>
 			</div>
+
+			<!-- Floating Text -->
+			<div class="flex items-center justify-between px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5">
+				<div class="flex items-center gap-3">
+					<span class="text-lg" aria-hidden="true">💸</span>
+					<div>
+						<span class="text-sm font-medium text-text-primary block">Floating Income Text</span>
+						<span class="text-[10px] text-text-muted">Show +$X when production completes</span>
+					</div>
+				</div>
+				<button
+					onclick={() => toggleSetting('floatingTextEnabled')}
+					class="toggle-switch"
+					class:active={floatingTextEnabled}
+					role="switch"
+					aria-checked={floatingTextEnabled}
+					aria-label="Toggle floating income text"
+				>
+					<span class="toggle-thumb" class:active={floatingTextEnabled}></span>
+				</button>
+			</div>
 		</div>
 	</section>
 
@@ -261,6 +283,33 @@
 					<span class="text-[10px] text-text-muted">Load a save file from disk</span>
 				</div>
 			</button>
+
+			<button
+				onclick={exportBase64Save}
+				class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
+					   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
+			>
+				<span class="text-lg" aria-hidden="true">📋</span>
+				<div class="text-left flex-1">
+					<span class="text-sm font-medium text-text-primary block">Copy Save Code</span>
+					<span class="text-[10px] text-text-muted">Copy base64 save to clipboard</span>
+				</div>
+				{#if clipboardCopied}
+					<span class="text-xs text-bio-green font-semibold">✓ Copied!</span>
+				{/if}
+			</button>
+
+			<button
+				onclick={() => { showBase64Import = true; importError = ''; importSuccess = false; base64Input = ''; }}
+				class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
+					   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
+			>
+				<span class="text-lg" aria-hidden="true">📝</span>
+				<div class="text-left flex-1">
+					<span class="text-sm font-medium text-text-primary block">Paste Save Code</span>
+					<span class="text-[10px] text-text-muted">Import from base64 string</span>
+				</div>
+			</button>
 		</div>
 	</section>
 
@@ -282,7 +331,7 @@
 
 	<!-- Game Stats -->
 	<section class="space-y-1">
-		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Stats</h2>
+		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Statistics</h2>
 		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 space-y-2">
 			<div class="flex justify-between text-sm">
 				<span class="text-text-muted">Play Time</span>
@@ -294,7 +343,23 @@
 			</div>
 			<div class="flex justify-between text-sm">
 				<span class="text-text-muted">Total Taps</span>
-				<span class="text-text-primary font-mono tabular-nums">{totalTaps}</span>
+				<span class="text-text-primary font-mono tabular-nums">{formatNumber(totalTaps, 0)}</span>
+			</div>
+			<div class="flex justify-between text-sm">
+				<span class="text-text-muted">Total Cash Earned</span>
+				<span class="text-text-primary font-mono tabular-nums">{formatCurrency(totalCashEarned)}</span>
+			</div>
+			<div class="flex justify-between text-sm">
+				<span class="text-text-muted">Total Productions</span>
+				<span class="text-text-primary font-mono tabular-nums">{formatNumber(totalProductions, 0)}</span>
+			</div>
+			<div class="flex justify-between text-sm">
+				<span class="text-text-muted">Highest Income/s</span>
+				<span class="text-text-primary font-mono tabular-nums">{formatCurrency(highestIncomePerSec, 1)}/s</span>
+			</div>
+			<div class="flex justify-between text-sm">
+				<span class="text-text-muted">Total Prestiges</span>
+				<span class="text-text-primary font-mono tabular-nums">{totalPrestiges}</span>
 			</div>
 		</div>
 	</section>
@@ -388,6 +453,58 @@
 			<button
 				onclick={() => { showImportModal = false; importError = ''; importSuccess = false; }}
 				class="w-full mt-4 py-3 px-4 rounded-xl bg-bg-tertiary text-text-secondary font-semibold text-sm
+					   transition-all active:scale-95 touch-manipulation"
+			>
+				{importSuccess ? 'Done' : 'Cancel'}
+			</button>
+		</div>
+	</div>
+{/if}
+
+<!-- Base64 Import Modal -->
+{#if showBase64Import}
+	<div
+		class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] px-4"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Import save code"
+	>
+		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-white/10">
+			<div class="text-center">
+				<div class="text-4xl mb-3">📝</div>
+				<h2 class="text-lg font-bold text-text-primary mb-2">Import Save Code</h2>
+				<p class="text-sm text-text-secondary mb-4">
+					Paste a base64 save code below. This will overwrite your current save.
+				</p>
+			</div>
+
+			{#if importSuccess}
+				<div class="text-center py-4">
+					<span class="text-2xl">✅</span>
+					<p class="text-sm text-bio-green font-semibold mt-2">Save imported successfully!</p>
+				</div>
+			{:else}
+				<textarea
+					bind:value={base64Input}
+					placeholder="Paste save code here..."
+					class="w-full h-24 px-3 py-2 rounded-xl bg-bg-tertiary border border-white/10 text-sm text-text-primary
+						   placeholder:text-text-muted/50 resize-none focus:outline-none focus:border-electric-blue/50"
+				></textarea>
+				{#if importError}
+					<p class="text-xs text-rocket-red mt-2 text-center">{importError}</p>
+				{/if}
+				<button
+					onclick={handleBase64Import}
+					class="w-full mt-3 py-3 px-4 rounded-xl bg-electric-blue text-white font-semibold text-sm
+						   transition-all active:scale-95 touch-manipulation"
+				>
+					Import & Overwrite
+				</button>
+			{/if}
+
+			<button
+				onclick={() => { showBase64Import = false; importError = ''; importSuccess = false; }}
+				class="w-full mt-2 py-3 px-4 rounded-xl bg-bg-tertiary text-text-secondary font-semibold text-sm
 					   transition-all active:scale-95 touch-manipulation"
 			>
 				{importSuccess ? 'Done' : 'Cancel'}
