@@ -18,7 +18,7 @@ import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefau
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 import { initSoundListeners } from '$lib/systems/SoundManager';
 import { DIVISIONS } from '$lib/divisions';
-import { calculateVisionPoints, getStartingCashBonus, getAutoChiefsLevel } from '$lib/systems/PrestigeSystem';
+import { calculateVisionPoints, getStartingCashBonus, getAutoChiefsLevel, getPlanetInfo } from '$lib/systems/PrestigeSystem';
 import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
 import { triggerParticle } from '$lib/stores/particleStore';
 
@@ -286,6 +286,7 @@ class GameManager {
 		}
 
 		// Track hall of fame stats
+		const currentPlanetName = getPlanetInfo(current.prestigeCount).name;
 		fresh.hallOfFame = { ...(current.hallOfFame ?? { fastestColonyTimes: [], highestIncomePerSec: 0, mostColoniesLaunched: 0, totalCashAllTime: 0 }) };
 		fresh.hallOfFame.mostColoniesLaunched = fresh.prestigeCount;
 		fresh.hallOfFame.totalCashAllTime = (fresh.hallOfFame.totalCashAllTime || 0) + current.totalValueEarned;
@@ -677,6 +678,20 @@ class GameManager {
 		if (!migrated.purchasedUpgrades) migrated.purchasedUpgrades = [];
 		if (migrated.visionPoints === undefined) migrated.visionPoints = 0;
 		if (!migrated.purchasedMegaUpgrades) migrated.purchasedMegaUpgrades = [];
+
+		// Ensure daily reward fields exist
+		if (migrated.dailyRewardLastClaim === undefined) migrated.dailyRewardLastClaim = 0;
+		if (migrated.dailyRewardStreak === undefined) migrated.dailyRewardStreak = 0;
+
+		// Ensure hall of fame exists
+		if (!migrated.hallOfFame) {
+			migrated.hallOfFame = {
+				fastestColonyTimes: [],
+				highestIncomePerSec: migrated.stats.highestIncomePerSec ?? 0,
+				mostColoniesLaunched: migrated.prestigeCount ?? 0,
+				totalCashAllTime: migrated.stats.totalCashEarned ?? 0,
+			};
+		}
 
 		migrated.version = CURRENT_VERSION;
 		return migrated;

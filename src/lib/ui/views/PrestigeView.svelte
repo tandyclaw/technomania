@@ -2,7 +2,7 @@
 	import { gameState } from '$lib/stores/gameState';
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { getPlanetInfo, calculateVisionPoints, MEGA_UPGRADES, type MegaUpgrade, type PlanetInfo } from '$lib/systems/PrestigeSystem';
+	import { getPlanetInfo, calculateVisionPoints, MEGA_UPGRADES, getMegaUpgradeCategories, type MegaUpgrade, type PlanetInfo } from '$lib/systems/PrestigeSystem';
 	import { eventBus } from '$lib/engine/EventBus';
 
 	let gs = $derived($gameState);
@@ -234,31 +234,37 @@
 			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-3">
 				⭐ Mega-Upgrades <span class="text-text-muted/50">(spend Vision Points)</span>
 			</div>
-			<div class="space-y-2">
-				{#each MEGA_UPGRADES as mu}
-					{@const owned = purchasedMegas.includes(mu.id)}
-					{@const canAffordMega = currentVP >= mu.cost}
-					<div class="flex items-center gap-3 p-2.5 rounded-lg {owned ? 'bg-solar-gold/10' : 'bg-bg-tertiary/30'}">
-						<div class="flex-1 min-w-0">
-							<div class="text-sm font-semibold {owned ? 'text-solar-gold' : 'text-text-primary'}">{mu.name}</div>
-							<div class="text-xs text-text-muted">{mu.description}</div>
-						</div>
-						{#if owned}
-							<span class="text-xs font-bold text-solar-gold px-2 py-1">✅ Active</span>
-						{:else}
-							<button
-								onclick={() => buyMegaUpgrade(mu)}
-								disabled={!canAffordMega}
-								class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95
-									   disabled:opacity-40 disabled:cursor-not-allowed
-									   {canAffordMega ? 'bg-solar-gold/15 text-solar-gold border border-solar-gold/25' : 'bg-bg-tertiary text-text-muted'}"
-							>
-								{mu.cost} VP
-							</button>
-						{/if}
+			{#each getMegaUpgradeCategories() as category}
+				{@const catUpgrades = MEGA_UPGRADES.filter(m => m.category === category)}
+				<div class="mb-3 last:mb-0">
+					<div class="text-[10px] text-text-muted/60 uppercase tracking-wider font-semibold mb-1.5 pl-1">{category}</div>
+					<div class="space-y-1.5">
+						{#each catUpgrades as mu}
+							{@const owned = purchasedMegas.includes(mu.id)}
+							{@const canAffordMega = currentVP >= mu.cost}
+							<div class="flex items-center gap-3 p-2.5 rounded-lg {owned ? 'bg-solar-gold/10' : 'bg-bg-tertiary/30'}">
+								<div class="flex-1 min-w-0">
+									<div class="text-sm font-semibold {owned ? 'text-solar-gold' : 'text-text-primary'}">{mu.name}</div>
+									<div class="text-xs text-text-muted">{mu.description}</div>
+								</div>
+								{#if owned}
+									<span class="text-xs font-bold text-solar-gold px-2 py-1">✅ Active</span>
+								{:else}
+									<button
+										onclick={() => buyMegaUpgrade(mu)}
+										disabled={!canAffordMega}
+										class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95
+											   disabled:opacity-40 disabled:cursor-not-allowed
+											   {canAffordMega ? 'bg-solar-gold/15 text-solar-gold border border-solar-gold/25' : 'bg-bg-tertiary text-text-muted'}"
+									>
+										{mu.cost} VP
+									</button>
+								{/if}
+							</div>
+						{/each}
 					</div>
-				{/each}
-			</div>
+				</div>
+			{/each}
 		</div>
 	{/if}
 

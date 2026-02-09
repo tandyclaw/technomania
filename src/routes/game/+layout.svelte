@@ -18,6 +18,7 @@
 	import ParticleEffects from '$lib/ui/ParticleEffects.svelte';
 	import KeyboardShortcuts from '$lib/ui/KeyboardShortcuts.svelte';
 	import InstallPrompt from '$lib/ui/InstallPrompt.svelte';
+	import DailyRewardModal from '$lib/ui/DailyRewardModal.svelte';
 	import { celebrationState, dismissCelebration } from '$lib/stores/synergyCelebrationStore';
 	import { hapticTierPurchase, hapticProductionComplete, hapticPrestige } from '$lib/utils/haptics';
 	import { eventBus } from '$lib/engine/EventBus';
@@ -216,6 +217,9 @@
 
 	<!-- Random event modal -->
 	<EventModal />
+
+	<!-- Daily reward modal -->
+	<DailyRewardModal />
 
 	<!-- Synergy celebration modal -->
 	<SynergyCelebration
