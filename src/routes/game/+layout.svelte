@@ -27,6 +27,7 @@
 	import { tickRandomEvents, initRandomEventListeners } from '$lib/systems/RandomEventSystem';
 	import EventModal from '$lib/ui/EventModal.svelte';
 	import { flashSaveIndicator } from '$lib/stores/saveIndicator';
+	import { createSwipeDetector } from '$lib/utils/gestures';
 	import { tickContracts, initContractListeners, loadContractState } from '$lib/systems/ContractSystem';
 	import NewsTicker from '$lib/ui/NewsTicker.svelte';
 	import MiniGame from '$lib/ui/MiniGame.svelte';
@@ -154,6 +155,24 @@
 		pullDistance = 0;
 		pulling = false;
 	}
+
+	// Swipe between division tabs
+	const divisionTabOrder = ['dashboard', 'teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'];
+
+	const swipe = createSwipeDetector({
+		onSwipeLeft() {
+			const idx = divisionTabOrder.indexOf($activeTab);
+			if (idx >= 0 && idx < divisionTabOrder.length - 1) {
+				activeTab.set(divisionTabOrder[idx + 1]);
+			}
+		},
+		onSwipeRight() {
+			const idx = divisionTabOrder.indexOf($activeTab);
+			if (idx > 0) {
+				activeTab.set(divisionTabOrder[idx - 1]);
+			}
+		},
+	});
 
 	function formatOfflineTime(ms: number): string {
 		const hours = Math.floor(ms / 3600000);
@@ -310,9 +329,9 @@
 
 		<main
 			bind:this={mainEl}
-			ontouchstart={handleTouchStart}
+			ontouchstart={(e) => { handleTouchStart(e); swipe.onTouchStart(e); }}
 			ontouchmove={handleTouchMove}
-			ontouchend={handleTouchEnd}
+			ontouchend={(e) => { handleTouchEnd(); swipe.onTouchEnd(e); }}
 			class="flex-1 overflow-y-auto overscroll-y-contain scroll-smooth"
 			style="
 				padding-top: calc(env(safe-area-inset-top, 0px) + 3.25rem);

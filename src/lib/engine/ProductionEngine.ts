@@ -38,6 +38,8 @@ import { getBottleneckMultiplier } from '$lib/systems/BottleneckSystem';
 import { getMilestoneSpeedMultiplier, getMilestoneRevenueMultiplier } from '$lib/systems/MilestoneSystem';
 import { getUpgradeSpeedMultiplier, getUpgradeRevenueMultiplier } from '$lib/systems/UpgradeSystem';
 import { getMegaUpgradeSpeedMultiplier, getMegaUpgradeRevenueMultiplier, getVisionPointRevenueMultiplier } from '$lib/systems/PrestigeSystem';
+import { getDivisionStarSpeedMultiplier, getDivisionStarRevenueMultiplier } from '$lib/systems/DivisionPrestigeSystem';
+import { getWorkerEfficiencyMultiplier } from '$lib/systems/WorkerSystem';
 import { queueSynergyCelebration } from '$lib/stores/synergyCelebrationStore';
 import { eventBus } from './EventBus';
 
@@ -93,8 +95,12 @@ export function getEffectiveCycleDurationMs(
 	const upgradeSpeedMult = getUpgradeSpeedMultiplier(divisionId, tierIndex, state);
 	const megaSpeedMult = getMegaUpgradeSpeedMultiplier(state);
 
+	// Division star & worker bonuses
+	const divStarSpeedMult = getDivisionStarSpeedMultiplier(state, divisionId);
+	const workerMult = getWorkerEfficiencyMultiplier(state, divisionId);
+
 	// Combined speed multiplier
-	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult;
+	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult;
 
 	// Effective duration (higher speed = shorter duration)
 	return baseDurationMs / combinedSpeedMult;
@@ -214,6 +220,11 @@ export function tickProduction(deltaMs: number): void {
 			const megaRevenueMult = getMegaUpgradeRevenueMultiplier(state);
 			const vpRevenueMult = getVisionPointRevenueMultiplier(state);
 
+			// Division star & worker bonuses
+			const divStarSpeedMult = getDivisionStarSpeedMultiplier(newState, divId);
+			const divStarRevenueMult = getDivisionStarRevenueMultiplier(newState, divId);
+			const workerMult = getWorkerEfficiencyMultiplier(newState, divId);
+
 			for (let i = 0; i < divState.tiers.length; i++) {
 				const tier = divState.tiers[i];
 				if (!tier.unlocked || tier.count === 0) continue;
@@ -234,7 +245,7 @@ export function tickProduction(deltaMs: number): void {
 				// Apply all speed multipliers
 				const milestoneSpeedMult = getMilestoneSpeedMultiplier(divId, i, state);
 				const upgradeSpeedMult = getUpgradeSpeedMultiplier(divId, i, state);
-				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult;
+				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult;
 				const effectiveDurationMs = cycleDurationMs / combinedSpeedMult;
 				const progressDelta = deltaMs / effectiveDurationMs;
 				tier.progress += progressDelta;
@@ -247,7 +258,7 @@ export function tickProduction(deltaMs: number): void {
 					// Apply all revenue multipliers
 					const milestoneRevMult = getMilestoneRevenueMultiplier(divId, i, state);
 					const upgradeRevMult = getUpgradeRevenueMultiplier(divId, i, state);
-					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier * milestoneRevMult * upgradeRevMult * megaRevenueMult * vpRevenueMult;
+					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier * milestoneRevMult * upgradeRevMult * megaRevenueMult * vpRevenueMult * divStarRevenueMult * workerMult;
 
 					newState.cash += totalRevenue;
 					newState.totalValueEarned += totalRevenue;

@@ -10,6 +10,7 @@
 	import Tooltip from './Tooltip.svelte';
 	import { triggerParticle } from '$lib/stores/particleStore';
 	import { getNextMilestone, getTierMilestones } from '$lib/systems/MilestoneSystem';
+	import { createLongPressDetector } from '$lib/utils/gestures';
 
 	// Rarity system based on tier count
 	function getRarity(count: number): { name: string; color: string; glow: string } {
@@ -118,6 +119,18 @@
 		return `${mins}:${secs.toString().padStart(2, '0')}`;
 	}
 
+	// Long-press tooltip
+	let showLongPressTooltip = $state(false);
+	const longPress = createLongPressDetector(() => {
+		if (tier.unlocked && tier.count > 0) {
+			showLongPressTooltip = true;
+		}
+	}, 500);
+
+	function dismissTooltip() {
+		showLongPressTooltip = false;
+	}
+
 	// Tap feedback state
 	let tapRipple = $state(false);
 
@@ -200,6 +213,9 @@
 		? `border-color: ${rarity.color}30; box-shadow: ${rarity.glow};`
 		: ''}"
 	onclick={handleTap}
+	ontouchstart={longPress.onTouchStart}
+	ontouchmove={longPress.onTouchMove}
+	ontouchend={longPress.onTouchEnd}
 	data-tutorial-id="tier-card-{tierIndex}"
 >
 	<!-- Tap ripple overlay -->
@@ -401,6 +417,40 @@
 		</div>
 	</div>
 </div>
+
+<!-- Long-press detailed tooltip -->
+{#if showLongPressTooltip}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center px-4" onclick={dismissTooltip}>
+		<div class="bg-bg-secondary rounded-xl p-4 max-w-xs w-full border border-white/10 shadow-2xl space-y-2 text-left" onclick={(e) => e.stopPropagation()}>
+			<div class="flex items-center gap-2">
+				<div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold"
+					style="background-color: {color}15; color: {color};">T{tierIndex + 1}</div>
+				<div>
+					<h3 class="text-sm font-bold text-text-primary">{tierData.name}</h3>
+					<p class="text-[11px] text-text-muted">{tierData.description}</p>
+				</div>
+			</div>
+			<div class="grid grid-cols-2 gap-2 text-xs">
+				<div><span class="text-text-muted">Count:</span> <span class="font-bold text-text-primary">{tier.count}</span></div>
+				<div><span class="text-text-muted">Revenue/cycle:</span> <span class="font-bold" style="color: {color};">{revenuePerCycle}</span></div>
+				<div><span class="text-text-muted">Income/s:</span> <span class="font-bold" style="color: {color};">{revenueDisplay}/s</span></div>
+				<div><span class="text-text-muted">Cycle:</span> <span class="font-bold text-text-primary">{cycleDurationDisplay}</span></div>
+				<div><span class="text-text-muted">Next cost:</span> <span class="font-bold text-text-primary">{costDisplay}</span></div>
+				{#if tierData.powerMW}
+					<div><span class="text-text-muted">Power:</span> <span class="font-bold" class:text-solar-gold={tierData.powerMW > 0} class:text-rocket-red={tierData.powerMW < 0}>{tierData.powerMW > 0 ? '+' : ''}{formatNumber(tierData.powerMW * tier.count, 2)} MW</span></div>
+				{/if}
+			</div>
+			{#if nextMilestone}
+				<div class="text-xs text-text-muted border-t border-white/5 pt-2">
+					🏅 Next milestone: {nextMilestone.current}/{nextMilestone.threshold}
+				</div>
+			{/if}
+			<button onclick={dismissTooltip} class="w-full text-center text-xs text-text-muted mt-2 py-1">Tap to close</button>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.buy-button {

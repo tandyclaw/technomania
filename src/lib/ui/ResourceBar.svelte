@@ -38,7 +38,7 @@
 			<span class="text-base leading-none shrink-0" aria-hidden="true">💰</span>
 			<div class="flex flex-col min-w-0">
 				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Cash</span>
-				<span class="text-sm font-bold text-text-primary tabular-nums truncate font-mono">
+				<span class="text-resource-number font-bold text-text-primary tabular-nums truncate font-mono">
 					<AnimatedNumber value={cash} formatter={cashFormatter} duration={350} />
 				</span>
 			</div>
@@ -52,7 +52,7 @@
 			<span class="text-base leading-none shrink-0" aria-hidden="true">🔬</span>
 			<div class="flex flex-col min-w-0">
 				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Research</span>
-				<span class="text-sm font-bold text-neural-purple tabular-nums truncate font-mono">
+				<span class="text-resource-number font-bold text-neural-purple tabular-nums truncate font-mono">
 					<AnimatedNumber value={rp} formatter={rpFormatter} duration={350} />
 				</span>
 			</div>
@@ -78,7 +78,7 @@
 				</span>
 				<div class="flex items-center gap-1">
 					<span
-						class="text-sm font-bold tabular-nums truncate font-mono"
+						class="text-resource-number font-bold tabular-nums truncate font-mono"
 						class:text-bio-green={powerStatus === 'ok'}
 						class:text-solar-gold={powerStatus === 'warning'}
 						class:text-rocket-red={powerStatus === 'deficit'}

@@ -79,6 +79,37 @@ body {
 	margin: 0;
 	min-height: 100vh;
 	overflow-x: hidden;
+	/* iOS safe areas */
+	padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Responsive font scaling with clamp() */
+.text-dashboard-title {
+	font-size: clamp(1.125rem, 4vw, 1.5rem);
+}
+
+.text-income-display {
+	font-size: clamp(1.25rem, 5vw, 1.75rem);
+}
+
+.text-resource-number {
+	font-size: clamp(0.75rem, 2.5vw, 0.875rem);
+}
+
+/* Mobile-first modal fullscreen */
+@media (max-width: 480px) {
+	.modal-mobile-fullscreen {
+		max-width: 100% !important;
+		width: 100% !important;
+		min-height: 100dvh !important;
+		border-radius: 0 !important;
+		margin: 0 !important;
+	}
+	
+	.modal-mobile-fullscreen-container {
+		padding: 0 !important;
+		align-items: stretch !important;
+	}
 }
 
 /* Touch-friendly defaults */

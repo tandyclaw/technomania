@@ -15,6 +15,9 @@
 	import { contractState } from '$lib/systems/ContractSystem';
 	import type { Contract } from '$lib/systems/ContractSystem';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
+	import WorkerPanel from '$lib/ui/WorkerPanel.svelte';
+	import { getDivisionStars } from '$lib/systems/DivisionPrestigeSystem';
+	import { getWorkersForDivision } from '$lib/systems/WorkerSystem';
 
 	// Division ordering for display
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
@@ -67,7 +70,9 @@
 			const unlockedTiers = divState.tiers.filter((t) => t.unlocked).length;
 			// Find the most active tier (highest progress if producing)
 			const activeTier = divState.tiers.find((t) => t.producing && t.unlocked);
-			return { id, meta, divState, incomePerSec, totalOwned, unlockedTiers, activeTier };
+			const stars = getDivisionStars(state, id);
+			const workers = getWorkersForDivision(state, id);
+			return { id, meta, divState, incomePerSec, totalOwned, unlockedTiers, activeTier, stars, workers };
 		})
 	);
 
@@ -105,7 +110,7 @@
 	<!-- Welcome header -->
 	<div>
 		<div class="flex items-center gap-2">
-			<h1 class="text-xl font-bold text-text-primary">{currentPlanet.emoji} Moonshot</h1>
+			<h1 class="text-dashboard-title font-bold text-text-primary">{currentPlanet.emoji} Moonshot</h1>
 			{#if ngPlusLevel > 0}
 				<span
 					class="px-2 py-0.5 rounded-md text-xs font-bold"
@@ -133,7 +138,7 @@
 			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-1">
 				Total Income
 			</div>
-			<div class="text-2xl font-bold text-text-primary tabular-nums font-mono">
+			<div class="text-income-display font-bold text-text-primary tabular-nums font-mono">
 				{formatCurrency(totalIncomePerSec, 2)}<span class="text-sm text-text-secondary font-normal">/s</span>
 			</div>
 		</div>
@@ -182,6 +187,9 @@
 
 	<!-- Synergies -->
 	<SynergyPanel />
+
+	<!-- Workers -->
+	<WorkerPanel />
 
 	<!-- Active Contracts (compact) -->
 	{#if activeContracts.length > 0}
@@ -307,6 +315,16 @@
 										{#if div.divState.chiefLevel > 0}
 											<span class="text-[10px] font-semibold" style="color: {div.meta.color};">
 												👔 Lv.{div.divState.chiefLevel}
+											</span>
+										{/if}
+										{#if div.stars > 0}
+											<span class="text-[10px] font-semibold text-solar-gold">
+												⭐{div.stars}
+											</span>
+										{/if}
+										{#if div.workers > 0}
+											<span class="text-[10px] font-semibold text-electric-blue">
+												👷{div.workers}
 											</span>
 										{/if}
 									</div>

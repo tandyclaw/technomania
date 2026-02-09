@@ -251,6 +251,9 @@ class GameManager {
 		// Mega-upgrades persist through resets
 		fresh.purchasedMegaUpgrades = [...(current.purchasedMegaUpgrades ?? [])];
 
+		// Division Stars persist through colony prestiges
+		fresh.divisionStars = current.divisionStars ? { ...current.divisionStars } : {};
+
 		// Purchased upgrades do NOT persist (reset like AdCap)
 		fresh.purchasedUpgrades = [];
 
@@ -362,6 +365,7 @@ class GameManager {
 		fresh.settings = { ...current.settings };
 		fresh.visionPoints = current.visionPoints ?? 0;
 		fresh.purchasedMegaUpgrades = [...(current.purchasedMegaUpgrades ?? [])];
+		fresh.divisionStars = current.divisionStars ? { ...current.divisionStars } : {};
 		fresh.purchasedUpgrades = [];
 
 		// Preserve lifetime stats

@@ -14,7 +14,27 @@
 	import { buyQuantity } from '$lib/stores/buyQuantity';
 
 	import { gameState } from '$lib/stores/gameState';
+	import { formatCurrency } from '$lib/engine/BigNumber';
+	import { calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSystem';
 	import MilestonePanel from './MilestonePanel.svelte';
+
+	// Division income calculation for stats summary
+	function getDivIncomePerSec(): number {
+		let total = 0;
+		for (let i = 0; i < state.tiers.length; i++) {
+			const t = state.tiers[i];
+			if (!t.unlocked || t.count === 0) continue;
+			const td = division.tiers[i];
+			if (!td) continue;
+			const rev = calculateRevenue(td.config, t.count, t.level);
+			const dur = getCycleDurationMs(td.config, state.chiefLevel);
+			total += (rev / dur) * 1000;
+		}
+		return total;
+	}
+	import WorkerPanel from './WorkerPanel.svelte';
+	import { getDivisionStars, canPrestigeDivision, getDivisionPrestigeRequirements, prestigeDivision } from '$lib/systems/DivisionPrestigeSystem';
+	import { getWorkersForDivision } from '$lib/systems/WorkerSystem';
 
 	let {
 		division,
@@ -50,6 +70,18 @@
 		startBottleneckWait(division.id, bottleneckId);
 	}
 
+	// Division stars and prestige
+	let divisionStars = $derived(getDivisionStars($gameState, division.id));
+	let canPrestige = $derived(canPrestigeDivision($gameState, division.id));
+	let workers = $derived(getWorkersForDivision($gameState, division.id));
+	let workerBonus = $derived(workers * 2);
+	let showPrestigeConfirm = $state(false);
+
+	function handlePrestigeDivision() {
+		prestigeDivision(division.id);
+		showPrestigeConfirm = false;
+	}
+
 	// Calculate overall division progress
 	let unlockedTiers = $derived(state.tiers.filter(t => t.unlocked).length);
 	let totalTiers = $derived(state.tiers.length);
@@ -71,6 +103,9 @@
 		});
 	}
 
+	let showStatsSummary = $state(false);
+	let divIncomePerSec = $derived(getDivIncomePerSec());
+
 	// Check if previous tier is owned (has count > 0) for unlock gating
 	function isPreviousTierOwned(tierIndex: number): boolean {
 		if (tierIndex === 0) return true; // First tier always available
@@ -89,9 +124,16 @@
 			{division.icon}
 		</div>
 		<div class="flex-1 min-w-0">
-			<h1 class="text-xl font-bold truncate" style="color: {division.color};">
-				{division.name}
-			</h1>
+			<div class="flex items-center gap-2">
+				<h1 class="text-xl font-bold truncate" style="color: {division.color};">
+					{division.name}
+				</h1>
+				{#if divisionStars > 0}
+					<span class="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-solar-gold/20 text-solar-gold border border-solar-gold/30">
+						⭐ {divisionStars}
+					</span>
+				{/if}
+			</div>
 			<p class="text-xs text-text-secondary mt-0.5">{division.description}</p>
 			<!-- Progress bar -->
 			<div class="flex items-center gap-2 mt-1.5">
@@ -107,6 +149,36 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Pull-down stats summary (tap header to toggle) -->
+	{#if state.unlocked && showStatsSummary}
+		<div class="bg-bg-secondary/60 rounded-xl border border-white/5 p-3 space-y-2 animate-slide-down">
+			<div class="flex items-center justify-between">
+				<span class="text-xs text-text-muted uppercase tracking-wider font-medium">Division Stats</span>
+				<button onclick={() => showStatsSummary = false} class="text-[10px] text-text-muted">▲ Close</button>
+			</div>
+			<div class="grid grid-cols-2 gap-2 text-xs">
+				<div class="bg-bg-tertiary/30 rounded-lg p-2">
+					<div class="text-text-muted">Income/s</div>
+					<div class="font-bold font-mono tabular-nums" style="color: {division.color};">{formatCurrency(divIncomePerSec, 2)}/s</div>
+				</div>
+				<div class="bg-bg-tertiary/30 rounded-lg p-2">
+					<div class="text-text-muted">Total Owned</div>
+					<div class="font-bold text-text-primary">{totalOwned} units</div>
+				</div>
+				<div class="bg-bg-tertiary/30 rounded-lg p-2">
+					<div class="text-text-muted">Tiers Unlocked</div>
+					<div class="font-bold text-text-primary">{unlockedTiers}/{totalTiers}</div>
+				</div>
+				<div class="bg-bg-tertiary/30 rounded-lg p-2">
+					<div class="text-text-muted">Automation</div>
+					<div class="font-bold" style="color: {state.chiefLevel > 0 ? division.color : 'var(--color-text-muted)'};">
+						{state.chiefLevel > 0 ? `Chief Lv.${state.chiefLevel}` : 'Manual'}
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
 
 	<!-- Quick stats -->
 	{#if state.unlocked}
@@ -125,6 +197,24 @@
 					{state.chiefLevel > 0 ? `Lv.${state.chiefLevel}` : 'None'}
 				</div>
 			</div>
+		</div>
+	{/if}
+
+	<!-- Star & Worker bonuses -->
+	{#if state.unlocked && (divisionStars > 0 || workers > 0)}
+		<div class="flex gap-2">
+			{#if divisionStars > 0}
+				<div class="flex-1 bg-solar-gold/10 rounded-lg p-2 text-center border border-solar-gold/20">
+					<div class="text-[10px] text-solar-gold uppercase tracking-wider">Star Bonus</div>
+					<div class="text-sm font-bold text-solar-gold tabular-nums">+{divisionStars * 10}% rev · +{divisionStars * 5}% spd</div>
+				</div>
+			{/if}
+			{#if workers > 0}
+				<div class="flex-1 bg-electric-blue/10 rounded-lg p-2 text-center border border-electric-blue/20">
+					<div class="text-[10px] text-electric-blue uppercase tracking-wider">Workers</div>
+					<div class="text-sm font-bold text-electric-blue tabular-nums">👷 {workers} · +{workerBonus}%</div>
+				</div>
+			{/if}
 		</div>
 	{/if}
 
@@ -150,6 +240,61 @@
 	<!-- Milestones panel -->
 	{#if state.unlocked}
 		<MilestonePanel divisionId={division.id} />
+	{/if}
+
+	<!-- Division Prestige -->
+	{#if state.unlocked}
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4">
+			<div class="flex items-center justify-between mb-2">
+				<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider flex items-center gap-1.5">
+					<span>⭐</span> Division Prestige
+				</h2>
+				{#if divisionStars > 0}
+					<span class="text-xs font-mono tabular-nums text-solar-gold">{divisionStars} star{divisionStars !== 1 ? 's' : ''}</span>
+				{/if}
+			</div>
+			<p class="text-[11px] text-text-muted mb-3">
+				Reset this division to earn a star. Each star: +10% revenue, +5% speed (permanent).
+			</p>
+			{#if showPrestigeConfirm}
+				<div class="bg-rocket-red/10 border border-rocket-red/30 rounded-lg p-3 space-y-2">
+					<p class="text-xs text-rocket-red font-semibold">⚠️ This will reset all tiers and counts in {division.name}!</p>
+					<div class="flex gap-2">
+						<button
+							onclick={handlePrestigeDivision}
+							class="flex-1 py-2 px-3 rounded-lg bg-solar-gold/20 text-solar-gold text-xs font-bold
+								   transition-all active:scale-95 touch-manipulation border border-solar-gold/30"
+						>
+							⭐ Confirm Reset
+						</button>
+						<button
+							onclick={() => showPrestigeConfirm = false}
+							class="flex-1 py-2 px-3 rounded-lg bg-bg-tertiary text-text-muted text-xs font-semibold
+								   transition-all active:scale-95 touch-manipulation"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			{:else}
+				<button
+					onclick={() => showPrestigeConfirm = true}
+					disabled={!canPrestige}
+					class="w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all active:scale-95 touch-manipulation
+						   disabled:opacity-40 disabled:cursor-not-allowed"
+					style="background-color: {canPrestige ? 'rgba(255, 204, 68, 0.15)' : 'var(--color-bg-tertiary)'};
+						   color: {canPrestige ? '#FFCC44' : 'var(--color-text-muted)'};
+						   border: 1px solid {canPrestige ? 'rgba(255, 204, 68, 0.3)' : 'transparent'};"
+				>
+					⭐ Reset Division for Star
+				</button>
+			{/if}
+		</div>
+	{/if}
+
+	<!-- Workers -->
+	{#if state.unlocked}
+		<WorkerPanel />
 	{/if}
 
 	<!-- Active bottlenecks -->

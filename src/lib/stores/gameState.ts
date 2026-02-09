@@ -199,8 +199,15 @@ export interface GameState {
 		totalCompleted: number;
 	};
 
+	// Division Prestige (stars persist through colony prestiges)
+	divisionStars?: Record<string, number>;
+
+	// Worker allocation
+	workerAllocation?: Record<string, number>;
+
 	// Meta
 	achievements: string[];
+	achievementTimestamps?: Record<string, number>;
 	stats: GameStats;
 	settings: GameSettings;
 }
