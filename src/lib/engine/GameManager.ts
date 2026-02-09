@@ -155,8 +155,8 @@ class GameManager {
 						marsColony: {
 							...s.marsColony,
 							progress: marsProgress,
-							completed: marsProgress >= 100 && !s.marsColony.completed,
-							completedAt: marsProgress >= 100 && !s.marsColony.completed ? Date.now() : s.marsColony.completedAt,
+							completed: s.marsColony.completed || marsProgress >= 100,
+							completedAt: !s.marsColony.completed && marsProgress >= 100 ? Date.now() : s.marsColony.completedAt,
 						},
 						stats: {
 							...s.stats,

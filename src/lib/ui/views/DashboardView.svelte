@@ -8,6 +8,8 @@
 	import { getCycleDurationMs } from '$lib/systems/ProductionSystem';
 	import SynergyPanel from '$lib/ui/SynergyPanel.svelte';
 	import { activityFeed } from '$lib/stores/activityStore';
+	import { getNgPlusAccentColor, getNgPlusHueShift } from '$lib/stores/ngPlus';
+	import { gameManager } from '$lib/engine/GameManager';
 	import IncomeSparkline from '$lib/ui/IncomeSparkline.svelte';
 
 	// Division ordering for display
@@ -18,7 +20,17 @@
 	let colonyTech = $derived(state.colonyTech);
 	let marsProgress = $derived(state.marsColony?.progress ?? 0);
 	let marsCompleted = $derived(state.marsColony?.completed ?? false);
+	let ngPlusLevel = $derived(state.ngPlusLevel ?? 0);
+	let ngAccent = $derived(getNgPlusAccentColor(ngPlusLevel));
+	let ngHue = $derived(getNgPlusHueShift(ngPlusLevel));
 	let showVictory = $state(false);
+
+	function handleNewGamePlus() {
+		const success = gameManager.newGamePlus();
+		if (success) {
+			showVictory = false;
+		}
+	}
 
 	// Calculate per-division income/s
 	function getDivisionIncomePerSec(divMeta: DivisionMeta, divState: DivisionState): number {
@@ -66,10 +78,20 @@
 	}
 </script>
 
-<div class="dashboard space-y-5">
+<div class="dashboard space-y-5" style={ngHue > 0 ? `filter: hue-rotate(${ngHue}deg);` : ''}>
 	<!-- Welcome header -->
 	<div>
-		<h1 class="text-xl font-bold text-text-primary">Tech Tycoon</h1>
+		<div class="flex items-center gap-2">
+			<h1 class="text-xl font-bold text-text-primary">Tech Tycoon</h1>
+			{#if ngPlusLevel > 0}
+				<span
+					class="px-2 py-0.5 rounded-md text-xs font-bold"
+					style="background-color: {ngAccent}20; color: {ngAccent}; border: 1px solid {ngAccent}40;"
+				>
+					NG+{ngPlusLevel}
+				</span>
+			{/if}
+		</div>
 		<p class="text-sm text-text-secondary mt-0.5">
 			{#if prestigeCount > 0}
 				Timeline #{prestigeCount + 1} · The next big bet
@@ -357,7 +379,18 @@
 				>
 					Continue
 				</button>
+				<button
+					onclick={handleNewGamePlus}
+					class="flex-1 py-3 px-4 rounded-xl font-semibold text-sm
+						   transition-all active:scale-95 touch-manipulation"
+					style="background: linear-gradient(135deg, #FFD93D20, #EF444420); color: #FFD93D; border: 1px solid #FFD93D40;"
+				>
+					🔄 New Game+
+				</button>
 			</div>
+			<p class="text-[10px] text-text-muted mt-2">
+				NG+ resets progress but costs scale ×{(1.5 ** ((state.ngPlusLevel ?? 0) + 1)).toFixed(2)}
+			</p>
 		</div>
 	</div>
 {/if}
