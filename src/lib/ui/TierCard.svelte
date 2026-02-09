@@ -144,19 +144,29 @@
 	let completionPulse = $state(false);
 	let kachingFlash = $state(false);
 
+	// PERF: Track timeouts for cleanup
+	let pulseTimeout: ReturnType<typeof setTimeout> | undefined;
+	let flashTimeout: ReturnType<typeof setTimeout> | undefined;
+
 	// Listen for production completion — only show popups for MANUAL taps (no chief)
+	// PERF: Only depend on tier.producing and tier.progress (not other derived values)
 	$effect(() => {
-		const justCompleted = prevProducing && !tier.producing && prevProgress > 0.5;
-		const cycleCompleted = tier.producing && tier.progress < prevProgress && prevProgress > 0.8;
+		const producing = tier.producing;
+		const progress = tier.progress;
+
+		const justCompleted = prevProducing && !producing && prevProgress > 0.5;
+		const cycleCompleted = producing && progress < prevProgress && prevProgress > 0.8;
 
 		if (justCompleted || cycleCompleted) {
-			// Pulse animation on cycle complete
+			// Pulse animation on cycle complete (clear previous to avoid stacking)
 			completionPulse = true;
-			setTimeout(() => { completionPulse = false; }, 600);
+			clearTimeout(pulseTimeout);
+			pulseTimeout = setTimeout(() => { completionPulse = false; }, 600);
 
 			// Ka-ching gold flash
 			kachingFlash = true;
-			setTimeout(() => { kachingFlash = false; }, 400);
+			clearTimeout(flashTimeout);
+			flashTimeout = setTimeout(() => { kachingFlash = false; }, 400);
 
 			// Only show payout popups when manually tapping (no chief automation)
 			if (revenue > 0 && chiefLevel === 0) {
@@ -168,8 +178,8 @@
 			}
 		}
 
-		prevProducing = tier.producing;
-		prevProgress = tier.progress;
+		prevProducing = producing;
+		prevProgress = progress;
 	});
 
 	function handleTap(event: MouseEvent | TouchEvent) {
@@ -495,6 +505,10 @@
 
 	.tier-card {
 		-webkit-tap-highlight-color: transparent;
+		/* PERF: Promote to own layer so animations (scale, box-shadow) don't
+		   trigger layout recalc on siblings. 36 cards × 10 ticks/sec = 360 potential repaints. */
+		will-change: transform;
+		contain: layout style;
 	}
 
 	.legendary-pulse {

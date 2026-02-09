@@ -18,21 +18,23 @@
 	const isLazyTab = (tab: string): tab is LazyTab => tab in lazyViews;
 </script>
 
-{#key $activeTab}
-	<div class="view-container">
-		{#if $activeTab === 'dashboard'}
-			<DashboardView />
-		{:else if $activeTab === 'upgrades'}
-			<UpgradesView />
-		{:else if isLazyTab($activeTab)}
-			{#await lazyViews[$activeTab]() then mod}
-				<mod.default />
-			{/await}
-		{:else}
-			<DivisionView divisionId={$activeTab} />
-		{/if}
-	</div>
-{/key}
+<!-- PERF: Removed {#key} wrapper — it was destroying and recreating the entire
+     view subtree (including all TierCards) on every tab switch. The {#if}/{:else}
+     blocks already handle showing the correct view. DivisionView gets divisionId
+     as a prop so it naturally re-renders when the tab changes. -->
+<div class="view-container">
+	{#if $activeTab === 'dashboard'}
+		<DashboardView />
+	{:else if $activeTab === 'upgrades'}
+		<UpgradesView />
+	{:else if isLazyTab($activeTab)}
+		{#await lazyViews[$activeTab]() then mod}
+			<mod.default />
+		{/await}
+	{:else}
+		<DivisionView divisionId={$activeTab} />
+	{/if}
+</div>
 
 <style>
 	.view-container {

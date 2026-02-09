@@ -5,10 +5,16 @@
 
 	let dataPoints = $state<number[]>(new Array(60).fill(0));
 	let intervalId: ReturnType<typeof setInterval> | null = null;
+	// PERF: Ring buffer index to avoid allocating a new array every second
+	let ringIndex = $state(0);
 
 	onMount(() => {
 		intervalId = setInterval(() => {
-			dataPoints = [...dataPoints.slice(1), incomePerSec];
+			// Shift left by 1 and append new value (mutate in place, reassign for reactivity)
+			const arr = dataPoints;
+			for (let i = 0; i < arr.length - 1; i++) arr[i] = arr[i + 1];
+			arr[arr.length - 1] = incomePerSec;
+			dataPoints = arr;
 		}, 1000);
 	});
 

@@ -32,5 +32,6 @@
 		width: {producing ? progress * 100 : 0}%;
 		background-color: {color};
 		transition: width {transitionMs}ms linear;
+		contain: strict;
 	"
 ></div>

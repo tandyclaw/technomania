@@ -48,6 +48,8 @@
 	});
 
 	// Watch for value changes and animate
+	// PERF: If value changes faster than animation duration (e.g. cash every 100ms),
+	// retarget the running animation instead of restarting from scratch.
 	$effect(() => {
 		const target = value;
 
@@ -56,6 +58,13 @@
 		// Skip if the value hasn't meaningfully changed
 		if (Math.abs(target - displayValue) < 0.001) {
 			displayValue = target;
+			return;
+		}
+
+		// If already animating, just retarget — don't restart from current displayValue
+		// This prevents rAF pile-up when value changes every 100ms
+		if (animating && animationFrame !== null) {
+			endValue = target;
 			return;
 		}
 
