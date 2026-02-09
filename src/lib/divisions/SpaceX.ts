@@ -79,8 +79,8 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		}
 	},
 	{
-		name: 'Mars Lander',
-		description: 'Touch down on the red planet. The holy grail.',
+		name: 'Starship Lander',
+		description: 'Land on Mars and relaunch. Fully reusable interplanetary transport.',
 		tooltip: 'Landing on Mars is brutally hard. A successful lander is how you bootstrap a colony.',
 		powerMW: -20,
 		config: {
