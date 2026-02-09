@@ -15,3 +15,5 @@ function vibrate(pattern: number | number[]) {
 export function hapticTierPurchase() { vibrate(50); }
 export function hapticProductionComplete() { vibrate([30, 50, 30]); }
 export function hapticPrestige() { vibrate(200); }
+export function hapticContractComplete() { vibrate([40, 60, 40, 60, 80]); }
+export function hapticContractExpired() { vibrate([100, 50, 100]); }

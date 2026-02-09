@@ -53,6 +53,27 @@ export const DIVISION_CHIEFS: Record<string, ChiefData> = {
 		quip: '"The factory is the product. Optimize everything."',
 		portrait: '🏭',
 	},
+	ai: {
+		name: 'Dr. Nova Chen',
+		title: 'VP of AI Research',
+		inspired: 'Andrej Karpathy',
+		quip: '"Intelligence isn\'t artificial when it\'s making you money."',
+		portrait: '🧠',
+	},
+	tunnels: {
+		name: 'Marcus Stone',
+		title: 'VP of Underground Operations',
+		inspired: 'Steve Davis',
+		quip: '"The fastest route is always through."',
+		portrait: '🕳️',
+	},
+	robotics: {
+		name: 'Yuki Tanaka',
+		title: 'VP of Robotics Engineering',
+		inspired: 'Milan Kovac',
+		quip: '"Build the machine that builds the machine."',
+		portrait: '🤖',
+	},
 };
 
 /** Chief upgrade levels — same for all divisions */
