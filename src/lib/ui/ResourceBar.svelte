@@ -31,6 +31,8 @@
 	aria-label="Player resources"
 >
 	<div class="flex items-center justify-between px-3 h-[3.25rem] max-w-2xl mx-auto gap-2">
+		<!-- Notification bell -->
+		<NotificationCenter />
 		<!-- Cash -->
 		<div class="flex items-center gap-1.5 min-w-0 flex-1" aria-label="Cash">
 			<span class="text-base leading-none shrink-0" aria-hidden="true">💰</span>
@@ -113,6 +115,9 @@
 			</span>
 		</div>
 	{/if}
+
+	<!-- Active buff indicators -->
+	<BuffIndicator />
 </header>
 
 <style>

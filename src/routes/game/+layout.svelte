@@ -6,6 +6,7 @@
 	import ToastContainer from '$lib/ui/ToastContainer.svelte';
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameManager } from '$lib/engine/GameManager';
+	import { gameLoop } from '$lib/engine/GameLoop';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import { initToastListeners } from '$lib/stores/toastStore';
 	import { initAchievementListeners } from '$lib/systems/AchievementSystem';
@@ -21,6 +22,8 @@
 	import { hapticTierPurchase, hapticProductionComplete, hapticPrestige } from '$lib/utils/haptics';
 	import { eventBus } from '$lib/engine/EventBus';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
+	import { tickRandomEvents, initRandomEventListeners } from '$lib/systems/RandomEventSystem';
+	import EventModal from '$lib/ui/EventModal.svelte';
 	import { flashSaveIndicator } from '$lib/stores/saveIndicator';
 
 	let { children } = $props();
@@ -38,6 +41,8 @@
 	let cleanupAchievements: (() => void) | null = null;
 	let cleanupActivity: (() => void) | null = null;
 	let cleanupHaptics: (() => void)[] = [];
+	let cleanupRandomEvents: (() => void) | null = null;
+	let cleanupEventTick: (() => void) | null = null;
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
@@ -73,6 +78,12 @@
 			document.documentElement.classList.add('light');
 		}
 
+		// Random events system
+		cleanupRandomEvents = initRandomEventListeners();
+		cleanupEventTick = gameLoop.onTick((deltaMs) => {
+			tickRandomEvents(deltaMs);
+		});
+
 		loading = false;
 	});
 
@@ -82,6 +93,8 @@
 		cleanupAchievements?.();
 		cleanupActivity?.();
 		cleanupHaptics.forEach(fn => fn());
+		cleanupRandomEvents?.();
+		cleanupEventTick?.();
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -200,6 +213,9 @@
 
 	<!-- Tutorial overlay -->
 	<TutorialOverlay />
+
+	<!-- Random event modal -->
+	<EventModal />
 
 	<!-- Synergy celebration modal -->
 	<SynergyCelebration
