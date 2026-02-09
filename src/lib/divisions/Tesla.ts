@@ -15,9 +15,9 @@ import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export const TESLA_TIERS: { name: string; description: string; tooltip: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
-		name: 'Electric Car Workshop',
-		description: 'Hand-built electric sports cars. Prove EVs are the future.',
-		tooltip: 'A small team hand-assembling electric sports cars. Low volume, high impact. Prove that EVs can be fast, desirable, and cool — not boring golf carts.',
+		name: 'Electric Cars',
+		description: 'Build electric vehicles. Prove the future is electric.',
+		tooltip: 'Start with sports cars, scale to sedans and trucks. EVs generate revenue and prove that sustainable transport works. Every car sold funds the mission.',
 		powerMW: -0.02,
 		config: {
 			baseCost: 15,
@@ -28,9 +28,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Vehicle Assembly Line',
-		description: 'Mass-produce EVs. Sedans, SUVs, trucks at scale.',
-		tooltip: 'Conveyor belts, robotic welders, stamping presses. Interchangeable parts and division of labor turn hand-built cars into thousands per week. Production Hell awaits.',
+		name: 'Gigafactory',
+		description: 'Massive automated facility. The machine that builds the machine.',
+		tooltip: 'A single building producing more battery capacity than the entire world did a decade ago. Vehicles, batteries, powerwalls — all under one roof. Vertical integration at unprecedented scale.',
 		powerMW: -0.1,
 		config: {
 			baseCost: 500,
@@ -41,9 +41,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Gigafactory',
-		description: 'Batteries, vehicles, solar panels — vertically integrated under one roof.',
-		tooltip: 'A single building producing more battery capacity than the entire world did a decade ago. Raw lithium in one end, finished vehicles and powerwalls out the other. The machine that builds the machine.',
+		name: 'Raw Material Processing',
+		description: 'Mine lithium, refine metals, process raw materials in-house.',
+		tooltip: 'Open-pit lithium mines, rare earth extraction, metal smelting. Stop buying from suppliers — pull it straight from the ground. Control the entire supply chain from ore to finished product.',
 		powerMW: -0.5,
 		config: {
 			baseCost: 25000,
@@ -54,9 +54,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Lithium Mines & Chip Fabs',
-		description: 'Own your supply chain. Mine lithium, fabricate chips in-house.',
-		tooltip: 'Vertical integration taken to the extreme. Open-pit lithium mines in Nevada, semiconductor fabs producing custom chips. No more begging suppliers — you ARE the supplier.',
+		name: 'Chip Fabrication',
+		description: 'Build your own semiconductors. No more supply chain bottlenecks.',
+		tooltip: 'Cleanrooms, EUV lithography, wafer fabs. Design and manufacture custom chips for your vehicles, robots, and AI systems. When you control the silicon, you control everything.',
 		powerMW: -2,
 		config: {
 			baseCost: 5000000,
@@ -68,8 +68,8 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 	},
 	{
 		name: 'Orbital Shipyard',
-		description: 'Assemble spacecraft and stations in orbit. Zero-gravity manufacturing at scale.',
-		tooltip: 'Massive orbital assembly platforms. Build components too large to launch whole — space stations, fuel depots, interplanetary vehicles. Microgravity enables alloys and optics impossible on Earth.',
+		description: 'Assemble spacecraft and stations in orbit. Build what can\'t launch whole.',
+		tooltip: 'Massive orbital assembly platforms. Space stations, fuel depots, interplanetary vehicles — components too large to launch in one piece. Microgravity enables alloys and optics impossible on Earth.',
 		powerMW: -10,
 		config: {
 			baseCost: 500000000,
@@ -81,8 +81,8 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 	},
 	{
 		name: 'Colony Kit Factory',
-		description: 'Mass-produce everything needed for Mars. Habitats, rovers, life support — ready to ship.',
-		tooltip: 'The ultimate logistics challenge. Prefab habitats, sealed rovers, ISRU equipment, life support modules, medical supplies — everything a million colonists need, packed into Starships. One shot to get it right.',
+		description: 'Prebuilt factories and habitats, ready to deploy on Mars.',
+		tooltip: 'Flat-pack factories, inflatable habitats, ISRU refineries, sealed rovers — everything a colony needs, prefabricated and packed into Starships. Land, unfold, power up, start building. Mars in a box.',
 		powerMW: -30,
 		config: {
 			baseCost: 50000000000,
