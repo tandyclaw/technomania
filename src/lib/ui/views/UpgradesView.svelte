@@ -13,6 +13,7 @@
 		{ id: 'speed', label: 'Speed', icon: '⚡' },
 		{ id: 'revenue', label: 'Revenue', icon: '💰' },
 		{ id: 'cost', label: 'Cost', icon: '🏷️' },
+		{ id: 'offline', label: 'Offline', icon: '🌙' },
 	];
 
 	let filteredUpgrades = $derived(
@@ -44,6 +45,7 @@
 			case 'speed': return '#4488FF';
 			case 'revenue': return '#22C55E';
 			case 'cost': return '#FFCC44';
+			case 'offline': return '#A78BFA';
 		}
 	}
 
@@ -52,6 +54,7 @@
 			case 'speed': return '⚡';
 			case 'revenue': return '💰';
 			case 'cost': return '🏷️';
+			case 'offline': return '🌙';
 		}
 	}
 </script>

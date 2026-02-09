@@ -150,18 +150,61 @@ function cloneState(state: GameState): GameState {
  *
  * This is the ONLY place where cash is awarded from production.
  * No more instant cash from tapping.
+ *
+ * PERF: Defers cloneState until we know mutation is needed, and caches
+ * expensive multiplier lookups that don't change within a single tick.
  */
 export function tickProduction(deltaMs: number): void {
 	gameState.update((state) => {
-		const newState = cloneState(state);
-		let changed = false;
-
-		// Calculate prestige multiplier (Colony Tech: +10% per point)
+		// --- Pre-compute expensive lookups ONCE per tick (read-only on old state) ---
 		const prestigeMultiplier = getPrestigeMultiplier(state);
-
-		// Calculate power balance for efficiency multiplier
 		const { generated, consumed } = calculatePowerBalance(state);
 		const powerEfficiency = calculatePowerEfficiency(generated, consumed);
+		const activeSynergies = getActiveSynergies(state, MVP_SYNERGIES);
+		const activeSynergyIds = activeSynergies.map((s) => s.id);
+
+		// Global multipliers (same for all divisions)
+		const megaSpeedMult = getMegaUpgradeSpeedMultiplier(state);
+		const megaRevenueMult = getMegaUpgradeRevenueMultiplier(state);
+		const vpRevenueMult = getVisionPointRevenueMultiplier(state);
+
+		// --- Determine if anything needs to change before cloning ---
+		let needsClone = false;
+
+		// Power tracking changed?
+		if (generated !== state.powerGenerated || consumed !== state.powerConsumed) {
+			needsClone = true;
+		}
+
+		// Synergy tracking changed?
+		const prevIds = state.activeSynergies ?? [];
+		const synergiesChanged =
+			activeSynergyIds.length !== prevIds.length ||
+			activeSynergyIds.some((id, idx) => id !== prevIds[idx]);
+		if (synergiesChanged) needsClone = true;
+
+		// Check if any division has active or auto-startable production
+		if (!needsClone) {
+			for (const divId of DIVISION_IDS) {
+				const divState = state.divisions[divId];
+				if (!divState.unlocked) continue;
+				for (const tier of divState.tiers) {
+					if (!tier.unlocked || tier.count === 0) continue;
+					if (tier.producing || divState.chiefLevel > 0) {
+						needsClone = true;
+						break;
+					}
+				}
+				if (needsClone) break;
+			}
+		}
+
+		// Nothing to do — return same reference (no Svelte re-render)
+		if (!needsClone) return state;
+
+		// --- Clone state only when mutation is needed ---
+		const newState = cloneState(state);
+		let changed = false;
 
 		// Update power tracking
 		newState.powerGenerated = generated;
@@ -170,24 +213,14 @@ export function tickProduction(deltaMs: number): void {
 			changed = true;
 		}
 
-		// Calculate active synergies
-		const activeSynergies = getActiveSynergies(state, MVP_SYNERGIES);
-		const activeSynergyIds = activeSynergies.map((s) => s.id);
-
-		// Update synergy tracking if changed — detect newly activated synergies
-		const prevIds = state.activeSynergies ?? [];
-		if (
-			activeSynergyIds.length !== prevIds.length ||
-			activeSynergyIds.some((id, idx) => id !== prevIds[idx])
-		) {
+		// Update synergy tracking if changed
+		if (synergiesChanged) {
 			newState.activeSynergies = activeSynergyIds;
 			changed = true;
 
-			// Find newly activated synergies (present now but not before)
 			const prevSet = new Set(prevIds);
 			for (const synergy of activeSynergies) {
 				if (!prevSet.has(synergy.id)) {
-					// New synergy discovered! Emit event and queue celebration
 					eventBus.emit('synergy:discovered', {
 						source: synergy.requirement.sourceDivision,
 						target: synergy.requirement.targetDivision,
@@ -205,22 +238,11 @@ export function tickProduction(deltaMs: number): void {
 			const divMeta = DIVISIONS[divId];
 			if (!divMeta) continue;
 
-			// Power deficit slows non-Energy divisions
+			// Cache per-division multipliers (computed once per division per tick)
 			const efficiencyMult = divId === 'teslaenergy' ? 1 : powerEfficiency;
-
-			// Bottleneck penalty: active bottlenecks slow production
 			const bottleneckMult = getBottleneckMultiplier(divId, newState);
-
-			// Synergy multipliers for this division
 			const synergySpeedMult = getSynergyMultiplier(activeSynergies, divId, 'speed_boost');
 			const synergyRevenueMult = getSynergyMultiplier(activeSynergies, divId, 'revenue_boost');
-
-			// Mega-upgrade multipliers (persist through resets)
-			const megaSpeedMult = getMegaUpgradeSpeedMultiplier(state);
-			const megaRevenueMult = getMegaUpgradeRevenueMultiplier(state);
-			const vpRevenueMult = getVisionPointRevenueMultiplier(state);
-
-			// Division star & worker bonuses
 			const divStarSpeedMult = getDivisionStarSpeedMultiplier(newState, divId);
 			const divStarRevenueMult = getDivisionStarRevenueMultiplier(newState, divId);
 			const workerMult = getWorkerEfficiencyMultiplier(newState, divId);
@@ -242,7 +264,6 @@ export function tickProduction(deltaMs: number): void {
 				if (!tierData) continue;
 
 				const cycleDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
-				// Apply all speed multipliers
 				const milestoneSpeedMult = getMilestoneSpeedMultiplier(divId, i, state);
 				const upgradeSpeedMult = getUpgradeSpeedMultiplier(divId, i, state);
 				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult;
@@ -255,7 +276,6 @@ export function tickProduction(deltaMs: number): void {
 				if (tier.progress >= 1.0) {
 					const completedCycles = Math.floor(tier.progress);
 					const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-					// Apply all revenue multipliers
 					const milestoneRevMult = getMilestoneRevenueMultiplier(divId, i, state);
 					const upgradeRevMult = getUpgradeRevenueMultiplier(divId, i, state);
 					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier * milestoneRevMult * upgradeRevMult * megaRevenueMult * vpRevenueMult * divStarRevenueMult * workerMult;
@@ -272,10 +292,8 @@ export function tickProduction(deltaMs: number): void {
 					});
 
 					if (divState.chiefLevel > 0) {
-						// Auto-restart: keep fractional remainder for smooth cycling
 						tier.progress = tier.progress - completedCycles;
 					} else {
-						// Manual: stop after completion, player must tap again
 						tier.progress = 0;
 						tier.producing = false;
 					}

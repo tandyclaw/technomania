@@ -273,6 +273,16 @@
 					</div>
 				{/if}
 
+				{#if offlineReport && offlineReport.cashEarned > 0}
+					<button
+						onclick={() => { /* TODO: integrate ad SDK */ dismissWelcomeBack(); }}
+						class="w-full py-3 px-6 rounded-xl bg-solar-gold/20 text-solar-gold font-semibold
+							   border border-solar-gold/30 transition-all duration-200 active:scale-95 touch-manipulation mb-2"
+					>
+						📺 Watch Ad for 2x Earnings
+					</button>
+				{/if}
+
 				<button
 					onclick={dismissWelcomeBack}
 					class="w-full py-3 px-6 rounded-xl bg-electric-blue text-white font-semibold

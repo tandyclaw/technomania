@@ -143,7 +143,8 @@ function calculateDivisionOffline(
 	divId: string,
 	divState: DivisionState,
 	offlineSeconds: number,
-	prestigeMultiplier: number
+	prestigeMultiplier: number,
+	efficiency: number = OFFLINE_EFFICIENCY
 ): DivisionOfflineReport {
 	const revenueRates = TIER_BASE_REVENUE[divId] ?? [];
 	const productionRates = TIER_BASE_PRODUCTION[divId] ?? [];
@@ -169,12 +170,12 @@ function calculateDivisionOffline(
 		const baseRevenue = revenueRates[i] ?? 0;
 		const baseProduction = productionRates[i] ?? 0;
 
-		// Revenue = base * count * (1 + level * 0.25) * automation * prestige * offline_efficiency
+		// Revenue = base * count * (1 + level * 0.25) * automation * prestige * efficiency
 		const levelMultiplier = 1 + tier.level * 0.25;
 		const tierRevenue = baseRevenue * tier.count * levelMultiplier
-			* automationMultiplier * prestigeMultiplier * OFFLINE_EFFICIENCY;
+			* automationMultiplier * prestigeMultiplier * efficiency;
 		const tierProduction = baseProduction * tier.count * levelMultiplier
-			* automationMultiplier * OFFLINE_EFFICIENCY;
+			* automationMultiplier * efficiency;
 
 		cashEarned += tierRevenue * offlineSeconds;
 		unitsProduced += tierProduction * offlineSeconds;
