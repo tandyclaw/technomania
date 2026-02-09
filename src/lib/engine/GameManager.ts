@@ -16,6 +16,7 @@ import { tickBottlenecks, resetBottleneckNotifications } from '$lib/systems/Bott
 import { tickCrypto, resetCryptoAccumulators } from '$lib/systems/CryptoSystem';
 import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefaultFlavorStats } from '$lib/systems/FlavorMechanics';
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
+import { initSoundListeners } from '$lib/systems/SoundManager';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 3;
@@ -31,6 +32,7 @@ class GameManager {
 	private initialized = false;
 	private boundBeforeUnload: (() => void) | null = null;
 	private boundVisibilityChange: (() => void) | null = null;
+	private cleanupSounds: (() => void) | null = null;
 
 	/**
 	 * Initialize the game — load saved state or create new, start systems
@@ -105,6 +107,7 @@ class GameManager {
 		this.startAutoSave();
 		this.addBrowserListeners();
 		initFlavorMechanics();
+		this.cleanupSounds = initSoundListeners();
 		gameLoop.start();
 
 		// Wire up game tick to update play time, production, and bottlenecks
@@ -151,6 +154,10 @@ class GameManager {
 		this.stopAutoSave();
 		this.removeBrowserListeners();
 		destroyFlavorMechanics();
+		if (this.cleanupSounds) {
+			this.cleanupSounds();
+			this.cleanupSounds = null;
+		}
 		await this.save();
 		this.initialized = false;
 	}
@@ -361,7 +368,7 @@ class GameManager {
 
 		// Version 2 → 3: Add DOGE fields to existing crypto state
 		{
-			const c = migrated.crypto as Record<string, unknown>;
+			const c = migrated.crypto as unknown as Record<string, unknown>;
 			if (c.dogePrice === undefined) c.dogePrice = 0.08;
 			if (c.dogeOwned === undefined) c.dogeOwned = 0;
 			if (c.dogePriceHistory === undefined) c.dogePriceHistory = [0.08];

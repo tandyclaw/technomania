@@ -2,6 +2,7 @@
 	import { gameState } from '$lib/stores/gameState';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { getPowerStatus, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
+	import AnimatedNumber from '$lib/ui/AnimatedNumber.svelte';
 
 	let cash = $derived($gameState.cash);
 	let rp = $derived($gameState.researchPoints);
@@ -12,10 +13,11 @@
 	let powerStatus = $derived(getPowerStatus(powerGen, powerCon));
 	let powerEff = $derived(calculatePowerEfficiency(powerGen, powerCon));
 
-	// Formatted values — will update reactively as gameState ticks
-	let cashDisplay = $derived(formatCurrency(cash));
-	let rpDisplay = $derived(formatNumber(rp, 0));
-	let powerDisplay = $derived(`${formatNumber(powerCon, 1)}/${formatNumber(powerGen, 1)}`);
+	// Formatters for AnimatedNumber
+	const cashFormatter = (n: number) => formatCurrency(n);
+	const rpFormatter = (n: number) => formatNumber(n, 0);
+	const powerConFormatter = (n: number) => formatNumber(n, 1);
+	const powerGenFormatter = (n: number) => formatNumber(n, 1);
 
 	// Pulsing deficit animation
 	let deficitPulse = $derived(powerStatus === 'deficit');
@@ -28,12 +30,12 @@
 >
 	<div class="flex items-center justify-between px-3 h-[3.25rem] max-w-2xl mx-auto gap-2">
 		<!-- Cash -->
-		<div class="flex items-center gap-1.5 min-w-0 flex-1" aria-label="Cash: {cashDisplay}">
+		<div class="flex items-center gap-1.5 min-w-0 flex-1" aria-label="Cash">
 			<span class="text-base leading-none shrink-0" aria-hidden="true">💰</span>
 			<div class="flex flex-col min-w-0">
 				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Cash</span>
 				<span class="text-sm font-bold text-text-primary tabular-nums truncate font-mono">
-					{cashDisplay}
+					<AnimatedNumber value={cash} formatter={cashFormatter} duration={350} />
 				</span>
 			</div>
 		</div>
@@ -42,12 +44,12 @@
 		<div class="w-px h-6 bg-white/5 shrink-0"></div>
 
 		<!-- Research Points -->
-		<div class="flex items-center gap-1.5 min-w-0 flex-1 justify-center" aria-label="Research Points: {rpDisplay}">
+		<div class="flex items-center gap-1.5 min-w-0 flex-1 justify-center" aria-label="Research Points">
 			<span class="text-base leading-none shrink-0" aria-hidden="true">🔬</span>
 			<div class="flex flex-col min-w-0">
 				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Research</span>
 				<span class="text-sm font-bold text-neural-purple tabular-nums truncate font-mono">
-					{rpDisplay}
+					<AnimatedNumber value={rp} formatter={rpFormatter} duration={350} />
 				</span>
 			</div>
 		</div>
@@ -59,7 +61,7 @@
 		<div
 			class="flex items-center gap-1.5 min-w-0 flex-1 justify-end"
 			class:deficit-pulse={deficitPulse}
-			aria-label="Power: {powerDisplay} MW"
+			aria-label="Power usage"
 		>
 			<span class="text-base leading-none shrink-0" aria-hidden="true">⚡</span>
 			<div class="flex flex-col min-w-0">
@@ -77,7 +79,7 @@
 						class:text-solar-gold={powerStatus === 'warning'}
 						class:text-rocket-red={powerStatus === 'deficit'}
 					>
-						{powerDisplay}
+						<AnimatedNumber value={powerCon} formatter={powerConFormatter} duration={350} />/<AnimatedNumber value={powerGen} formatter={powerGenFormatter} duration={350} />
 					</span>
 					<span class="text-[10px] text-text-muted">MW</span>
 				</div>

@@ -113,8 +113,8 @@
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
 | T045 | PWA service worker + offline caching | DONE | MERGED | P1 | — |
-| T046 | Number rolling animation (GSAP) | PLANNED | PLAN | P2 | T006 |
-| T047 | Sound effects toggle (tap, ding, launch) | PLANNED | PLAN | P2 | — |
+| T046 | Number rolling animation (rAF eased counting) | DONE | MERGED | P2 | T006 |
+| T047 | Sound effects (Web Audio API: tap, kaching, whoosh, fanfare) | DONE | MERGED | P2 | — |
 | T048 | Settings screen (music, SFX, notifications, save export) | DONE | MERGED | P1 | T003 |
 | T049 | Cloudflare Pages deployment pipeline | DONE | MERGED | P1 | — |
 | T050 | Balance pass — playtest all 3 divisions for 2-4h flow | DONE | MERGED | P0 | T017-T042 |
@@ -123,8 +123,8 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T051 | Bitcoin/crypto treasury investment mechanic | PLANNED | PLAN | P1 | T007 |
-| T052 | BTC price simulation (volatile, cyclical) | PLANNED | PLAN | P1 | T051 |
+| T051 | Bitcoin/crypto treasury investment mechanic | DONE | MERGED | P1 | T007 |
+| T052 | BTC price simulation (volatile, cyclical) | DONE | MERGED | P1 | T051 |
 | T053 | DOGE meme coin side investment (Elon tweet pump mechanic) | DONE | MERGED | P2 | T051 |
 
 ---
@@ -134,8 +134,8 @@
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
 | P0 | 41 | 41 | 0 |
-| P1 | 11 | 9 | 2 |
-| P2 | 4 | 2 | 2 |
-| **Total** | **56** | **52** | **4** |
+| P1 | 11 | 11 | 0 |
+| P2 | 4 | 4 | 0 |
+| **Total** | **56** | **56** | **0** |
 
-**Next task to pick up:** T050 (Balance pass) or T049 (Cloudflare deploy).
+🎉 **ALL TASKS COMPLETE!** 🎉
