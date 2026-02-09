@@ -88,9 +88,9 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T037 | Basic tech tree (15-20 nodes, JSON data) | PLANNED | PLAN | P0 | T007 |
-| T038 | Research screen UI (node selection + progress) | PLANNED | PLAN | P0 | T037, T013 |
-| T039 | Research point generation from R&D labs | PLANNED | PLAN | P0 | T037 |
+| T037 | Basic tech tree (15-20 nodes, JSON data) | DONE | MERGED | P0 | T007 |
+| T038 | Research screen UI (node selection + progress) | DONE | MERGED | P0 | T037, T013 |
+| T039 | Research point generation from R&D labs | DONE | MERGED | P0 | T037 |
 | T040 | Prestige system: "The IPO" calculator | PLANNED | PLAN | P0 | T007 |
 | T041 | Prestige screen UI (vision points preview, reset confirm) | PLANNED | PLAN | P0 | T040, T013 |
 | T042 | Prestige bonuses (permanent multipliers) | PLANNED | PLAN | P0 | T040 |
@@ -106,7 +106,7 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T056 | **Buy quantity toggle (×1, ×10, ×100, Max)** — AdCap-style switch on division screen that changes all buy buttons | PLANNED | PLAN | P0 | T014 |
+| T056 | **Buy quantity toggle (×1, ×10, ×100, Max)** — AdCap-style switch on division screen that changes all buy buttons | DONE | MERGED | P0 | T014 |
 
 ## 11. Polish & Deploy (was 10)
 
@@ -133,9 +133,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 35 | 28 | 7 |
+| P0 | 35 | 31 | 4 |
 | P1 | 11 | 1 | 10 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **52** | **29** | **23** |
+| **Total** | **52** | **32** | **20** |
 
 **Next task to pick up:** T030 (Bottleneck detection engine) or T056 (Buy quantity toggle).
