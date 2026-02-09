@@ -1,18 +1,14 @@
 /**
- * Energy.ts — Sustainable Energy division
- * Solar and battery storage — the FOUNDATION for everything else
+ * Energy.ts — Energy division
+ * Power is the foundation for everything. No energy, no civilization.
  *
- * PROGRESSION DESIGN (10-min "flying" then slow):
- * - Tier 1: 0.6s cycle = feels snappy, ~1.7/s rate when tapped
- * - Each tier roughly doubles cycle time
- * - Costs increase gently at first (1.07-1.09), then steepen
- * - Revenue/cost ratio is GOOD early = feeling of rapid progress
- * - By tier 4-5, you need automation and the grind sets in
+ * PROGRESSION: nuclear → solar → batteries → rocket fuel → space solar → wireless beaming
+ * Each tier builds toward powering a Mars colony from Earth and beyond.
  *
  * MATH CHECK:
  * - Start $25, Tier 1 costs $5
- * - Buy 5 panels, each earns $1/0.6s = $1.67/s
- * - 5 panels = $8.33/s → reach $500 (Rockets) in ~1 minute
+ * - Buy 5 reactors, each earns $1/0.6s = $1.67/s
+ * - 5 reactors = $8.33/s → reach $500 (Rockets) in ~1 minute
  * - This is the "flying" feeling
  */
 
@@ -20,23 +16,23 @@ import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: string; powerMW: number; config: ProductionConfig }[] = [
 	{
-		name: 'Solar Panels',
-		description: 'Residential rooftop solar. Everyone starts somewhere.',
-		tooltip: 'Rooftop solar is the foundation of sustainable energy. A typical home installation is 5-10 kW.',
-		powerMW: 0.005,
+		name: 'Nuclear Reactor',
+		description: 'Dense, reliable power. The backbone of your grid.',
+		tooltip: 'Small modular reactors producing clean baseload power 24/7. No sun needed, no wind needed. Uranium fission generates massive energy density — one fuel pellet equals a ton of coal.',
+		powerMW: 0.5,
 		config: {
 			baseCost: 5,
 			baseRevenue: 1,
-			cycleDuration: 0.6,      // Fast enough to feel responsive
-			costMultiplier: 1.07,    // Gentle early game
+			cycleDuration: 0.6,
+			costMultiplier: 1.07,
 			revenueMultiplier: 1.0
 		}
 	},
 	{
-		name: 'Home Battery',
-		description: 'Store solar energy for nighttime use.',
-		tooltip: 'Batteries solve solar\'s biggest problem — the sun doesn\'t shine at night.',
-		powerMW: 0.01,
+		name: 'Solar Panel Farm',
+		description: 'Harvest the sun at industrial scale. Fields of photovoltaics.',
+		tooltip: 'Thousands of solar panels covering desert land. Free fuel forever, but only when the sun shines. Pairs perfectly with battery storage for round-the-clock power.',
+		powerMW: 0.1,
 		config: {
 			baseCost: 75,
 			baseRevenue: 10,
@@ -46,10 +42,10 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		}
 	},
 	{
-		name: 'Commercial Battery',
-		description: 'Grid-scale storage. Utility-level power.',
-		tooltip: 'Commercial batteries store megawatt-hours — enough to power thousands of homes.',
-		powerMW: 0.5,
+		name: 'Battery Megapack',
+		description: 'Grid-scale storage. Store gigawatt-hours for when you need them.',
+		tooltip: 'Massive lithium-ion battery installations that store excess energy and discharge on demand. Replace fossil fuel peaker plants. Stabilize entire cities during peak demand.',
+		powerMW: 1,
 		config: {
 			baseCost: 600,
 			baseRevenue: 75,
@@ -59,10 +55,10 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		}
 	},
 	{
-		name: 'Solar Roof',
-		description: 'Integrated solar tiles. Invisible power generation.',
-		tooltip: 'Solar tiles that look like regular roofing. More expensive but aesthetically invisible.',
-		powerMW: 0.02,
+		name: 'Rocket Fuel Refinery',
+		description: 'Produce methane and LOX. Fuel your rockets from your own grid.',
+		tooltip: 'Sabatier reactors converting CO2 and hydrogen into liquid methane. Electrolysis plants splitting water into liquid oxygen. Your energy grid now fuels your space program directly.',
+		powerMW: -2,
 		config: {
 			baseCost: 5000,
 			baseRevenue: 600,
@@ -72,10 +68,10 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		}
 	},
 	{
-		name: 'Grid Battery Farm',
-		description: 'Massive grid-connected storage. Stabilize entire cities.',
-		tooltip: 'Grid-scale battery farms store gigawatt-hours. They can replace fossil fuel peaker plants.',
-		powerMW: 5,
+		name: 'Space Solar Array',
+		description: 'Orbital solar collectors. No clouds, no night, no limits.',
+		tooltip: 'Massive photovoltaic arrays in geostationary orbit collecting sunlight 24/7 with no atmosphere in the way. 8x more efficient than ground solar. The ultimate clean energy source.',
+		powerMW: 50,
 		config: {
 			baseCost: 40000,
 			baseRevenue: 5000,
@@ -85,10 +81,10 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		}
 	},
 	{
-		name: 'Virtual Power Plant',
-		description: 'Thousands of distributed batteries as one. The future.',
-		tooltip: 'A network of thousands of home batteries coordinated by software to act as one giant power plant.',
-		powerMW: 50,
+		name: 'Wireless Energy Beaming',
+		description: 'Beam power from orbit to anywhere on Earth — or to Mars.',
+		tooltip: 'Microwave or laser power transmission from space solar arrays to ground receivers. Power any location on Earth without wires. Eventually beam energy across interplanetary distances to fuel your Mars colony.',
+		powerMW: 500,
 		config: {
 			baseCost: 350000,
 			baseRevenue: 45000,
@@ -100,5 +96,5 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 ];
 
 export const TESLA_ENERGY_COLOR = '#FFCC44';
-export const TESLA_ENERGY_ICON = '☀️';
+export const TESLA_ENERGY_ICON = '⚡';
 export const TESLA_ENERGY_NAME = 'Energy';
