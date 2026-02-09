@@ -1,6 +1,6 @@
 {
-	"name": "Tech Tycoon",
-	"short_name": "Tech Tycoon",
+	"name": "Moonshot",
+	"short_name": "Moonshot",
 	"description": "Idle tech tycoon — build rockets, make EVs, harness solar power, colonize Mars",
 	"start_url": "/game",
 	"scope": "/",

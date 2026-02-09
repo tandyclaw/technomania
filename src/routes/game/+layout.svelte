@@ -138,7 +138,7 @@
 </script>
 
 <svelte:head>
-	<title>Tech Tycoon — Playing</title>
+	<title>Moonshot — Playing</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -149,7 +149,7 @@
 	<div class="fixed inset-0 bg-bg-primary flex items-center justify-center z-[100]">
 		<div class="text-center">
 			<div class="text-6xl mb-3 loading-logo">⚡</div>
-			<h1 class="text-xl font-bold text-text-primary mb-1 tracking-tight">Tech Tycoon</h1>
+			<h1 class="text-xl font-bold text-text-primary mb-1 tracking-tight">Moonshot</h1>
 			<p class="text-text-muted text-xs mb-6">Build the future. One tap at a time.</p>
 			<div class="loading-spinner mx-auto"></div>
 		</div>

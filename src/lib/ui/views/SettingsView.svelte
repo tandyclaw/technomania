@@ -425,7 +425,7 @@
 
 	<!-- Version -->
 	<div class="text-center py-4 space-y-1">
-		<p class="text-xs text-text-muted">Tech Tycoon v{GAME_VERSION}</p>
+		<p class="text-xs text-text-muted">Moonshot v{GAME_VERSION}</p>
 		<p class="text-[10px] text-text-muted/50">Made with ⚡ and ambition</p>
 	</div>
 </div>
@@ -482,7 +482,7 @@
 				<div class="text-4xl mb-3">📥</div>
 				<h2 class="text-lg font-bold text-text-primary mb-2">Import Save</h2>
 				<p class="text-sm text-text-secondary mb-4">
-					Select a Tech Tycoon save file (.json) to load.
+					Select a Moonshot save file (.json) to load.
 				</p>
 			</div>
 

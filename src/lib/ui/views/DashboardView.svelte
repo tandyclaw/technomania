@@ -82,7 +82,7 @@
 	<!-- Welcome header -->
 	<div>
 		<div class="flex items-center gap-2">
-			<h1 class="text-xl font-bold text-text-primary">Tech Tycoon</h1>
+			<h1 class="text-xl font-bold text-text-primary">Moonshot</h1>
 			{#if ngPlusLevel > 0}
 				<span
 					class="px-2 py-0.5 rounded-md text-xs font-bold"
