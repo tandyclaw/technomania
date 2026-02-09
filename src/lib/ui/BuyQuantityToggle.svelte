@@ -25,6 +25,8 @@
 			style={isActive
 				? `background-color: ${color}25; color: ${color}; border: 1px solid ${color}35;`
 				: 'background-color: var(--color-bg-tertiary); color: var(--color-text-muted); border: 1px solid transparent;'}
+			aria-label="Buy quantity: {getLabel(opt)}"
+			aria-pressed={isActive}
 		>
 			{getLabel(opt)}
 		</button>
