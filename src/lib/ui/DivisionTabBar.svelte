@@ -138,7 +138,6 @@
 		{/each}
 
 		<!-- More tab -->
-		{@const moreActive = isMoreActive}
 		<button
 			onclick={toggleMore}
 			class="tab-button group relative flex flex-col items-center justify-center gap-0.5
@@ -147,7 +146,7 @@
 				   active:scale-90 touch-manipulation"
 			aria-label="More tabs"
 		>
-			{#if moreActive}
+			{#if isMoreActive}
 				<div
 					class="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] rounded-full transition-all duration-300 bg-white/50"
 				></div>
@@ -155,7 +154,7 @@
 
 			<span
 				class="text-xl leading-none transition-transform duration-200"
-				class:scale-110={moreOpen || moreActive}
+				class:scale-110={moreOpen || isMoreActive}
 				aria-hidden="true"
 			>
 				⋯
@@ -163,8 +162,8 @@
 
 			<span
 				class="text-[10px] font-medium leading-tight transition-colors duration-200"
-				class:text-text-muted={!moreActive && !moreOpen}
-				style={moreActive ? 'color: var(--color-text-primary);' : ''}
+				class:text-text-muted={!isMoreActive && !moreOpen}
+				style={isMoreActive ? 'color: var(--color-text-primary);' : ''}
 			>
 				More
 			</span>

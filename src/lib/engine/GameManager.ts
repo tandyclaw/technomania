@@ -18,6 +18,7 @@ import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefau
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 import { initSoundListeners } from '$lib/systems/SoundManager';
 import { DIVISIONS } from '$lib/divisions';
+import { calculateVisionPoints } from '$lib/systems/PrestigeSystem';
 import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
 import { triggerParticle } from '$lib/stores/particleStore';
 
@@ -230,6 +231,16 @@ class GameManager {
 		fresh.achievements = [...current.achievements]; // Keep achievements
 		fresh.settings = { ...current.settings }; // Keep settings
 
+		// Vision Points: award accumulated VP from this run
+		const earnedVP = calculateVisionPoints(current.totalValueEarned);
+		fresh.visionPoints = (current.visionPoints ?? 0) + earnedVP;
+
+		// Mega-upgrades persist through resets
+		fresh.purchasedMegaUpgrades = [...(current.purchasedMegaUpgrades ?? [])];
+
+		// Purchased upgrades do NOT persist (reset like AdCap)
+		fresh.purchasedUpgrades = [];
+
 		// Preserve lifetime stats
 		fresh.stats = {
 			...fresh.stats,
@@ -292,6 +303,9 @@ class GameManager {
 		fresh.prestigeCount = current.prestigeCount;
 		fresh.achievements = [...current.achievements];
 		fresh.settings = { ...current.settings };
+		fresh.visionPoints = current.visionPoints ?? 0;
+		fresh.purchasedMegaUpgrades = [...(current.purchasedMegaUpgrades ?? [])];
+		fresh.purchasedUpgrades = [];
 
 		// Preserve lifetime stats
 		fresh.stats = {
@@ -602,6 +616,11 @@ class GameManager {
 		if (!migrated.flavorStats) {
 			migrated.flavorStats = getDefaultFlavorStats();
 		}
+
+		// Ensure new upgrade/milestone/VP fields exist
+		if (!migrated.purchasedUpgrades) migrated.purchasedUpgrades = [];
+		if (migrated.visionPoints === undefined) migrated.visionPoints = 0;
+		if (!migrated.purchasedMegaUpgrades) migrated.purchasedMegaUpgrades = [];
 
 		migrated.version = CURRENT_VERSION;
 		return migrated;

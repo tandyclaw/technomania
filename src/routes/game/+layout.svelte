@@ -21,9 +21,14 @@
 	import { hapticTierPurchase, hapticProductionComplete, hapticPrestige } from '$lib/utils/haptics';
 	import { eventBus } from '$lib/engine/EventBus';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
+	import { flashSaveIndicator } from '$lib/stores/saveIndicator';
 
 	let { children } = $props();
 	let loading = $state(true);
+	let mainEl: HTMLElement | undefined = $state();
+	let pullDistance = $state(0);
+	let pulling = $state(false);
+	let pullStartY = $state(0);
 	let isNewGame = $state(false);
 	let offlineMs = $state(0);
 	let offlineReport = $state<OfflineReport | null>(null);
@@ -86,6 +91,31 @@
 		showWelcomeBack = false;
 	}
 
+	function handleTouchStart(e: TouchEvent) {
+		if (mainEl && mainEl.scrollTop <= 0) {
+			pullStartY = e.touches[0].clientY;
+			pulling = true;
+		}
+	}
+
+	function handleTouchMove(e: TouchEvent) {
+		if (!pulling) return;
+		const dy = e.touches[0].clientY - pullStartY;
+		if (dy > 0) {
+			pullDistance = Math.min(dy * 0.4, 80);
+		}
+	}
+
+	async function handleTouchEnd() {
+		if (pullDistance > 50) {
+			// Trigger save
+			await gameManager.save();
+			flashSaveIndicator();
+		}
+		pullDistance = 0;
+		pulling = false;
+	}
+
 	function formatOfflineTime(ms: number): string {
 		const hours = Math.floor(ms / 3600000);
 		const minutes = Math.floor((ms % 3600000) / 60000);
@@ -102,11 +132,13 @@
 </svelte:head>
 
 {#if loading}
-	<!-- Loading screen -->
+	<!-- Branded loading screen -->
 	<div class="fixed inset-0 bg-bg-primary flex items-center justify-center z-[100]">
 		<div class="text-center">
-			<div class="text-4xl mb-4 animate-pulse">⚡</div>
-			<p class="text-text-secondary text-sm">Loading Tech Tycoon...</p>
+			<div class="text-6xl mb-3 loading-logo">⚡</div>
+			<h1 class="text-xl font-bold text-text-primary mb-1 tracking-tight">Tech Tycoon</h1>
+			<p class="text-text-muted text-xs mb-6">Build the future. One tap at a time.</p>
+			<div class="loading-spinner mx-auto"></div>
 		</div>
 	</div>
 {:else}
@@ -184,11 +216,27 @@
 		<FloatingText />
 
 		<!-- Main scrollable content area -->
+		<!-- Pull-to-refresh indicator -->
+		{#if pullDistance > 10}
+			<div
+				class="fixed left-1/2 -translate-x-1/2 z-[60] text-text-muted text-xs font-medium transition-opacity"
+				style="top: calc(env(safe-area-inset-top, 0px) + 3.5rem); opacity: {Math.min(pullDistance / 50, 1)};"
+			>
+				{pullDistance > 50 ? '💾 Release to save' : '↓ Pull to save'}
+			</div>
+		{/if}
+
 		<main
-			class="flex-1 overflow-y-auto overscroll-y-contain"
+			bind:this={mainEl}
+			ontouchstart={handleTouchStart}
+			ontouchmove={handleTouchMove}
+			ontouchend={handleTouchEnd}
+			class="flex-1 overflow-y-auto overscroll-y-contain scroll-smooth"
 			style="
 				padding-top: calc(env(safe-area-inset-top, 0px) + 3.25rem);
 				padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 3.75rem);
+				transform: translateY({pullDistance}px);
+				transition: {pulling ? 'none' : 'transform 0.3s ease-out'};
 			"
 		>
 			<div class="max-w-2xl mx-auto px-3 py-4">
@@ -214,5 +262,27 @@
 
 	main {
 		-webkit-overflow-scrolling: touch;
+	}
+
+	.loading-logo {
+		animation: logoBounce 1.5s ease-in-out infinite;
+	}
+
+	@keyframes logoBounce {
+		0%, 100% { transform: scale(1); opacity: 1; }
+		50% { transform: scale(1.1); opacity: 0.8; }
+	}
+
+	.loading-spinner {
+		width: 24px;
+		height: 24px;
+		border: 2.5px solid rgba(255, 255, 255, 0.1);
+		border-top-color: #3b82f6;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
 	}
 </style>

@@ -3,6 +3,8 @@
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { getPowerStatus, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 	import AnimatedNumber from '$lib/ui/AnimatedNumber.svelte';
+	import NotificationCenter from '$lib/ui/NotificationCenter.svelte';
+	import BuffIndicator from '$lib/ui/BuffIndicator.svelte';
 
 	let cash = $derived($gameState.cash);
 	let rp = $derived($gameState.researchPoints);

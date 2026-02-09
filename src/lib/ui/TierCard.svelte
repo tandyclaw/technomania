@@ -372,7 +372,7 @@
 
 <style>
 	.buy-button {
-		min-height: 40px;
+		min-height: 44px;
 	}
 
 	.buy-button:disabled {

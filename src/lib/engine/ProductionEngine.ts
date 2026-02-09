@@ -82,8 +82,13 @@ export function getEffectiveCycleDurationMs(
 	// Bottleneck penalties
 	const bottleneckMult = getBottleneckMultiplier(divisionId, state);
 
+	// Milestone & upgrade speed boosts
+	const milestoneSpeedMult = getMilestoneSpeedMultiplier(divisionId, tierIndex, state);
+	const upgradeSpeedMult = getUpgradeSpeedMultiplier(divisionId, tierIndex, state);
+	const megaSpeedMult = getMegaUpgradeSpeedMultiplier(state);
+
 	// Combined speed multiplier
-	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult;
+	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult;
 
 	// Effective duration (higher speed = shorter duration)
 	return baseDurationMs / combinedSpeedMult;
@@ -186,6 +191,11 @@ export function tickProduction(deltaMs: number): void {
 			const synergySpeedMult = getSynergyMultiplier(activeSynergies, divId, 'speed_boost');
 			const synergyRevenueMult = getSynergyMultiplier(activeSynergies, divId, 'revenue_boost');
 
+			// Mega-upgrade multipliers (persist through resets)
+			const megaSpeedMult = getMegaUpgradeSpeedMultiplier(state);
+			const megaRevenueMult = getMegaUpgradeRevenueMultiplier(state);
+			const vpRevenueMult = getVisionPointRevenueMultiplier(state);
+
 			for (let i = 0; i < divState.tiers.length; i++) {
 				const tier = divState.tiers[i];
 				if (!tier.unlocked || tier.count === 0) continue;
@@ -203,8 +213,10 @@ export function tickProduction(deltaMs: number): void {
 				if (!tierData) continue;
 
 				const cycleDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
-				// Apply power efficiency, synergy speed, and bottleneck penalties to production speed
-				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult;
+				// Apply all speed multipliers
+				const milestoneSpeedMult = getMilestoneSpeedMultiplier(divId, i, state);
+				const upgradeSpeedMult = getUpgradeSpeedMultiplier(divId, i, state);
+				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult;
 				const effectiveDurationMs = cycleDurationMs / combinedSpeedMult;
 				const progressDelta = deltaMs / effectiveDurationMs;
 				tier.progress += progressDelta;
@@ -214,8 +226,10 @@ export function tickProduction(deltaMs: number): void {
 				if (tier.progress >= 1.0) {
 					const completedCycles = Math.floor(tier.progress);
 					const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-					// Apply synergy revenue boost + prestige (Colony Tech) multiplier
-					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier;
+					// Apply all revenue multipliers
+					const milestoneRevMult = getMilestoneRevenueMultiplier(divId, i, state);
+					const upgradeRevMult = getUpgradeRevenueMultiplier(divId, i, state);
+					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier * milestoneRevMult * upgradeRevMult * megaRevenueMult * vpRevenueMult;
 
 					newState.cash += totalRevenue;
 					newState.totalValueEarned += totalRevenue;

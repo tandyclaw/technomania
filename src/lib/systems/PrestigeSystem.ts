@@ -1,23 +1,19 @@
 /**
- * PrestigeSystem.ts — "Launch New Colony" mechanic
+ * PrestigeSystem.ts — "Launch New Colony" mechanic + Vision Points
  *
- * Instead of "IPO", the prestige mechanic is thematically about
- * establishing a new colony (Moon, Mars, beyond). You take your
- * expertise and technology with you, but start fresh on infrastructure.
- *
- * Each reset grants "Colony Tech" points that permanently boost
- * all future colonies. The more you build before resetting, the
- * more Colony Tech you earn.
+ * Vision Points are the "angel investor" equivalent:
+ * - Accumulate based on lifetime earnings (shown in real-time)
+ * - Each VP gives +2% all revenue (permanent after reset)
+ * - Can be "sacrificed" to buy mega-upgrades that persist through resets
  */
+
+import type { GameState } from '$lib/stores/gameState';
 
 /**
  * Calculate Colony Tech points earned from a colony launch
- * Based on total lifetime earnings (logarithmic so it never stops being useful)
  */
 export function calculateColonyTech(totalValueEarned: number): number {
 	if (totalValueEarned <= 0) return 0;
-	// Every 10x earnings = roughly 10 more Colony Tech
-	// $1M = ~60 CT, $1B = ~90 CT, $1T = ~120 CT
 	return Math.floor(Math.log10(totalValueEarned) * 10);
 }
 
@@ -30,6 +26,76 @@ export function calculatePrestigeMultiplier(colonyTech: number): number {
 }
 
 /**
+ * Calculate Vision Points earned so far (like angel investors accumulating in AdCap)
+ * VP = floor(sqrt(totalValueEarned / 1e6))
+ * This means they grow visibly as you earn more, creating that satisfying counter
+ */
+export function calculateVisionPoints(totalValueEarned: number): number {
+	if (totalValueEarned < 1_000_000) return 0;
+	return Math.floor(Math.sqrt(totalValueEarned / 1_000_000));
+}
+
+/**
+ * Revenue multiplier from Vision Points: +2% per VP
+ */
+export function getVisionPointRevenueMultiplier(state: GameState): number {
+	return 1 + (state.visionPoints ?? 0) * 0.02;
+}
+
+// === MEGA-UPGRADES (persist through resets, purchased with Vision Points) ===
+
+export interface MegaUpgrade {
+	id: string;
+	name: string;
+	description: string;
+	cost: number; // in Vision Points
+	effect: 'speed' | 'revenue' | 'vp_bonus';
+	multiplier: number;
+}
+
+export const MEGA_UPGRADES: MegaUpgrade[] = [
+	{ id: 'mega_speed_1', name: 'Hyper Chiefs', description: '2x all production speed', cost: 25, effect: 'speed', multiplier: 2 },
+	{ id: 'mega_rev_1', name: 'Revenue Amplifier', description: '3x all revenue', cost: 50, effect: 'revenue', multiplier: 3 },
+	{ id: 'mega_speed_2', name: 'Quantum Computing', description: '3x all production speed', cost: 100, effect: 'speed', multiplier: 3 },
+	{ id: 'mega_rev_2', name: 'Galactic Contracts', description: '5x all revenue', cost: 200, effect: 'revenue', multiplier: 5 },
+	{ id: 'mega_speed_3', name: 'Time Dilation Engine', description: '5x all production speed', cost: 500, effect: 'speed', multiplier: 5 },
+	{ id: 'mega_vp_1', name: 'Vision Amplifier', description: 'VP revenue bonus doubled (2% → 4% per VP)', cost: 150, effect: 'vp_bonus', multiplier: 2 },
+];
+
+/**
+ * Get combined mega-upgrade speed multiplier
+ */
+export function getMegaUpgradeSpeedMultiplier(state: GameState): number {
+	const purchased = state.purchasedMegaUpgrades ?? [];
+	let mult = 1;
+	for (const id of purchased) {
+		const mu = MEGA_UPGRADES.find(m => m.id === id);
+		if (mu && mu.effect === 'speed') mult *= mu.multiplier;
+	}
+	return mult;
+}
+
+/**
+ * Get combined mega-upgrade revenue multiplier
+ */
+export function getMegaUpgradeRevenueMultiplier(state: GameState): number {
+	const purchased = state.purchasedMegaUpgrades ?? [];
+	let mult = 1;
+	for (const id of purchased) {
+		const mu = MEGA_UPGRADES.find(m => m.id === id);
+		if (mu && mu.effect === 'revenue') mult *= mu.multiplier;
+	}
+	return mult;
+}
+
+/**
+ * Check if VP bonus is amplified by mega-upgrade
+ */
+function hasVPAmplifier(state: GameState): boolean {
+	return (state.purchasedMegaUpgrades ?? []).includes('mega_vp_1');
+}
+
+/**
  * Colony milestones — each prestige unlocks new features
  */
 export function getColonyMilestone(prestigeCount: number): {
@@ -39,42 +105,12 @@ export function getColonyMilestone(prestigeCount: number): {
 	unlock: string;
 } {
 	const milestones = [
-		{
-			colony: 0,
-			name: 'Earth',
-			destination: 'Home',
-			unlock: 'Starting colony — build your empire'
-		},
-		{
-			colony: 1,
-			name: 'Luna',
-			destination: 'Moon Base',
-			unlock: 'All divisions unlocked from start'
-		},
-		{
-			colony: 2,
-			name: 'Mars Alpha',
-			destination: 'Mars',
-			unlock: 'Automated managers start at 50% discount'
-		},
-		{
-			colony: 3,
-			name: 'Mars City',
-			destination: 'Mars Expansion',
-			unlock: 'Start with 1 free tier in each division'
-		},
-		{
-			colony: 4,
-			name: 'Titan Outpost',
-			destination: 'Saturn\'s Moon',
-			unlock: 'Double offline earnings'
-		},
-		{
-			colony: 5,
-			name: 'Interstellar',
-			destination: 'Beyond the Solar System',
-			unlock: '+50% to all Colony Tech bonuses'
-		}
+		{ colony: 0, name: 'Earth', destination: 'Home', unlock: 'Starting colony — build your empire' },
+		{ colony: 1, name: 'Luna', destination: 'Moon Base', unlock: 'All divisions unlocked from start' },
+		{ colony: 2, name: 'Mars Alpha', destination: 'Mars', unlock: 'Automated managers start at 50% discount' },
+		{ colony: 3, name: 'Mars City', destination: 'Mars Expansion', unlock: 'Start with 1 free tier in each division' },
+		{ colony: 4, name: 'Titan Outpost', destination: 'Saturn\'s Moon', unlock: 'Double offline earnings' },
+		{ colony: 5, name: 'Interstellar', destination: 'Beyond the Solar System', unlock: '+50% to all Colony Tech bonuses' },
 	];
 
 	const idx = Math.min(prestigeCount, milestones.length - 1);
@@ -83,7 +119,6 @@ export function getColonyMilestone(prestigeCount: number): {
 
 /**
  * Check if player should be nudged toward prestige
- * When progression has significantly slowed down
  */
 export function shouldSuggestNewColony(
 	currentRevenuePerSecond: number,
@@ -91,17 +126,12 @@ export function shouldSuggestNewColony(
 	totalValueEarned: number,
 	currentColonyTech: number
 ): boolean {
-	// Don't suggest if they'd earn less than 10 new CT
 	const potentialCT = calculateColonyTech(totalValueEarned);
 	const newCT = potentialCT - currentColonyTech;
 	if (newCT < 10) return false;
-
-	// Suggest when revenue has dropped to 5% of peak
-	// (means they've hit a wall)
 	if (peakRevenuePerSecond > 0 && currentRevenuePerSecond < peakRevenuePerSecond * 0.05) {
 		return true;
 	}
-
 	return false;
 }
 
