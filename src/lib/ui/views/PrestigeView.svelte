@@ -2,7 +2,8 @@
 	import { gameState } from '$lib/stores/gameState';
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { getColonyMilestone } from '$lib/systems/PrestigeSystem';
+	import { getColonyMilestone, calculateVisionPoints, MEGA_UPGRADES, type MegaUpgrade } from '$lib/systems/PrestigeSystem';
+	import { eventBus } from '$lib/engine/EventBus';
 
 	let gs = $derived($gameState);
 	let colonyTech = $derived(gs.colonyTech);
@@ -13,6 +14,26 @@
 	let postPrestigeTech = $derived(colonyTech + techEarnable);
 	let postPrestigeMultiplier = $derived(1 + postPrestigeTech * 0.03);
 	let canPrestige = $derived(techEarnable > 0);
+
+	// Vision Points
+	let currentVP = $derived(gs.visionPoints ?? 0);
+	let pendingVP = $derived(calculateVisionPoints(totalValueEarned));
+	let vpRevenueBonus = $derived(Math.round(currentVP * 2));
+	let purchasedMegas = $derived(gs.purchasedMegaUpgrades ?? []);
+
+	function buyMegaUpgrade(mu: MegaUpgrade) {
+		gameState.update(s => {
+			const vp = s.visionPoints ?? 0;
+			const purchased = s.purchasedMegaUpgrades ?? [];
+			if (purchased.includes(mu.id)) return s;
+			if (vp < mu.cost) return s;
+			return {
+				...s,
+				visionPoints: vp - mu.cost,
+				purchasedMegaUpgrades: [...purchased, mu.id],
+			};
+		});
+	}
 
 	let currentColony = $derived(getColonyMilestone(prestigeCount));
 	let nextColony = $derived(getColonyMilestone(prestigeCount + 1));
@@ -107,6 +128,74 @@
 			></div>
 		{/if}
 	</div>
+
+	<!-- Vision Points (Angel Investors equivalent) -->
+	<div
+		class="relative overflow-hidden rounded-xl p-5 border border-white/5"
+		style="background: linear-gradient(135deg, var(--color-bg-secondary) 0%, rgba(255, 204, 68, 0.12) 100%);"
+	>
+		<div class="relative z-10">
+			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-1">
+				👁️ Vision Points
+			</div>
+			<div class="text-4xl font-black text-solar-gold tabular-nums font-mono">
+				{currentVP}
+			</div>
+			{#if currentVP > 0}
+				<div class="mt-2 flex items-center gap-2">
+					<span class="text-sm text-text-secondary">Revenue Bonus:</span>
+					<span class="text-sm font-bold text-solar-gold">+{vpRevenueBonus}%</span>
+				</div>
+			{/if}
+			{#if pendingVP > 0}
+				<div class="mt-2 p-2 bg-solar-gold/10 rounded-lg">
+					<span class="text-xs text-solar-gold font-semibold">
+						🔮 +{pendingVP} VP pending on next colony launch
+					</span>
+				</div>
+			{/if}
+		</div>
+		{#if currentVP > 0}
+			<div
+				class="absolute -right-8 -top-8 w-32 h-32 rounded-full opacity-15 blur-3xl"
+				style="background: var(--color-solar-gold);"
+			></div>
+		{/if}
+	</div>
+
+	<!-- Mega-Upgrades (spend VP) -->
+	{#if currentVP > 0 || purchasedMegas.length > 0}
+		<div class="bg-bg-secondary/60 rounded-xl p-4 border border-white/[0.03]">
+			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-3">
+				⭐ Mega-Upgrades <span class="text-text-muted/50">(spend Vision Points)</span>
+			</div>
+			<div class="space-y-2">
+				{#each MEGA_UPGRADES as mu}
+					{@const owned = purchasedMegas.includes(mu.id)}
+					{@const canAffordMega = currentVP >= mu.cost}
+					<div class="flex items-center gap-3 p-2.5 rounded-lg {owned ? 'bg-solar-gold/10' : 'bg-bg-tertiary/30'}">
+						<div class="flex-1 min-w-0">
+							<div class="text-sm font-semibold {owned ? 'text-solar-gold' : 'text-text-primary'}">{mu.name}</div>
+							<div class="text-xs text-text-muted">{mu.description}</div>
+						</div>
+						{#if owned}
+							<span class="text-xs font-bold text-solar-gold px-2 py-1">✅ Active</span>
+						{:else}
+							<button
+								onclick={() => buyMegaUpgrade(mu)}
+								disabled={!canAffordMega}
+								class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95
+									   disabled:opacity-40 disabled:cursor-not-allowed
+									   {canAffordMega ? 'bg-solar-gold/15 text-solar-gold border border-solar-gold/25' : 'bg-bg-tertiary text-text-muted'}"
+							>
+								{mu.cost} VP
+							</button>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
 
 	<!-- Current Colony Status -->
 	<div class="bg-bg-secondary/60 rounded-xl p-4 border border-white/[0.03]">

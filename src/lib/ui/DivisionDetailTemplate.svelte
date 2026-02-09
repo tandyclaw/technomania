@@ -14,6 +14,7 @@
 	import { buyQuantity } from '$lib/stores/buyQuantity';
 
 	import { gameState } from '$lib/stores/gameState';
+	import MilestonePanel from './MilestonePanel.svelte';
 
 	let {
 		division,
@@ -144,6 +145,11 @@
 			{cash}
 			onHire={onHireChief}
 		/>
+	{/if}
+
+	<!-- Milestones panel -->
+	{#if state.unlocked}
+		<MilestonePanel divisionId={division.id} />
 	{/if}
 
 	<!-- Active bottlenecks -->
