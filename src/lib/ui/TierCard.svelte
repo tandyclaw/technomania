@@ -110,13 +110,13 @@
 	let prevProducing = $state(false);
 	let prevProgress = $state(0);
 
-	// Listen for production completion (progress went from high to low/stopped)
+	// Listen for production completion — only show popups for MANUAL taps (no chief)
 	$effect(() => {
 		const justCompleted = prevProducing && !tier.producing && prevProgress > 0.5;
 		const cycleCompleted = tier.producing && tier.progress < prevProgress && prevProgress > 0.8;
 
-		if ((justCompleted || cycleCompleted) && revenue > 0) {
-			// Show payout popup at center of card
+		// Only show payout popups when manually tapping (no chief automation)
+		if ((justCompleted || cycleCompleted) && revenue > 0 && chiefLevel === 0) {
 			const id = ++popupCounter;
 			payoutPopups = [...payoutPopups, { id, amount: `+${formatCurrency(revenue)}`, x: 50, y: 30 }];
 			setTimeout(() => {
@@ -221,35 +221,44 @@
 				<!-- Stats row -->
 				<div class="flex items-center gap-3 mt-2 flex-wrap">
 					{#if tier.count > 0}
-						<!-- Revenue per cycle -->
-						<div class="flex items-center gap-1">
-							<span class="text-[10px] text-text-muted uppercase tracking-wider">Earn</span>
-							<span class="text-xs font-semibold tabular-nums" style="color: {color};">
-								{revenuePerCycle}
-							</span>
-						</div>
-
-						<!-- Cycle duration -->
-						<div class="flex items-center gap-1">
-							<span class="text-[10px] text-text-muted uppercase tracking-wider">Cycle</span>
-							<span class="text-xs font-semibold tabular-nums text-text-secondary">
-								{cycleDurationDisplay}
-							</span>
-						</div>
-
-						<!-- Revenue per second (if automated or fast enough) -->
 						{#if chiefLevel > 0}
+							<!-- AUTOMATED: Show rate prominently first -->
 							<div class="flex items-center gap-1">
-								<span class="text-[10px] text-text-muted uppercase tracking-wider">Rate</span>
-								<span class="text-xs font-semibold tabular-nums" style="color: {color};">
+								<span class="text-sm font-bold tabular-nums" style="color: {color};">
 									{revenueDisplay}/s
 								</span>
 							</div>
-						{:else if !tier.producing}
+
+							<!-- Cycle info (secondary) -->
 							<div class="flex items-center gap-1">
-								<span class="text-[10px] text-text-muted uppercase tracking-wider">Tap</span>
-								<span class="text-xs font-semibold text-text-secondary">to produce</span>
+								<span class="text-[10px] text-text-muted uppercase tracking-wider">Cycle</span>
+								<span class="text-xs font-semibold tabular-nums text-text-secondary">
+									{cycleDurationDisplay}
+								</span>
 							</div>
+						{:else}
+							<!-- MANUAL: Show per-cycle earnings first -->
+							<div class="flex items-center gap-1">
+								<span class="text-[10px] text-text-muted uppercase tracking-wider">Earn</span>
+								<span class="text-xs font-semibold tabular-nums" style="color: {color};">
+									{revenuePerCycle}
+								</span>
+							</div>
+
+							<!-- Cycle duration -->
+							<div class="flex items-center gap-1">
+								<span class="text-[10px] text-text-muted uppercase tracking-wider">Cycle</span>
+								<span class="text-xs font-semibold tabular-nums text-text-secondary">
+									{cycleDurationDisplay}
+								</span>
+							</div>
+
+							{#if !tier.producing}
+								<div class="flex items-center gap-1">
+									<span class="text-[10px] text-text-muted uppercase tracking-wider">Tap</span>
+									<span class="text-xs font-semibold text-text-secondary">to produce</span>
+								</div>
+							{/if}
 						{/if}
 
 						{#if tierData.powerMW}

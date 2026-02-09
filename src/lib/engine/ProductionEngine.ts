@@ -222,6 +222,7 @@ export function tickProduction(deltaMs: number): void {
 						division: divId,
 						tier: i,
 						amount: totalRevenue,
+						automated: divState.chiefLevel > 0,
 					});
 
 					if (divState.chiefLevel > 0) {

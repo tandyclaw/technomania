@@ -212,11 +212,15 @@ export function initSoundListeners(): () => void {
 	cleanupSoundListeners();
 
 	unsubscribers = [
+		// Only play tap sound for manual production start (tapProduce)
 		eventBus.on('production:started', () => {
 			playTap();
 		}),
-		eventBus.on('production:complete', () => {
-			playKaching();
+		// Only play kaching for manual production (not automated by chiefs)
+		eventBus.on('production:complete', (data) => {
+			if (!data.automated) {
+				playKaching();
+			}
 		}),
 		eventBus.on('tier:unlocked', () => {
 			playWhoosh();
