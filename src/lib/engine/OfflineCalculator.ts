@@ -45,6 +45,7 @@ const TIER_BASE_REVENUE: Record<string, number[]> = {
 	tesla:       [2, 12, 60, 350, 2000],           // Roadster → Model Y
 	ai:          [3, 20, 100, 600, 3000, 15000],   // Chatbot → AGI
 	tunnels:     [4, 25, 120, 700, 3500, 18000],   // Test Bore → Hyperloop
+	robotics:    [5, 30, 130, 750, 3800, 20000],   // Assembly Bot → General Purpose Robot
 };
 
 const TIER_BASE_PRODUCTION: Record<string, number[]> = {
@@ -53,6 +54,7 @@ const TIER_BASE_PRODUCTION: Record<string, number[]> = {
 	tesla:       [0.02, 0.1, 0.5, 3, 15],          // Vehicles/period contribution
 	ai:          [0.02, 0.1, 0.5, 3, 15, 80],     // AI compute contribution
 	tunnels:     [0.01, 0.08, 0.4, 2, 10, 50],    // Tunnel length contribution
+	robotics:    [0.02, 0.1, 0.5, 3, 12, 60],     // Robot production contribution
 };
 
 const DIVISION_NAMES: Record<string, string> = {
@@ -61,6 +63,7 @@ const DIVISION_NAMES: Record<string, string> = {
 	tesla: 'Tesla',
 	ai: 'AI',
 	tunnels: 'Tunnels',
+	robotics: 'Robotics',
 };
 
 /**

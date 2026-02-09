@@ -10,7 +10,7 @@
 
 	// Only show panel if at least 2 divisions are unlocked (synergies become relevant)
 	let divisionsUnlocked = $derived(
-		(['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const).filter(
+		(['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const).filter(
 			(id) => gs.divisions[id].unlocked
 		).length
 	);

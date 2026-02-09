@@ -13,7 +13,7 @@
 	import IncomeSparkline from '$lib/ui/IncomeSparkline.svelte';
 
 	// Division ordering for display
-	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
+	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
 
 	let state = $derived($gameState);
 	let prestigeCount = $derived(state.prestigeCount);

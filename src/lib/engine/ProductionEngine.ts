@@ -44,7 +44,7 @@ function getPrestigeMultiplier(state: GameState): number {
 	return 1 + (state.colonyTech ?? 0) * 0.03;
 }
 
-const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
+const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
 
 /**
  * Get the EFFECTIVE cycle duration for a tier, including all speed modifiers:
@@ -115,6 +115,18 @@ function cloneState(state: GameState): GameState {
 			tesla: {
 				...state.divisions.tesla,
 				tiers: state.divisions.tesla.tiers.map(t => ({ ...t })),
+			},
+			ai: {
+				...state.divisions.ai,
+				tiers: state.divisions.ai.tiers.map(t => ({ ...t })),
+			},
+			tunnels: {
+				...state.divisions.tunnels,
+				tiers: state.divisions.tunnels.tiers.map(t => ({ ...t })),
+			},
+			robotics: {
+				...state.divisions.robotics,
+				tiers: state.divisions.robotics.tiers.map(t => ({ ...t })),
 			},
 		},
 	};

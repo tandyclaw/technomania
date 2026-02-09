@@ -136,6 +136,7 @@ export interface GameState {
 		teslaenergy: DivisionState;
 		ai: DivisionState;
 		tunnels: DivisionState;
+		robotics: DivisionState;
 	};
 
 	// Research
@@ -194,7 +195,8 @@ export function createDefaultState(): GameState {
 			tesla: createDefaultDivision(6),
 			teslaenergy: createDefaultDivision(6),
 			ai: createDefaultDivision(6),
-			tunnels: createDefaultDivision(6)
+			tunnels: createDefaultDivision(6),
+			robotics: createDefaultDivision(6)
 		},
 
 		unlockedResearch: [],

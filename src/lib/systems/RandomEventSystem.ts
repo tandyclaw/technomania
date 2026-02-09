@@ -45,7 +45,7 @@ const DIVISION_NAMES: Record<string, string> = {
 
 function getUnlockedDivisions(): string[] {
 	const s = get(gameState);
-	return (['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const).filter(
+	return (['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const).filter(
 		(id) => s.divisions[id].unlocked
 	);
 }

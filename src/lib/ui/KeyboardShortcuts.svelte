@@ -25,7 +25,7 @@
 
 	function collectAllReady() {
 		const state = get(gameState);
-		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
+		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
 		for (const divId of divIds) {
 			const div = state.divisions[divId];
 			if (!div?.unlocked) continue;

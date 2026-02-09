@@ -10,6 +10,7 @@ import { TESLA_TIERS, TESLA_COLOR, TESLA_ICON, TESLA_NAME } from './Tesla';
 import { TESLA_ENERGY_TIERS, TESLA_ENERGY_COLOR, TESLA_ENERGY_ICON, TESLA_ENERGY_NAME } from './TeslaEnergy';
 import { AI_TIERS, AI_COLOR, AI_ICON, AI_NAME } from './AI';
 import { TUNNELS_TIERS, TUNNELS_COLOR, TUNNELS_ICON, TUNNELS_NAME } from './Tunnels';
+import { ROBOTICS_TIERS, ROBOTICS_COLOR, ROBOTICS_ICON, ROBOTICS_NAME } from './Robotics';
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export interface TierData {
@@ -69,6 +70,14 @@ export const DIVISIONS: Record<string, DivisionMeta> = {
 		color: TUNNELS_COLOR,
 		description: 'Dig tunnels. Move people and freight underground.',
 		tiers: TUNNELS_TIERS,
+	},
+	robotics: {
+		id: 'robotics',
+		name: ROBOTICS_NAME,
+		icon: ROBOTICS_ICON,
+		color: ROBOTICS_COLOR,
+		description: 'Build robots. Automate everything.',
+		tiers: ROBOTICS_TIERS,
 	},
 };
 

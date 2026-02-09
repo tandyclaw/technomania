@@ -174,7 +174,7 @@ export function tickResearch(deltaMs: number): void {
 export function calculateRPPerSecond(state: GameState): number {
 	let rpPerSec = 0;
 
-	const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
+	const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
 
 	for (const divId of divIds) {
 		const div = state.divisions[divId];

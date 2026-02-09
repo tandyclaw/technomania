@@ -42,6 +42,11 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		description: 'Bore tunnels under cities.',
 		flavorText: 'Move people and freight underground. Slow but lucrative.',
 	},
+	robotics: {
+		cost: 200000,
+		description: 'Build robots that automate everything.',
+		flavorText: 'From assembly bots to general purpose robots. The end of manual labor.',
+	},
 };
 
 /**

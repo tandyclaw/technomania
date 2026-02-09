@@ -27,7 +27,7 @@ export interface BottleneckDef {
 	id: string;
 	name: string;
 	description: string;
-	division: 'teslaenergy' | 'spacex' | 'tesla' | 'ai' | 'tunnels' | 'all';
+	division: 'teslaenergy' | 'spacex' | 'tesla' | 'ai' | 'tunnels' | 'robotics' | 'all';
 	category: BottleneckCategory;
 	severity: number; // 0.0 = no effect, 1.0 = total stop
 	resolveCost: number; // cash to fix instantly
@@ -453,6 +453,67 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		},
 	},
 
+	// ── Robotics Division (3 bottlenecks) ────────────────────────────────────
+	{
+		id: 'rb_uncanny_valley',
+		name: 'Uncanny Valley',
+		description: 'Humanoid prototypes freak people out. Consumer adoption is stalling.',
+		division: 'robotics',
+		category: 'scaling',
+		severity: 0.30,
+		resolveCost: 1000000,
+		researchCost: 15,
+		waitDurationMs: 420_000,
+		flavorText: 'It looks almost human. That\'s the problem.',
+		tooltip: 'The uncanny valley effect causes revulsion when robots look nearly-but-not-quite human. Redesigning for friendly aesthetics is key.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.robotics.tiers;
+			return tiers[2].count > 10;
+		},
+	},
+	{
+		id: 'rb_battery_crisis',
+		name: 'Battery Life Crisis',
+		description: 'Robots drain batteries too fast. Uptime is unacceptable.',
+		division: 'robotics',
+		category: 'engineering',
+		severity: 0.35,
+		resolveCost: 3000000,
+		researchCost: 20,
+		waitDurationMs: 540_000,
+		flavorText: 'A robot that dies after 2 hours isn\'t replacing anyone.',
+		tooltip: 'Humanoid robots performing physical tasks consume enormous power. Current battery tech limits operational time to a fraction of a work shift.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.robotics.tiers;
+			return tiers[3].count > 8;
+		},
+	},
+	{
+		id: 'rb_union_pushback',
+		name: 'Union Pushback',
+		description: 'Workers resist automation. Strikes and regulations threaten production.',
+		division: 'robotics',
+		category: 'regulatory',
+		severity: 0.40,
+		resolveCost: 8000000,
+		researchCost: 30,
+		waitDurationMs: 720_000,
+		flavorText: '"Robots took our jobs" isn\'t just a meme anymore.',
+		tooltip: 'Mass automation triggers labor union action, government regulation, and public backlash. Transition programs and retraining help, but take time.',
+		isProductionHell: true,
+		productionHellFlavor: [
+			'Dock workers are blocking robot deliveries at the port.',
+			'Three states just passed "human worker minimum" laws.',
+			'The hashtag #BanTheBots is trending worldwide.',
+			'Your factory robots got vandalized overnight. Insurance won\'t cover it.',
+			'"You can\'t automate empathy." — protest sign outside HQ',
+		],
+		shouldActivate: (state) => {
+			const tiers = state.divisions.robotics.tiers;
+			return tiers[4].count >= 5;
+		},
+	},
+
 	// ── Cross-cutting: Power ─────────────────────────────────────────────────
 	{
 		id: 'power_deficit',
@@ -522,7 +583,7 @@ export function activateBottleneck(divisionId: string, bottleneckId: string): vo
 	gameState.update((s) => {
 		if (def.division === 'all') {
 			// Power deficit is global — apply to all divisions
-			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
 				const divState = s.divisions[divId];
 				const existing = divState.bottlenecks.find((b) => b.id === bottleneckId);
 				if (!existing) {
@@ -704,7 +765,7 @@ export function checkAutoResolveBottlenecks(): void {
 		if (def.autoResolveCheck(state)) {
 			// Mark as resolved in all divisions
 			gameState.update((s) => {
-				for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+				for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
 					const divState = s.divisions[divId];
 					const bottleneck = divState.bottlenecks.find((b) => b.id === def.id);
 					if (bottleneck && bottleneck.active) {
@@ -773,7 +834,7 @@ function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
 
 	if (shouldAutoResolve) {
 		// Auto-resolve in all divisions
-		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
 			gameState.update((s) => {
 				const bottleneck = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
 				if (bottleneck?.active) {
@@ -787,7 +848,7 @@ function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
 
 	if (shouldBeActive) {
 		// Activate in all divisions
-		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
 			gameState.update((s) => {
 				const existing = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
 				if (!existing) {
@@ -847,7 +908,7 @@ export function tickBottlenecks(deltaMs: number): void {
 	}
 
 	// Check wait timers
-	for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+	for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
 		tickBottleneckWaits(divId);
 	}
 

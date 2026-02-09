@@ -415,7 +415,7 @@ class GameManager {
 	 */
 	private calculateTotalIncomePerSec(state: GameState): number {
 		let total = 0;
-		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics', 'robotics'] as const) {
 			const divState = state.divisions[divId];
 			const divMeta = DIVISIONS[divId];
 			if (!divState?.unlocked || !divMeta) continue;
@@ -447,7 +447,7 @@ class GameManager {
 		}
 
 		// All divisions unlocked (15%)
-		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
+		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics', 'robotics'] as const;
 		let unlockedDivs = 0;
 		for (const id of divIds) {
 			if (state.divisions[id].unlocked) unlockedDivs++;
@@ -513,7 +513,7 @@ class GameManager {
 				});
 			}
 			// Reset any in-progress production since timing model changed
-			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
 				const div = migrated.divisions[divId];
 				if (div) {
 					for (const tier of div.tiers) {
@@ -589,6 +589,22 @@ class GameManager {
 		}
 		if (!migrated.divisions.tunnels) {
 			migrated.divisions.tunnels = {
+				unlocked: false,
+				tiers: Array.from({ length: 6 }, (_, i) => ({
+					unlocked: i === 0,
+					count: 0,
+					level: 0,
+					producing: false,
+					progress: 0,
+				})),
+				chiefLevel: 0,
+				bottlenecks: [],
+			};
+		}
+
+		// Ensure Robotics division exists (added with Robotics division)
+		if (!migrated.divisions.robotics) {
+			migrated.divisions.robotics = {
 				unlocked: false,
 				tiers: Array.from({ length: 6 }, (_, i) => ({
 					unlocked: i === 0,
