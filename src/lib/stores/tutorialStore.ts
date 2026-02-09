@@ -75,7 +75,7 @@ export const TUTORIAL_STEPS = [
 		id: 'locked-divisions',
 		title: 'Expand Your Empire',
 		message:
-			'Rockets and EVs are locked for now. Earn more cash to unlock them. Each division has unique tiers, chiefs, and synergies. Go build!',
+			'Rockets and Manufacturing are locked for now. Earn more cash to unlock them. Each division has unique tiers, chiefs, and synergies. Go build!',
 		target: null,
 		position: 'center' as const,
 	},

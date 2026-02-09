@@ -4,10 +4,10 @@
  * PROGRESSION DESIGN:
  * - Energy: Always unlocked (foundation — you NEED power for other divisions)
  * - Rockets: $500 (quickly reachable, ~2-3 min of play)
- * - EVs: $2,500 (reached ~5-7 min, when you're starting to feel the rhythm)
+ * - Manufacturing: $2,500 (reached ~5-7 min, when you're starting to feel the rhythm)
  * 
  * Energy should feel "free" and fast. Unlocking Rockets is the first milestone.
- * EVs come later as the money engine.
+ * Manufacturing comes later as the money engine.
  */
 
 export interface DivisionUnlockRequirement {
@@ -29,7 +29,7 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 	},
 	tesla: {
 		cost: 2500,
-		description: 'Build electric vehicles at scale.',
+		description: 'Scale production. Build anything.',
 		flavorText: 'The world runs on cars. Make them electric.',
 	},
 	ai: {

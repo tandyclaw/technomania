@@ -2,11 +2,11 @@
  * FlavorMechanics.ts — Division-specific flavor stat tracking
  *
  * T024: SpaceX launch cadence (launches per month)
- * T028: Tesla production rate (vehicles per week)
+ * T028: Manufacturing production rate (units per week)
  *
  * Each completed production cycle on a division's tiers counts as:
  * - A "launch" for SpaceX
- * - A "vehicle produced" for Tesla
+ * - A "unit produced" for Manufacturing
  *
  * Stats are tracked with timestamps so we can calculate rolling windows
  * (last 30 days for launches, last 7 days for vehicles).
@@ -36,7 +36,7 @@ export interface LaunchLogEntry {
 export interface FlavorStats {
 	/** SpaceX: recent launch log (capped at 50 entries) */
 	launchLog: LaunchLogEntry[];
-	/** Tesla: recent production log (capped at 50 entries) */
+	/** Manufacturing: recent production log (capped at 50 entries) */
 	productionLog: LaunchLogEntry[];
 }
 
@@ -67,7 +67,7 @@ export function getLaunchesThisMonth(stats: FlavorStats): number {
 }
 
 /**
- * Count Tesla vehicles produced in the rolling "week" window.
+ * Count Manufacturing units produced in the rolling "week" window.
  */
 export function getVehiclesThisWeek(stats: FlavorStats): number {
 	const cutoff = Date.now() - GAME_WEEK_MS;
@@ -82,7 +82,7 @@ export function getTotalLaunches(stats: FlavorStats): number {
 }
 
 /**
- * Get total all-time vehicles produced.
+ * Get total all-time units produced.
  */
 export function getTotalVehiclesProduced(stats: FlavorStats): number {
 	return stats.productionLog.length;

@@ -6,7 +6,7 @@
 	const divisions = [
 		{ name: 'Energy', icon: '☀️', color: '#FFCC44', desc: 'Solar, batteries & grid storage' },
 		{ name: 'Rockets', icon: '🚀', color: '#FF4444', desc: 'Reusable rockets & Mars colonization' },
-		{ name: 'EVs', icon: '🚗', color: '#4488FF', desc: 'Electric vehicles & Gigafactories' },
+		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'Workshops to Colony Forges' },
 		{ name: 'AI', icon: '🤖', color: '#9944FF', desc: 'Chatbots to AGI' },
 		{ name: 'Tunnels', icon: '🚇', color: '#FF8844', desc: 'Underground transit & hyperloop' },
 		{ name: 'Robotics', icon: '🦾', color: '#FF6644', desc: 'Automate the physical world' },
@@ -14,7 +14,7 @@
 
 	const features = [
 		{ icon: '🎯', title: '120 Milestones', desc: 'Unlock speed and revenue multipliers as you scale each tier' },
-		{ icon: '🔗', title: 'Cross-Division Synergies', desc: 'AI powers robots. Robots build EVs. EVs use your energy grid.' },
+		{ icon: '🔗', title: 'Cross-Division Synergies', desc: 'AI powers robots. Robots run factories. Factories use your energy grid.' },
 		{ icon: '⚡', title: 'Random Events', desc: 'Government subsidies, viral tweets, tunnel collapses — adapt or lose' },
 		{ icon: '🔬', title: 'Research Tree', desc: 'Invest in R&D to unlock permanent upgrades across your empire' },
 		{ icon: '🪐', title: 'Colonies & Colony Tech', desc: 'Launch colonies, reset, come back stronger with permanent mega-upgrades' },
@@ -29,7 +29,7 @@
 
 <svelte:head>
 	<title>Moonshot — Build a Tech Empire</title>
-	<meta name="description" content="Build rockets, scale EVs, train AI, dig tunnels, and colonize Mars. An idle tycoon game about building the future — one tap at a time." />
+	<meta name="description" content="Build rockets, scale manufacturing, train AI, dig tunnels, and colonize Mars. An idle tycoon game about building the future — one tap at a time." />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />

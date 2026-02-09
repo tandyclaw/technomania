@@ -48,10 +48,10 @@ export const DIVISION_CHIEFS: Record<string, ChiefData> = {
 	},
 	tesla: {
 		name: 'JB Strasser',
-		title: 'Chief Technical Officer',
+		title: 'Chief Production Officer',
 		inspired: 'JB Straubel',
-		quip: '"Every electron counts. I\'ll make sure of it."',
-		portrait: '🔋',
+		quip: '"The factory is the product. Optimize everything."',
+		portrait: '🏭',
 	},
 };
 

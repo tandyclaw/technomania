@@ -36,9 +36,9 @@ interface EventDef {
 }
 
 const DIVISION_NAMES: Record<string, string> = {
-	teslaenergy: 'Tesla Energy',
+	teslaenergy: 'Energy',
 	spacex: 'SpaceX',
-	tesla: 'Tesla Auto',
+	tesla: 'Manufacturing',
 	ai: 'xAI',
 	tunnels: 'Boring Co.',
 };
@@ -64,7 +64,7 @@ const EVENT_DEFS: EventDef[] = [
 			{
 				label: '+50% Energy Revenue (60s)',
 				icon: '⚡',
-				description: 'Boost Tesla Energy revenue for a full minute.',
+				description: 'Boost Energy revenue for a full minute.',
 				action: () => {
 					addBuff({
 						id: 'solar_subsidy',

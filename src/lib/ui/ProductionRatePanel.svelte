@@ -1,9 +1,9 @@
 <script lang="ts">
 	/**
-	 * ProductionRatePanel.svelte — EVs vehicle production rate display
+	 * ProductionRatePanel.svelte — Manufacturing production rate display
 	 *
 	 * Shows vehicles/week counter, total vehicles produced, and a mini log.
-	 * Displayed on the EVs division screen.
+	 * Displayed on the Manufacturing division screen.
 	 */
 	import { gameState } from '$lib/stores/gameState';
 	import {

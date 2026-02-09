@@ -500,9 +500,9 @@ class GameManager {
 			migrated.colonyTech = migrated.colonyTech ?? 0;
 		}
 
-		// Version 1 → Version 2: Tesla gets 6th tier (Cybertruck), cycleDuration replaces baseTime
+		// Version 1 → Version 2: Manufacturing gets 6th tier, cycleDuration replaces baseTime
 		if (migrated.version < 2) {
-			// Add Cybertruck tier to Tesla if only 5 tiers
+			// Add 6th tier to Manufacturing if only 5 tiers
 			if (migrated.divisions.tesla && migrated.divisions.tesla.tiers.length < 6) {
 				migrated.divisions.tesla.tiers.push({
 					unlocked: false,

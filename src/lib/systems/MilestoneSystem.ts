@@ -25,7 +25,7 @@ function generateAllMilestones(): Milestone[] {
 	const divisions: { id: string; tiers: string[] }[] = [
 		{ id: 'teslaenergy', tiers: ['Solar Panels', 'Home Battery', 'Commercial Battery', 'Solar Roof', 'Grid Battery Farm', 'Virtual Power Plant'] },
 		{ id: 'spacex', tiers: ['Small Orbital Rocket', 'Reusable Booster', 'Crew Capsule', 'Heavy Lift Vehicle', 'Super Heavy Starship', 'Mars Lander'] },
-		{ id: 'tesla', tiers: ['Electric Sports Car', 'Luxury Sedan', 'Electric SUV', 'Mass Market Sedan', 'Compact Crossover', 'Electric Truck'] },
+		{ id: 'tesla', tiers: ['Small Workshop', 'Assembly Line', 'Gigafactory', 'Orbital Foundry', 'Mars Fabricator', 'Colony Forge'] },
 		{ id: 'ai', tiers: ['Chatbot', 'Language Model', 'AI Assistant', 'Autonomous Agent', 'Neural Network Hub', 'AGI'] },
 		{ id: 'tunnels', tiers: ['Test Bore', 'City Tunnel', 'Transit Loop', 'Freight Network', 'Continental Link', 'Hyperloop'] },
 	];

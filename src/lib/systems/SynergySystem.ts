@@ -111,10 +111,10 @@ export const MVP_SYNERGIES: Synergy[] = [
 	// ── AI Synergies ─────────────────────────────────────────────────────────
 	{
 		id: 'ai_tesla_autopilot',
-		name: 'AI-Powered Autopilot',
-		description: 'AI models dramatically improve self-driving capabilities.',
-		flavorText: 'Neural nets trained on billions of miles of driving data.',
-		icon: '🤖🚗',
+		name: 'AI Quality Control',
+		description: 'AI vision systems detect defects and optimize production yields.',
+		flavorText: 'Neural nets inspect every unit faster than any human could.',
+		icon: '🤖🏭',
 		requirement: {
 			sourceDivision: 'ai',
 			sourceMinTiers: 2,
@@ -154,10 +154,10 @@ export const MVP_SYNERGIES: Synergy[] = [
 	// ── Tunnels Synergies ────────────────────────────────────────────────────
 	{
 		id: 'tesla_tunnels_evtransit',
-		name: 'EV Transit Fleet',
-		description: 'Electric vehicles fill tunnel transit loops.',
-		flavorText: 'Autonomous EVs shuttle passengers through underground networks.',
-		icon: '🚗🚇',
+		name: 'Underground Logistics',
+		description: 'Factory output ships through tunnel freight networks.',
+		flavorText: 'Manufactured goods move underground — no traffic, no delays.',
+		icon: '🏭🚇',
 		requirement: {
 			sourceDivision: 'tesla',
 			sourceMinTiers: 3,
@@ -197,10 +197,10 @@ export const MVP_SYNERGIES: Synergy[] = [
 	// ── Robotics Synergies ───────────────────────────────────────────────────
 	{
 		id: 'robotics_tesla_assembly',
-		name: 'Automated Assembly',
-		description: 'Robots build EVs faster on the production line.',
-		flavorText: 'Robotic arms weld, paint, and assemble vehicles 24/7 without breaks.',
-		icon: '🦾🚗',
+		name: 'Robotic Assembly',
+		description: 'Robots speed up manufacturing on the production line.',
+		flavorText: 'Robotic arms weld, fabricate, and assemble 24/7 without breaks.',
+		icon: '🦾🏭',
 		requirement: {
 			sourceDivision: 'robotics',
 			sourceMinTiers: 2,

@@ -219,11 +219,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		},
 	},
 
-	// ── EVs Division (6 bottlenecks) ─────────────────────────────────────────
+	// ── Manufacturing Division (6 bottlenecks) ───────────────────────────────
 	{
 		id: 'ts_production_hell',
 		name: '🔥 PRODUCTION HELL 🔥',
-		description: 'Mass market EV production is a nightmare. Robots fighting robots. Workers sleeping on floors.',
+		description: 'Mass production is a nightmare. Robots fighting robots. Workers sleeping on floors.',
 		division: 'tesla',
 		category: 'scaling',
 		severity: 0.50,
@@ -231,12 +231,12 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 20,
 		waitDurationMs: 600_000,
 		flavorText: 'Manufacturing at scale is war. The factory floor becomes home.',
-		tooltip: 'Scaling from thousands to hundreds of thousands of vehicles per year is brutally hard. Over-automation backfires. You need to rebuild processes from scratch.',
+		tooltip: 'Scaling from prototype to mass production is brutally hard. Over-automation backfires. You need to rebuild processes from scratch.',
 		isProductionHell: true,
 		productionHellFlavor: [
-			'The paint shop is a disaster. Every car needs rework.',
-			'Robots keep crashing into each other on the body line.',
-			'Battery module production is in a tent in the parking lot.',
+			'The assembly line keeps jamming. Every unit needs rework.',
+			'Robots keep crashing into each other on the production line.',
+			'Component production overflowed into a tent in the parking lot.',
 			'The CEO is personally inspecting every weld. This can\'t scale.',
 			'"Manufacturing is hard. Manufacturing is really, really hard."',
 		],
@@ -248,15 +248,15 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	{
 		id: 'ts_panel_gaps',
 		name: 'Quality Control Crisis',
-		description: 'Build quality issues are piling up. Customers are complaining.',
+		description: 'Defect rates are climbing. Customers are rejecting shipments.',
 		division: 'tesla',
 		category: 'engineering',
 		severity: 0.20,
 		resolveCost: 25000,
 		researchCost: 4,
 		waitDurationMs: 150_000,
-		flavorText: 'Social media is roasting your panel gaps.',
-		tooltip: 'Panel gaps and fit-and-finish issues plague fast-scaling manufacturers. Traditional automakers have decades of stamping expertise.',
+		flavorText: 'The reject bin is overflowing.',
+		tooltip: 'Tolerance issues and fit-and-finish problems plague fast-scaling manufacturers. Quality control at speed requires entirely new inspection systems.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[0].count + tiers[1].count + tiers[2].count > 60;
@@ -265,7 +265,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	{
 		id: 'ts_gigafactory_scaling',
 		name: 'Factory Scaling Crisis',
-		description: 'Building cars at scale requires an entirely new factory paradigm.',
+		description: 'Scaling production requires an entirely new factory paradigm.',
 		division: 'tesla',
 		category: 'scaling',
 		severity: 0.35,
@@ -273,7 +273,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 18,
 		waitDurationMs: 540_000,
 		flavorText: 'The factory IS the product.',
-		tooltip: 'Gigafactories are among the largest buildings on Earth. "The machine that builds the machine" philosophy means factory design is as important as car design.',
+		tooltip: 'Gigafactories are among the largest buildings on Earth. "The machine that builds the machine" philosophy means factory design is as important as product design.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[4].count > 8;
@@ -281,16 +281,16 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_autopilot_recall',
-		name: 'Self-Driving Recall',
-		description: 'NHTSA has issued a safety recall on your autonomous driving system.',
+		name: 'Safety Compliance Audit',
+		description: 'Regulators are auditing your factory output. Production halted pending review.',
 		division: 'tesla',
 		category: 'regulatory',
 		severity: 0.25,
 		resolveCost: 100000,
 		researchCost: 8,
 		waitDurationMs: 300_000,
-		flavorText: 'It\'s technically a software update, not a physical recall.',
-		tooltip: 'Regulators investigate autonomous driving systems frequently. Unlike traditional recalls, software issues can be fixed over-the-air.',
+		flavorText: 'The inspectors found three violations before lunch.',
+		tooltip: 'Manufacturing at scale attracts regulatory scrutiny. Safety standards, emissions compliance, and worker protections all require documentation and process changes.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[1].count + tiers[2].count > 40;
@@ -298,16 +298,16 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_truck_glass',
-		name: 'Armor Glass Failure',
-		description: 'The "unbreakable" truck windows keep shattering during demos.',
+		name: 'Supply Chain Breakdown',
+		description: 'Critical component suppliers can\'t keep up with your production rate.',
 		division: 'tesla',
 		category: 'engineering',
 		severity: 0.30,
 		resolveCost: 200000,
 		researchCost: 12,
 		waitDurationMs: 360_000,
-		flavorText: 'The infamous window shatter. Live on stage. Millions watching.',
-		tooltip: 'Demonstrating "unbreakable" glass on stage is risky. When it fails publicly, it becomes a meme.',
+		flavorText: 'You\'re only as fast as your slowest supplier.',
+		tooltip: 'Vertical integration helps, but some components still come from outside. When a single supplier falters, the whole line stops.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[5].count > 5;
@@ -315,23 +315,23 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_truck_production_hell',
-		name: '🔥 TRUCK HELL 🔥',
-		description: 'Stainless steel is nearly impossible to stamp. Every panel is a custom job.',
+		name: '🔥 FORGE HELL 🔥',
+		description: 'Colony-scale manufacturing on Mars is orders of magnitude harder than Earth.',
 		division: 'tesla',
 		category: 'scaling',
 		severity: 0.55,
 		resolveCost: 500000,
 		researchCost: 30,
 		waitDurationMs: 900_000,
-		flavorText: 'The best product ever. Also the hardest to build.',
-		tooltip: 'Stainless steel exoskeleton trucks can\'t be stamped like normal panels. Each piece must be laser-cut and precisely folded.',
+		flavorText: 'Everything that can go wrong in a factory goes wrong worse on Mars.',
+		tooltip: 'Manufacturing on Mars means no resupply runs, no specialized vendors, no overnight parts delivery. Every broken tool is a crisis.',
 		isProductionHell: true,
 		productionHellFlavor: [
-			'Stainless steel body panels require a completely new stamping process.',
-			'The exoskeleton design means you can\'t fix panels — the whole body IS the frame.',
-			'Laser-cutting each panel takes 3x longer than stamping aluminum.',
-			'The giant wiper motor keeps failing QC. There\'s only ONE wiper.',
-			'"This truck was designed by aliens who hate manufacturing engineers."',
+			'Martian dust is infiltrating the precision machining equipment.',
+			'The regolith sintering furnace keeps overheating — no atmosphere to dissipate heat.',
+			'A critical cutting tool broke. The replacement is 6 months away on Earth.',
+			'The 3D printer jammed mid-habitat. Half a wall is now structural waste.',
+			'"Building a factory on Mars was designed by optimists who hate engineers."',
 		],
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
