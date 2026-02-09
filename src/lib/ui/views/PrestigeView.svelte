@@ -2,7 +2,7 @@
 	import { gameState } from '$lib/stores/gameState';
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { getColonyMilestone, calculateVisionPoints, MEGA_UPGRADES, type MegaUpgrade } from '$lib/systems/PrestigeSystem';
+	import { getPlanetInfo, calculateVisionPoints, MEGA_UPGRADES, type MegaUpgrade, type PlanetInfo } from '$lib/systems/PrestigeSystem';
 	import { eventBus } from '$lib/engine/EventBus';
 
 	let gs = $derived($gameState);
@@ -35,8 +35,12 @@
 		});
 	}
 
-	let currentColony = $derived(getColonyMilestone(prestigeCount));
-	let nextColony = $derived(getColonyMilestone(prestigeCount + 1));
+	// Planet chain
+	let currentPlanet = $derived(getPlanetInfo(prestigeCount));
+	let nextPlanet = $derived(getPlanetInfo(prestigeCount + 1));
+	let visitedPlanets = $derived(
+		Array.from({ length: Math.min(prestigeCount + 1, 13) }, (_, i) => getPlanetInfo(i))
+	);
 
 	// Threshold: $100M for first reset, then scales
 	const BASE_THRESHOLD = 100_000_000;
@@ -77,11 +81,14 @@
 
 <!-- Launch Flash overlay -->
 {#if launchAnimating}
-	<div class="fixed inset-0 z-[200] flex items-center justify-center launch-flash">
+	<div class="fixed inset-0 z-[200] flex items-center justify-center launch-flash" style="background: linear-gradient(135deg, {nextPlanet.color}ee, {nextPlanet.color}88);">
 		<div class="text-center launch-content">
 			<div class="text-6xl mb-4">🚀</div>
 			<h1 class="text-3xl font-black text-white tracking-tight">COLONY LAUNCHED</h1>
-			<p class="text-lg text-white/70 mt-2">{nextColony.destination} awaits...</p>
+			<p class="text-lg text-white/70 mt-2">{nextPlanet.emoji} {nextPlanet.name} awaits...</p>
+			{#if nextPlanet.distance !== '—'}
+				<p class="text-sm text-white/50 mt-1">{nextPlanet.distance} from Earth</p>
+			{/if}
 		</div>
 	</div>
 {/if}
@@ -96,6 +103,64 @@
 			Take your tech to a new frontier. Start fresh, but stronger.
 		</p>
 	</div>
+
+	<!-- Current Planet Display -->
+	<div
+		class="relative overflow-hidden rounded-xl p-5 border border-white/5"
+		style="background: linear-gradient(135deg, var(--color-bg-secondary) 0%, {currentPlanet.color}18 100%);"
+	>
+		<div class="relative z-10 flex items-center gap-4">
+			<div class="text-5xl">{currentPlanet.emoji}</div>
+			<div>
+				<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-0.5">Current Colony</div>
+				<div class="text-2xl font-black" style="color: {currentPlanet.color};">{currentPlanet.name}</div>
+				<div class="text-sm text-text-secondary mt-0.5">{currentPlanet.description}</div>
+				{#if currentPlanet.costMultiplier > 1}
+					<div class="text-xs text-text-muted mt-1">Cost multiplier: ×{currentPlanet.costMultiplier}</div>
+				{/if}
+			</div>
+		</div>
+		<div
+			class="absolute -right-8 -top-8 w-32 h-32 rounded-full opacity-15 blur-3xl"
+			style="background: {currentPlanet.color};"
+		></div>
+	</div>
+
+	<!-- Planet Timeline -->
+	{#if prestigeCount > 0}
+		<div class="bg-bg-secondary/60 rounded-xl p-4 border border-white/[0.03]">
+			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-3">
+				🌌 Journey So Far
+			</div>
+			<div class="flex items-center gap-1 overflow-x-auto pb-1">
+				{#each visitedPlanets as planet, i}
+					<div class="flex items-center shrink-0">
+						<div
+							class="w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 transition-all"
+							style="border-color: {planet.color}; background: {i === prestigeCount ? planet.color + '30' : 'transparent'};"
+							title="{planet.name}{planet.distance !== '—' ? ` · ${planet.distance}` : ''}"
+						>
+							{planet.emoji}
+						</div>
+						{#if i < visitedPlanets.length - 1}
+							<div class="w-4 h-0.5 rounded-full" style="background: {planet.color}40;"></div>
+						{/if}
+					</div>
+				{/each}
+				<!-- Next planet (dimmed) -->
+				<div class="flex items-center shrink-0">
+					<div class="w-4 h-0.5 rounded-full bg-white/10"></div>
+					<div
+						class="w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 border-dashed opacity-40"
+						style="border-color: {nextPlanet.color};"
+						title="{nextPlanet.name}"
+					>
+						{nextPlanet.emoji}
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
 
 	<!-- Colony Tech Display -->
 	<div
@@ -197,23 +262,6 @@
 		</div>
 	{/if}
 
-	<!-- Current Colony Status -->
-	<div class="bg-bg-secondary/60 rounded-xl p-4 border border-white/[0.03]">
-		<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-3">
-			Current Colony
-		</div>
-		<div class="flex items-center gap-4">
-			<div class="text-4xl">
-				{#if prestigeCount === 0}🌍{:else if prestigeCount === 1}🌙{:else if prestigeCount <= 3}🔴{:else if prestigeCount === 4}🟠{:else}🌌{/if}
-			</div>
-			<div>
-				<div class="text-lg font-bold text-text-primary">{currentColony.name}</div>
-				<div class="text-sm text-text-secondary">{currentColony.destination}</div>
-				<div class="text-xs text-text-muted mt-1">{currentColony.unlock}</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- Current Run Stats -->
 	<div class="bg-bg-secondary/60 rounded-xl p-4 border border-white/[0.03]">
 		<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-3">
@@ -252,13 +300,19 @@
 		{#if canPrestige}
 			<div class="space-y-3">
 				<!-- Next destination -->
-				<div class="flex items-center gap-3 mb-4 p-3 bg-bg-tertiary/50 rounded-lg">
-					<div class="text-3xl">
-						{#if prestigeCount === 0}🌙{:else if prestigeCount <= 2}🔴{:else if prestigeCount === 3}🟠{:else}🌌{/if}
-					</div>
+				<div class="flex items-center gap-3 mb-4 p-3 bg-bg-tertiary/50 rounded-lg" style="border-left: 3px solid {nextPlanet.color};">
+					<div class="text-3xl">{nextPlanet.emoji}</div>
 					<div>
-						<div class="text-sm font-bold text-text-primary">Next: {nextColony.name}</div>
-						<div class="text-xs text-text-muted">{nextColony.unlock}</div>
+						<div class="text-sm font-bold text-text-primary">Next: {nextPlanet.name}</div>
+						{#if nextPlanet.distance !== '—'}
+							<div class="text-xs text-text-muted">📏 {nextPlanet.distance} from Earth</div>
+						{/if}
+						<div class="text-xs text-text-muted">{nextPlanet.description}</div>
+						{#if nextPlanet.costMultiplier > currentPlanet.costMultiplier}
+							<div class="text-xs mt-1 font-semibold" style="color: {nextPlanet.color};">
+								⚠️ Cost multiplier: ×{currentPlanet.costMultiplier} → ×{nextPlanet.costMultiplier}
+							</div>
+						{/if}
 					</div>
 				</div>
 
@@ -359,7 +413,7 @@
 			class:launch-ready={canPrestige}
 		>
 			{#if canPrestige}
-				<div class="absolute inset-0 launch-gradient"></div>
+				<div class="absolute inset-0 launch-gradient" style="background: linear-gradient(135deg, {nextPlanet.color} 0%, {nextPlanet.color}88 50%, {nextPlanet.color}44 100%);"></div>
 				<div class="absolute inset-0 launch-shimmer"></div>
 			{:else}
 				<div class="absolute inset-0 bg-bg-tertiary"></div>
@@ -368,11 +422,11 @@
 			<div class="relative z-10 text-center">
 				<div class="text-3xl mb-1">🚀</div>
 				<div class="text-xl font-black text-white tracking-tight">
-					{canPrestige ? 'LAUNCH COLONY' : 'NOT READY'}
+					{canPrestige ? `LAUNCH COLONY ON ${nextPlanet.name.toUpperCase()}` : 'NOT READY'}
 				</div>
 				<div class="text-sm mt-1 {canPrestige ? 'text-white/70' : 'text-text-muted'}">
 					{#if canPrestige}
-						Expand to {nextColony.destination} for <span class="font-bold text-white">+{techEarnable} Tech</span>
+						{nextPlanet.emoji} {nextPlanet.distance !== '—' ? `${nextPlanet.distance} away · ` : ''}<span class="font-bold text-white">+{techEarnable} Tech</span>
 					{:else}
 						Earn {formatCurrency(BASE_THRESHOLD)} lifetime to unlock
 					{/if}
@@ -394,7 +448,7 @@
 				Colony Tech is earned based on your lifetime earnings when you launch.
 			</p>
 			<p class="text-xs text-text-muted">
-				Each new colony unlocks permanent bonuses. The more you build, the faster you grow.
+				Each planet has a cost multiplier — farther worlds mean higher prices but more Colony Tech.
 			</p>
 		</div>
 	</div>
@@ -407,14 +461,23 @@
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-electric-blue/30 shadow-2xl confirm-enter">
+		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border shadow-2xl confirm-enter" style="border-color: {nextPlanet.color}40;">
 			<div class="text-center">
-				<div class="text-5xl mb-3">🚀</div>
-				<h2 class="text-xl font-black text-text-primary">Launch to {nextColony.destination}?</h2>
+				<div class="text-5xl mb-3">{nextPlanet.emoji}</div>
+				<h2 class="text-xl font-black text-text-primary">Launch to {nextPlanet.name}?</h2>
+				{#if nextPlanet.distance !== '—'}
+					<p class="text-xs text-text-muted mt-1">📏 {nextPlanet.distance} from Earth</p>
+				{/if}
 				<p class="text-sm text-text-secondary mt-2 leading-relaxed">
 					This will <span class="text-rocket-red font-semibold">reset progress</span> but you'll earn
 					<span class="text-electric-blue font-bold">+{techEarnable} Colony Tech</span>.
 				</p>
+
+				{#if nextPlanet.costMultiplier > currentPlanet.costMultiplier}
+					<div class="mt-3 p-2 rounded-lg text-xs font-semibold" style="background: {nextPlanet.color}15; color: {nextPlanet.color};">
+						⚠️ Cost multiplier increases: ×{currentPlanet.costMultiplier} → ×{nextPlanet.costMultiplier}
+					</div>
+				{/if}
 
 				<div class="bg-bg-tertiary/50 rounded-xl p-3 mt-4 space-y-1.5">
 					<div class="flex items-center justify-between">
@@ -444,7 +507,7 @@
 					onclick={executePrestige}
 					class="flex-1 py-3 px-4 rounded-xl font-semibold text-white
 						   transition-all duration-200 active:scale-95 touch-manipulation"
-					style="background: linear-gradient(135deg, #4488FF 0%, #2266CC 100%);"
+					style="background: linear-gradient(135deg, {nextPlanet.color} 0%, {nextPlanet.color}88 100%);"
 				>
 					🚀 Launch
 				</button>
@@ -454,10 +517,6 @@
 {/if}
 
 <style>
-	.launch-gradient {
-		background: linear-gradient(135deg, #4488FF 0%, #2266CC 50%, #1144AA 100%);
-	}
-
 	.launch-shimmer {
 		background: linear-gradient(
 			110deg,
@@ -481,7 +540,6 @@
 	}
 
 	.launch-flash {
-		background: linear-gradient(135deg, rgba(68, 136, 255, 0.95), rgba(34, 102, 204, 0.95));
 		animation: flashIn 0.3s ease-out, flashHold 2s ease-in 0.3s forwards;
 	}
 

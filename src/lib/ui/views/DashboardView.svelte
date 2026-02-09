@@ -11,6 +11,7 @@
 	import { getNgPlusAccentColor, getNgPlusHueShift } from '$lib/stores/ngPlus';
 	import { gameManager } from '$lib/engine/GameManager';
 	import IncomeSparkline from '$lib/ui/IncomeSparkline.svelte';
+	import { getPlanetInfo } from '$lib/systems/PrestigeSystem';
 
 	// Division ordering for display
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
@@ -23,6 +24,9 @@
 	let ngPlusLevel = $derived(state.ngPlusLevel ?? 0);
 	let ngAccent = $derived(getNgPlusAccentColor(ngPlusLevel));
 	let ngHue = $derived(getNgPlusHueShift(ngPlusLevel));
+	let currentPlanet = $derived(getPlanetInfo(prestigeCount));
+	let nextPlanet = $derived(getPlanetInfo(prestigeCount + 1));
+	let futurePlanet = $derived(getPlanetInfo(prestigeCount + 2));
 	let showVictory = $state(false);
 
 	function handleNewGamePlus() {
@@ -94,7 +98,7 @@
 		</div>
 		<p class="text-sm text-text-secondary mt-0.5">
 			{#if prestigeCount > 0}
-				Timeline #{prestigeCount + 1} · The next big bet
+				Timeline #{prestigeCount + 1} · {currentPlanet.emoji} {currentPlanet.name}{currentPlanet.distance !== '—' ? ` · ${currentPlanet.distance} from Earth` : ''}
 			{:else}
 				Make life multi-planetary. One tap at a time.
 			{/if}
@@ -160,21 +164,21 @@
 	<!-- Synergies -->
 	<SynergyPanel />
 
-	<!-- Mars Colony Progress -->
+	<!-- Colony Progress -->
 	<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4">
 		<div class="flex items-center justify-between mb-2">
 			<div class="flex items-center gap-2">
-				<span class="text-lg">🔴</span>
-				<h2 class="text-sm font-semibold text-text-primary">Mars Colony</h2>
+				<span class="text-lg">{nextPlanet.emoji}</span>
+				<h2 class="text-sm font-semibold text-text-primary">{nextPlanet.name} Colony</h2>
 			</div>
-			<span class="text-xs font-bold tabular-nums font-mono text-solar-gold">
+			<span class="text-xs font-bold tabular-nums font-mono" style="color: {nextPlanet.color};">
 				{marsProgress.toFixed(1)}%
 			</span>
 		</div>
 		<div class="w-full h-3 rounded-full bg-bg-tertiary overflow-hidden">
 			<div
 				class="h-full rounded-full transition-all duration-500"
-				style="width: {marsProgress}%; background: linear-gradient(90deg, #EF4444, #F97316, #FFD93D);"
+				style="width: {marsProgress}%; background: linear-gradient(90deg, {currentPlanet.color}, {nextPlanet.color});"
 			></div>
 		</div>
 		<p class="text-[10px] text-text-muted mt-1.5">
@@ -188,7 +192,7 @@
 			{:else if marsProgress >= 25}
 				Supply lines established
 			{:else}
-				Build your empire to fund the Mars mission
+				Build your empire to fund the {nextPlanet.name} mission
 			{/if}
 		</p>
 	</div>
@@ -342,9 +346,15 @@
 		aria-modal="true"
 	>
 		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-solar-gold/30 text-center">
-			<div class="text-5xl mb-3">🏆</div>
-			<h2 class="text-xl font-bold text-solar-gold mb-1">Mars Colony Established!</h2>
-			<p class="text-sm text-text-secondary mb-4">Humanity is now multi-planetary.</p>
+			<div class="text-5xl mb-3">{nextPlanet.emoji}</div>
+			<h2 class="text-xl font-bold mb-1" style="color: {nextPlanet.color};">{nextPlanet.name} Colony Established!</h2>
+			<p class="text-sm text-text-secondary mb-1">Humanity is now multi-planetary.</p>
+			<p class="text-xs text-text-muted mb-4">
+				Next stop: {futurePlanet.emoji} {futurePlanet.name}{futurePlanet.distance !== '—' ? ` — ${futurePlanet.distance} away` : ''}
+				{#if futurePlanet.costMultiplier > nextPlanet.costMultiplier}
+					<br/><span style="color: {futurePlanet.color};">⚠️ Cost multiplier: ×{futurePlanet.costMultiplier}</span>
+				{/if}
+			</p>
 
 			<div class="bg-bg-tertiary/50 rounded-xl p-4 space-y-2 mb-4 text-left">
 				<div class="flex justify-between text-sm">

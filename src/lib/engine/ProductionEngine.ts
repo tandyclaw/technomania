@@ -24,6 +24,12 @@ import { get } from 'svelte/store';
 import { gameState, type GameState, type TierState, getNgPlusCostMultiplier } from '$lib/stores/gameState';
 import { DIVISIONS, type DivisionMeta } from '$lib/divisions';
 import { calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBuyable } from '$lib/systems/ProductionSystem';
+import { getPlanetCostMultiplier } from '$lib/systems/PrestigeSystem';
+
+/** Combined cost multiplier from NG+ and planet chain */
+function getCostMultiplier(state: GameState): number {
+	return getCostMultiplier(state) * getPlanetCostMultiplier(state.prestigeCount);
+}
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { getNextChiefCost } from '$lib/systems/ChiefSystem';
 import { getDivisionUnlockCost } from '$lib/systems/DivisionUnlockSystem';
@@ -396,7 +402,7 @@ export function purchaseTierBulk(divisionId: string, tierIndex: number, quantity
 		if (!tierData) return state;
 
 		// NG+ cost multiplier
-		const ngMult = getNgPlusCostMultiplier(state.ngPlusLevel);
+		const ngMult = getCostMultiplier(state);
 
 		// Calculate how many we can actually buy
 		let qty: number;
@@ -461,7 +467,7 @@ export function hireChief(divisionId: string): number {
 
 		const baseCost = getNextChiefCost(divState.chiefLevel);
 		if (baseCost === null) return state;
-		const cost = baseCost * getNgPlusCostMultiplier(state.ngPlusLevel);
+		const cost = baseCost * getCostMultiplier(state);
 		if (state.cash < cost) return state;
 
 		// Clone state
@@ -513,7 +519,7 @@ export function unlockTier(divisionId: string, tierIndex: number): boolean {
 		if (!tierData) return state;
 
 		const baseUnlockCost = getUnlockCost(divisionId, tierIndex);
-		const unlockCost = baseUnlockCost * getNgPlusCostMultiplier(state.ngPlusLevel);
+		const unlockCost = baseUnlockCost * getCostMultiplier(state);
 		if (state.cash < unlockCost) return state;
 
 		// Clone state
@@ -567,7 +573,7 @@ export function unlockDivision(divisionId: string): boolean {
 		if (divState.unlocked) return state;
 
 		const baseDivCost = getDivisionUnlockCost(divisionId);
-		const cost = baseDivCost * getNgPlusCostMultiplier(state.ngPlusLevel);
+		const cost = baseDivCost * getCostMultiplier(state);
 		if (state.cash < cost) return state;
 
 		// Clone state

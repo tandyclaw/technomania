@@ -4,10 +4,11 @@
 
 import { derived } from 'svelte/store';
 import { gameState, getNgPlusCostMultiplier } from './gameState';
+import { getPlanetCostMultiplier } from '$lib/systems/PrestigeSystem';
 
-/** Reactive NG+ cost multiplier */
+/** Reactive combined cost multiplier (NG+ × planet chain) */
 export const ngPlusCostMultiplier = derived(gameState, ($gs) =>
-	getNgPlusCostMultiplier($gs.ngPlusLevel)
+	getNgPlusCostMultiplier($gs.ngPlusLevel) * getPlanetCostMultiplier($gs.prestigeCount)
 );
 
 /** NG+ level as a readable store */

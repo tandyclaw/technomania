@@ -6,13 +6,14 @@
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
 	import DivisionDetailTemplate from '$lib/ui/DivisionDetailTemplate.svelte';
+	import { getPlanetCostMultiplier } from '$lib/systems/PrestigeSystem';
 
 	let { divisionId }: { divisionId: string } = $props();
 
 	let division = $derived(getDivision(divisionId));
 	let divState = $derived($gameState.divisions[divisionId as keyof typeof $gameState.divisions]);
 	let cash = $derived($gameState.cash);
-	let ngMult = $derived(getNgPlusCostMultiplier($gameState.ngPlusLevel));
+	let ngMult = $derived(getNgPlusCostMultiplier($gameState.ngPlusLevel) * getPlanetCostMultiplier($gameState.prestigeCount));
 	let unlockReq = $derived(getDivisionUnlockRequirement(divisionId));
 	let divUnlockCost = $derived(unlockReq ? unlockReq.cost * ngMult : 0);
 	let canAffordDivision = $derived(unlockReq ? cash >= divUnlockCost : false);

@@ -95,8 +95,69 @@ function hasVPAmplifier(state: GameState): boolean {
 	return (state.purchasedMegaUpgrades ?? []).includes('mega_vp_1');
 }
 
+// === PLANET CHAIN ===
+
+export interface PlanetInfo {
+	index: number;
+	name: string;
+	emoji: string;
+	distance: string; // light years, or '—' for nearby
+	costMultiplier: number;
+	color: string;
+	description: string;
+}
+
+const PLANET_CHAIN: PlanetInfo[] = [
+	{ index: 0, name: 'Earth', emoji: '🌍', distance: '—', costMultiplier: 1, color: '#4488FF', description: 'Home world — build your empire' },
+	{ index: 1, name: 'Mars', emoji: '🔴', distance: '—', costMultiplier: 1, color: '#FF4444', description: 'The red planet — humanity\'s first colony' },
+	{ index: 2, name: 'Proxima Centauri b', emoji: '⭐', distance: '4.2 ly', costMultiplier: 2, color: '#FF8844', description: 'Our nearest stellar neighbor' },
+	{ index: 3, name: 'TRAPPIST-1e', emoji: '🌍', distance: '39 ly', costMultiplier: 4, color: '#44FF88', description: 'Earth-sized world in the habitable zone' },
+	{ index: 4, name: 'TRAPPIST-1f', emoji: '🌊', distance: '39 ly', costMultiplier: 6, color: '#44DDFF', description: 'A water world with vast oceans' },
+	{ index: 5, name: 'TRAPPIST-1g', emoji: '🪐', distance: '39 ly', costMultiplier: 8, color: '#9944FF', description: 'The outer reaches of TRAPPIST-1' },
+	{ index: 6, name: 'TOI-700d', emoji: '🌅', distance: '101 ly', costMultiplier: 12, color: '#FFCC44', description: 'Bathed in golden starlight' },
+	{ index: 7, name: 'Teegarden\'s Star b', emoji: '🔥', distance: '12 ly', costMultiplier: 16, color: '#FF6644', description: 'Orbiting a dim red dwarf' },
+	{ index: 8, name: 'LHS 1140b', emoji: '💎', distance: '49 ly', costMultiplier: 24, color: '#44FFDD', description: 'A super-Earth with a rocky surface' },
+	{ index: 9, name: 'K2-18b', emoji: '🌌', distance: '124 ly', costMultiplier: 32, color: '#8844FF', description: 'Sub-Neptune with possible biosignatures' },
+	{ index: 10, name: 'Kepler-442b', emoji: '💫', distance: '1,206 ly', costMultiplier: 50, color: '#FF44AA', description: 'One of the most Earth-like worlds known' },
+	{ index: 11, name: 'Kepler-452b', emoji: '✨', distance: '1,402 ly', costMultiplier: 75, color: '#FFAA44', description: 'Earth\'s cousin — older and wiser' },
+];
+
+const DEEP_SPACE_COLORS = ['#FF44AA', '#FFAA44', '#44FF88', '#44DDFF', '#9944FF', '#FFCC44', '#FF6644', '#44FFDD', '#8844FF', '#4488FF'];
+
 /**
- * Colony milestones — each prestige unlocks new features
+ * Get planet info for a given prestige count (planet index).
+ * Index 0 = Earth (starting), 1 = Mars (after first prestige), etc.
+ */
+export function getPlanetInfo(planetIndex: number): PlanetInfo {
+	if (planetIndex < PLANET_CHAIN.length) {
+		return PLANET_CHAIN[planetIndex];
+	}
+	// Deep Space procedural generation
+	const deepSpaceNum = planetIndex - PLANET_CHAIN.length + 1;
+	const colorIdx = (planetIndex - PLANET_CHAIN.length) % DEEP_SPACE_COLORS.length;
+	const baseMult = 100;
+	const costMultiplier = baseMult * Math.pow(1.5, deepSpaceNum - 1);
+	return {
+		index: planetIndex,
+		name: `Deep Space Colony #${deepSpaceNum}`,
+		emoji: '🌀',
+		distance: '∞',
+		costMultiplier: Math.round(costMultiplier),
+		color: DEEP_SPACE_COLORS[colorIdx],
+		description: `Frontier colony at the edge of the unknown`,
+	};
+}
+
+/**
+ * Get the cost multiplier for the current planet.
+ * prestigeCount = number of prestiges done = index of current planet.
+ */
+export function getPlanetCostMultiplier(prestigeCount: number): number {
+	return getPlanetInfo(prestigeCount).costMultiplier;
+}
+
+/**
+ * @deprecated Use getPlanetInfo instead
  */
 export function getColonyMilestone(prestigeCount: number): {
 	colony: number;
@@ -104,17 +165,13 @@ export function getColonyMilestone(prestigeCount: number): {
 	destination: string;
 	unlock: string;
 } {
-	const milestones = [
-		{ colony: 0, name: 'Earth', destination: 'Home', unlock: 'Starting colony — build your empire' },
-		{ colony: 1, name: 'Luna', destination: 'Moon Base', unlock: 'All divisions unlocked from start' },
-		{ colony: 2, name: 'Mars Alpha', destination: 'Mars', unlock: 'Automated managers start at 50% discount' },
-		{ colony: 3, name: 'Mars City', destination: 'Mars Expansion', unlock: 'Start with 1 free tier in each division' },
-		{ colony: 4, name: 'Titan Outpost', destination: 'Saturn\'s Moon', unlock: 'Double offline earnings' },
-		{ colony: 5, name: 'Interstellar', destination: 'Beyond the Solar System', unlock: '+50% to all Colony Tech bonuses' },
-	];
-
-	const idx = Math.min(prestigeCount, milestones.length - 1);
-	return milestones[idx];
+	const planet = getPlanetInfo(prestigeCount);
+	return {
+		colony: planet.index,
+		name: planet.name,
+		destination: planet.name,
+		unlock: planet.description,
+	};
 }
 
 /**
