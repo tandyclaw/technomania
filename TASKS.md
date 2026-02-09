@@ -64,7 +64,7 @@
 |----|-------------|--------|-------|----------|------|
 | T026 | Tesla division screen with 6 tiers (Roadster→Cybertruck) | DONE | MERGED | P0 | T013, T019 |
 | T027 | Timed production + chief automation for Tesla | DONE | MERGED | P0 | T026, T020, T054 |
-| T028 | Production rate mechanic (vehicles/week) | PLANNED | PLAN | P1 | T026 |
+| T028 | Production rate mechanic (vehicles/week) | DONE | MERGED | P1 | T026 |
 | T029 | Power consumption for EV factories | DONE | MERGED | P0 | T026, T019 |
 
 ## 6. Bottleneck System
@@ -74,7 +74,7 @@
 | T030 | Bottleneck detection engine (trigger on thresholds) | DONE | MERGED | P0 | T017, T022, T026 |
 | T031 | Bottleneck resolution UI (research/money/time paths) | PLANNED | PLAN | P0 | T030 |
 | T032 | 3-5 bottlenecks per division (data definitions) | PLANNED | PLAN | P0 | T030 |
-| T033 | "Production Hell" event for Tesla | PLANNED | PLAN | P1 | T027, T030 |
+| T033 | "Production Hell" event for Tesla | DONE | MERGED | P1 | T027, T030 |
 
 ## 7. Cross-Vertical Synergies
 
@@ -134,8 +134,8 @@
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
 | P0 | 41 | 38 | 3 |
-| P1 | 11 | 3 | 8 |
+| P1 | 11 | 6 | 5 |
 | P2 | 4 | 0 | 4 |
-| **Total** | **56** | **41** | **15** |
+| **Total** | **56** | **44** | **12** |
 
 **Next task to pick up:** T031 (Bottleneck resolution UI) or T024 (Launch cadence).
