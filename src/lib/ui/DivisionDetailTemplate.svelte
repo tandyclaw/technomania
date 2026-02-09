@@ -9,7 +9,7 @@
 	import LaunchCadencePanel from './LaunchCadencePanel.svelte';
 	import ProductionRatePanel from './ProductionRatePanel.svelte';
 	import { getUnlockCost } from '$lib/engine/ProductionEngine';
-	import { getActiveBottlenecks, resolveBottleneck, getBottleneckDef, type BottleneckDef } from '$lib/systems/BottleneckSystem';
+	import { getActiveBottlenecks, resolveBottleneck, resolveBottleneckWithRP, startBottleneckWait, getBottleneckDef, type BottleneckDef } from '$lib/systems/BottleneckSystem';
 	import { buyQuantity } from '$lib/stores/buyQuantity';
 
 	import { gameState } from '$lib/stores/gameState';
@@ -34,9 +34,18 @@
 
 	// Active bottlenecks for this division
 	let activeBottlenecks = $derived(getActiveBottlenecks(division.id, $gameState));
+	let researchPoints = $derived($gameState.researchPoints);
 
 	function handleResolveBottleneck(bottleneckId: string) {
 		resolveBottleneck(division.id, bottleneckId);
+	}
+
+	function handleResolveBottleneckRP(bottleneckId: string) {
+		resolveBottleneckWithRP(division.id, bottleneckId);
+	}
+
+	function handleStartWait(bottleneckId: string) {
+		startBottleneckWait(division.id, bottleneckId);
 	}
 
 	// Calculate overall division progress
@@ -134,8 +143,11 @@
 					bottleneck={bState}
 					{def}
 					{cash}
+					{researchPoints}
 					color={division.color}
 					onResolve={() => handleResolveBottleneck(bState.id)}
+					onResolveRP={() => handleResolveBottleneckRP(bState.id)}
+					onStartWait={() => handleStartWait(bState.id)}
 				/>
 			{/each}
 		</div>

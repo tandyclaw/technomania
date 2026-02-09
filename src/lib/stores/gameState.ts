@@ -18,6 +18,8 @@ export interface BottleneckState {
 	active: boolean;
 	severity: number; // 0-1
 	resolved: boolean;
+	/** Timestamp (ms) when the "wait it out" timer was started, 0 = not waiting */
+	waitStartedAt?: number;
 }
 
 export interface DivisionState {
@@ -59,6 +61,16 @@ export interface CryptoState {
 	btcOwned: number;
 	btcPriceHistory: number[];
 	totalInvested: number; // Total USD spent buying BTC (for P&L calculation)
+
+	// DOGE meme coin
+	dogePrice: number;
+	dogeOwned: number;
+	dogePriceHistory: number[];
+	dogeTotalInvested: number;
+	/** Active "Elon Tweet" pump event — remaining duration in ms, 0 = none */
+	elonTweetPumpMs: number;
+	/** Multiplier applied by the current Elon Tweet pump */
+	elonTweetMultiplier: number;
 }
 
 export interface GameState {
@@ -141,6 +153,13 @@ export function createDefaultState(): GameState {
 			btcOwned: 0,
 			btcPriceHistory: [42_000],
 			totalInvested: 0,
+
+			dogePrice: 0.08,
+			dogeOwned: 0,
+			dogePriceHistory: [0.08],
+			dogeTotalInvested: 0,
+			elonTweetPumpMs: 0,
+			elonTweetMultiplier: 1,
 		},
 
 		prestigeCount: 0,

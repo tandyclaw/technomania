@@ -72,8 +72,8 @@
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
 | T030 | Bottleneck detection engine (trigger on thresholds) | DONE | MERGED | P0 | T017, T022, T026 |
-| T031 | Bottleneck resolution UI (research/money/time paths) | PLANNED | PLAN | P0 | T030 |
-| T032 | 3-5 bottlenecks per division (data definitions) | PLANNED | PLAN | P0 | T030 |
+| T031 | Bottleneck resolution UI (research/money/time paths) | DONE | MERGED | P0 | T030 |
+| T032 | 3-5 bottlenecks per division (data definitions) | DONE | MERGED | P0 | T030 |
 | T033 | "Production Hell" event for Tesla | DONE | MERGED | P1 | T027, T030 |
 
 ## 7. Cross-Vertical Synergies
@@ -81,7 +81,7 @@
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
 | T034 | Synergy detection engine | DONE | BUILD | P0 | T017, T022, T026 |
-| T035 | Synergy notification UI ("SYNERGY DISCOVERED!") | PLANNED | PLAN | P1 | T034, T016 |
+| T035 | Synergy notification UI ("SYNERGY DISCOVERED!") | DONE | MERGED | P1 | T034, T016 |
 | T036 | MVP synergies: Tesla Energy→SpaceX power, Tesla↔Tesla Energy batteries | DONE | BUILD | P0 | T034 |
 
 ## 8. Research & Prestige
@@ -100,7 +100,7 @@
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
 | T043 | Tutorial system (step-by-step guided first 5 min) | DONE | MERGED | P1 | T017, T018 |
-| T044 | Tooltip system for real-world engineering explanations | PLANNED | PLAN | P2 | T013 |
+| T044 | Tooltip system for real-world engineering explanations | DONE | MERGED | P2 | T013 |
 
 ## 10. QoL & AdCap Mechanics
 
@@ -125,7 +125,7 @@
 |----|-------------|--------|-------|----------|------|
 | T051 | Bitcoin/crypto treasury investment mechanic | PLANNED | PLAN | P1 | T007 |
 | T052 | BTC price simulation (volatile, cyclical) | PLANNED | PLAN | P1 | T051 |
-| T053 | DOGE meme coin side investment (Elon tweet pump mechanic) | PLANNED | PLAN | P2 | T051 |
+| T053 | DOGE meme coin side investment (Elon tweet pump mechanic) | DONE | MERGED | P2 | T051 |
 
 ---
 
@@ -133,9 +133,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 41 | 38 | 3 |
-| P1 | 11 | 6 | 5 |
-| P2 | 4 | 0 | 4 |
-| **Total** | **56** | **44** | **12** |
+| P0 | 41 | 40 | 1 |
+| P1 | 11 | 8 | 3 |
+| P2 | 4 | 2 | 2 |
+| **Total** | **56** | **50** | **6** |
 
-**Next task to pick up:** T031 (Bottleneck resolution UI) or T024 (Launch cadence).
+**Next task to pick up:** T050 (Balance pass) or T049 (Cloudflare deploy).

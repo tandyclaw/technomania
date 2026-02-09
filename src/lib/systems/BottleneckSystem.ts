@@ -245,6 +245,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 20,
 		waitDurationMs: 600_000, // 10 minutes — much longer than normal
 		flavorText: '"I\'m sleeping on the factory floor." — Elon, 2018.',
+		tooltip: 'In 2018, Tesla nearly went bankrupt trying to scale Model 3 production. Elon slept on the factory floor for months. They scrapped an over-automated assembly line and rebuilt with more human workers. Production went from 2,000 to 5,000/week in 3 months.',
 		isProductionHell: true,
 		productionHellFlavor: [
 			'The paint shop is a disaster. Every car needs rework.',
@@ -269,6 +270,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 4,
 		waitDurationMs: 150_000, // 2.5 minutes
 		flavorText: 'Reddit is not happy about the panel gaps.',
+		tooltip: 'Panel gaps — the uneven spacing between body panels — became a meme for Tesla quality issues. Traditional automakers use decades of stamping expertise; Tesla prioritized speed over fit-and-finish, leading to inconsistent panel alignment.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[0].count + tiers[1].count + tiers[2].count > 60;
@@ -285,6 +287,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 18,
 		waitDurationMs: 540_000, // 9 minutes
 		flavorText: 'The factory IS the product.',
+		tooltip: 'Tesla\'s Gigafactories are among the largest buildings by footprint on Earth. Giga Nevada alone covers 5.3 million sq ft. "The machine that builds the machine" philosophy means factory design is as important as car design.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[4].count > 8;
@@ -301,6 +304,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 8,
 		waitDurationMs: 300_000, // 5 minutes
 		flavorText: '"It\'s a software update, not really a recall." — Elon',
+		tooltip: 'NHTSA has investigated Tesla\'s Autopilot/FSD system multiple times. In 2023, Tesla issued an OTA software recall affecting 2 million vehicles. Unlike traditional recalls requiring dealer visits, Tesla can fix software issues remotely.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			// Triggers when Model S + Model X count > 40
@@ -318,6 +322,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 12,
 		waitDurationMs: 360_000, // 6 minutes
 		flavorText: '"Oh my f***ing God." — Elon at the Cybertruck unveil.',
+		tooltip: 'At the Nov 2019 Cybertruck reveal, Franz von Holzhausen threw a steel ball at the "armor glass" windows — which promptly shattered on live TV. Elon\'s stunned "Oh my f***ing God" became one of the most memed product launch moments ever.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			// Triggers when Cybertruck count > 5
@@ -335,6 +340,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 30,
 		waitDurationMs: 900_000, // 15 minutes — the hardest bottleneck in the game
 		flavorText: '"The Cybertruck is our best product ever. Also the hardest to build." — Elon, 2024.',
+		tooltip: 'Cybertruck uses 3mm ultra-hard 30X stainless steel that can\'t be stamped like normal auto body panels. Each panel must be laser-cut and precisely folded. The exoskeleton design means the body IS the frame — no room for error.',
 		isProductionHell: true,
 		productionHellFlavor: [
 			'Stainless steel body panels require a completely new stamping process.',
@@ -360,6 +366,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		severity: 0.0,
 		resolveCost: 0,
 		flavorText: 'Build more Tesla Energy infrastructure to restore full speed.',
+		tooltip: 'Modern factories and rocket facilities consume enormous amounts of power. Tesla\'s Gigafactory Nevada alone uses ~250 MW — enough for a small city. Vertical integration of energy production is key to scaling.',
 		shouldActivate: (state) => {
 			const { generated, consumed } = calculatePowerBalance(state);
 			return consumed > generated && consumed > 0;
@@ -460,7 +467,7 @@ export function tickBottlenecks(deltaMs: number): void {
 
 			// Check auto-resolve conditions
 			if (existing?.active && !existing.resolved && def.autoResolveCheck?.(state)) {
-				const resolved: BottleneckState = { ...existing, active: false, resolved: true };
+				const resolved: BottleneckState = { ...existing, active: false, resolved: true, waitStartedAt: 0 };
 				divState.bottlenecks[existingIdx] = resolved;
 				changed = true;
 				notifiedBottlenecks.delete(def.id);
@@ -468,6 +475,21 @@ export function tickBottlenecks(deltaMs: number): void {
 					division: def.division,
 					type: def.name,
 				});
+			}
+
+			// Check wait-it-out timer resolution
+			if (existing?.active && !existing.resolved && existing.waitStartedAt && existing.waitStartedAt > 0 && def.waitDurationMs) {
+				const elapsed = Date.now() - existing.waitStartedAt;
+				if (elapsed >= def.waitDurationMs) {
+					const resolved: BottleneckState = { ...existing, active: false, resolved: true, severity: 0, waitStartedAt: 0 };
+					divState.bottlenecks[existingIdx] = resolved;
+					changed = true;
+					notifiedBottlenecks.delete(def.id);
+					eventBus.emit('bottleneck:resolved', {
+						division: def.division,
+						type: def.name,
+					});
+				}
 			}
 		}
 
@@ -528,7 +550,7 @@ export function resolveBottleneck(divisionId: string, bottleneckId: string): boo
 				[divId]: {
 					...divState,
 					bottlenecks: divState.bottlenecks.map((b, i) =>
-						i === idx ? { ...b, active: false, resolved: true, severity: 0 } : b
+						i === idx ? { ...b, active: false, resolved: true, severity: 0, waitStartedAt: 0 } : b
 					),
 				},
 			},
@@ -542,6 +564,95 @@ export function resolveBottleneck(divisionId: string, bottleneckId: string): boo
 			type: def.name,
 		});
 
+		return newState;
+	});
+
+	return success;
+}
+
+/**
+ * Resolve a bottleneck by spending research points.
+ * Returns true if resolution succeeded.
+ */
+export function resolveBottleneckWithRP(divisionId: string, bottleneckId: string): boolean {
+	const def = BOTTLENECK_MAP.get(bottleneckId);
+	if (!def || !def.researchCost || def.researchCost <= 0) return false;
+
+	let success = false;
+
+	gameState.update((state) => {
+		if (state.researchPoints < def.researchCost!) return state;
+
+		const divId = divisionId as 'teslaenergy' | 'spacex' | 'tesla';
+		const divState = state.divisions[divId];
+		if (!divState) return state;
+
+		const idx = divState.bottlenecks.findIndex((b) => b.id === bottleneckId && b.active);
+		if (idx < 0) return state;
+
+		const newState = {
+			...state,
+			researchPoints: state.researchPoints - def.researchCost!,
+			divisions: {
+				...state.divisions,
+				[divId]: {
+					...divState,
+					bottlenecks: divState.bottlenecks.map((b, i) =>
+						i === idx ? { ...b, active: false, resolved: true, severity: 0, waitStartedAt: 0 } : b
+					),
+				},
+			},
+		};
+
+		success = true;
+		notifiedBottlenecks.delete(bottleneckId);
+
+		eventBus.emit('bottleneck:resolved', {
+			division: divisionId,
+			type: def.name,
+		});
+
+		return newState;
+	});
+
+	return success;
+}
+
+/**
+ * Start the "wait it out" timer on a bottleneck.
+ * The bottleneck will auto-resolve after its waitDurationMs elapses.
+ */
+export function startBottleneckWait(divisionId: string, bottleneckId: string): boolean {
+	const def = BOTTLENECK_MAP.get(bottleneckId);
+	if (!def || !def.waitDurationMs || def.waitDurationMs <= 0) return false;
+
+	let success = false;
+
+	gameState.update((state) => {
+		const divId = divisionId as 'teslaenergy' | 'spacex' | 'tesla';
+		const divState = state.divisions[divId];
+		if (!divState) return state;
+
+		const idx = divState.bottlenecks.findIndex((b) => b.id === bottleneckId && b.active && !b.resolved);
+		if (idx < 0) return state;
+
+		// Already waiting?
+		if (divState.bottlenecks[idx].waitStartedAt && divState.bottlenecks[idx].waitStartedAt! > 0) return state;
+
+		const newState = {
+			...state,
+			divisions: {
+				...state.divisions,
+				[divId]: {
+					...divState,
+					bottlenecks: divState.bottlenecks.map((b, i) =>
+						i === idx ? { ...b, waitStartedAt: Date.now() } : b
+					),
+				},
+			},
+		};
+
+		success = true;
 		return newState;
 	});
 

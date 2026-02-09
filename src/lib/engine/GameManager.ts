@@ -15,9 +15,10 @@ import { tickResearch, tickRPGeneration } from '$lib/systems/ResearchSystem';
 import { tickBottlenecks, resetBottleneckNotifications } from '$lib/systems/BottleneckSystem';
 import { tickCrypto, resetCryptoAccumulators } from '$lib/systems/CryptoSystem';
 import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefaultFlavorStats } from '$lib/systems/FlavorMechanics';
+import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 
 /** Current save version — increment when state schema changes */
-const CURRENT_VERSION = 2;
+const CURRENT_VERSION = 3;
 
 /** Auto-save interval in milliseconds */
 const AUTO_SAVE_INTERVAL_MS = 30_000;
@@ -213,6 +214,7 @@ class GameManager {
 		resetBottleneckNotifications();
 		resetCryptoAccumulators();
 		resetFlavorStats();
+		resetCelebrations();
 
 		eventBus.emit('prestige:complete', {
 			visionEarned,
@@ -247,6 +249,9 @@ class GameManager {
 		fresh.stats.sessionsPlayed = 1;
 		fresh.divisions.teslaenergy.unlocked = true;
 		gameState.set(fresh);
+
+		resetBottleneckNotifications();
+		resetCelebrations();
 
 		// Restart systems
 		this.startAutoSave();
@@ -345,7 +350,24 @@ class GameManager {
 				btcOwned: 0,
 				btcPriceHistory: [42_000],
 				totalInvested: 0,
+				dogePrice: 0.08,
+				dogeOwned: 0,
+				dogePriceHistory: [0.08],
+				dogeTotalInvested: 0,
+				elonTweetPumpMs: 0,
+				elonTweetMultiplier: 1,
 			};
+		}
+
+		// Version 2 → 3: Add DOGE fields to existing crypto state
+		{
+			const c = migrated.crypto as Record<string, unknown>;
+			if (c.dogePrice === undefined) c.dogePrice = 0.08;
+			if (c.dogeOwned === undefined) c.dogeOwned = 0;
+			if (c.dogePriceHistory === undefined) c.dogePriceHistory = [0.08];
+			if (c.dogeTotalInvested === undefined) c.dogeTotalInvested = 0;
+			if (c.elonTweetPumpMs === undefined) c.elonTweetPumpMs = 0;
+			if (c.elonTweetMultiplier === undefined) c.elonTweetMultiplier = 1;
 		}
 
 		// Ensure activeResearch field exists (added with research system)

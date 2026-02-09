@@ -27,8 +27,9 @@ import { calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBu
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { getNextChiefCost } from '$lib/systems/ChiefSystem';
 import { getDivisionUnlockCost } from '$lib/systems/DivisionUnlockSystem';
-import { getActiveSynergies, getSynergyMultiplier, MVP_SYNERGIES } from '$lib/systems/SynergySystem';
+import { getActiveSynergies, getSynergyMultiplier, MVP_SYNERGIES, type Synergy } from '$lib/systems/SynergySystem';
 import { getBottleneckMultiplier } from '$lib/systems/BottleneckSystem';
+import { queueSynergyCelebration } from '$lib/stores/synergyCelebrationStore';
 import { eventBus } from './EventBus';
 
 /**
@@ -98,7 +99,7 @@ export function tickProduction(deltaMs: number): void {
 		const activeSynergies = getActiveSynergies(state, MVP_SYNERGIES);
 		const activeSynergyIds = activeSynergies.map((s) => s.id);
 
-		// Update synergy tracking if changed
+		// Update synergy tracking if changed — detect newly activated synergies
 		const prevIds = state.activeSynergies ?? [];
 		if (
 			activeSynergyIds.length !== prevIds.length ||
@@ -106,6 +107,20 @@ export function tickProduction(deltaMs: number): void {
 		) {
 			newState.activeSynergies = activeSynergyIds;
 			changed = true;
+
+			// Find newly activated synergies (present now but not before)
+			const prevSet = new Set(prevIds);
+			for (const synergy of activeSynergies) {
+				if (!prevSet.has(synergy.id)) {
+					// New synergy discovered! Emit event and queue celebration
+					eventBus.emit('synergy:discovered', {
+						source: synergy.requirement.sourceDivision,
+						target: synergy.requirement.targetDivision,
+						bonus: `${Math.round(synergy.effect.value * 100)}% ${synergy.effect.type.replace('_', ' ')}`,
+					});
+					queueSynergyCelebration(synergy);
+				}
+			}
 		}
 
 		for (const divId of DIVISION_IDS) {

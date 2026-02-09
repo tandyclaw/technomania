@@ -10,6 +10,8 @@
 	import { initToastListeners } from '$lib/stores/toastStore';
 	import { tutorialStore, initTutorialListeners } from '$lib/stores/tutorialStore';
 	import TutorialOverlay from '$lib/ui/TutorialOverlay.svelte';
+	import SynergyCelebration from '$lib/ui/SynergyCelebration.svelte';
+	import { celebrationState, dismissCelebration } from '$lib/stores/synergyCelebrationStore';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
 
 	let { children } = $props();
@@ -130,6 +132,13 @@
 
 	<!-- Tutorial overlay -->
 	<TutorialOverlay />
+
+	<!-- Synergy celebration modal -->
+	<SynergyCelebration
+		synergy={$celebrationState.activeSynergy}
+		visible={$celebrationState.activeSynergy !== null}
+		onDismiss={dismissCelebration}
+	/>
 
 	<div class="game-shell min-h-screen bg-bg-primary flex flex-col">
 		<!-- Fixed top resource bar -->
