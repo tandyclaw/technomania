@@ -3,11 +3,12 @@
 	<head>
 		<script>try{if(localStorage.getItem('tech-tycoon-theme')==='light')document.documentElement.classList.add('light')}catch(e){}</script>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover, user-scalable=no" />
 		<meta name="theme-color" content="#0f1729" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/icon-192.png" />
 		<link rel="manifest" href="%sveltekit.assets%/manifest.json" />
 		%sveltekit.head%
 	</head>
@@ -21,6 +22,20 @@
 		<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}</style>
 		<div style="display: contents">%sveltekit.body%</div>
 		<script>
+			// Prevent pinch-to-zoom (iOS ignores user-scalable=no)
+			document.addEventListener('touchstart', function(e) {
+				if (e.touches.length > 1) e.preventDefault();
+			}, { passive: false });
+			document.addEventListener('gesturestart', function(e) {
+				e.preventDefault();
+			}, { passive: false });
+			// Prevent double-tap zoom
+			let lastTouchEnd = 0;
+			document.addEventListener('touchend', function(e) {
+				const now = Date.now();
+				if (now - lastTouchEnd <= 300) e.preventDefault();
+				lastTouchEnd = now;
+			}, { passive: false });
 			// Remove loader once SvelteKit hydrates
 			if (document.getElementById('app-loader')) {
 				const observer = new MutationObserver(() => {

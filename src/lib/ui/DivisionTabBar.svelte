@@ -25,6 +25,7 @@
 	];
 
 	const moreTabs: TabItem[] = [
+		{ id: 'upgrades', name: 'Upgrades', shortName: 'Upgrades', icon: '🔧', color: '#FF8844' },
 		{ id: 'treasury', name: 'Treasury', shortName: 'Treasury', icon: '🏦', color: '#44AA77' },
 		{ id: 'research', name: 'Research', shortName: 'R&D', icon: '🔬', color: '#9944FF' },
 		{ id: 'achievements', name: 'Achievements', shortName: 'Trophies', icon: '🏆', color: '#FFCC44' },

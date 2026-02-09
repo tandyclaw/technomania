@@ -9,6 +9,7 @@
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
 	import Tooltip from './Tooltip.svelte';
 	import { triggerParticle } from '$lib/stores/particleStore';
+	import { getNextMilestone, getTierMilestones } from '$lib/systems/MilestoneSystem';
 
 	// Rarity system based on tier count
 	function getRarity(count: number): { name: string; color: string; glow: string } {
@@ -73,6 +74,11 @@
 	let revenuePerSec = $derived(tier.count > 0 ? (revenue / cycleDurationMs) * 1000 : 0);
 	let canAfford = $derived(cash >= cost && effectiveQty > 0);
 	let rarity = $derived(getRarity(tier.count));
+
+	// Milestone info
+	let nextMilestone = $derived(gameState ? getNextMilestone(divisionId, tierIndex, gameState) : null);
+	let tierMilestones = $derived(gameState ? getTierMilestones(divisionId, tierIndex, gameState) : []);
+	let unlockedMilestoneCount = $derived(tierMilestones.filter(m => m.unlocked).length);
 
 	let costDisplay = $derived(formatCurrency(cost));
 	let revenueDisplay = $derived(formatCurrency(revenuePerSec, 1));
@@ -222,6 +228,17 @@
 				>
 					×{tier.count}
 				</span>
+				<!-- Milestone badges -->
+				{#if unlockedMilestoneCount > 0}
+					<div class="flex gap-0.5">
+						{#each tierMilestones as m}
+							<span
+								class="w-2 h-2 rounded-full {m.unlocked ? 'bg-solar-gold' : 'bg-white/10'}"
+								title={m.label}
+							></span>
+						{/each}
+					</div>
+				{/if}
 			{/if}
 		</div>
 
@@ -300,6 +317,15 @@
 									class:text-rocket-red={totalPower < 0}
 								>
 									{totalPower > 0 ? '+' : ''}{formatNumber(Math.abs(totalPower), 2)} MW
+								</span>
+							</div>
+						{/if}
+
+						{#if nextMilestone}
+							<div class="flex items-center gap-1">
+								<span class="text-[10px]" aria-hidden="true">🏅</span>
+								<span class="text-[10px] font-semibold tabular-nums text-solar-gold/70">
+									{nextMilestone.current}/{nextMilestone.threshold}
 								</span>
 							</div>
 						{/if}
