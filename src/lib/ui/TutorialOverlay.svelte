@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { tutorialStore, TUTORIAL_STEPS, TOTAL_STEPS } from '$lib/stores/tutorialStore';
-	import { activeTab } from '$lib/stores/navigation';
 	import { tick } from 'svelte';
 
 	let currentStep = $derived($tutorialStore.step);
@@ -81,38 +80,18 @@
 
 	function handleNext() {
 		if (!stepData) return;
-
-		if (currentStep === 1) {
-			activeTab.set('teslaenergy');
+		if (currentStep === TOTAL_STEPS - 1) {
+			tutorialStore.complete();
+		} else {
 			tutorialStore.nextStep();
-			return;
 		}
-
-		if (currentStep === 0 || currentStep === 6 || currentStep === 7) {
-			if (currentStep === 7) {
-				tutorialStore.complete();
-			} else {
-				tutorialStore.nextStep();
-			}
-			return;
-		}
-
-		// Auto-advance steps: still allow manual skip-forward
-		tutorialStore.nextStep();
 	}
 
 	function handleSkip() {
 		tutorialStore.skip();
 	}
 
-	let buttonLabel = $derived.by(() => {
-		if (currentStep === 0) return "Let's Go";
-		if (currentStep === 1) return 'Go to Energy ☀️';
-		if (currentStep === 7) return 'Start Building! 🚀';
-		return 'Next';
-	});
-
-	let isAutoAdvanceStep = $derived(currentStep >= 2 && currentStep <= 5);
+	let isAutoAdvanceStep = $derived(stepData?.autoAdvance ?? false);
 </script>
 
 {#if isActive && stepData}
@@ -129,6 +108,7 @@
 					style="background: linear-gradient(135deg, #1a2332 0%, #0f1729 100%);"
 					bind:this={tooltipEl}
 				>
+					<!-- Step dots -->
 					<div class="flex items-center justify-center gap-1.5 mb-3">
 						{#each TUTORIAL_STEPS as _, i}
 							<div
@@ -140,12 +120,6 @@
 						{/each}
 					</div>
 
-					{#if currentStep === 0}
-						<div class="text-4xl mb-3">⚡</div>
-					{:else}
-						<div class="text-3xl mb-3">🏁</div>
-					{/if}
-
 					<h3 class="text-lg font-bold text-solar-gold mb-2">{stepData.title}</h3>
 					<p class="text-sm text-text-secondary leading-relaxed mb-5">{stepData.message}</p>
 
@@ -155,7 +129,7 @@
 							class="flex-1 py-2.5 px-4 rounded-xl text-xs font-medium text-text-muted
 								   bg-bg-tertiary/50 hover:bg-bg-tertiary transition-colors touch-manipulation"
 						>
-							Skip Tutorial
+							Skip
 						</button>
 						<button
 							onclick={handleNext}
@@ -163,7 +137,7 @@
 								   bg-solar-gold hover:bg-solar-gold/90 transition-colors
 								   active:scale-95 touch-manipulation"
 						>
-							{buttonLabel}
+							{currentStep === TOTAL_STEPS - 1 ? 'Got It! 🚀' : 'Next'}
 						</button>
 					</div>
 				</div>
@@ -186,43 +160,22 @@
 		{/if}
 
 		<!-- Invisible blocker around the screen EXCEPT the highlight area -->
-		<!-- Top strip -->
-		<div
-			class="fixed z-[80] left-0 right-0 top-0"
-			style="height: {highlightRect.top}px;"
-		></div>
-		<!-- Bottom strip -->
-		<div
-			class="fixed z-[80] left-0 right-0 bottom-0"
-			style="height: {Math.max(0, windowHeight - highlightRect.top - highlightRect.height)}px;"
-		></div>
-		<!-- Left strip -->
-		<div
-			class="fixed z-[80] left-0"
-			style="
-				top: {highlightRect.top}px;
-				width: {highlightRect.left}px;
-				height: {highlightRect.height}px;
-			"
-		></div>
-		<!-- Right strip -->
-		<div
-			class="fixed z-[80]"
-			style="
-				top: {highlightRect.top}px;
-				left: {highlightRect.left + highlightRect.width}px;
-				right: 0;
-				height: {highlightRect.height}px;
-			"
-		></div>
+		<div class="fixed z-[80] left-0 right-0 top-0" style="height: {highlightRect.top}px;"></div>
+		<div class="fixed z-[80] left-0 right-0 bottom-0"
+			style="height: {Math.max(0, windowHeight - highlightRect.top - highlightRect.height)}px;"></div>
+		<div class="fixed z-[80] left-0"
+			style="top: {highlightRect.top}px; width: {highlightRect.left}px; height: {highlightRect.height}px;"></div>
+		<div class="fixed z-[80]"
+			style="top: {highlightRect.top}px; left: {highlightRect.left + highlightRect.width}px; right: 0; height: {highlightRect.height}px;"></div>
 
-		<!-- Tooltip (pointer-events-auto so buttons work) -->
+		<!-- Tooltip -->
 		<div
 			class="tutorial-tooltip fixed max-w-sm w-[calc(100%-2rem)] rounded-2xl border border-solar-gold/20 p-4 z-[82] pointer-events-auto
 				   {animateIn ? 'animate-positioned' : 'opacity-0'}"
 			style="background: linear-gradient(135deg, #1a2332 0%, #0f1729 100%); {tooltipStyle}"
 			bind:this={tooltipEl}
 		>
+			<!-- Step dots -->
 			<div class="flex items-center gap-1.5 mb-2">
 				{#each TUTORIAL_STEPS as _, i}
 					<div
@@ -246,19 +199,9 @@
 					Skip
 				</button>
 
-				{#if isAutoAdvanceStep}
+				{#if isAutoAdvanceStep && stepData.hint}
 					<div class="flex-1 text-right">
-						<span class="text-[10px] text-text-muted italic">
-							{#if currentStep === 2}
-								👆 Tap Build below
-							{:else if currentStep === 3}
-								👆 Tap the card below
-							{:else if currentStep === 4}
-								⏳ Waiting for payout...
-							{:else if currentStep === 5}
-								👆 Buy another panel
-							{/if}
-						</span>
+						<span class="text-[10px] text-text-muted italic">{stepData.hint}</span>
 					</div>
 				{:else}
 					<button
@@ -267,7 +210,7 @@
 							   bg-solar-gold hover:bg-solar-gold/90 transition-colors
 							   active:scale-95 touch-manipulation"
 					>
-						{buttonLabel}
+						{currentStep === TOTAL_STEPS - 1 ? 'Got It! 🚀' : 'Next'}
 					</button>
 				{/if}
 			</div>
@@ -283,8 +226,7 @@
 	}
 
 	@keyframes highlightPulse {
-		0%,
-		100% {
+		0%, 100% {
 			border-color: rgba(255, 204, 68, 0.4);
 			box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 204, 68, 0.15);
 		}
@@ -303,14 +245,8 @@
 	}
 
 	@keyframes tooltipIn {
-		from {
-			opacity: 0;
-			transform: translateX(-50%) translateY(8px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(-50%) translateY(0);
-		}
+		from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+		to { opacity: 1; transform: translateX(-50%) translateY(0); }
 	}
 
 	.animate-center {
@@ -318,13 +254,7 @@
 	}
 
 	@keyframes tooltipCenterIn {
-		from {
-			opacity: 0;
-			transform: scale(0.92) translateY(10px);
-		}
-		to {
-			opacity: 1;
-			transform: scale(1) translateY(0);
-		}
+		from { opacity: 0; transform: scale(0.92) translateY(10px); }
+		to { opacity: 1; transform: scale(1) translateY(0); }
 	}
 </style>

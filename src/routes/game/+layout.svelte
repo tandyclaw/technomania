@@ -29,6 +29,8 @@
 	import { flashSaveIndicator } from '$lib/stores/saveIndicator';
 	import { tickContracts, initContractListeners, loadContractState } from '$lib/systems/ContractSystem';
 	import NewsTicker from '$lib/ui/NewsTicker.svelte';
+	import MiniGame from '$lib/ui/MiniGame.svelte';
+	import { initMiniGameListeners, tickMiniGame } from '$lib/systems/MiniGameSystem';
 
 	let { children } = $props();
 	let loading = $state(true);
@@ -49,6 +51,8 @@
 	let cleanupEventTick: (() => void) | null = null;
 	let cleanupContracts: (() => void) | null = null;
 	let cleanupContractTick: (() => void) | null = null;
+	let cleanupMiniGames: (() => void) | null = null;
+	let cleanupMiniGameTick: (() => void) | null = null;
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
@@ -90,6 +94,12 @@
 			tickContracts(deltaMs);
 		});
 
+		// Mini-games system
+		cleanupMiniGames = initMiniGameListeners();
+		cleanupMiniGameTick = gameLoop.onTick((deltaMs) => {
+			tickMiniGame(deltaMs);
+		});
+
 		// Random events system
 		cleanupRandomEvents = initRandomEventListeners();
 		cleanupEventTick = gameLoop.onTick((deltaMs) => {
@@ -109,6 +119,8 @@
 		cleanupEventTick?.();
 		cleanupContracts?.();
 		cleanupContractTick?.();
+		cleanupMiniGames?.();
+		cleanupMiniGameTick?.();
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -260,6 +272,9 @@
 
 	<!-- Tutorial overlay -->
 	<TutorialOverlay />
+
+	<!-- Mini-game overlay -->
+	<MiniGame />
 
 	<!-- Random event modal -->
 	<EventModal />
