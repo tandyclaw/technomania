@@ -80,9 +80,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Colony Forge',
-		description: 'Full industrial base on Mars. Mining, smelting, fabrication. Self-sustaining.',
-		tooltip: 'Steel mills, chip fabs, chemical plants — everything needed to sustain a million people without Earth resupply. From raw Martian rock to finished goods. This is civilization.',
+		name: 'Martian Mining Complex',
+		description: 'Extract iron, water ice, and rare minerals from Mars. The red planet is your supply chain.',
+		tooltip: 'Deep drilling rigs, autonomous ore processors, water ice extractors. Mars has iron oxide everywhere, water ice at the poles, and rare earth elements underground. Mine it all — Earth resupply costs $1M/kg.',
 		powerMW: -30,
 		config: {
 			baseCost: 50000000000,
