@@ -133,9 +133,9 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T057 | **AI Division** — 6 tiers (Chatbot→AGI), research-point consumer, unlocks at $50K | PLANNED | — | P0 | T013 |
-| T058 | **Tunnels Division** — 6 tiers (Test Bore→Hyperloop), power-consumer, unlocks at $100K | PLANNED | — | P0 | T013 |
-| T059 | Wire new divisions into GameManager, save/load, synergies, bottlenecks | PLANNED | — | P0 | T057, T058 |
+| T057 | **AI Division** — 6 tiers (Chatbot→AGI), research-point consumer, unlocks at $50K | DONE | f65768f | P0 | T013 |
+| T058 | **Tunnels Division** — 6 tiers (Test Bore→Hyperloop), power-consumer, unlocks at $100K | DONE | f65768f | P0 | T013 |
+| T059 | Wire new divisions into GameManager, save/load, synergies, bottlenecks | DONE | f65768f | P0 | T057, T058 |
 
 ## 14. Achievements System
 
