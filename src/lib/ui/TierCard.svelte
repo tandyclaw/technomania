@@ -2,7 +2,8 @@
 	import type { TierState } from '$lib/stores/gameState';
 	import type { TierData } from '$lib/divisions';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { calculateCost, calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSystem';
+	import { calculateCost, calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBuyable } from '$lib/systems/ProductionSystem';
+	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
 
 	let {
@@ -25,15 +26,40 @@
 		onTap?: () => boolean;
 	} = $props();
 
-	let cost = $derived(calculateCost(tierData.config, tier.count));
+	// Buy quantity from global toggle
+	let qty = $derived($buyQuantity);
+
+	// Effective quantity for display — for 'max', compute how many we can afford
+	let effectiveQty = $derived.by(() => {
+		if (qty === 'max') {
+			return calculateMaxBuyable(tierData.config, tier.count, cash);
+		}
+		return qty;
+	});
+
+	// Cost calculation based on quantity
+	let cost = $derived.by(() => {
+		if (effectiveQty <= 0) return calculateCost(tierData.config, tier.count);
+		if (effectiveQty === 1) return calculateCost(tierData.config, tier.count);
+		return calculateBulkCost(tierData.config, tier.count, effectiveQty);
+	});
+
 	let revenue = $derived(calculateRevenue(tierData.config, tier.count, tier.level));
 	let cycleDurationMs = $derived(getCycleDurationMs(tierData.config, chiefLevel));
 	let revenuePerSec = $derived(tier.count > 0 ? (revenue / cycleDurationMs) * 1000 : 0);
-	let canAfford = $derived(cash >= cost);
+	let canAfford = $derived(cash >= cost && effectiveQty > 0);
 
 	let costDisplay = $derived(formatCurrency(cost));
 	let revenueDisplay = $derived(formatCurrency(revenuePerSec, 1));
 	let revenuePerCycle = $derived(formatCurrency(revenue));
+
+	// Buy button label
+	let buyLabel = $derived.by(() => {
+		if (tier.count === 0 && effectiveQty <= 1) return 'Build';
+		if (qty === 'max') return effectiveQty > 0 ? `Buy ×${effectiveQty}` : 'Buy';
+		if (qty === 1) return tier.count === 0 ? 'Build' : 'Buy';
+		return `Buy ×${effectiveQty}`;
+	});
 
 	// Format cycle duration for display
 	let cycleDurationDisplay = $derived(formatCycleDuration(cycleDurationMs));
@@ -272,7 +298,7 @@
 						disabled={!canAfford}
 					>
 						<span>
-							{tier.count === 0 ? 'Build' : 'Buy'}
+							{buyLabel}
 						</span>
 						<span class="font-mono tabular-nums opacity-80">
 							{costDisplay}

@@ -133,9 +133,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 35 | 31 | 4 |
+| P0 | 41 | 35 | 6 |
 | P1 | 11 | 1 | 10 |
-| P2 | 6 | 0 | 6 |
-| **Total** | **52** | **32** | **20** |
+| P2 | 4 | 0 | 4 |
+| **Total** | **56** | **36** | **20** |
 
-**Next task to pick up:** T030 (Bottleneck detection engine) or T056 (Buy quantity toggle).
+**Next task to pick up:** T031 (Bottleneck resolution UI) or T024 (Launch cadence).

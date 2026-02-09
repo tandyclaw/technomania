@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { gameState } from '$lib/stores/gameState';
 	import { getDivision } from '$lib/divisions';
-	import { purchaseTier, tapProduce, hireChief, unlockTier, unlockDivision } from '$lib/engine/ProductionEngine';
+	import { purchaseTier, purchaseTierBulk, tapProduce, hireChief, unlockTier, unlockDivision } from '$lib/engine/ProductionEngine';
 	import { getDivisionUnlockRequirement } from '$lib/systems/DivisionUnlockSystem';
 	import { formatCurrency } from '$lib/engine/BigNumber';
+	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
 	import DivisionDetailTemplate from '$lib/ui/DivisionDetailTemplate.svelte';
 
 	let { divisionId }: { divisionId: string } = $props();
@@ -18,7 +19,12 @@
 	let showUnlockCelebration = $state(false);
 
 	function handleBuyTier(tierIndex: number) {
-		purchaseTier(divisionId, tierIndex);
+		const qty = $buyQuantity;
+		if (qty === 1) {
+			purchaseTier(divisionId, tierIndex);
+		} else {
+			purchaseTierBulk(divisionId, tierIndex, qty);
+		}
 	}
 
 	function handleTapTier(tierIndex: number): boolean {

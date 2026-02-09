@@ -23,7 +23,7 @@
 import { get } from 'svelte/store';
 import { gameState, type GameState, type TierState } from '$lib/stores/gameState';
 import { DIVISIONS, type DivisionMeta } from '$lib/divisions';
-import { calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSystem';
+import { calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBuyable } from '$lib/systems/ProductionSystem';
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { getNextChiefCost } from '$lib/systems/ChiefSystem';
 import { getDivisionUnlockCost } from '$lib/systems/DivisionUnlockSystem';
@@ -275,6 +275,74 @@ export function purchaseTier(divisionId: string, tierIndex: number): boolean {
 	});
 
 	return success;
+}
+
+/**
+ * Purchase multiple tier units at once (×10, ×100, or Max).
+ * Returns the number of units actually purchased.
+ */
+export function purchaseTierBulk(divisionId: string, tierIndex: number, quantity: number | 'max'): number {
+	let purchased = 0;
+
+	gameState.update((state) => {
+		const divState = state.divisions[divisionId as DivisionId];
+		if (!divState?.unlocked) return state;
+
+		const tier = divState.tiers[tierIndex];
+		if (!tier?.unlocked) return state;
+
+		const divMeta = DIVISIONS[divisionId];
+		const tierData = divMeta?.tiers[tierIndex];
+		if (!tierData) return state;
+
+		// Calculate how many we can actually buy
+		let qty: number;
+		if (quantity === 'max') {
+			qty = calculateMaxBuyable(tierData.config, tier.count, state.cash);
+		} else {
+			// For ×10/×100, buy up to that many (limited by cash)
+			const maxAffordable = calculateMaxBuyable(tierData.config, tier.count, state.cash);
+			qty = Math.min(quantity, maxAffordable);
+		}
+
+		if (qty <= 0) return state;
+
+		const totalCost = calculateBulkCost(tierData.config, tier.count, qty);
+		if (state.cash < totalCost) return state;
+
+		// Clone state with new references
+		const newState = cloneState(state);
+		const newDivState = newState.divisions[divisionId as DivisionId];
+		const newTier = newDivState.tiers[tierIndex];
+
+		const wasZero = newTier.count === 0;
+
+		// Deduct cost and increase count
+		newState.cash -= totalCost;
+		newTier.count += qty;
+		purchased = qty;
+
+		// If first unit(s) and chief is hired, auto-start production
+		if (wasZero && newTier.count > 0 && newDivState.chiefLevel > 0 && !newTier.producing) {
+			newTier.producing = true;
+			newTier.progress = 0;
+		}
+
+		// Recalculate power after purchase
+		const { generated, consumed } = calculatePowerBalance(newState);
+		newState.powerGenerated = generated;
+		newState.powerConsumed = consumed;
+
+		eventBus.emit('upgrade:purchased', {
+			division: divisionId,
+			tier: tierIndex,
+			level: newTier.level,
+		});
+
+		return newState;
+	});
+
+	return purchased;
 }
 
 /**

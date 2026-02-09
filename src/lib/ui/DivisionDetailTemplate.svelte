@@ -5,8 +5,10 @@
 	import TierUnlockCard from './TierUnlockCard.svelte';
 	import ChiefCard from './ChiefCard.svelte';
 	import BottleneckCard from './BottleneckCard.svelte';
+	import BuyQuantityToggle from './BuyQuantityToggle.svelte';
 	import { getUnlockCost } from '$lib/engine/ProductionEngine';
 	import { getActiveBottlenecks, resolveBottleneck, getBottleneckDef, type BottleneckDef } from '$lib/systems/BottleneckSystem';
+	import { buyQuantity } from '$lib/stores/buyQuantity';
 
 	import { gameState } from '$lib/stores/gameState';
 
@@ -132,9 +134,12 @@
 	<!-- Tier list (scrollable area) -->
 	{#if state.unlocked}
 		<div class="tier-list space-y-2.5">
-			<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
-				Production Tiers
-			</h2>
+			<div class="flex items-center justify-between">
+				<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+					Production Tiers
+				</h2>
+				<BuyQuantityToggle color={division.color} />
+			</div>
 			{#each state.tiers as tier, i}
 				{#if tier.unlocked}
 					<TierCard
