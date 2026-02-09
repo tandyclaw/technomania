@@ -266,11 +266,11 @@ class GameManager {
 	calculatePrestigeVision(state?: GameState): number {
 		const s = state ?? get(gameState);
 
-		// Base formula: log2(totalValueEarned / 1,000,000) rounded down
-		// Minimum threshold: $1M total value earned
-		if (s.totalValueEarned < 1_000_000) return 0;
+		// Base formula: log2(totalValueEarned / 1,000,000,000) rounded down
+		// Minimum threshold: $1B total value earned
+		if (s.totalValueEarned < 1_000_000_000) return 0;
 
-		const vision = Math.floor(Math.log2(s.totalValueEarned / 1_000_000));
+		const vision = Math.floor(Math.log2(s.totalValueEarned / 1_000_000_000));
 		return Math.max(0, vision);
 	}
 

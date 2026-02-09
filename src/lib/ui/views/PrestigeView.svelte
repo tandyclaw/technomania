@@ -14,13 +14,13 @@
 	let canPrestige = $derived(visionEarnable > 0);
 
 	// Threshold for next vision point
-	let nextThreshold = $derived(1_000_000 * Math.pow(2, visionEarnable + 1));
+	let nextThreshold = $derived(1_000_000_000 * Math.pow(2, visionEarnable + 1));
 	let progressToNext = $derived(
 		visionEarnable > 0
-			? Math.min(1, (totalValueEarned - 1_000_000 * Math.pow(2, visionEarnable)) / (nextThreshold - 1_000_000 * Math.pow(2, visionEarnable)))
-			: totalValueEarned >= 1_000_000
-				? Math.min(1, (totalValueEarned - 1_000_000) / 1_000_000)
-				: totalValueEarned / 1_000_000
+			? Math.min(1, (totalValueEarned - 1_000_000_000 * Math.pow(2, visionEarnable)) / (nextThreshold - 1_000_000_000 * Math.pow(2, visionEarnable)))
+			: totalValueEarned >= 1_000_000_000
+				? Math.min(1, (totalValueEarned - 1_000_000_000) / 1_000_000_000)
+				: totalValueEarned / 1_000_000_000
 	);
 
 	let showConfirmation = $state(false);
@@ -148,7 +148,7 @@
 			<div class="flex items-center justify-between">
 				<span class="text-sm text-text-secondary">IPO Threshold</span>
 				<span class="text-sm font-mono text-text-muted">
-					{formatCurrency(1_000_000)} total value
+					{formatCurrency(1_000_000_000)} total value
 				</span>
 			</div>
 		</div>
@@ -201,12 +201,12 @@
 			</div>
 		{:else}
 			<p class="text-sm text-text-muted">
-				Earn at least <span class="font-bold text-text-secondary">{formatCurrency(1_000_000)}</span> total value to unlock the IPO.
+				Earn at least <span class="font-bold text-text-secondary">{formatCurrency(1_000_000_000)}</span> total value to unlock the IPO.
 				{#if totalValueEarned > 0}
 					<br />
 					<span class="text-xs mt-1 inline-block">
-						Progress: {formatCurrency(totalValueEarned)} / {formatCurrency(1_000_000)}
-						({(totalValueEarned / 1_000_000 * 100).toFixed(1)}%)
+						Progress: {formatCurrency(totalValueEarned)} / {formatCurrency(1_000_000_000)}
+						({(totalValueEarned / 1_000_000_000 * 100).toFixed(1)}%)
 					</span>
 				{/if}
 			</p>
@@ -300,7 +300,7 @@
 					{#if canPrestige}
 						Take the company public for <span class="font-bold text-white">+{visionEarnable} Vision</span>
 					{:else}
-						Earn {formatCurrency(1_000_000)} total value to unlock
+						Earn {formatCurrency(1_000_000_000)} total value to unlock
 					{/if}
 				</div>
 			</div>
@@ -314,7 +314,7 @@
 		</div>
 		<div class="space-y-1.5">
 			<p class="text-xs text-text-muted">
-				<span class="font-mono text-text-secondary">Vision = floor(log₂(totalValue / $1M))</span>
+				<span class="font-mono text-text-secondary">Vision = floor(log₂(totalValue / $1B))</span>
 			</p>
 			<p class="text-xs text-text-muted">
 				Each Vision point grants <span class="text-neural-purple font-semibold">+10%</span> to all production revenue, permanently.

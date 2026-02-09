@@ -116,8 +116,8 @@
 | T046 | Number rolling animation (GSAP) | PLANNED | PLAN | P2 | T006 |
 | T047 | Sound effects toggle (tap, ding, launch) | PLANNED | PLAN | P2 | — |
 | T048 | Settings screen (music, SFX, notifications, save export) | DONE | MERGED | P1 | T003 |
-| T049 | Cloudflare Pages deployment pipeline | PLANNED | PLAN | P1 | — |
-| T050 | Balance pass — playtest all 3 divisions for 2-4h flow | PLANNED | PLAN | P0 | T017-T042 |
+| T049 | Cloudflare Pages deployment pipeline | DONE | MERGED | P1 | — |
+| T050 | Balance pass — playtest all 3 divisions for 2-4h flow | DONE | MERGED | P0 | T017-T042 |
 
 ## 12. Future Features
 
@@ -133,9 +133,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 41 | 40 | 1 |
-| P1 | 11 | 8 | 3 |
+| P0 | 41 | 41 | 0 |
+| P1 | 11 | 9 | 2 |
 | P2 | 4 | 2 | 2 |
-| **Total** | **56** | **50** | **6** |
+| **Total** | **56** | **52** | **4** |
 
 **Next task to pick up:** T050 (Balance pass) or T049 (Cloudflare deploy).

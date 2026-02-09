@@ -14,6 +14,7 @@
 		{ id: 'spacex', name: 'SpaceX', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
 		{ id: 'tesla', name: 'Tesla', shortName: 'EVs', icon: '🔋', color: '#4488FF' },
 		{ id: 'teslaenergy', name: 'Tesla Energy', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
+		{ id: 'crypto', name: 'Crypto', shortName: 'Crypto', icon: '💰', color: '#F7931A' },
 		{ id: 'research', name: 'Research', shortName: 'Research', icon: '🔬', color: '#9944FF' },
 		{ id: 'prestige', name: 'The IPO', shortName: 'IPO', icon: '🔔', color: '#9944FF' },
 		{ id: 'settings', name: 'Settings', shortName: 'Settings', icon: '⚙️', color: '#8899aa' },

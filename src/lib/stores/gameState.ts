@@ -124,7 +124,7 @@ export function createDefaultState(): GameState {
 		lastSaved: Date.now(),
 		lastPlayed: Date.now(),
 
-		cash: 50,
+		cash: 25,
 		researchPoints: 0,
 		influence: 0,
 		foundersVision: 0,

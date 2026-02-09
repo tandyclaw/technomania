@@ -19,12 +19,12 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		flavorText: '"Sustainable energy is the single biggest thing we need to solve."',
 	},
 	spacex: {
-		cost: 250,
+		cost: 1000,
 		description: 'Pour your savings into rockets. What could go wrong?',
 		flavorText: '"I thought the chances of SpaceX succeeding were about 10%."',
 	},
 	tesla: {
-		cost: 2000,
+		cost: 10000,
 		description: 'Invest in electric vehicles before anyone else believes in them.',
 		flavorText: '"The overarching purpose of Tesla is to help accelerate the transition to sustainable energy."',
 	},
