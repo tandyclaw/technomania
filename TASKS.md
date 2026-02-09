@@ -91,9 +91,9 @@
 | T037 | Basic tech tree (15-20 nodes, JSON data) | DONE | MERGED | P0 | T007 |
 | T038 | Research screen UI (node selection + progress) | DONE | MERGED | P0 | T037, T013 |
 | T039 | Research point generation from R&D labs | DONE | MERGED | P0 | T037 |
-| T040 | Prestige system: "The IPO" calculator | PLANNED | PLAN | P0 | T007 |
-| T041 | Prestige screen UI (vision points preview, reset confirm) | PLANNED | PLAN | P0 | T040, T013 |
-| T042 | Prestige bonuses (permanent multipliers) | PLANNED | PLAN | P0 | T040 |
+| T040 | Prestige system: "The IPO" calculator | DONE | MERGED | P0 | T007 |
+| T041 | Prestige screen UI (vision points preview, reset confirm) | DONE | MERGED | P0 | T040, T013 |
+| T042 | Prestige bonuses (permanent multipliers) | DONE | MERGED | P0 | T040 |
 
 ## 9. Tutorial & Onboarding
 
@@ -112,10 +112,10 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T045 | PWA service worker + offline caching | PLANNED | PLAN | P1 | — |
+| T045 | PWA service worker + offline caching | DONE | MERGED | P1 | — |
 | T046 | Number rolling animation (GSAP) | PLANNED | PLAN | P2 | T006 |
 | T047 | Sound effects toggle (tap, ding, launch) | PLANNED | PLAN | P2 | — |
-| T048 | Settings screen (music, SFX, notifications, save export) | PLANNED | PLAN | P1 | T003 |
+| T048 | Settings screen (music, SFX, notifications, save export) | DONE | MERGED | P1 | T003 |
 | T049 | Cloudflare Pages deployment pipeline | PLANNED | PLAN | P1 | — |
 | T050 | Balance pass — playtest all 3 divisions for 2-4h flow | PLANNED | PLAN | P0 | T017-T042 |
 
@@ -133,9 +133,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 41 | 35 | 6 |
+| P0 | 41 | 38 | 3 |
 | P1 | 11 | 1 | 10 |
 | P2 | 4 | 0 | 4 |
-| **Total** | **56** | **36** | **20** |
+| **Total** | **56** | **39** | **17** |
 
 **Next task to pick up:** T031 (Bottleneck resolution UI) or T024 (Launch cadence).

@@ -31,6 +31,15 @@ import { getActiveSynergies, getSynergyMultiplier, MVP_SYNERGIES } from '$lib/sy
 import { getBottleneckMultiplier } from '$lib/systems/BottleneckSystem';
 import { eventBus } from './EventBus';
 
+/**
+ * Calculate the prestige multiplier from Founder's Vision.
+ * Each Vision point = +10% to all production/revenue.
+ * Inlined here to avoid circular dependency with GameManager.
+ */
+function getPrestigeMultiplier(state: GameState): number {
+	return 1 + (state.foundersVision ?? 0) * 0.1;
+}
+
 const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla'] as const;
 type DivisionId = (typeof DIVISION_IDS)[number];
 
@@ -70,6 +79,9 @@ export function tickProduction(deltaMs: number): void {
 	gameState.update((state) => {
 		const newState = cloneState(state);
 		let changed = false;
+
+		// Calculate prestige multiplier (Founder's Vision: +10% per point)
+		const prestigeMultiplier = getPrestigeMultiplier(state);
 
 		// Calculate power balance for efficiency multiplier
 		const { generated, consumed } = calculatePowerBalance(state);
@@ -141,8 +153,8 @@ export function tickProduction(deltaMs: number): void {
 				if (tier.progress >= 1.0) {
 					const completedCycles = Math.floor(tier.progress);
 					const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-					// Apply synergy revenue boost
-					const totalRevenue = revenue * completedCycles * synergyRevenueMult;
+					// Apply synergy revenue boost + prestige (Founder's Vision) multiplier
+					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier;
 
 					newState.cash += totalRevenue;
 					newState.totalValueEarned += totalRevenue;

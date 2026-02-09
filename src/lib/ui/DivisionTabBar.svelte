@@ -15,6 +15,8 @@
 		{ id: 'tesla', name: 'Tesla', shortName: 'EVs', icon: '🔋', color: '#4488FF' },
 		{ id: 'teslaenergy', name: 'Tesla Energy', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
 		{ id: 'research', name: 'Research', shortName: 'Research', icon: '🔬', color: '#9944FF' },
+		{ id: 'prestige', name: 'The IPO', shortName: 'IPO', icon: '🔔', color: '#9944FF' },
+		{ id: 'settings', name: 'Settings', shortName: 'Settings', icon: '⚙️', color: '#8899aa' },
 	];
 
 	function handleTabClick(tabId: string) {
@@ -38,6 +40,7 @@
 					   active:scale-90 touch-manipulation"
 				aria-current={isActive ? 'page' : undefined}
 				aria-label={tab.name}
+				data-tutorial-id="tab-{tab.id}"
 			>
 				<!-- Active indicator line -->
 				{#if isActive}
