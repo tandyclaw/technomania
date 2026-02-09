@@ -275,7 +275,7 @@
 			</div>
 
 			<!-- Floating Text -->
-			<div class="flex items-center justify-between px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5">
+			<div class="flex items-center justify-between px-4 py-3">
 				<div class="flex items-center gap-3">
 					<span class="text-lg" aria-hidden="true">💸</span>
 					<div>
@@ -296,7 +296,7 @@
 			</div>
 
 			<!-- Haptic Feedback -->
-			<div class="flex items-center justify-between px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5">
+			<div class="flex items-center justify-between px-4 py-3">
 				<div class="flex items-center gap-3">
 					<span class="text-lg" aria-hidden="true">📳</span>
 					<div>
