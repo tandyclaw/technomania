@@ -96,11 +96,11 @@
 
 {#if isActive && stepData}
 	{#if stepData.position === 'center'}
-		<!-- CENTERED MODAL: full backdrop + centered tooltip -->
+		<!-- CENTERED MODAL: lighter backdrop + centered tooltip -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div class="fixed inset-0 z-[80]" onclick={(e) => e.stopPropagation()}>
-			<div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+		<div class="fixed inset-0 z-[80] pointer-events-none">
+			<div class="absolute inset-0 bg-black/40"></div>
 			<div class="absolute inset-0 flex items-center justify-center z-[82] px-6">
 				<div
 					class="tutorial-tooltip max-w-sm w-full rounded-2xl border border-solar-gold/20 p-5 text-center pointer-events-auto
@@ -159,19 +159,18 @@
 			></div>
 		{/if}
 
-		<!-- Invisible blocker around the screen EXCEPT the highlight area -->
-		<div class="fixed z-[80] left-0 right-0 top-0" style="height: {highlightRect.top}px;"></div>
-		<div class="fixed z-[80] left-0 right-0 bottom-0"
+		<!-- Invisible blocker divs — pointer-events:none so taps pass through to the game -->
+		<div class="fixed z-[80] left-0 right-0 top-0 pointer-events-none" style="height: {highlightRect.top}px;"></div>
+		<div class="fixed z-[80] left-0 right-0 bottom-0 pointer-events-none"
 			style="height: {Math.max(0, windowHeight - highlightRect.top - highlightRect.height)}px;"></div>
-		<div class="fixed z-[80] left-0"
+		<div class="fixed z-[80] left-0 pointer-events-none"
 			style="top: {highlightRect.top}px; width: {highlightRect.left}px; height: {highlightRect.height}px;"></div>
-		<div class="fixed z-[80]"
+		<div class="fixed z-[80] pointer-events-none"
 			style="top: {highlightRect.top}px; left: {highlightRect.left + highlightRect.width}px; right: 0; height: {highlightRect.height}px;"></div>
 
-		<!-- Tooltip -->
+		<!-- Tooltip (compact, tooltip-like) -->
 		<div
-			class="tutorial-tooltip fixed max-w-sm w-[calc(100%-2rem)] rounded-2xl border border-solar-gold/20 p-4 z-[82] pointer-events-auto
-				   {animateIn ? 'animate-positioned' : 'opacity-0'}"
+			class="tutorial-tooltip fixed max-w-xs w-[calc(100%-3rem)] rounded-xl border border-solar-gold/20 p-3 z-[82] pointer-events-auto"
 			style="background: linear-gradient(135deg, #1a2332 0%, #0f1729 100%); {tooltipStyle}"
 			bind:this={tooltipEl}
 		>

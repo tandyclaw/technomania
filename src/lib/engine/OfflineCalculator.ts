@@ -4,6 +4,7 @@
  */
 
 import type { GameState, DivisionState } from '$lib/stores/gameState';
+import { getOfflineEfficiencyBonus } from '$lib/systems/UpgradeSystem';
 
 /** Maximum offline time in ms (8 hours base, 16 hours for premium) */
 const MAX_OFFLINE_MS_BASE = 8 * 60 * 60 * 1000;
@@ -83,6 +84,10 @@ export function calculateOfflineProgress(
 		return createEmptyReport(offlineDurationMs, cappedMs);
 	}
 
+	// Dynamic offline efficiency: base 50% + upgrade bonuses
+	const efficiencyBonus = getOfflineEfficiencyBonus(state);
+	const efficiency = Math.min(OFFLINE_EFFICIENCY + efficiencyBonus, 1.0);
+
 	const offlineSeconds = cappedMs / 1000;
 	const divisionReports: DivisionOfflineReport[] = [];
 	let totalCashEarned = 0;
@@ -99,7 +104,8 @@ export function calculateOfflineProgress(
 			divId,
 			divState,
 			offlineSeconds,
-			prestigeMultiplier
+			prestigeMultiplier,
+			efficiency
 		);
 
 		divisionReports.push(report);
@@ -115,7 +121,7 @@ export function calculateOfflineProgress(
 	if (state.activeResearch) {
 		// Base RP rate: 1 per 10 seconds, scaled by prestige
 		totalRPEarned = Math.floor(
-			(offlineSeconds / 10) * prestigeMultiplier * OFFLINE_EFFICIENCY
+			(offlineSeconds / 10) * prestigeMultiplier * efficiency
 		);
 	}
 
@@ -126,7 +132,7 @@ export function calculateOfflineProgress(
 		researchPointsEarned: totalRPEarned,
 		powerGenerated: totalPowerGenerated,
 		divisionReports,
-		efficiency: OFFLINE_EFFICIENCY,
+		efficiency,
 	};
 }
 

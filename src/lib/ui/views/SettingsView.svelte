@@ -6,6 +6,7 @@
 	import { exportSave as exportBase64, importSave as importBase64 } from '$lib/engine/SaveManager';
 	import { setMusicEnabled, setMusicVolume } from '$lib/systems/MusicManager';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
+	import { tutorialStore } from '$lib/stores/tutorialStore';
 
 	const GAME_VERSION = '0.1.0';
 
@@ -318,6 +319,22 @@
 				</button>
 			</div>
 		</div>
+	</section>
+
+	<!-- Tutorial -->
+	<section class="space-y-1">
+		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Help</h2>
+		<button
+			onclick={() => tutorialStore.restart()}
+			class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
+				   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
+		>
+			<span class="text-lg" aria-hidden="true">❓</span>
+			<div class="text-left flex-1">
+				<span class="text-sm font-medium text-text-primary block">Replay Tutorial</span>
+				<span class="text-[10px] text-text-muted">Learn the basics again</span>
+			</div>
+		</button>
 	</section>
 
 	<!-- Appearance -->

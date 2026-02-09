@@ -142,6 +142,14 @@ function createTutorialStore() {
 			});
 		},
 
+		/** Restart the tutorial from scratch */
+		restart() {
+			try {
+				localStorage.removeItem('tech_tycoon_tutorial_done');
+			} catch { /* ignore */ }
+			set({ active: true, step: 0, completed: false });
+		},
+
 		/** Complete the tutorial (final step dismissed) */
 		complete() {
 			try {

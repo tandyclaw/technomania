@@ -10,7 +10,7 @@ import { get } from 'svelte/store';
 import { gameState, type GameState } from '$lib/stores/gameState';
 import { eventBus } from '$lib/engine/EventBus';
 
-export type UpgradeCategory = 'speed' | 'revenue' | 'cost';
+export type UpgradeCategory = 'speed' | 'revenue' | 'cost' | 'offline';
 
 export interface Upgrade {
 	id: string;
@@ -78,6 +78,11 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'robot_rev_2', name: 'Consumer Sales', description: '3x Home Robot revenue', category: 'revenue', cost: 20_000_000, target: 'robotics', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'robotics', tierIndex: 3, count: 10 } },
 	{ id: 'robot_cost_1', name: 'Standardized Parts', description: 'Robotics tiers cost 20% less', category: 'cost', cost: 1_000_000, target: 'robotics', tierIndex: -1, value: 0.8 },
 	{ id: 'robot_speed_3', name: 'Self-Replicating Bots', description: '5x General Purpose Robot speed', category: 'speed', cost: 200_000_000, target: 'robotics', tierIndex: 5, value: 5, requiresMilestone: { divisionId: 'robotics', tierIndex: 5, threshold: 25 } },
+
+	// === OFFLINE EFFICIENCY UPGRADES (3) ===
+	{ id: 'offline_eff_1', name: 'Night Shift', description: 'Offline earnings +10% (60% total)', category: 'offline', cost: 500_000, target: 'all', tierIndex: -1, value: 0.10 },
+	{ id: 'offline_eff_2', name: '24/7 Operations', description: 'Offline earnings +15% (75% total)', category: 'offline', cost: 10_000_000, target: 'all', tierIndex: -1, value: 0.15, requiresTierCount: { divisionId: 'teslaenergy', tierIndex: 2, count: 10 } },
+	{ id: 'offline_eff_3', name: 'Full Autonomy', description: 'Offline earnings +15% (90% total)', category: 'offline', cost: 250_000_000, target: 'all', tierIndex: -1, value: 0.15, requiresTierCount: { divisionId: 'ai', tierIndex: 3, count: 10 } },
 
 	// === GLOBAL UPGRADES (6) ===
 	{ id: 'global_rev_1', name: 'Brand Power', description: '2x all revenue', category: 'revenue', cost: 5_000_000, target: 'all', tierIndex: -1, value: 2 },
@@ -172,6 +177,21 @@ export function getUpgradeRevenueMultiplier(divisionId: string, tierIndex: numbe
 		}
 	}
 	return mult;
+}
+
+/**
+ * Get the offline efficiency bonus from purchased upgrades.
+ * Returns the total bonus (e.g. 0.25 means +25% on top of base 50%).
+ */
+export function getOfflineEfficiencyBonus(state: GameState): number {
+	const purchased = state.purchasedUpgrades ?? [];
+	let bonus = 0;
+	for (const uid of purchased) {
+		const u = ALL_UPGRADES.find(up => up.id === uid);
+		if (!u || u.category !== 'offline') continue;
+		bonus += u.value;
+	}
+	return bonus;
 }
 
 /**
