@@ -3,15 +3,13 @@
  *
  * Tracks which step the new player is on and persists completion.
  * Steps:
- *   0 = welcome message
- *   1 = point to Energy tab
- *   2 = buy first Solar Panel
- *   3 = tap to start production
- *   4 = explain progress bar & payout
- *   5 = buy more units
- *   6 = mention Chief hire mechanic
- *   7 = other divisions locked until earn enough
- *   8 = complete (done)
+ *   0 = "Tap Nuclear Reactor to start production" (highlight tier card)
+ *   1 = "Great! Watch the progress bar fill up"
+ *   2 = "You earned cash! Buy more reactors to earn faster"
+ *   3 = "Hire a Chief to automate production"
+ *   4 = "Unlock new divisions as you grow"
+ *   5 = "Check Research for permanent upgrades"
+ *   6 = complete (done)
  */
 
 import { writable, get } from 'svelte/store';
@@ -20,64 +18,58 @@ import { eventBus } from '$lib/engine/EventBus';
 
 export const TUTORIAL_STEPS = [
 	{
-		id: 'welcome',
-		title: 'Welcome, Visionary',
-		message:
-			"Build an empire from solar panels to Mars rockets. The goal: make humanity multiplanetary. Let's get started.",
-		target: null, // no highlight, centered modal
-		position: 'center' as const,
-	},
-	{
-		id: 'go-to-energy',
-		title: 'Start Here',
-		message: 'Tap the Energy tab below. Sustainable energy is the foundation — you need power for everything.',
-		target: 'tab-teslaenergy',
-		position: 'above' as const,
-	},
-	{
-		id: 'buy-solar-panel',
-		title: 'Build Your First Solar Panel',
-		message: "Tap the Build button to buy your first Solar Panel. You've got $50 — it only costs $4.",
-		target: 'tier-buy-0',
-		position: 'above' as const,
-	},
-	{
-		id: 'tap-to-produce',
-		title: 'Tap to Produce',
-		message: 'Now tap the Solar Panel card to start a production cycle. Energy in, cash out!',
+		id: 'tap-reactor',
+		title: 'Start Producing',
+		message: 'Tap the Nuclear Reactor to start a production cycle!',
 		target: 'tier-card-0',
 		position: 'above' as const,
+		hint: '👆 Tap the reactor',
+		autoAdvance: true,
 	},
 	{
-		id: 'explain-progress',
-		title: 'Watch It Fill',
-		message:
-			"See the progress bar? When it fills up, you earn cash. The more panels you own, the bigger the payout.",
+		id: 'watch-progress',
+		title: 'Great!',
+		message: 'Watch the progress bar fill up — cash incoming!',
 		target: 'tier-card-0',
 		position: 'above' as const,
+		hint: '⏳ Waiting for payout...',
+		autoAdvance: true,
 	},
 	{
 		id: 'buy-more',
-		title: 'Scale Up',
-		message: 'Buy more Nuclear Reactors to increase your revenue. More units = more cash per cycle.',
+		title: 'Nice! 💰',
+		message: 'Buy more reactors to earn faster.',
 		target: 'tier-buy-0',
 		position: 'above' as const,
+		hint: '👆 Tap Build',
+		autoAdvance: true,
 	},
 	{
-		id: 'chief-hint',
-		title: 'Hire a Chief',
-		message:
-			"See the Chief card above? Hire a Division Chief to automate production — no more tapping! They'll run things while you're away.",
+		id: 'hire-chief',
+		title: 'Automate It',
+		message: 'Hire a Chief to run production automatically — even while you\'re away!',
 		target: 'chief-card',
 		position: 'below' as const,
+		hint: null,
+		autoAdvance: false,
 	},
 	{
-		id: 'locked-divisions',
-		title: 'Expand Your Empire',
-		message:
-			'Rockets and Manufacturing are locked for now. Earn more cash to unlock them. Each division has unique tiers, chiefs, and synergies. Go build!',
+		id: 'unlock-divisions',
+		title: 'Expand',
+		message: 'Unlock new divisions — Rockets, Manufacturing, AI & more — as you grow!',
 		target: null,
 		position: 'center' as const,
+		hint: null,
+		autoAdvance: false,
+	},
+	{
+		id: 'check-research',
+		title: 'Research',
+		message: 'Check the Research tab for permanent upgrades. Go build! 🚀',
+		target: 'tab-research',
+		position: 'above' as const,
+		hint: null,
+		autoAdvance: false,
 	},
 ] as const;
 
@@ -129,6 +121,9 @@ function createTutorialStore() {
 				if (!s.active) return s;
 				const next = s.step + 1;
 				if (next >= TOTAL_STEPS) {
+					try {
+						localStorage.setItem('tech_tycoon_tutorial_done', '1');
+					} catch { /* ignore */ }
 					return { active: false, step: TOTAL_STEPS, completed: true };
 				}
 				return { ...s, step: next };
@@ -179,42 +174,46 @@ export const tutorialStore = createTutorialStore();
 export function initTutorialListeners(): () => void {
 	const cleanups: (() => void)[] = [];
 
-	// When player navigates to teslaenergy tab: step 1 → 2
-	// (handled by DivisionTabBar via tutorialStore.nextStep)
+	// Step 0 → 1: Player taps to start production
+	cleanups.push(
+		eventBus.on('production:started', (data) => {
+			const ts = get(tutorialStore);
+			if (!ts.active) return;
+			if (data.division === 'teslaenergy' && data.tier === 0 && ts.step === 0) {
+				tutorialStore.nextStep(); // → step 1 (watch progress)
+			}
+		})
+	);
 
-	// When player buys first solar panel (upgrade:purchased on teslaenergy tier 0): step 2 → 3
+	// Step 1 → 2: Production completes
+	cleanups.push(
+		eventBus.on('production:complete', (data) => {
+			const ts = get(tutorialStore);
+			if (!ts.active) return;
+			if (data.division === 'teslaenergy' && data.tier === 0 && ts.step === 1) {
+				tutorialStore.nextStep(); // → step 2 (buy more)
+			}
+		})
+	);
+
+	// Step 2 → 3: Player buys more reactors
 	cleanups.push(
 		eventBus.on('upgrade:purchased', (data) => {
 			const ts = get(tutorialStore);
 			if (!ts.active) return;
 			if (data.division === 'teslaenergy' && data.tier === 0 && ts.step === 2) {
-				tutorialStore.nextStep(); // → step 3 (tap to produce)
-			}
-			// Step 5 → 6: buy more units
-			if (data.division === 'teslaenergy' && data.tier === 0 && ts.step === 5) {
-				tutorialStore.nextStep(); // → step 6 (chief hint)
+				tutorialStore.nextStep(); // → step 3 (hire chief)
 			}
 		})
 	);
 
-	// When player taps to start production: step 3 → 4
+	// Step 3 → 4: Player hires chief
 	cleanups.push(
-		eventBus.on('production:started', (data) => {
+		eventBus.on('chief:hired', (data) => {
 			const ts = get(tutorialStore);
 			if (!ts.active) return;
-			if (data.division === 'teslaenergy' && data.tier === 0 && ts.step === 3) {
-				tutorialStore.nextStep(); // → step 4 (explain progress)
-			}
-		})
-	);
-
-	// When production completes: step 4 → 5
-	cleanups.push(
-		eventBus.on('production:complete', (data) => {
-			const ts = get(tutorialStore);
-			if (!ts.active) return;
-			if (data.division === 'teslaenergy' && data.tier === 0 && ts.step === 4) {
-				tutorialStore.nextStep(); // → step 5 (buy more)
+			if (data.division === 'teslaenergy' && ts.step === 3) {
+				tutorialStore.nextStep(); // → step 4 (unlock divisions)
 			}
 		})
 	);

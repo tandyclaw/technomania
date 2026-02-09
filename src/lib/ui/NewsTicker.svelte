@@ -35,7 +35,7 @@
 		}
 
 		if (s.researchPoints > 100) {
-			msgs.push(`SCIENCE: Your R&D labs have accumulated ${s.researchPoints} research points`);
+			msgs.push(`SCIENCE: Your R&D labs have accumulated ${Math.floor(s.researchPoints).toLocaleString()} research points`);
 		}
 
 		// Division-specific messages

@@ -4,6 +4,7 @@
 	import { get } from 'svelte/store';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { exportSave as exportBase64, importSave as importBase64 } from '$lib/engine/SaveManager';
+	import { setMusicEnabled, setMusicVolume } from '$lib/systems/MusicManager';
 
 	const GAME_VERSION = '0.1.0';
 
@@ -18,6 +19,7 @@
 
 	// Derive settings from game state
 	let musicEnabled = $derived($gameState.settings.musicEnabled);
+	let musicVolume = $derived($gameState.settings.musicVolume ?? 0.5);
 	let sfxEnabled = $derived($gameState.settings.sfxEnabled);
 	let notificationsEnabled = $derived($gameState.settings.notificationsEnabled);
 	let offlineProgressEnabled = $derived($gameState.settings.offlineProgressEnabled);
@@ -40,6 +42,19 @@
 			...s,
 			settings: { ...s.settings, [key]: !s.settings[key] }
 		}));
+		if (key === 'musicEnabled') {
+			const state = get(gameState);
+			setMusicEnabled(state.settings.musicEnabled);
+		}
+	}
+
+	function handleMusicVolume(e: Event) {
+		const val = parseFloat((e.target as HTMLInputElement).value);
+		gameState.update((s) => ({
+			...s,
+			settings: { ...s.settings, musicVolume: val }
+		}));
+		setMusicVolume(val);
 	}
 
 	function exportSave() {
@@ -180,6 +195,23 @@
 					<span class="toggle-thumb" class:active={musicEnabled}></span>
 				</button>
 			</div>
+			{#if musicEnabled}
+			<div class="flex items-center gap-3 px-4 py-3">
+				<span class="text-lg" aria-hidden="true">🔈</span>
+				<span class="text-sm font-medium text-text-primary shrink-0">Volume</span>
+				<input
+					type="range"
+					min="0"
+					max="1"
+					step="0.05"
+					value={musicVolume}
+					oninput={handleMusicVolume}
+					class="flex-1 h-1 accent-electric-blue"
+					aria-label="Music volume"
+				/>
+				<span class="text-xs text-text-muted tabular-nums w-8 text-right">{Math.round(musicVolume * 100)}%</span>
+			</div>
+			{/if}
 			<div class="flex items-center justify-between px-4 py-3">
 				<div class="flex items-center gap-3">
 					<span class="text-lg" aria-hidden="true">🔊</span>

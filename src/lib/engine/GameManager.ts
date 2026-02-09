@@ -39,6 +39,7 @@ class GameManager {
 	private boundBeforeUnload: (() => void) | null = null;
 	private boundVisibilityChange: (() => void) | null = null;
 	private cleanupSounds: (() => void) | null = null;
+	private cleanupMusic: (() => void) | null = null;
 
 	/**
 	 * Initialize the game — load saved state or create new, start systems
@@ -193,6 +194,10 @@ class GameManager {
 		this.stopAutoSave();
 		this.removeBrowserListeners();
 		destroyFlavorMechanics();
+		if (this.cleanupMusic) {
+			this.cleanupMusic();
+			this.cleanupMusic = null;
+		}
 		if (this.cleanupSounds) {
 			this.cleanupSounds();
 			this.cleanupSounds = null;
@@ -267,6 +272,9 @@ class GameManager {
 
 		// Trigger confetti on prestige
 		triggerParticle('confetti');
+
+		// Crossfade music to new planet mood
+		musicOnPrestige();
 
 		// After first prestige, all MVP divisions start unlocked
 		if (fresh.prestigeCount >= 1) {

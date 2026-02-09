@@ -28,7 +28,7 @@ import { getPlanetCostMultiplier } from '$lib/systems/PrestigeSystem';
 
 /** Combined cost multiplier from NG+ and planet chain */
 function getCostMultiplier(state: GameState): number {
-	return getCostMultiplier(state) * getPlanetCostMultiplier(state.prestigeCount);
+	return getNgPlusCostMultiplier(state.ngPlusLevel ?? 0) * getPlanetCostMultiplier(state.prestigeCount);
 }
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { getNextChiefCost } from '$lib/systems/ChiefSystem';
@@ -344,8 +344,9 @@ export function purchaseTier(divisionId: string, tierIndex: number): boolean {
 		const tierData = divMeta?.tiers[tierIndex];
 		if (!tierData) return state;
 
-		// Calculate cost
-		const cost = tierData.config.baseCost * Math.pow(tierData.config.costMultiplier, tier.count);
+		// Calculate cost (including NG+ multiplier)
+		const ngMult = getCostMultiplier(state);
+		const cost = tierData.config.baseCost * Math.pow(tierData.config.costMultiplier, tier.count) * ngMult;
 
 		if (state.cash < cost) return state;
 
