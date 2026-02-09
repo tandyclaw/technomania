@@ -129,13 +129,65 @@
 
 ---
 
+## 13. New Divisions — More Content
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T057 | **AI Division** — 6 tiers (Chatbot→AGI), research-point consumer, unlocks at $50K | PLANNED | — | P0 | T013 |
+| T058 | **Tunnels Division** — 6 tiers (Test Bore→Hyperloop), power-consumer, unlocks at $100K | PLANNED | — | P0 | T013 |
+| T059 | Wire new divisions into GameManager, save/load, synergies, bottlenecks | PLANNED | — | P0 | T057, T058 |
+
+## 14. Achievements System
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T060 | Achievement data definitions (30+ achievements: first purchase, first million, all chiefs, etc.) | PLANNED | — | P1 | — |
+| T061 | Achievement tracker engine (event-driven, persisted) | PLANNED | — | P1 | T060 |
+| T062 | Achievement notification UI (toast + badge on tab) | PLANNED | — | P1 | T061, T016 |
+| T063 | Achievements screen (grid with locked/unlocked states) | PLANNED | — | P1 | T062 |
+
+## 15. Statistics & Activity Feed
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T064 | Statistics tracking (total earned, time played, taps, productions, etc.) | PLANNED | — | P1 | T007 |
+| T065 | Statistics view in Settings or dedicated tab | PLANNED | — | P1 | T064 |
+| T066 | Live activity feed on Dashboard (last 10 events: purchases, unlocks, milestones) | PLANNED | — | P1 | T004 |
+
+## 16. Visual Polish & Juice
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T067 | Particle effects on big purchases/milestones (confetti, sparks) | PLANNED | — | P2 | — |
+| T068 | Tier card visual upgrade (glow effects, rarity borders at high levels) | PLANNED | — | P2 | T017 |
+| T069 | Dashboard income graph (sparkline of last 60s income) | PLANNED | — | P2 | T012 |
+| T070 | Floating "+$X" text on production payouts | PLANNED | — | P1 | T054 |
+| T071 | Haptic feedback on mobile (navigator.vibrate) | PLANNED | — | P2 | — |
+
+## 17. Endgame — Mars Colony
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T072 | Mars Colony progress tracker (visible goal: % to colonization) | PLANNED | — | P1 | T040 |
+| T073 | Mars Colony victory screen with stats summary | PLANNED | — | P1 | T072 |
+| T074 | New Game+ with harder scaling after colony completion | PLANNED | — | P2 | T072 |
+
+## 18. Quality of Life
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T075 | "Buy All" button for chiefs (auto-purchase all affordable upgrades) | PLANNED | — | P2 | T020 |
+| T076 | Keyboard shortcuts (1-5 for tabs, space to collect) | PLANNED | — | P2 | — |
+| T077 | Dark/light theme toggle in settings | PLANNED | — | P2 | T048 |
+| T078 | Import/Export save as base64 string | PLANNED | — | P1 | T003 |
+
+---
+
 ## Summary
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 41 | 41 | 0 |
-| P1 | 11 | 11 | 0 |
-| P2 | 4 | 4 | 0 |
-| **Total** | **56** | **56** | **0** |
-
-🎉 **ALL TASKS COMPLETE!** 🎉
+| P0 | 44 | 41 | 3 |
+| P1 | 22 | 11 | 11 |
+| P2 | 12 | 4 | 8 |
+| **Total** | **78** | **56** | **22** |

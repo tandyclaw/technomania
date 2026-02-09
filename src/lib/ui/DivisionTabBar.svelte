@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { activeTab } from '$lib/stores/navigation';
+	import { gameState } from '$lib/stores/gameState';
+	import { ACHIEVEMENTS } from '$lib/systems/AchievementSystem';
+
+	let achievementCount = $derived($gameState.achievements.length);
+	let totalAchievements = ACHIEVEMENTS.length;
+	let newAchievements = $derived(achievementCount);
 
 	interface TabItem {
 		id: string;
@@ -14,8 +20,11 @@
 		{ id: 'spacex', name: 'Rockets', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
 		{ id: 'tesla', name: 'EVs', shortName: 'EVs', icon: '🚗', color: '#4488FF' },
 		{ id: 'teslaenergy', name: 'Energy', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
+		{ id: 'ai', name: 'AI', shortName: 'AI', icon: '🤖', color: '#AA44FF' },
+		{ id: 'tunnels', name: 'Tunnels', shortName: 'Tunnels', icon: '🚇', color: '#CC7744' },
 		{ id: 'treasury', name: 'Treasury', shortName: 'Treasury', icon: '🏦', color: '#44AA77' },
 		{ id: 'research', name: 'Research', shortName: 'R&D', icon: '🔬', color: '#9944FF' },
+		{ id: 'achievements', name: 'Achievements', shortName: 'Trophies', icon: '🏆', color: '#FFCC44' },
 		{ id: 'prestige', name: 'The IPO', shortName: 'IPO', icon: '📈', color: '#9944FF' },
 		{ id: 'settings', name: 'Settings', shortName: 'Settings', icon: '⚙️', color: '#8899aa' },
 	];
@@ -53,11 +62,16 @@
 
 				<!-- Icon -->
 				<span
-					class="text-xl leading-none transition-transform duration-200"
+					class="text-xl leading-none transition-transform duration-200 relative"
 					class:scale-110={isActive}
 					aria-hidden="true"
 				>
 					{tab.icon}
+					{#if tab.id === 'achievements' && newAchievements > 0 && !isActive}
+						<span class="absolute -top-1 -right-2 min-w-[14px] h-[14px] rounded-full bg-solar-gold text-[8px] text-black font-bold flex items-center justify-center px-0.5">
+							{newAchievements}
+						</span>
+					{/if}
 				</span>
 
 				<!-- Label -->

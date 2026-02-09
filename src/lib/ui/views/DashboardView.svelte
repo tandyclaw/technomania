@@ -7,9 +7,10 @@
 	import SmoothProgressBar from '$lib/ui/SmoothProgressBar.svelte';
 	import { getCycleDurationMs } from '$lib/systems/ProductionSystem';
 	import SynergyPanel from '$lib/ui/SynergyPanel.svelte';
+	import { activityFeed } from '$lib/stores/activityStore';
 
 	// Division ordering for display
-	const divisionIds = ['teslaenergy', 'spacex', 'tesla'] as const;
+	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
 
 	let state = $derived($gameState);
 	let prestigeCount = $derived(state.prestigeCount);
@@ -245,14 +246,28 @@
 		</div>
 	</div>
 
-	<!-- Activity feed placeholder -->
+	<!-- Activity feed -->
 	<div>
 		<h2 class="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
 			Activity
 		</h2>
-		<div class="bg-bg-secondary/30 rounded-xl p-6 border border-white/5 text-center">
-			<p class="text-sm text-text-muted">Start producing to see activity here</p>
-		</div>
+		{#if $activityFeed.length === 0}
+			<div class="bg-bg-secondary/30 rounded-xl p-6 border border-white/5 text-center">
+				<p class="text-sm text-text-muted">Start producing to see activity here</p>
+			</div>
+		{:else}
+			<div class="bg-bg-secondary/30 rounded-xl border border-white/5 max-h-48 overflow-y-auto">
+				{#each $activityFeed as entry (entry.id)}
+					<div class="flex items-center gap-2.5 px-3 py-2 border-b border-white/[0.03] last:border-b-0">
+						<span class="text-base shrink-0">{entry.icon}</span>
+						<p class="text-xs text-text-secondary flex-1 min-w-0 truncate">{entry.description}</p>
+						<span class="text-[9px] text-text-muted shrink-0 tabular-nums">
+							{new Date(entry.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+						</span>
+					</div>
+				{/each}
+			</div>
+		{/if}
 	</div>
 </div>
 

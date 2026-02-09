@@ -32,6 +32,16 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		description: 'Build electric vehicles at scale.',
 		flavorText: 'The world runs on cars. Make them electric.',
 	},
+	ai: {
+		cost: 50000,
+		description: 'Build artificial intelligence.',
+		flavorText: 'From chatbots to AGI. Data centers need power.',
+	},
+	tunnels: {
+		cost: 100000,
+		description: 'Bore tunnels under cities.',
+		flavorText: 'Move people and freight underground. Slow but lucrative.',
+	},
 };
 
 /**

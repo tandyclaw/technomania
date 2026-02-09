@@ -6,6 +6,7 @@
 	import PrestigeView from '$lib/ui/views/PrestigeView.svelte';
 	import SettingsView from '$lib/ui/views/SettingsView.svelte';
 	import TreasuryView from '$lib/ui/views/TreasuryView.svelte';
+	import AchievementsView from '$lib/ui/views/AchievementsView.svelte';
 </script>
 
 {#key $activeTab}
@@ -18,6 +19,8 @@
 			<PrestigeView />
 		{:else if $activeTab === 'treasury'}
 			<TreasuryView />
+		{:else if $activeTab === 'achievements'}
+			<AchievementsView />
 		{:else if $activeTab === 'settings'}
 			<SettingsView />
 		{:else}

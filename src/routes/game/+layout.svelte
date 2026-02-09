@@ -8,9 +8,13 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import { initToastListeners } from '$lib/stores/toastStore';
+	import { initAchievementListeners } from '$lib/systems/AchievementSystem';
+	import { initActivityListeners } from '$lib/stores/activityStore';
+	import FloatingText from '$lib/ui/FloatingText.svelte';
 	import { tutorialStore, initTutorialListeners } from '$lib/stores/tutorialStore';
 	import TutorialOverlay from '$lib/ui/TutorialOverlay.svelte';
 	import SynergyCelebration from '$lib/ui/SynergyCelebration.svelte';
+	import ParticleEffects from '$lib/ui/ParticleEffects.svelte';
 	import { celebrationState, dismissCelebration } from '$lib/stores/synergyCelebrationStore';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
 
@@ -22,10 +26,14 @@
 	let showWelcomeBack = $state(false);
 	let cleanupToasts: (() => void) | null = null;
 	let cleanupTutorial: (() => void) | null = null;
+	let cleanupAchievements: (() => void) | null = null;
+	let cleanupActivity: (() => void) | null = null;
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
 		cleanupToasts = initToastListeners();
+		cleanupAchievements = initAchievementListeners();
+		cleanupActivity = initActivityListeners();
 
 		const result = await gameManager.initialize();
 		isNewGame = result.isNewGame;
@@ -47,6 +55,8 @@
 	onDestroy(() => {
 		cleanupToasts?.();
 		cleanupTutorial?.();
+		cleanupAchievements?.();
+		cleanupActivity?.();
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -130,6 +140,9 @@
 		</div>
 	{/if}
 
+	<!-- Particle effects overlay -->
+	<ParticleEffects />
+
 	<!-- Tutorial overlay -->
 	<TutorialOverlay />
 
@@ -145,6 +158,7 @@
 		<ResourceBar />
 		<SaveIndicator />
 		<ToastContainer />
+		<FloatingText />
 
 		<!-- Main scrollable content area -->
 		<main

@@ -35,6 +35,16 @@ export interface GameStats {
 	totalResearchCompleted: number;
 	playTimeMs: number;
 	sessionsPlayed: number;
+	totalProductions: number;
+	totalPrestiges: number;
+	highestIncomePerSec: number;
+}
+
+export interface MarsColonyState {
+	progress: number; // 0-100
+	completed: boolean;
+	completedAt: number; // timestamp, 0 if not completed
+	newGamePlusCount: number;
 }
 
 export interface GameSettings {
@@ -42,6 +52,7 @@ export interface GameSettings {
 	sfxEnabled: boolean;
 	notificationsEnabled: boolean;
 	offlineProgressEnabled: boolean;
+	floatingTextEnabled: boolean;
 }
 
 export interface LaunchLogEntry {
@@ -110,6 +121,8 @@ export interface GameState {
 		spacex: DivisionState;
 		tesla: DivisionState;
 		teslaenergy: DivisionState;
+		ai: DivisionState;
+		tunnels: DivisionState;
 	};
 
 	// Research
@@ -125,6 +138,9 @@ export interface GameState {
 	// Prestige
 	prestigeCount: number;
 	totalValueEarned: number;
+
+	// Mars Colony
+	marsColony: MarsColonyState;
 
 	// Meta
 	achievements: string[];
@@ -156,7 +172,9 @@ export function createDefaultState(): GameState {
 		divisions: {
 			spacex: createDefaultDivision(6),
 			tesla: createDefaultDivision(6),
-			teslaenergy: createDefaultDivision(6)
+			teslaenergy: createDefaultDivision(6),
+			ai: createDefaultDivision(6),
+			tunnels: createDefaultDivision(6)
 		},
 
 		unlockedResearch: [],
@@ -187,19 +205,30 @@ export function createDefaultState(): GameState {
 		prestigeCount: 0,
 		totalValueEarned: 0,
 
+		marsColony: {
+			progress: 0,
+			completed: false,
+			completedAt: 0,
+			newGamePlusCount: 0,
+		},
+
 		achievements: [],
 		stats: {
 			totalTaps: 0,
 			totalCashEarned: 0,
 			totalResearchCompleted: 0,
 			playTimeMs: 0,
-			sessionsPlayed: 0
+			sessionsPlayed: 0,
+			totalProductions: 0,
+			totalPrestiges: 0,
+			highestIncomePerSec: 0,
 		},
 		settings: {
 			musicEnabled: true,
 			sfxEnabled: true,
 			notificationsEnabled: true,
-			offlineProgressEnabled: true
+			offlineProgressEnabled: true,
+			floatingTextEnabled: true
 		}
 	};
 }

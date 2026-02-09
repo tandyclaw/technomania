@@ -4,7 +4,7 @@
  */
 
 import { get } from 'svelte/store';
-import { gameState, createDefaultState, type GameState } from '$lib/stores/gameState';
+import { gameState, createDefaultState, type GameState, type DivisionState } from '$lib/stores/gameState';
 import { gameLoop } from './GameLoop';
 import { saveGame, loadGame, deleteSave } from './SaveManager';
 import { eventBus } from './EventBus';
@@ -17,6 +17,9 @@ import { tickTreasury, resetTreasuryAccumulators } from '$lib/systems/TreasurySy
 import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefaultFlavorStats } from '$lib/systems/FlavorMechanics';
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 import { initSoundListeners } from '$lib/systems/SoundManager';
+import { DIVISIONS } from '$lib/divisions';
+import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+import { triggerParticle } from '$lib/stores/particleStore';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 3;
@@ -126,15 +129,42 @@ class GameManager {
 			// Tick crypto price simulation
 			tickTreasury(deltaMs);
 
-			// Update play time only every ~1s to reduce store churn
+			// Update play time + stats only every ~1s to reduce store churn
 			playTimeAccumulator += deltaMs;
 			if (playTimeAccumulator >= 1000) {
 				const elapsed = playTimeAccumulator;
 				playTimeAccumulator = 0;
-				gameState.update((s) => ({
-					...s,
-					stats: { ...s.stats, playTimeMs: s.stats.playTimeMs + elapsed }
-				}));
+				gameState.update((s) => {
+					// Calculate current income/s
+					const incomePerSec = this.calculateTotalIncomePerSec(s);
+					const newHighest = Math.max(s.stats.highestIncomePerSec, incomePerSec);
+
+					// Calculate Mars colony progress
+					const marsProgress = this.calculateMarsProgress(s);
+
+					// Check milestones for particles
+					if (s.stats.totalCashEarned < 1_000_000 && s.stats.totalCashEarned + (incomePerSec * elapsed / 1000) >= 1_000_000) {
+						triggerParticle('confetti');
+					}
+					if (s.stats.totalCashEarned < 1_000_000_000 && s.stats.totalCashEarned + (incomePerSec * elapsed / 1000) >= 1_000_000_000) {
+						triggerParticle('confetti');
+					}
+
+					return {
+						...s,
+						marsColony: {
+							...s.marsColony,
+							progress: marsProgress,
+							completed: marsProgress >= 100 && !s.marsColony.completed,
+							completedAt: marsProgress >= 100 && !s.marsColony.completed ? Date.now() : s.marsColony.completedAt,
+						},
+						stats: {
+							...s.stats,
+							playTimeMs: s.stats.playTimeMs + elapsed,
+							highestIncomePerSec: newHighest,
+						}
+					};
+				});
 			}
 		});
 
@@ -208,7 +238,16 @@ class GameManager {
 			totalResearchCompleted: current.stats.totalResearchCompleted,
 			totalTaps: current.stats.totalTaps,
 			playTimeMs: current.stats.playTimeMs,
+			totalProductions: current.stats.totalProductions,
+			totalPrestiges: current.stats.totalPrestiges + 1,
+			highestIncomePerSec: current.stats.highestIncomePerSec,
 		};
+
+		// Preserve Mars colony progress
+		fresh.marsColony = { ...current.marsColony };
+
+		// Trigger confetti on prestige
+		triggerParticle('confetti');
 
 		// After first prestige, all MVP divisions start unlocked
 		if (fresh.prestigeCount >= 1) {
@@ -293,6 +332,66 @@ class GameManager {
 	}
 
 	/**
+	 * Calculate total income per second across all divisions
+	 */
+	private calculateTotalIncomePerSec(state: GameState): number {
+		let total = 0;
+		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
+			const divState = state.divisions[divId];
+			const divMeta = DIVISIONS[divId];
+			if (!divState?.unlocked || !divMeta) continue;
+			for (let i = 0; i < divState.tiers.length; i++) {
+				const tier = divState.tiers[i];
+				if (!tier.unlocked || tier.count === 0) continue;
+				const tierData = divMeta.tiers[i];
+				if (!tierData) continue;
+				const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
+				const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
+				total += (revenue / prodTimeMs) * 1000;
+			}
+		}
+		return total;
+	}
+
+	/**
+	 * Calculate Mars Colony progress (0-100)
+	 * Based on: total income threshold, divisions unlocked, prestige count
+	 */
+	private calculateMarsProgress(state: GameState): number {
+		let progress = 0;
+
+		// Income milestones (up to 40%)
+		const incomeThresholds = [1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
+		const incomePoints = 5; // 5% per threshold = 40%
+		for (const threshold of incomeThresholds) {
+			if (state.stats.totalCashEarned >= threshold) progress += incomePoints;
+		}
+
+		// All divisions unlocked (15%)
+		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
+		let unlockedDivs = 0;
+		for (const id of divIds) {
+			if (state.divisions[id].unlocked) unlockedDivs++;
+		}
+		progress += (unlockedDivs / divIds.length) * 15;
+
+		// All tiers unlocked across divisions (20%)
+		let totalTiers = 0;
+		let unlockedTiers = 0;
+		for (const id of divIds) {
+			const div = state.divisions[id];
+			totalTiers += div.tiers.length;
+			unlockedTiers += div.tiers.filter(t => t.unlocked).length;
+		}
+		if (totalTiers > 0) progress += (unlockedTiers / totalTiers) * 20;
+
+		// Prestige count (up to 25%, 5% per prestige, max 5 prestiges)
+		progress += Math.min(state.prestigeCount, 5) * 5;
+
+		return Math.min(100, Math.round(progress * 100) / 100);
+	}
+
+	/**
 	 * Migrate an old save state to the current version
 	 */
 	private migrateState(state: GameState): GameState {
@@ -335,7 +434,7 @@ class GameManager {
 				});
 			}
 			// Reset any in-progress production since timing model changed
-			for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
 				const div = migrated.divisions[divId];
 				if (div) {
 					for (const tier of div.tiers) {
@@ -346,6 +445,16 @@ class GameManager {
 			}
 			migrated.version = 2;
 		}
+
+		// Ensure marsColony exists
+		if (!migrated.marsColony) {
+			migrated.marsColony = { progress: 0, completed: false, completedAt: 0, newGamePlusCount: 0 };
+		}
+
+		// Ensure new stats fields exist
+		if (migrated.stats.totalProductions === undefined) migrated.stats.totalProductions = 0;
+		if (migrated.stats.totalPrestiges === undefined) migrated.stats.totalPrestiges = 0;
+		if (migrated.stats.highestIncomePerSec === undefined) migrated.stats.highestIncomePerSec = 0;
 
 		// Ensure activeSynergies field exists (added with synergy system)
 		if (!migrated.activeSynergies) {
@@ -377,6 +486,36 @@ class GameManager {
 			if (c.dogeTotalInvested === undefined) c.dogeTotalInvested = 0;
 			if (c.memePumpMs === undefined) c.memePumpMs = 0;
 			if (c.memePumpMultiplier === undefined) c.memePumpMultiplier = 1;
+		}
+
+		// Ensure AI and Tunnels divisions exist (added with T057/T058)
+		if (!migrated.divisions.ai) {
+			migrated.divisions.ai = {
+				unlocked: false,
+				tiers: Array.from({ length: 6 }, (_, i) => ({
+					unlocked: i === 0,
+					count: 0,
+					level: 0,
+					producing: false,
+					progress: 0,
+				})),
+				chiefLevel: 0,
+				bottlenecks: [],
+			};
+		}
+		if (!migrated.divisions.tunnels) {
+			migrated.divisions.tunnels = {
+				unlocked: false,
+				tiers: Array.from({ length: 6 }, (_, i) => ({
+					unlocked: i === 0,
+					count: 0,
+					level: 0,
+					producing: false,
+					progress: 0,
+				})),
+				chiefLevel: 0,
+				bottlenecks: [],
+			};
 		}
 
 		// Ensure activeResearch field exists (added with research system)

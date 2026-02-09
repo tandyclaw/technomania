@@ -43,18 +43,24 @@ const TIER_BASE_REVENUE: Record<string, number[]> = {
 	teslaenergy: [0.5, 3, 15, 80, 400, 2000],    // Solar Panels → Megapack
 	spacex:      [1, 8, 50, 300, 1500, 8000],     // Falcon 1 → Mars Lander
 	tesla:       [2, 12, 60, 350, 2000],           // Roadster → Model Y
+	ai:          [3, 20, 100, 600, 3000, 15000],   // Chatbot → AGI
+	tunnels:     [4, 25, 120, 700, 3500, 18000],   // Test Bore → Hyperloop
 };
 
 const TIER_BASE_PRODUCTION: Record<string, number[]> = {
 	teslaenergy: [0.1, 0.5, 2, 10, 50, 200],     // MW generation contribution
 	spacex:      [0.01, 0.05, 0.2, 1, 5, 20],     // Launches/period contribution
 	tesla:       [0.02, 0.1, 0.5, 3, 15],          // Vehicles/period contribution
+	ai:          [0.02, 0.1, 0.5, 3, 15, 80],     // AI compute contribution
+	tunnels:     [0.01, 0.08, 0.4, 2, 10, 50],    // Tunnel length contribution
 };
 
 const DIVISION_NAMES: Record<string, string> = {
 	teslaenergy: 'Tesla Energy',
 	spacex: 'SpaceX',
 	tesla: 'Tesla',
+	ai: 'AI',
+	tunnels: 'Tunnels',
 };
 
 /**

@@ -27,7 +27,7 @@ export interface BottleneckDef {
 	id: string;
 	name: string;
 	description: string;
-	division: 'teslaenergy' | 'spacex' | 'tesla' | 'all';
+	division: 'teslaenergy' | 'spacex' | 'tesla' | 'ai' | 'tunnels' | 'all';
 	category: BottleneckCategory;
 	severity: number; // 0.0 = no effect, 1.0 = total stop
 	resolveCost: number; // cash to fix instantly
@@ -339,6 +339,120 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		},
 	},
 
+	// ── AI Division (3 bottlenecks) ──────────────────────────────────────────
+	{
+		id: 'ai_hallucination_crisis',
+		name: 'Hallucination Crisis',
+		description: 'Your AI models are confidently generating false information at scale.',
+		division: 'ai',
+		category: 'engineering',
+		severity: 0.30,
+		resolveCost: 300000,
+		researchCost: 15,
+		waitDurationMs: 360_000,
+		flavorText: 'The model insists Napoleon won World War II. Users are not amused.',
+		tooltip: 'Large language models sometimes generate plausible-sounding but factually incorrect outputs. Fixing this requires better training data and alignment techniques.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.ai.tiers;
+			return tiers[1].count > 15;
+		},
+	},
+	{
+		id: 'ai_gpu_shortage',
+		name: 'GPU Shortage',
+		description: 'Global GPU demand far exceeds supply. Training runs are queued for months.',
+		division: 'ai',
+		category: 'supply_chain',
+		severity: 0.40,
+		resolveCost: 2000000,
+		researchCost: 25,
+		waitDurationMs: 600_000,
+		flavorText: 'Every tech company on Earth wants the same H100s you do.',
+		tooltip: 'AI training requires massive quantities of cutting-edge GPUs. With limited fab capacity, wait times can stretch to 6+ months.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.ai.tiers;
+			return tiers[3].count > 5;
+		},
+	},
+	{
+		id: 'ai_alignment_review',
+		name: 'AI Safety Review',
+		description: 'Regulators demand a safety audit before your AGI can be deployed.',
+		division: 'ai',
+		category: 'regulatory',
+		severity: 0.45,
+		resolveCost: 10000000,
+		researchCost: 40,
+		waitDurationMs: 900_000,
+		flavorText: '"We need to make sure it won\'t decide humans are inefficient."',
+		tooltip: 'As AI capabilities approach human-level, governments worldwide are imposing mandatory safety reviews and alignment certifications.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.ai.tiers;
+			return tiers[5].count > 2;
+		},
+	},
+
+	// ── Tunnels Division (3 bottlenecks) ─────────────────────────────────────
+	{
+		id: 'tn_geological_surprise',
+		name: 'Geological Surprise',
+		description: 'Your boring machine hit an underground aquifer. The tunnel is flooding.',
+		division: 'tunnels',
+		category: 'engineering',
+		severity: 0.35,
+		resolveCost: 500000,
+		researchCost: 12,
+		waitDurationMs: 420_000,
+		flavorText: 'Nobody expected a river down here.',
+		tooltip: 'Underground conditions are unpredictable. Aquifers, unstable rock, and buried infrastructure can halt boring operations for weeks.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.tunnels.tiers;
+			return tiers[1].count > 10;
+		},
+	},
+	{
+		id: 'tn_nimby_protests',
+		name: 'NIMBY Protests',
+		description: 'Residents are blocking tunnel construction over vibration and noise concerns.',
+		division: 'tunnels',
+		category: 'regulatory',
+		severity: 0.30,
+		resolveCost: 1000000,
+		researchCost: 18,
+		waitDurationMs: 540_000,
+		flavorText: '"Not Under My Backyard" is the new NIMBY.',
+		tooltip: 'Tunnel boring creates ground vibrations that can damage foundations and disturb residents. Community opposition can halt projects for years.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.tunnels.tiers;
+			return tiers[2].count > 8;
+		},
+	},
+	{
+		id: 'tn_boring_machine_failure',
+		name: '🔥 BORING HELL 🔥',
+		description: 'Your tunnel boring machine is stuck. 200 feet underground. In solid rock.',
+		division: 'tunnels',
+		category: 'scaling',
+		severity: 0.50,
+		resolveCost: 5000000,
+		researchCost: 30,
+		waitDurationMs: 900_000,
+		flavorText: 'The machine that digs the tunnel IS the tunnel now.',
+		tooltip: 'When a TBM gets stuck, you can\'t just pull it out. Sometimes you have to dig a rescue shaft to disassemble it in place.',
+		isProductionHell: true,
+		productionHellFlavor: [
+			'The cutter head is jammed in metamorphic rock.',
+			'Hydraulic lines burst 200 feet underground. No cell service.',
+			'The backup boring machine is also stuck. Behind the first one.',
+			'"Just bore faster" is not a valid engineering solution.',
+			'The mayor is asking why there\'s a 40-foot sinkhole in downtown.',
+		],
+		shouldActivate: (state) => {
+			const tiers = state.divisions.tunnels.tiers;
+			return tiers[4].count >= 5;
+		},
+	},
+
 	// ── Cross-cutting: Power ─────────────────────────────────────────────────
 	{
 		id: 'power_deficit',
@@ -408,7 +522,7 @@ export function activateBottleneck(divisionId: string, bottleneckId: string): vo
 	gameState.update((s) => {
 		if (def.division === 'all') {
 			// Power deficit is global — apply to all divisions
-			for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
 				const divState = s.divisions[divId];
 				const existing = divState.bottlenecks.find((b) => b.id === bottleneckId);
 				if (!existing) {
@@ -590,7 +704,7 @@ export function checkAutoResolveBottlenecks(): void {
 		if (def.autoResolveCheck(state)) {
 			// Mark as resolved in all divisions
 			gameState.update((s) => {
-				for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+				for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
 					const divState = s.divisions[divId];
 					const bottleneck = divState.bottlenecks.find((b) => b.id === def.id);
 					if (bottleneck && bottleneck.active) {
@@ -659,7 +773,7 @@ function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
 
 	if (shouldAutoResolve) {
 		// Auto-resolve in all divisions
-		for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
 			gameState.update((s) => {
 				const bottleneck = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
 				if (bottleneck?.active) {
@@ -673,7 +787,7 @@ function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
 
 	if (shouldBeActive) {
 		// Activate in all divisions
-		for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
 			gameState.update((s) => {
 				const existing = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
 				if (!existing) {
@@ -733,7 +847,7 @@ export function tickBottlenecks(deltaMs: number): void {
 	}
 
 	// Check wait timers
-	for (const divId of ['teslaenergy', 'spacex', 'tesla'] as const) {
+	for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const) {
 		tickBottleneckWaits(divId);
 	}
 

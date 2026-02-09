@@ -2,14 +2,19 @@
 	import { gameState, type GameState } from '$lib/stores/gameState';
 	import { gameManager } from '$lib/engine/GameManager';
 	import { get } from 'svelte/store';
+	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
+	import { exportSave as exportBase64, importSave as importBase64 } from '$lib/engine/SaveManager';
 
 	const GAME_VERSION = '0.1.0';
 
 	let showResetConfirm = $state(false);
 	let showImportModal = $state(false);
+	let showBase64Import = $state(false);
+	let base64Input = $state('');
 	let importError = $state('');
 	let importSuccess = $state(false);
 	let exportSuccess = $state(false);
+	let clipboardCopied = $state(false);
 
 	// Derive settings from game state
 	let musicEnabled = $derived($gameState.settings.musicEnabled);
@@ -83,17 +88,56 @@
 		showResetConfirm = false;
 	}
 
+	function exportBase64Save() {
+		const state = get(gameState);
+		const encoded = exportBase64(state);
+		navigator.clipboard.writeText(encoded).then(() => {
+			clipboardCopied = true;
+			setTimeout(() => (clipboardCopied = false), 2000);
+		}).catch(() => {
+			// Fallback: prompt
+			prompt('Copy this save code:', encoded);
+		});
+	}
+
+	function handleBase64Import() {
+		if (!base64Input.trim()) {
+			importError = 'Please paste a save code.';
+			return;
+		}
+		const data = importBase64(base64Input.trim());
+		if (!data || !data.divisions || data.cash === undefined) {
+			importError = 'Invalid save code. Check and try again.';
+			return;
+		}
+		gameState.set(data);
+		gameManager.save();
+		importSuccess = true;
+		importError = '';
+		base64Input = '';
+		setTimeout(() => {
+			showBase64Import = false;
+			importSuccess = false;
+		}, 1500);
+	}
+
 	// Stats for display
 	let playTimeFormatted = $derived(() => {
 		const ms = $gameState.stats.playTimeMs;
 		const hours = Math.floor(ms / 3600000);
 		const minutes = Math.floor((ms % 3600000) / 60000);
+		const seconds = Math.floor((ms % 60000) / 1000);
 		if (hours > 0) return `${hours}h ${minutes}m`;
-		return `${minutes}m`;
+		if (minutes > 0) return `${minutes}m ${seconds}s`;
+		return `${seconds}s`;
 	});
 
 	let sessionsPlayed = $derived($gameState.stats.sessionsPlayed);
 	let totalTaps = $derived($gameState.stats.totalTaps);
+	let totalProductions = $derived($gameState.stats.totalProductions);
+	let totalPrestiges = $derived($gameState.stats.totalPrestiges);
+	let totalCashEarned = $derived($gameState.stats.totalCashEarned);
+	let highestIncomePerSec = $derived($gameState.stats.highestIncomePerSec);
 </script>
 
 <div class="settings space-y-5">

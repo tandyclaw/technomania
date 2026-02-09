@@ -7,6 +7,16 @@
 	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
 	import Tooltip from './Tooltip.svelte';
+	import { triggerParticle } from '$lib/stores/particleStore';
+
+	// Rarity system based on tier count
+	function getRarity(count: number): { name: string; color: string; glow: string } {
+		if (count >= 100) return { name: 'legendary', color: '#FFD700', glow: '0 0 12px rgba(255, 215, 0, 0.4)' };
+		if (count >= 50) return { name: 'epic', color: '#A855F7', glow: '0 0 10px rgba(168, 85, 247, 0.3)' };
+		if (count >= 25) return { name: 'rare', color: '#3B82F6', glow: '0 0 8px rgba(59, 130, 246, 0.25)' };
+		if (count >= 10) return { name: 'uncommon', color: '#22C55E', glow: '0 0 6px rgba(34, 197, 94, 0.2)' };
+		return { name: 'common', color: '#6B7280', glow: 'none' };
+	}
 
 	let {
 		tier,
@@ -60,6 +70,7 @@
 	);
 	let revenuePerSec = $derived(tier.count > 0 ? (revenue / cycleDurationMs) * 1000 : 0);
 	let canAfford = $derived(cash >= cost && effectiveQty > 0);
+	let rarity = $derived(getRarity(tier.count));
 
 	let costDisplay = $derived(formatCurrency(cost));
 	let revenueDisplay = $derived(formatCurrency(revenuePerSec, 1));
@@ -144,6 +155,11 @@
 
 	function handleBuy(event: MouseEvent) {
 		event.stopPropagation();
+		// Get position for spark effect
+		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+		const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
+		const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
+		triggerParticle('spark', x, y);
 		onBuy?.();
 	}
 </script>
@@ -154,9 +170,13 @@
 	class="tier-card relative rounded-xl border transition-all duration-200 overflow-hidden select-none
 		{tier.unlocked
 			? tier.count > 0
-				? 'bg-bg-secondary/60 border-white/5 hover:border-white/10 cursor-pointer'
+				? 'bg-bg-secondary/60 hover:border-white/10 cursor-pointer'
 				: 'bg-bg-secondary/60 border-white/5'
-			: 'bg-bg-secondary/20 border-white/[0.02] opacity-40'}"
+			: 'bg-bg-secondary/20 border-white/[0.02] opacity-40'}
+		{rarity.name === 'legendary' ? 'legendary-pulse' : ''}"
+	style="{tier.unlocked && tier.count > 0
+		? `border-color: ${rarity.color}30; box-shadow: ${rarity.glow};`
+		: ''}"
 	onclick={handleTap}
 	data-tutorial-id="tier-card-{tierIndex}"
 >
@@ -383,5 +403,14 @@
 
 	.tier-card {
 		-webkit-tap-highlight-color: transparent;
+	}
+
+	.legendary-pulse {
+		animation: legendaryGlow 2s ease-in-out infinite;
+	}
+
+	@keyframes legendaryGlow {
+		0%, 100% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.3); }
+		50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 4px rgba(255, 215, 0, 0.2); }
 	}
 </style>
