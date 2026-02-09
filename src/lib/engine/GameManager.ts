@@ -13,6 +13,7 @@ import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
 import { tickProduction } from './ProductionEngine';
 import { tickResearch, tickRPGeneration } from '$lib/systems/ResearchSystem';
 import { tickBottlenecks, resetBottleneckNotifications } from '$lib/systems/BottleneckSystem';
+import { tickCrypto, resetCryptoAccumulators } from '$lib/systems/CryptoSystem';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 2;
@@ -116,6 +117,9 @@ class GameManager {
 			// Tick bottleneck detection (internally throttled to every 2s)
 			tickBottlenecks(deltaMs);
 
+			// Tick crypto price simulation
+			tickCrypto(deltaMs);
+
 			// Update play time only every ~1s to reduce store churn
 			playTimeAccumulator += deltaMs;
 			if (playTimeAccumulator >= 1000) {
@@ -204,6 +208,7 @@ class GameManager {
 
 		gameState.set(fresh);
 		resetBottleneckNotifications();
+		resetCryptoAccumulators();
 
 		eventBus.emit('prestige:complete', {
 			visionEarned,

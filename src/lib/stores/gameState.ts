@@ -42,6 +42,13 @@ export interface GameSettings {
 	offlineProgressEnabled: boolean;
 }
 
+export interface CryptoState {
+	btcPrice: number;
+	btcOwned: number;
+	btcPriceHistory: number[];
+	totalInvested: number; // Total USD spent buying BTC (for P&L calculation)
+}
+
 export interface GameState {
 	version: number;
 	lastSaved: number;
@@ -70,6 +77,9 @@ export interface GameState {
 	// Research
 	unlockedResearch: string[];
 	activeResearch: { id: string; progress: number } | null;
+
+	// Crypto Treasury
+	crypto: CryptoState;
 
 	// Prestige
 	prestigeCount: number;
@@ -105,6 +115,13 @@ export function createDefaultState(): GameState {
 
 		unlockedResearch: [],
 		activeResearch: null,
+
+		crypto: {
+			btcPrice: 42_000,
+			btcOwned: 0,
+			btcPriceHistory: [42_000],
+			totalInvested: 0,
+		},
 
 		prestigeCount: 0,
 		totalValueEarned: 0,

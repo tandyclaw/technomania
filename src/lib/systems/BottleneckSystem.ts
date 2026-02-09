@@ -40,10 +40,10 @@ export interface BottleneckDef {
 
 /**
  * All bottleneck definitions.
- * ~3 per division as per TASKS.md (T032 will add more later).
+ * 3-5 per division with real-world flavor (T032).
  */
 export const BOTTLENECK_DEFS: BottleneckDef[] = [
-	// ── Tesla Energy ──────────────────────────────────────────────────────────
+	// ── Tesla Energy (5 bottlenecks) ──────────────────────────────────────────
 	{
 		id: 'te_grid_overload',
 		name: 'Grid Overload',
@@ -52,10 +52,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'engineering',
 		severity: 0.25,
 		resolveCost: 5000,
+		researchCost: 3,
+		waitDurationMs: 120_000, // 2 minutes
 		flavorText: 'Utility companies are pushing back on net metering.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
-			// Triggers when Solar Panels + Powerwall total count > 50
 			return tiers[0].count + tiers[1].count > 50;
 		},
 	},
@@ -67,10 +68,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'supply_chain',
 		severity: 0.30,
 		resolveCost: 50000,
+		researchCost: 8,
+		waitDurationMs: 300_000, // 5 minutes
 		flavorText: 'Every automaker wants the same battery cells you do.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
-			// Triggers when Megapack count > 20
 			return tiers[2].count > 20;
 		},
 	},
@@ -82,15 +84,50 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'regulatory',
 		severity: 0.35,
 		resolveCost: 200000,
+		researchCost: 15,
+		waitDurationMs: 600_000, // 10 minutes
 		flavorText: 'Environmental impact studies take forever.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
-			// Triggers when Grid Battery count > 5
 			return tiers[4].count > 5;
 		},
 	},
+	{
+		id: 'te_inverter_shortage',
+		name: 'Inverter Chip Shortage',
+		description: 'Semiconductor supply issues are delaying solar inverter production.',
+		division: 'teslaenergy',
+		category: 'supply_chain',
+		severity: 0.20,
+		resolveCost: 15000,
+		researchCost: 5,
+		waitDurationMs: 180_000, // 3 minutes
+		flavorText: 'TSMC is at max capacity. Everyone wants chips.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.teslaenergy.tiers;
+			// Triggers when Solar Roof count > 15
+			return tiers[3].count > 15;
+		},
+	},
+	{
+		id: 'te_interconnection_queue',
+		name: 'Interconnection Queue',
+		description: 'New grid-scale projects are stuck in a multi-year utility queue.',
+		division: 'teslaenergy',
+		category: 'regulatory',
+		severity: 0.30,
+		resolveCost: 350000,
+		researchCost: 20,
+		waitDurationMs: 480_000, // 8 minutes
+		flavorText: 'There are 2,000 GW of projects waiting in line ahead of you.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.teslaenergy.tiers;
+			// Triggers when Virtual Power Plant count > 3
+			return tiers[5].count > 3;
+		},
+	},
 
-	// ── SpaceX ────────────────────────────────────────────────────────────────
+	// ── SpaceX (5 bottlenecks) ────────────────────────────────────────────────
 	{
 		id: 'sx_launch_cadence',
 		name: 'Launch Pad Congestion',
@@ -99,10 +136,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'engineering',
 		severity: 0.25,
 		resolveCost: 8000,
+		researchCost: 4,
+		waitDurationMs: 150_000, // 2.5 minutes
 		flavorText: 'FAA wants a word about your launch frequency.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
-			// Triggers when Falcon 9 count > 30
 			return tiers[1].count > 30;
 		},
 	},
@@ -114,10 +152,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'engineering',
 		severity: 0.35,
 		resolveCost: 150000,
+		researchCost: 12,
+		waitDurationMs: 420_000, // 7 minutes
 		flavorText: 'Each tile is hand-applied. There are 18,000 of them.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
-			// Triggers when Starship count > 5
 			return tiers[4].count > 5;
 		},
 	},
@@ -129,15 +168,50 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'regulatory',
 		severity: 0.40,
 		resolveCost: 500000,
+		researchCost: 25,
+		waitDurationMs: 900_000, // 15 minutes
 		flavorText: '"We need to study the impact on the lesser prairie chicken."',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
-			// Triggers when Mars Lander count > 3
 			return tiers[5].count > 3;
 		},
 	},
+	{
+		id: 'sx_raptor_reliability',
+		name: 'Raptor Engine Reliability',
+		description: 'Raptor engines keep RUD-ing on the test stand. Production yield is abysmal.',
+		division: 'spacex',
+		category: 'engineering',
+		severity: 0.25,
+		resolveCost: 40000,
+		researchCost: 6,
+		waitDurationMs: 240_000, // 4 minutes
+		flavorText: '"Full flow staged combustion is hard. We knew that." — Elon',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.spacex.tiers;
+			// Triggers when Heavy Falcon count > 15
+			return tiers[2].count > 15;
+		},
+	},
+	{
+		id: 'sx_range_safety',
+		name: 'Range Safety Shutdown',
+		description: 'Space Force has grounded launches due to range scheduling conflicts.',
+		division: 'spacex',
+		category: 'regulatory',
+		severity: 0.20,
+		resolveCost: 20000,
+		researchCost: 5,
+		waitDurationMs: 180_000, // 3 minutes
+		flavorText: 'Cape Canaveral can only handle so many launches per week.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.spacex.tiers;
+			// Triggers when Falcon 1 count > 40
+			return tiers[0].count > 40;
+		},
+	},
 
-	// ── Tesla (EVs) ───────────────────────────────────────────────────────────
+	// ── Tesla EVs (5 bottlenecks) ─────────────────────────────────────────────
 	{
 		id: 'ts_production_hell',
 		name: 'Production Hell',
@@ -146,10 +220,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'scaling',
 		severity: 0.30,
 		resolveCost: 75000,
+		researchCost: 10,
+		waitDurationMs: 360_000, // 6 minutes
 		flavorText: '"I\'m sleeping on the factory floor." — Elon, probably.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
-			// Triggers when Model 3 count > 10
 			return tiers[3].count > 10;
 		},
 	},
@@ -161,10 +236,11 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'engineering',
 		severity: 0.20,
 		resolveCost: 25000,
+		researchCost: 4,
+		waitDurationMs: 150_000, // 2.5 minutes
 		flavorText: 'Reddit is not happy about the panel gaps.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
-			// Triggers when total EV units across first 3 tiers > 60
 			return tiers[0].count + tiers[1].count + tiers[2].count > 60;
 		},
 	},
@@ -176,11 +252,46 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		category: 'scaling',
 		severity: 0.35,
 		resolveCost: 300000,
+		researchCost: 18,
+		waitDurationMs: 540_000, // 9 minutes
 		flavorText: 'The factory IS the product.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
-			// Triggers when Model Y count > 8
 			return tiers[4].count > 8;
+		},
+	},
+	{
+		id: 'ts_autopilot_recall',
+		name: 'Autopilot Recall',
+		description: 'NHTSA has issued a safety recall on Full Self-Driving. All hands on deck.',
+		division: 'tesla',
+		category: 'regulatory',
+		severity: 0.25,
+		resolveCost: 100000,
+		researchCost: 8,
+		waitDurationMs: 300_000, // 5 minutes
+		flavorText: '"It\'s a software update, not really a recall." — Elon',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.tesla.tiers;
+			// Triggers when Model S + Model X count > 40
+			return tiers[1].count + tiers[2].count > 40;
+		},
+	},
+	{
+		id: 'ts_cybertruck_glass',
+		name: 'Armor Glass Failure',
+		description: 'The "unbreakable" Cybertruck windows keep shattering during demos.',
+		division: 'tesla',
+		category: 'engineering',
+		severity: 0.30,
+		resolveCost: 200000,
+		researchCost: 12,
+		waitDurationMs: 360_000, // 6 minutes
+		flavorText: '"Oh my f***ing God." — Elon at the Cybertruck unveil.',
+		shouldActivate: (state) => {
+			const tiers = state.divisions.tesla.tiers;
+			// Triggers when Cybertruck count > 5
+			return tiers[5].count > 5;
 		},
 	},
 
@@ -191,8 +302,8 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		description: 'Your facilities consume more power than you generate.',
 		division: 'all',
 		category: 'power',
-		severity: 0.0, // Actual penalty is handled by PowerSystem; this is informational
-		resolveCost: 0, // Not cash-resolvable; must build more Tesla Energy
+		severity: 0.0,
+		resolveCost: 0,
 		flavorText: 'Build more Tesla Energy infrastructure to restore full speed.',
 		shouldActivate: (state) => {
 			const { generated, consumed } = calculatePowerBalance(state);

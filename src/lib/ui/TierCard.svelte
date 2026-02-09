@@ -252,11 +252,11 @@
 					{/if}
 				</div>
 
-				<!-- Production progress bar (always visible when count > 0) -->
+				<!-- Production progress bar (always visible when count > 0, fixed height to prevent reflow) -->
 				{#if tier.count > 0}
 					<div class="mt-2">
-						{#if tier.producing}
-							<div class="flex items-center justify-between mb-1">
+						<div class="flex items-center justify-between mb-1" style="min-height: 14px;">
+							{#if tier.producing}
 								<span class="text-[10px] text-text-muted uppercase tracking-wider font-medium">
 									Producing...
 								</span>
@@ -266,8 +266,12 @@
 								>
 									{timeDisplay}
 								</span>
-							</div>
-						{/if}
+							{:else}
+								<span class="text-[10px] text-text-muted/40 uppercase tracking-wider font-medium">
+									Ready
+								</span>
+							{/if}
+						</div>
 						<div
 							class="w-full rounded-full overflow-hidden"
 							style="height: 8px; background-color: var(--color-bg-tertiary);"
