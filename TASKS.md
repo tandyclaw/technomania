@@ -99,7 +99,7 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T043 | Tutorial system (step-by-step guided first 5 min) | PLANNED | PLAN | P1 | T017, T018 |
+| T043 | Tutorial system (step-by-step guided first 5 min) | DONE | MERGED | P1 | T017, T018 |
 | T044 | Tooltip system for real-world engineering explanations | PLANNED | PLAN | P2 | T013 |
 
 ## 10. QoL & AdCap Mechanics
