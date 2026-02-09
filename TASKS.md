@@ -170,7 +170,7 @@
 |----|-------------|--------|-------|----------|------|
 | T072 | Mars Colony progress tracker (visible goal: % to colonization) | DONE | MERGED | P1 | T040 |
 | T073 | Mars Colony victory screen with stats summary | DONE | MERGED | P1 | T072 |
-| T074 | New Game+ with harder scaling after colony completion | PLANNED | — | P2 | T072 |
+| T074 | New Game+ with harder scaling after colony completion | DONE | MERGED | P2 | T072 |
 
 ## 18. Quality of Life
 
