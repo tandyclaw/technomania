@@ -1,17 +1,32 @@
 {
-	"name": "Technomania",
-	"short_name": "Technomania",
-	"description": "Idle tech tycoon — build rockets, train AI, colonize Mars",
-	"start_url": "/",
+	"name": "Being Elon",
+	"short_name": "Being Elon",
+	"description": "Idle tech tycoon — build rockets, make EVs, harness solar power, colonize Mars",
+	"start_url": "/game",
+	"scope": "/",
 	"display": "standalone",
 	"background_color": "#0f1729",
 	"theme_color": "#0f1729",
 	"orientation": "portrait-primary",
+	"categories": ["games", "entertainment"],
 	"icons": [
 		{
-			"src": "/favicon.png",
+			"src": "/icon-192.png",
 			"sizes": "192x192",
-			"type": "image/png"
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
 		}
 	]
 }

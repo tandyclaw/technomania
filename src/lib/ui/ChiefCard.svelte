@@ -43,6 +43,7 @@
 	<div class="chief-card relative rounded-xl border overflow-hidden transition-all duration-300
 		{isHired ? '' : 'border-white/5 bg-bg-secondary/30'}"
 		style={isHired ? `background-color: ${color}08; border-color: ${color}20;` : ''}
+		data-tutorial-id="chief-card"
 	>
 		<!-- Celebration overlay -->
 		{#if showCelebration}

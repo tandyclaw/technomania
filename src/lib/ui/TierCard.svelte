@@ -146,6 +146,7 @@
 				: 'bg-bg-secondary/60 border-white/5'
 			: 'bg-bg-secondary/20 border-white/[0.02] opacity-40'}"
 	onclick={handleTap}
+	data-tutorial-id="tier-card-{tierIndex}"
 >
 	<!-- Tap ripple overlay -->
 	{#if tapRipple}
@@ -290,6 +291,7 @@
 				<div class="mt-2.5">
 					<button
 						onclick={handleBuy}
+						data-tutorial-id="tier-buy-{tierIndex}"
 						class="buy-button w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold
 							   transition-all duration-150 active:scale-[0.97] touch-manipulation"
 						style="background-color: {canAfford ? color + '15' : 'var(--color-bg-tertiary)'};

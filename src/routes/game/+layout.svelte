@@ -8,6 +8,8 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import { initToastListeners } from '$lib/stores/toastStore';
+	import { tutorialStore, initTutorialListeners } from '$lib/stores/tutorialStore';
+	import TutorialOverlay from '$lib/ui/TutorialOverlay.svelte';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
 
 	let { children } = $props();
@@ -17,6 +19,7 @@
 	let offlineReport = $state<OfflineReport | null>(null);
 	let showWelcomeBack = $state(false);
 	let cleanupToasts: (() => void) | null = null;
+	let cleanupTutorial: (() => void) | null = null;
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
@@ -32,11 +35,16 @@
 			showWelcomeBack = true;
 		}
 
+		// Initialize tutorial system
+		cleanupTutorial = initTutorialListeners();
+		tutorialStore.tryStart();
+
 		loading = false;
 	});
 
 	onDestroy(() => {
 		cleanupToasts?.();
+		cleanupTutorial?.();
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -119,6 +127,9 @@
 			</div>
 		</div>
 	{/if}
+
+	<!-- Tutorial overlay -->
+	<TutorialOverlay />
 
 	<div class="game-shell min-h-screen bg-bg-primary flex flex-col">
 		<!-- Fixed top resource bar -->

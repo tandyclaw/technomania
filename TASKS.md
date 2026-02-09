@@ -134,8 +134,8 @@
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
 | P0 | 41 | 38 | 3 |
-| P1 | 11 | 1 | 10 |
+| P1 | 11 | 3 | 8 |
 | P2 | 4 | 0 | 4 |
-| **Total** | **56** | **39** | **17** |
+| **Total** | **56** | **41** | **15** |
 
 **Next task to pick up:** T031 (Bottleneck resolution UI) or T024 (Launch cadence).

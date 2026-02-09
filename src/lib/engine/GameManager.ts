@@ -226,6 +226,13 @@ class GameManager {
 		// Delete saved data
 		await deleteSave();
 
+		// Clear tutorial completion flag so it replays
+		try {
+			localStorage.removeItem('being_elon_tutorial_done');
+		} catch {
+			// ignore
+		}
+
 		// Reset to fresh state
 		const fresh = createDefaultState();
 		fresh.stats.sessionsPlayed = 1;
