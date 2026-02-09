@@ -115,8 +115,10 @@
 </script>
 
 <div class="division-detail space-y-4">
-	<!-- Division header -->
-	<div class="flex items-center gap-3">
+	<!-- Division header (tap to toggle stats) -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="flex items-center gap-3 cursor-pointer active:opacity-80 touch-manipulation" onclick={() => showStatsSummary = !showStatsSummary}
 		<div
 			class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0"
 			style="background-color: {division.color}12; border: 1px solid {division.color}25;"

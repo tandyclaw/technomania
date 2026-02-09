@@ -1,17 +1,27 @@
 <script lang="ts">
 	import { gameState } from '$lib/stores/gameState';
-	import { ACHIEVEMENTS, type AchievementCategory } from '$lib/systems/AchievementSystem';
+	import { ACHIEVEMENTS, getRarityColor, type AchievementCategory, type AchievementDef } from '$lib/systems/AchievementSystem';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
 
 	let showShareCard = $state(false);
+	let selectedAchievement = $state<AchievementDef | null>(null);
 
 	let gs = $derived($gameState);
 	let unlockedIds = $derived(new Set(gs.achievements));
+	let timestamps = $derived(gs.achievementTimestamps ?? {});
 	let hallOfFame = $derived(gs.hallOfFame ?? { fastestColonyTimes: [], highestIncomePerSec: 0, mostColoniesLaunched: 0, totalCashAllTime: 0 });
 	let streak = $derived(gs.dailyRewardStreak ?? 0);
 	let unlockedCount = $derived(unlockedIds.size);
 	let totalCount = ACHIEVEMENTS.length;
+
+	// Recently unlocked (last 5, sorted newest first)
+	let recentlyUnlocked = $derived(
+		ACHIEVEMENTS
+			.filter(a => unlockedIds.has(a.id) && timestamps[a.id])
+			.sort((a, b) => (timestamps[b.id] ?? 0) - (timestamps[a.id] ?? 0))
+			.slice(0, 5)
+	);
 
 	const categories: { key: AchievementCategory; label: string; icon: string }[] = [
 		{ key: 'income', label: 'Income', icon: '💰' },
@@ -22,17 +32,20 @@
 	];
 
 	function formatDate(ts: number): string {
-		return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+		return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 	}
 
-	// We don't store timestamps per-achievement in current state (just ids),
-	// so we show "Unlocked" without date for now
 	let achievementsByCategory = $derived(
 		categories.map(cat => ({
 			...cat,
 			achievements: ACHIEVEMENTS.filter(a => a.category === cat.key),
 		}))
 	);
+
+	function handleAchievementClick(ach: AchievementDef) {
+		if (ach.hidden && !unlockedIds.has(ach.id)) return;
+		selectedAchievement = ach;
+	}
 </script>
 
 <div class="space-y-5">
@@ -62,6 +75,29 @@
 		></div>
 	</div>
 
+	<!-- Recently Unlocked -->
+	{#if recentlyUnlocked.length > 0}
+		<div>
+			<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
+				🎉 Recently Unlocked
+			</h2>
+			<div class="flex gap-2 overflow-x-auto pb-1">
+				{#each recentlyUnlocked as ach}
+					<button
+						onclick={() => handleAchievementClick(ach)}
+						class="flex-shrink-0 rounded-xl border border-solar-gold/30 bg-solar-gold/10 p-2.5 flex items-center gap-2 min-w-[140px] touch-manipulation"
+					>
+						<span class="text-2xl">{ach.icon}</span>
+						<div class="text-left">
+							<div class="text-[11px] font-bold text-text-primary truncate">{ach.name}</div>
+							<div class="text-[9px] font-medium" style="color: {getRarityColor(ach.rarity)}">{ach.rarity}</div>
+						</div>
+					</button>
+				{/each}
+			</div>
+		</div>
+	{/if}
+
 	{#each achievementsByCategory as cat}
 		<div>
 			<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
@@ -70,29 +106,48 @@
 			<div class="grid grid-cols-2 gap-2">
 				{#each cat.achievements as ach}
 					{@const isUnlocked = unlockedIds.has(ach.id)}
-					<div
-						class="rounded-xl border p-3 transition-all duration-200
+					{@const isHidden = ach.hidden && !isUnlocked}
+					<button
+						onclick={() => handleAchievementClick(ach)}
+						class="rounded-xl border p-3 transition-all duration-200 text-left touch-manipulation
 							{isUnlocked
 								? 'bg-bg-secondary/60 border-solar-gold/20'
-								: 'bg-bg-secondary/20 border-white/5 opacity-50'}"
+								: isHidden
+									? 'bg-bg-secondary/10 border-white/3 opacity-30'
+									: 'bg-bg-secondary/20 border-white/5 opacity-50'}"
 					>
 						<div class="flex items-start gap-2">
 							<span class="text-2xl leading-none {isUnlocked ? '' : 'grayscale'}">
-								{isUnlocked ? ach.icon : '🔒'}
+								{#if isHidden}
+									<span class="blur-sm select-none">❓</span>
+								{:else}
+									{isUnlocked ? ach.icon : '🔒'}
+								{/if}
 							</span>
 							<div class="flex-1 min-w-0">
 								<h3 class="text-xs font-bold truncate {isUnlocked ? 'text-text-primary' : 'text-text-muted'}">
-									{isUnlocked ? ach.name : '???'}
+									{isHidden ? '???' : ach.name}
 								</h3>
-								<p class="text-[10px] text-text-muted mt-0.5 line-clamp-2">
-									{ach.description}
-								</p>
-								{#if isUnlocked}
-									<p class="text-[9px] text-solar-gold mt-1 font-medium">✓ Unlocked</p>
+								{#if isHidden}
+									<p class="text-[10px] text-text-muted mt-0.5 italic">Secret achievement</p>
+								{:else}
+									<p class="text-[10px] text-text-muted mt-0.5 line-clamp-2">
+										{ach.description}
+									</p>
 								{/if}
+								<div class="flex items-center gap-1.5 mt-1">
+									{#if isUnlocked}
+										<p class="text-[9px] text-solar-gold font-medium">✓ Unlocked</p>
+									{/if}
+									{#if !isHidden}
+										<span class="text-[9px] font-semibold" style="color: {getRarityColor(ach.rarity)}">
+											{ach.rarity}
+										</span>
+									{/if}
+								</div>
 							</div>
 						</div>
-					</div>
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -164,6 +219,50 @@
 		</button>
 	</div>
 </div>
+
+<!-- Achievement Detail Popup -->
+{#if selectedAchievement}
+	{@const ach = selectedAchievement}
+	{@const isUnlocked = unlockedIds.has(ach.id)}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+		onclick={() => selectedAchievement = null}
+	>
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<div
+			class="bg-bg-primary border border-white/10 rounded-2xl p-5 max-w-xs w-full shadow-2xl"
+			onclick={(e) => e.stopPropagation()}
+		>
+			<div class="flex items-center gap-3 mb-3">
+				<span class="text-4xl">{isUnlocked ? ach.icon : '🔒'}</span>
+				<div>
+					<h3 class="text-base font-bold text-text-primary">{ach.name}</h3>
+					<span class="text-xs font-semibold" style="color: {getRarityColor(ach.rarity)}">{ach.rarity}</span>
+				</div>
+			</div>
+			<p class="text-sm text-text-secondary mb-3">{ach.description}</p>
+			{#if isUnlocked && timestamps[ach.id]}
+				<p class="text-xs text-solar-gold">✓ Unlocked {formatDate(timestamps[ach.id])}</p>
+			{:else if isUnlocked}
+				<p class="text-xs text-solar-gold">✓ Unlocked</p>
+			{:else}
+				<p class="text-xs text-text-muted">🔒 Not yet unlocked</p>
+			{/if}
+			{#if ach.hidden}
+				<p class="text-[10px] text-purple-400 mt-1">🔮 Secret Achievement</p>
+			{/if}
+			<button
+				onclick={() => selectedAchievement = null}
+				class="w-full mt-4 py-2 rounded-lg bg-white/5 text-text-secondary text-xs font-medium hover:bg-white/10 transition-colors touch-manipulation"
+			>
+				Close
+			</button>
+		</div>
+	</div>
+{/if}
 
 {#if showShareCard}
 	<ShareCard milestone="custom" headline="Check out my Moonshot stats!" onClose={() => showShareCard = false} />
