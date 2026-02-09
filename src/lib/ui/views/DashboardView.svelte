@@ -216,11 +216,14 @@
 						<div class="flex items-center gap-3">
 							<!-- Division icon -->
 							<div
-								class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl shrink-0
+								class="relative w-12 h-12 rounded-lg flex items-center justify-center text-2xl shrink-0
 									   transition-transform duration-200 group-hover:scale-105"
 								style="background-color: {div.meta.color}12; border: 1px solid {div.meta.color}20;"
 							>
 								{div.meta.icon}
+								{#if div.activeTier}
+									<span class="production-spinner absolute -bottom-0.5 -right-0.5 text-[10px]">⚙️</span>
+								{/if}
 							</div>
 
 							<!-- Division info -->
@@ -408,5 +411,34 @@
 <style>
 	.division-card {
 		-webkit-tap-highlight-color: transparent;
+	}
+
+	.production-spinner {
+		animation: spin 2s linear infinite;
+	}
+
+	@keyframes spin {
+		from { transform: rotate(0deg); }
+		to { transform: rotate(360deg); }
+	}
+
+	.colony-progress-bar {
+		background-size: 20px 20px;
+		background-image: linear-gradient(
+			45deg,
+			rgba(255,255,255,0.1) 25%,
+			transparent 25%,
+			transparent 50%,
+			rgba(255,255,255,0.1) 50%,
+			rgba(255,255,255,0.1) 75%,
+			transparent 75%,
+			transparent
+		);
+		animation: stripes 1s linear infinite;
+	}
+
+	@keyframes stripes {
+		from { background-position: 0 0; }
+		to { background-position: 20px 0; }
 	}
 </style>

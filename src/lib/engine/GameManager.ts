@@ -18,7 +18,7 @@ import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefau
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 import { initSoundListeners } from '$lib/systems/SoundManager';
 import { DIVISIONS } from '$lib/divisions';
-import { calculateVisionPoints } from '$lib/systems/PrestigeSystem';
+import { calculateVisionPoints, getStartingCashBonus, getAutoChiefsLevel } from '$lib/systems/PrestigeSystem';
 import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
 import { triggerParticle } from '$lib/stores/particleStore';
 
@@ -266,6 +266,46 @@ class GameManager {
 			fresh.divisions.spacex.unlocked = true;
 			fresh.divisions.tesla.unlocked = true;
 		}
+
+		// Apply starting cash mega-upgrade
+		const cashBonus = getStartingCashBonus(fresh);
+		if (cashBonus > 0) {
+			fresh.cash = Math.max(fresh.cash, cashBonus);
+		}
+
+		// Apply auto-chiefs mega-upgrade
+		const autoChiefsLvl = getAutoChiefsLevel(fresh);
+		if (autoChiefsLvl >= 1) {
+			const divKeys = Object.keys(fresh.divisions) as (keyof typeof fresh.divisions)[];
+			const target = autoChiefsLvl >= 2 ? divKeys : divKeys.slice(0, 3);
+			for (const key of target) {
+				if (fresh.divisions[key].unlocked) {
+					fresh.divisions[key].chiefLevel = Math.max(fresh.divisions[key].chiefLevel, 1);
+				}
+			}
+		}
+
+		// Track hall of fame stats
+		fresh.hallOfFame = { ...(current.hallOfFame ?? { fastestColonyTimes: [], highestIncomePerSec: 0, mostColoniesLaunched: 0, totalCashAllTime: 0 }) };
+		fresh.hallOfFame.mostColoniesLaunched = fresh.prestigeCount;
+		fresh.hallOfFame.totalCashAllTime = (fresh.hallOfFame.totalCashAllTime || 0) + current.totalValueEarned;
+		if (current.stats.highestIncomePerSec > fresh.hallOfFame.highestIncomePerSec) {
+			fresh.hallOfFame.highestIncomePerSec = current.stats.highestIncomePerSec;
+		}
+		// Track fastest colony time for current planet
+		const colonyTimeMs = current.stats.playTimeMs;
+		const planetIdx = current.prestigeCount; // planet we're leaving
+		const existing = fresh.hallOfFame.fastestColonyTimes.find(p => p.planetIndex === planetIdx);
+		if (!existing || colonyTimeMs < existing.timeMs) {
+			fresh.hallOfFame.fastestColonyTimes = [
+				...fresh.hallOfFame.fastestColonyTimes.filter(p => p.planetIndex !== planetIdx),
+				{ planetIndex: planetIdx, planetName: currentPlanetName, timeMs: colonyTimeMs }
+			];
+		}
+
+		// Preserve daily reward state
+		fresh.dailyRewardLastClaim = current.dailyRewardLastClaim ?? 0;
+		fresh.dailyRewardStreak = current.dailyRewardStreak ?? 0;
 
 		gameState.set(fresh);
 		resetBottleneckNotifications();

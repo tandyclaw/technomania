@@ -44,22 +44,44 @@ export function getVisionPointRevenueMultiplier(state: GameState): number {
 
 // === MEGA-UPGRADES (persist through resets, purchased with Vision Points) ===
 
+export type MegaUpgradeEffect = 'speed' | 'revenue' | 'vp_bonus' | 'starting_cash' | 'auto_chiefs' | 'lucky_start' | 'warp_drive';
+
+export type MegaUpgradeCategory = 'Speed' | 'Revenue' | 'Starting Cash' | 'Auto-Chiefs' | 'Lucky Events' | 'Special';
+
 export interface MegaUpgrade {
 	id: string;
 	name: string;
 	description: string;
 	cost: number; // in Vision Points
-	effect: 'speed' | 'revenue' | 'vp_bonus';
+	effect: MegaUpgradeEffect;
 	multiplier: number;
+	category: MegaUpgradeCategory;
 }
 
 export const MEGA_UPGRADES: MegaUpgrade[] = [
-	{ id: 'mega_speed_1', name: 'Hyper Chiefs', description: '2x all production speed', cost: 25, effect: 'speed', multiplier: 2 },
-	{ id: 'mega_rev_1', name: 'Revenue Amplifier', description: '3x all revenue', cost: 50, effect: 'revenue', multiplier: 3 },
-	{ id: 'mega_speed_2', name: 'Quantum Computing', description: '3x all production speed', cost: 100, effect: 'speed', multiplier: 3 },
-	{ id: 'mega_rev_2', name: 'Galactic Contracts', description: '5x all revenue', cost: 200, effect: 'revenue', multiplier: 5 },
-	{ id: 'mega_speed_3', name: 'Time Dilation Engine', description: '5x all production speed', cost: 500, effect: 'speed', multiplier: 5 },
-	{ id: 'mega_vp_1', name: 'Vision Amplifier', description: 'VP revenue bonus doubled (2% → 4% per VP)', cost: 150, effect: 'vp_bonus', multiplier: 2 },
+	// Speed
+	{ id: 'mega_speed_1', name: 'Hyper Chiefs', description: '2× all production speed', cost: 25, effect: 'speed', multiplier: 2, category: 'Speed' },
+	{ id: 'mega_speed_2', name: 'Quantum Computing', description: '3× all production speed', cost: 100, effect: 'speed', multiplier: 3, category: 'Speed' },
+	{ id: 'mega_speed_3', name: 'Time Dilation Engine', description: '5× all production speed', cost: 500, effect: 'speed', multiplier: 5, category: 'Speed' },
+	{ id: 'mega_warp_1', name: 'Warp Drive I', description: 'Reduce all cycle times by 10% (stacks)', cost: 75, effect: 'warp_drive', multiplier: 0.9, category: 'Speed' },
+	{ id: 'mega_warp_2', name: 'Warp Drive II', description: 'Reduce all cycle times by another 10%', cost: 300, effect: 'warp_drive', multiplier: 0.9, category: 'Speed' },
+
+	// Revenue
+	{ id: 'mega_rev_1', name: 'Revenue Amplifier', description: '3× all revenue', cost: 50, effect: 'revenue', multiplier: 3, category: 'Revenue' },
+	{ id: 'mega_rev_2', name: 'Galactic Contracts', description: '5× all revenue', cost: 200, effect: 'revenue', multiplier: 5, category: 'Revenue' },
+	{ id: 'mega_vp_1', name: 'Vision Amplifier', description: 'VP revenue bonus doubled (2% → 4% per VP)', cost: 150, effect: 'vp_bonus', multiplier: 2, category: 'Revenue' },
+
+	// Starting Cash
+	{ id: 'mega_cash_1', name: 'Seed Fund', description: 'Start each colony with $10K', cost: 30, effect: 'starting_cash', multiplier: 10_000, category: 'Starting Cash' },
+	{ id: 'mega_cash_2', name: 'Venture Capital', description: 'Start each colony with $100K', cost: 120, effect: 'starting_cash', multiplier: 100_000, category: 'Starting Cash' },
+
+	// Auto-Chiefs
+	{ id: 'mega_chiefs_1', name: 'Start with Chiefs I', description: 'Begin each colony with Lv1 chiefs in first 3 divisions', cost: 80, effect: 'auto_chiefs', multiplier: 1, category: 'Auto-Chiefs' },
+	{ id: 'mega_chiefs_2', name: 'Start with Chiefs II', description: 'Begin each colony with Lv1 chiefs in ALL divisions', cost: 250, effect: 'auto_chiefs', multiplier: 2, category: 'Auto-Chiefs' },
+
+	// Lucky Events
+	{ id: 'mega_lucky_1', name: 'Lucky Start', description: '2× event frequency for first 10 min after colony', cost: 60, effect: 'lucky_start', multiplier: 2, category: 'Lucky Events' },
+	{ id: 'mega_lucky_2', name: 'Fortune Favors the Bold', description: '3× event frequency for first 10 min after colony', cost: 200, effect: 'lucky_start', multiplier: 3, category: 'Lucky Events' },
 ];
 
 /**
@@ -93,6 +115,67 @@ export function getMegaUpgradeRevenueMultiplier(state: GameState): number {
  */
 function hasVPAmplifier(state: GameState): boolean {
 	return (state.purchasedMegaUpgrades ?? []).includes('mega_vp_1');
+}
+
+/**
+ * Get warp drive cycle time multiplier (stacks multiplicatively)
+ */
+export function getWarpDriveMultiplier(state: GameState): number {
+	const purchased = state.purchasedMegaUpgrades ?? [];
+	let mult = 1;
+	for (const id of purchased) {
+		const mu = MEGA_UPGRADES.find(m => m.id === id);
+		if (mu && mu.effect === 'warp_drive') mult *= mu.multiplier;
+	}
+	return mult;
+}
+
+/**
+ * Get starting cash bonus from mega-upgrades (takes highest)
+ */
+export function getStartingCashBonus(state: GameState): number {
+	const purchased = state.purchasedMegaUpgrades ?? [];
+	let best = 0;
+	for (const id of purchased) {
+		const mu = MEGA_UPGRADES.find(m => m.id === id);
+		if (mu && mu.effect === 'starting_cash' && mu.multiplier > best) best = mu.multiplier;
+	}
+	return best;
+}
+
+/**
+ * Get auto-chiefs level from mega-upgrades (1 = first 3 divisions, 2 = all)
+ */
+export function getAutoChiefsLevel(state: GameState): number {
+	const purchased = state.purchasedMegaUpgrades ?? [];
+	let level = 0;
+	for (const id of purchased) {
+		const mu = MEGA_UPGRADES.find(m => m.id === id);
+		if (mu && mu.effect === 'auto_chiefs' && mu.multiplier > level) level = mu.multiplier;
+	}
+	return level;
+}
+
+/**
+ * Get lucky start event frequency multiplier
+ */
+export function getLuckyStartMultiplier(state: GameState): number {
+	const purchased = state.purchasedMegaUpgrades ?? [];
+	let best = 1;
+	for (const id of purchased) {
+		const mu = MEGA_UPGRADES.find(m => m.id === id);
+		if (mu && mu.effect === 'lucky_start' && mu.multiplier > best) best = mu.multiplier;
+	}
+	return best;
+}
+
+/**
+ * Get unique mega-upgrade categories that have at least one upgrade
+ */
+export function getMegaUpgradeCategories(): MegaUpgradeCategory[] {
+	const cats = new Set<MegaUpgradeCategory>();
+	for (const mu of MEGA_UPGRADES) cats.add(mu.category);
+	return Array.from(cats);
 }
 
 // === PLANET CHAIN ===

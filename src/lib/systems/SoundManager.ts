@@ -188,9 +188,42 @@ export const sounds = {
 	kaching: playKaching,
 	whoosh: playWhoosh,
 	fanfare: playFanfare,
+	tabWhoosh: playTabWhoosh,
 } as const;
 
 export type SoundName = keyof typeof sounds;
+
+/**
+ * Play a short "tab whoosh" — switching views/tabs
+ */
+function playTabWhoosh(): void {
+	if (!isSfxEnabled()) return;
+	const ctx = getContext();
+	if (!ctx) return;
+
+	const now = ctx.currentTime;
+
+	const osc = ctx.createOscillator();
+	const gain = ctx.createGain();
+	osc.type = 'sine';
+	osc.frequency.setValueAtTime(300, now);
+	osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+	osc.frequency.exponentialRampToValueAtTime(200, now + 0.18);
+	gain.gain.setValueAtTime(0.001, now);
+	gain.gain.linearRampToValueAtTime(0.06, now + 0.03);
+	gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+	const filter = ctx.createBiquadFilter();
+	filter.type = 'lowpass';
+	filter.frequency.setValueAtTime(1500, now);
+	filter.Q.setValueAtTime(1, now);
+
+	osc.connect(filter);
+	filter.connect(gain);
+	gain.connect(ctx.destination);
+	osc.start(now);
+	osc.stop(now + 0.2);
+}
 
 /**
  * Play a sound by name

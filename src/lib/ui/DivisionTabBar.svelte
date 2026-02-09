@@ -2,6 +2,7 @@
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameState } from '$lib/stores/gameState';
 	import { ACHIEVEMENTS } from '$lib/systems/AchievementSystem';
+	import { playSound } from '$lib/systems/SoundManager';
 
 	let achievementCount = $derived($gameState.achievements.length);
 	let totalAchievements = ACHIEVEMENTS.length;
@@ -44,6 +45,9 @@
 
 	function handleTabClick(tabId: string) {
 		moreOpen = false;
+		if ($activeTab !== tabId) {
+			playSound('tabWhoosh');
+		}
 		activeTab.set(tabId);
 	}
 
