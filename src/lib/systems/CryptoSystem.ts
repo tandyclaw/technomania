@@ -9,8 +9,8 @@
  *
  * DOGE: Much cheaper, more volatile meme coin:
  * - Higher amplitude oscillations and noise
- * - "Elon Tweet" random event that pumps price 50-200% temporarily
- * - Price eventually decays back after tweet pump fades
+ * - "Viral Meme" random event that pumps price 50-200% temporarily
+ * - Price eventually decays back after meme hype fades
  *
  * Portfolio tracking: buy/sell BTC and DOGE with game cash.
  */
@@ -45,23 +45,23 @@ const MOON_PROBABILITY = 0.04;
 const DOGE_CRASH_PROBABILITY = 0.06;
 const DOGE_MOON_PROBABILITY = 0.06;
 
-/** Elon Tweet pump probability per check */
-const ELON_TWEET_PROBABILITY = 0.03;
+/** Viral meme pump probability per check */
+const VIRAL_MEME_PROBABILITY = 0.03;
 
-/** Elon Tweet pump duration range (ms) */
-const ELON_TWEET_MIN_DURATION_MS = 15_000;
-const ELON_TWEET_MAX_DURATION_MS = 45_000;
+/** Viral meme pump duration range (ms) */
+const VIRAL_MEME_MIN_DURATION_MS = 15_000;
+const VIRAL_MEME_MAX_DURATION_MS = 45_000;
 
-/** Elon Tweet messages for toasts */
-const ELON_TWEETS = [
-	'One word: Doge 🐕',
-	'Doge is the people\'s crypto 🚀',
-	'Much wow, very currency',
-	'Who let the Doge out 🐶',
-	'Dogefather has spoken 🎩',
-	'DOGE to the moon!! 🌙',
-	'The future currency of Mars 🔴🐕',
-	'*posts Shiba Inu meme*',
+/** Viral meme messages for toasts */
+const VIRAL_MEMES = [
+	'Much wow, very currency 🐕',
+	'DOGE to the moon!! 🚀',
+	'Diamond hands forever 💎🙌',
+	'Such gains, many profit',
+	'The people\'s crypto 🐶',
+	'Meme magic is real ✨',
+	'HODL gang activated 📈',
+	'Shiba Inu goes viral 🔥',
 ];
 
 /** Internal accumulators (not saved — ephemeral per session) */
@@ -339,24 +339,24 @@ export function tickCrypto(deltaMs: number): void {
 	gameState.update((s) => {
 		let newBtcPrice = s.crypto.btcPrice;
 		let newDogePrice = s.crypto.dogePrice;
-		let elonTweetPumpMs = s.crypto.elonTweetPumpMs;
-		let elonTweetMultiplier = s.crypto.elonTweetMultiplier;
+		let memePumpMs = s.crypto.memePumpMs;
+		let memePumpMultiplier = s.crypto.memePumpMultiplier;
 		const gameTimeMs = s.stats.playTimeMs;
 
 		// Generate new prices every tick for smooth movement
 		newBtcPrice = generateBtcPrice(gameTimeMs, newBtcPrice);
 		newDogePrice = generateDogePrice(gameTimeMs, newDogePrice);
 
-		// Apply Elon Tweet pump to DOGE if active
-		if (elonTweetPumpMs > 0) {
-			elonTweetPumpMs = Math.max(0, elonTweetPumpMs - deltaMs);
-			newDogePrice *= elonTweetMultiplier;
+		// Apply Viral Meme pump to DOGE if active
+		if (memePumpMs > 0) {
+			memePumpMs = Math.max(0, memePumpMs - deltaMs);
+			newDogePrice *= memePumpMultiplier;
 
 			// When pump expires, reset multiplier
-			if (elonTweetPumpMs <= 0) {
-				elonTweetMultiplier = 1;
+			if (memePumpMs <= 0) {
+				memePumpMultiplier = 1;
 				setTimeout(() => {
-					addToast('info', '📉', 'Tweet Hype Fading', 'The Elon Tweet pump is wearing off...', {
+					addToast('info', '📉', 'Hype Fading', 'The meme pump is wearing off...', {
 						color: '#C2A633',
 						durationMs: 4000,
 					});
@@ -392,22 +392,22 @@ export function tickCrypto(deltaMs: number): void {
 
 			// ── DOGE Events ──
 			const dogeRoll = Math.random();
-			if (dogeRoll < ELON_TWEET_PROBABILITY && elonTweetPumpMs <= 0) {
-				// Elon Tweet pump! 50-200% price increase
+			if (dogeRoll < VIRAL_MEME_PROBABILITY && memePumpMs <= 0) {
+				// Viral Meme pump! 50-200% price increase
 				const pumpMultiplier = 1.5 + Math.random() * 1.5; // 1.5x to 3.0x
-				const pumpDuration = ELON_TWEET_MIN_DURATION_MS +
-					Math.random() * (ELON_TWEET_MAX_DURATION_MS - ELON_TWEET_MIN_DURATION_MS);
-				elonTweetMultiplier = pumpMultiplier;
-				elonTweetPumpMs = pumpDuration;
-				const tweet = ELON_TWEETS[Math.floor(Math.random() * ELON_TWEETS.length)];
+				const pumpDuration = VIRAL_MEME_MIN_DURATION_MS +
+					Math.random() * (VIRAL_MEME_MAX_DURATION_MS - VIRAL_MEME_MIN_DURATION_MS);
+				memePumpMultiplier = pumpMultiplier;
+				memePumpMs = pumpDuration;
+				const meme = VIRAL_MEMES[Math.floor(Math.random() * VIRAL_MEMES.length)];
 				const pumpPercent = Math.round((pumpMultiplier - 1) * 100);
 				setTimeout(() => {
-					addToast('success', '🐕', `Elon Tweeted! +${pumpPercent}%`, `"${tweet}"`, {
+					addToast('success', '🐕', `DOGE Goes Viral! +${pumpPercent}%`, `"${meme}"`, {
 						color: '#C2A633',
 						durationMs: 6000,
 					});
 				}, 0);
-			} else if (dogeRoll < ELON_TWEET_PROBABILITY + DOGE_CRASH_PROBABILITY && elonTweetPumpMs <= 0) {
+			} else if (dogeRoll < VIRAL_MEME_PROBABILITY + DOGE_CRASH_PROBABILITY && memePumpMs <= 0) {
 				// DOGE crash (only when no active pump)
 				const crashSeverity = 0.25 + Math.random() * 0.25; // 25-50% drop
 				newDogePrice *= (1 - crashSeverity);
@@ -417,8 +417,8 @@ export function tickCrypto(deltaMs: number): void {
 						durationMs: 5000,
 					});
 				}, 0);
-			} else if (dogeRoll > 1 - DOGE_MOON_PROBABILITY && elonTweetPumpMs <= 0) {
-				// DOGE mini moon (organic, not from tweet)
+			} else if (dogeRoll > 1 - DOGE_MOON_PROBABILITY && memePumpMs <= 0) {
+				// DOGE mini moon (organic, not from meme)
 				const moonSeverity = 0.2 + Math.random() * 0.3; // 20-50% rise
 				newDogePrice *= (1 + moonSeverity);
 				setTimeout(() => {
@@ -458,8 +458,8 @@ export function tickCrypto(deltaMs: number): void {
 				btcPriceHistory: newBtcHistory,
 				dogePrice: newDogePrice,
 				dogePriceHistory: newDogeHistory,
-				elonTweetPumpMs,
-				elonTweetMultiplier,
+				memePumpMs,
+				memePumpMultiplier,
 			},
 		};
 	});

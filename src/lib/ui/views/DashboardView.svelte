@@ -64,7 +64,7 @@
 <div class="dashboard space-y-5">
 	<!-- Welcome header -->
 	<div>
-		<h1 class="text-xl font-bold text-text-primary">Being Elon</h1>
+		<h1 class="text-xl font-bold text-text-primary">Tech Tycoon</h1>
 		<p class="text-sm text-text-secondary mt-0.5">
 			{#if prestigeCount > 0}
 				Timeline #{prestigeCount + 1} · The next big bet

@@ -1,9 +1,9 @@
 /**
  * DivisionUnlockSystem.ts — Controls when divisions become available
  * 
- * Tesla Energy: Always unlocked (the foundation)
- * SpaceX: Unlocks after earning $500 total (or via purchase for $250)
- * Tesla: Unlocks after earning $2,500 total (or via purchase for $1,000)
+ * Energy: Always unlocked (the foundation — you need power for everything)
+ * Rockets: Unlocks for $1,000 (start your space program)
+ * EVs: Unlocks for $10,000 (build your car company)
  */
 
 export interface DivisionUnlockRequirement {
@@ -16,17 +16,17 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 	teslaenergy: {
 		cost: 0,
 		description: 'The foundation of everything.',
-		flavorText: '"Sustainable energy is the single biggest thing we need to solve."',
+		flavorText: 'Sustainable energy is the first step. Power your dreams.',
 	},
 	spacex: {
 		cost: 1000,
-		description: 'Pour your savings into rockets. What could go wrong?',
-		flavorText: '"I thought the chances of SpaceX succeeding were about 10%."',
+		description: 'Start your rocket program. Failure is an option — and expected.',
+		flavorText: 'Getting to orbit is hard. Getting to Mars is harder. Let\'s begin.',
 	},
 	tesla: {
 		cost: 10000,
-		description: 'Invest in electric vehicles before anyone else believes in them.',
-		flavorText: '"The overarching purpose of Tesla is to help accelerate the transition to sustainable energy."',
+		description: 'Build electric vehicles. End the age of oil.',
+		flavorText: 'The world runs on cars. Make them electric.',
 	},
 };
 

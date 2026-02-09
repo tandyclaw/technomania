@@ -206,7 +206,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		resolveCost: 40000,
 		researchCost: 6,
 		waitDurationMs: 240_000, // 4 minutes
-		flavorText: '"Full flow staged combustion is hard. We knew that." — Elon',
+		flavorText: 'Full-flow staged combustion: theoretically optimal, practically nightmarish.',
 		tooltip: 'Raptor is the first operational full-flow staged combustion engine — both turbopumps run fuel-rich and oxidizer-rich preburners. This is thermodynamically optimal but incredibly hard to build. Each Starship uses 33 Raptors on the booster alone.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
@@ -245,13 +245,13 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 20,
 		waitDurationMs: 600_000, // 10 minutes — much longer than normal
 		flavorText: '"I\'m sleeping on the factory floor." — Elon, 2018.',
-		tooltip: 'In 2018, Tesla nearly went bankrupt trying to scale Model 3 production. Elon slept on the factory floor for months. They scrapped an over-automated assembly line and rebuilt with more human workers. Production went from 2,000 to 5,000/week in 3 months.',
+		tooltip: 'In 2018, Tesla nearly went bankrupt trying to scale Model 3 production. The team slept on the factory floor for months. They scrapped an over-automated assembly line and rebuilt with more human workers. Production went from 2,000 to 5,000/week in 3 months.',
 		isProductionHell: true,
 		productionHellFlavor: [
 			'The paint shop is a disaster. Every car needs rework.',
 			'Robots keep crashing into each other on the body line.',
 			'Battery module production is in a tent in the parking lot.',
-			'Elon is personally inspecting every weld. This can\'t scale.',
+			'The CEO is personally inspecting every weld. This can\'t scale.',
 			'"Manufacturing is hard. Manufacturing is really, really hard."',
 		],
 		shouldActivate: (state) => {
@@ -321,7 +321,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		resolveCost: 200000,
 		researchCost: 12,
 		waitDurationMs: 360_000, // 6 minutes
-		flavorText: '"Oh my f***ing God." — Elon at the Cybertruck unveil.',
+		flavorText: 'The infamous window shatter. Live on stage. Millions watching.',
 		tooltip: 'At the Nov 2019 Cybertruck reveal, Franz von Holzhausen threw a steel ball at the "armor glass" windows — which promptly shattered on live TV. Elon\'s stunned "Oh my f***ing God" became one of the most memed product launch moments ever.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
@@ -339,7 +339,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		resolveCost: 500000,
 		researchCost: 30,
 		waitDurationMs: 900_000, // 15 minutes — the hardest bottleneck in the game
-		flavorText: '"The Cybertruck is our best product ever. Also the hardest to build." — Elon, 2024.',
+		flavorText: 'The best product ever. Also the hardest to build.',
 		tooltip: 'Cybertruck uses 3mm ultra-hard 30X stainless steel that can\'t be stamped like normal auto body panels. Each panel must be laser-cut and precisely folded. The exoskeleton design means the body IS the frame — no room for error.',
 		isProductionHell: true,
 		productionHellFlavor: [

@@ -4,7 +4,7 @@
  * Tracks which step the new player is on and persists completion.
  * Steps:
  *   0 = welcome message
- *   1 = point to Tesla Energy tab
+ *   1 = point to Energy tab
  *   2 = buy first Solar Panel
  *   3 = tap to start production
  *   4 = explain progress bar & payout
@@ -23,21 +23,21 @@ export const TUTORIAL_STEPS = [
 		id: 'welcome',
 		title: 'Welcome, Visionary',
 		message:
-			"You're the next tech visionary. Build an empire from solar panels to Mars rockets. Let's get started.",
+			"Build an empire from solar panels to Mars rockets. The goal: make humanity multiplanetary. Let's get started.",
 		target: null, // no highlight, centered modal
 		position: 'center' as const,
 	},
 	{
 		id: 'go-to-energy',
 		title: 'Start Here',
-		message: 'Tap the Energy tab below to open your Tesla Energy division — the foundation of your empire.',
+		message: 'Tap the Energy tab below. Sustainable energy is the foundation — you need power for everything.',
 		target: 'tab-teslaenergy',
 		position: 'above' as const,
 	},
 	{
 		id: 'buy-solar-panel',
 		title: 'Build Your First Solar Panel',
-		message: "Tap the Build button to buy your first Solar Panel. You've got $50 — it only costs $15.",
+		message: "Tap the Build button to buy your first Solar Panel. You've got $50 — it only costs $4.",
 		target: 'tier-buy-0',
 		position: 'above' as const,
 	},
@@ -75,7 +75,7 @@ export const TUTORIAL_STEPS = [
 		id: 'locked-divisions',
 		title: 'Expand Your Empire',
 		message:
-			'SpaceX and Tesla are locked for now. Earn more cash to unlock them. Each division has unique tiers, chiefs, and synergies. Go build!',
+			'Rockets and EVs are locked for now. Earn more cash to unlock them. Each division has unique tiers, chiefs, and synergies. Go build!',
 		target: null,
 		position: 'center' as const,
 	},
@@ -108,7 +108,7 @@ function createTutorialStore() {
 
 			// Check localStorage for previous completion
 			try {
-				if (localStorage.getItem('being_elon_tutorial_done') === '1') {
+				if (localStorage.getItem('tech_tycoon_tutorial_done') === '1') {
 					set({ active: false, step: 0, completed: true });
 					return;
 				}
@@ -139,7 +139,7 @@ function createTutorialStore() {
 		skip() {
 			update(() => {
 				try {
-					localStorage.setItem('being_elon_tutorial_done', '1');
+					localStorage.setItem('tech_tycoon_tutorial_done', '1');
 				} catch {
 					// ignore
 				}
@@ -150,7 +150,7 @@ function createTutorialStore() {
 		/** Complete the tutorial (final step dismissed) */
 		complete() {
 			try {
-				localStorage.setItem('being_elon_tutorial_done', '1');
+				localStorage.setItem('tech_tycoon_tutorial_done', '1');
 			} catch {
 				// ignore
 			}

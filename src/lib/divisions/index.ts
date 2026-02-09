@@ -2,7 +2,7 @@
  * divisions/index.ts — Centralized division metadata and tier data
  * Used by the DivisionDetailTemplate and other UI components
  *
- * REBRAND: Real company names — SpaceX, Tesla, Tesla Energy
+ * Generic category naming — focused on the mission, not brands
  */
 
 import { SPACEX_TIERS, SPACEX_COLOR, SPACEX_ICON, SPACEX_NAME } from './SpaceX';
@@ -33,7 +33,7 @@ export const DIVISIONS: Record<string, DivisionMeta> = {
 		name: SPACEX_NAME,
 		icon: SPACEX_ICON,
 		color: SPACEX_COLOR,
-		description: 'Reusable rockets & Mars colonization',
+		description: 'Build rockets. Get to Mars.',
 		tiers: SPACEX_TIERS,
 	},
 	tesla: {
@@ -41,7 +41,7 @@ export const DIVISIONS: Record<string, DivisionMeta> = {
 		name: TESLA_NAME,
 		icon: TESLA_ICON,
 		color: TESLA_COLOR,
-		description: 'Electric vehicles & Gigafactories',
+		description: 'Electrify transportation. End oil.',
 		tiers: TESLA_TIERS,
 	},
 	teslaenergy: {
@@ -49,7 +49,7 @@ export const DIVISIONS: Record<string, DivisionMeta> = {
 		name: TESLA_ENERGY_NAME,
 		icon: TESLA_ENERGY_ICON,
 		color: TESLA_ENERGY_COLOR,
-		description: 'Solar energy, Powerwall & Megapack',
+		description: 'Solar & batteries. Power everything.',
 		tiers: TESLA_ENERGY_TIERS,
 	},
 };

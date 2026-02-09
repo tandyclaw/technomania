@@ -1,6 +1,6 @@
 /**
- * SpaceX.ts — Rockets & Space division
- * Real SpaceX vehicle progression for MVP: Falcon 1 → Mars Lander
+ * Rockets.ts — Space Launch division
+ * Progression from small orbital rockets to Mars landers
  * Each facility CONSUMES power (negative powerMW = consumer)
  *
  * cycleDuration = how long one production cycle takes (in seconds)
@@ -11,49 +11,49 @@ import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export const SPACEX_TIERS: { name: string; description: string; tooltip: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
-		name: 'Falcon 1',
-		description: 'Your first orbital rocket. Three failures before success.',
-		tooltip: 'Falcon 1: SpaceX\'s first orbital rocket. Only 5 were ever launched (2006-2009). The 4th flight was the first privately-funded liquid-fuel rocket to reach orbit.',
-		powerMW: -0.001, // 1 kW per unit
+		name: 'Small Orbital Rocket',
+		description: 'Your first orbital vehicle. Expect failures before success.',
+		tooltip: 'Small orbital rockets are the proving ground for any space program. Most early attempts fail — it took multiple tries before the first private company reached orbit. Each failure teaches you something.',
+		powerMW: -0.001,
 		config: { baseCost: 4, baseRevenue: 1, cycleDuration: 0.6, costMultiplier: 1.07, revenueMultiplier: 1.0 }
 	},
 	{
-		name: 'Falcon 9',
-		description: 'The workhorse. Reusable first stage changes everything.',
-		tooltip: 'Falcon 9: SpaceX\'s reusable orbital rocket. First successful booster landing in Dec 2015. A single booster has flown 20+ times. Revolutionized launch costs from ~$150M to ~$67M per flight.',
-		powerMW: -0.01, // 10 kW per unit
+		name: 'Reusable Booster',
+		description: 'Land and refly. This changes everything.',
+		tooltip: 'Reusable rockets cut launch costs by 90%. Instead of throwing away a $50M booster, you land it and fly again. A single booster can fly 20+ times. This is what makes space economically viable.',
+		powerMW: -0.01,
 		config: { baseCost: 60, baseRevenue: 8, cycleDuration: 3, costMultiplier: 1.15, revenueMultiplier: 1.0 }
 	},
 	{
-		name: 'Dragon',
-		description: 'First commercial spacecraft to dock with the ISS.',
-		tooltip: 'Dragon: First privately-developed spacecraft to reach the ISS (May 2012). Crew Dragon replaced the Space Shuttle for astronaut transport in 2020, ending US reliance on Russian Soyuz.',
-		powerMW: -0.1, // 100 kW per unit
+		name: 'Crew Capsule',
+		description: 'Carry humans to orbit. Life support is hard.',
+		tooltip: 'Building a spacecraft that keeps humans alive in the vacuum of space is incredibly difficult. Redundant systems, abort capabilities, re-entry heat shields — every detail matters when lives are at stake.',
+		powerMW: -0.1,
 		config: { baseCost: 720, baseRevenue: 90, cycleDuration: 6, costMultiplier: 1.14, revenueMultiplier: 1.0 }
 	},
 	{
-		name: 'Falcon Heavy',
-		description: 'Triple-core heavy lifter. Launched a Tesla Roadster into space.',
-		tooltip: 'Falcon Heavy: World\'s most powerful operational rocket at debut (Feb 2018). Uses three Falcon 9 cores strapped together. Its maiden flight famously carried Elon\'s personal Tesla Roadster into a Mars-crossing orbit.',
-		powerMW: -0.5, // 500 kW per unit
+		name: 'Heavy Lift Vehicle',
+		description: 'Triple-core monster. Massive payloads to deep space.',
+		tooltip: 'Heavy lift rockets can send large payloads beyond Earth orbit — to the Moon, asteroids, or Mars. Three cores firing together produce incredible thrust, but synchronizing them is an engineering nightmare.',
+		powerMW: -0.5,
 		config: { baseCost: 8640, baseRevenue: 1080, cycleDuration: 12, costMultiplier: 1.12, revenueMultiplier: 1.0 }
 	},
 	{
-		name: 'Starship',
-		description: 'Largest rocket ever built. Fully reusable. The Mars vehicle.',
-		tooltip: 'Starship: The largest and most powerful rocket ever built — 121m tall, 5,000 tonnes thrust. Designed for full reusability and Mars colonization. Super Heavy booster was first caught by "chopstick" arms in Oct 2024.',
-		powerMW: -2, // 2 MW per unit
+		name: 'Super Heavy Starship',
+		description: 'Fully reusable. 100+ tons to orbit. The Mars vehicle.',
+		tooltip: 'A fully reusable super-heavy rocket changes everything. 100+ tons to orbit means you can launch entire space stations, or enough supplies to start a Mars colony. This is the vehicle that makes humanity multiplanetary.',
+		powerMW: -2,
 		config: { baseCost: 103680, baseRevenue: 12960, cycleDuration: 36, costMultiplier: 1.11, revenueMultiplier: 1.0 }
 	},
 	{
 		name: 'Mars Lander',
-		description: 'Starship configured for Mars landing. The holy grail.',
-		tooltip: 'Mars Lander: A Starship variant designed for Mars surface operations. Would carry ~100 tonnes of cargo to Mars, enabling a self-sustaining colony. Elon\'s stated goal: humans on Mars by the late 2020s.',
-		powerMW: -10, // 10 MW per unit
+		description: 'Touch down on the red planet. The holy grail.',
+		tooltip: 'Landing on Mars is brutally hard — thin atmosphere means parachutes barely work, but enough air that you need heat shields. A successful Mars lander carrying 100 tons of cargo is how you bootstrap a colony.',
+		powerMW: -10,
 		config: { baseCost: 1244160, baseRevenue: 155520, cycleDuration: 96, costMultiplier: 1.10, revenueMultiplier: 1.0 }
 	}
 ];
 
 export const SPACEX_COLOR = '#FF4444';
 export const SPACEX_ICON = '🚀';
-export const SPACEX_NAME = 'SpaceX';
+export const SPACEX_NAME = 'Rockets';

@@ -67,10 +67,10 @@ export interface CryptoState {
 	dogeOwned: number;
 	dogePriceHistory: number[];
 	dogeTotalInvested: number;
-	/** Active "Elon Tweet" pump event — remaining duration in ms, 0 = none */
-	elonTweetPumpMs: number;
-	/** Multiplier applied by the current Elon Tweet pump */
-	elonTweetMultiplier: number;
+	/** Active meme pump event — remaining duration in ms, 0 = none */
+	memePumpMs: number;
+	/** Multiplier applied by the current meme pump */
+	memePumpMultiplier: number;
 }
 
 export interface GameState {
@@ -158,8 +158,8 @@ export function createDefaultState(): GameState {
 			dogeOwned: 0,
 			dogePriceHistory: [0.08],
 			dogeTotalInvested: 0,
-			elonTweetPumpMs: 0,
-			elonTweetMultiplier: 1,
+			memePumpMs: 0,
+			memePumpMultiplier: 1,
 		},
 
 		prestigeCount: 0,

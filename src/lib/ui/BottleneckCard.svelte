@@ -246,7 +246,7 @@
 			<!-- No resolution possible (e.g., power deficit) -->
 			{#if def.resolveCost <= 0 && (def.researchCost ?? 0) <= 0 && !hasWaitOption}
 				<div class="px-3 py-2 text-[10px] text-text-muted rounded-lg bg-bg-tertiary/30">
-					💡 Build more Tesla Energy to resolve
+					💡 Build more Energy infrastructure to resolve
 				</div>
 			{/if}
 		</div>

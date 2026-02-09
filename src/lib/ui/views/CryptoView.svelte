@@ -27,10 +27,10 @@
 	let totalValue = $derived(getPortfolioValue(crypto));
 	let totalPnL = $derived(getPortfolioPnL(crypto));
 
-	// Elon tweet pump active
-	let tweetActive = $derived(crypto.elonTweetPumpMs > 0);
-	let tweetTimeLeft = $derived(Math.ceil(crypto.elonTweetPumpMs / 1000));
-	let tweetPumpPercent = $derived(Math.round((crypto.elonTweetMultiplier - 1) * 100));
+	// Viral meme pump active
+	let memeActive = $derived(crypto.memePumpMs > 0);
+	let memeTimeLeft = $derived(Math.ceil(crypto.memePumpMs / 1000));
+	let memePumpPercent = $derived(Math.round((crypto.memePumpMultiplier - 1) * 100));
 
 	// Custom amount inputs
 	let btcBuyAmount = $state('');
@@ -130,18 +130,18 @@
 		</p>
 	</div>
 
-	<!-- Elon Tweet Pump Banner -->
-	{#if tweetActive}
-		<div class="tweet-banner relative overflow-hidden rounded-xl p-4 border-2 border-[#C2A633]/40">
-			<div class="absolute inset-0 tweet-pulse-bg"></div>
+	<!-- Meme Pump Banner -->
+	{#if memeActive}
+		<div class="meme-banner relative overflow-hidden rounded-xl p-4 border-2 border-[#C2A633]/40">
+			<div class="absolute inset-0 meme-pulse-bg"></div>
 			<div class="relative z-10 flex items-center gap-3">
 				<div class="text-3xl animate-bounce">🐕</div>
 				<div class="flex-1">
 					<div class="text-sm font-bold text-[#C2A633]">
-						🚀 ELON TWEET PUMP ACTIVE! +{tweetPumpPercent}%
+						🚀 MEME PUMP ACTIVE! +{memePumpPercent}%
 					</div>
 					<div class="text-xs text-text-secondary mt-0.5">
-						DOGE price pumped! {tweetTimeLeft}s remaining...
+						DOGE price pumped! {memeTimeLeft}s remaining...
 					</div>
 				</div>
 			</div>
@@ -320,9 +320,9 @@
 
 	<!-- ═══ DOGE CARD ═══ -->
 	<div class="relative bg-bg-secondary/40 rounded-xl border overflow-hidden"
-		style="border-color: {tweetActive ? '#C2A63360' : 'rgba(255,255,255,0.05)'};"
+		style="border-color: {memeActive ? '#C2A63360' : 'rgba(255,255,255,0.05)'};"
 	>
-		{#if tweetActive}
+		{#if memeActive}
 			<div class="absolute inset-0 doge-pump-glow pointer-events-none"></div>
 		{/if}
 
@@ -343,8 +343,8 @@
 						</h2>
 						<div class="text-lg font-bold tabular-nums font-mono flex items-center gap-2" style="color: #C2A633;">
 							{formatDogePrice(crypto.dogePrice)}
-							{#if tweetActive}
-								<span class="text-[10px] text-bio-green animate-pulse">🚀 +{tweetPumpPercent}%</span>
+							{#if memeActive}
+								<span class="text-[10px] text-bio-green animate-pulse">🚀 +{memePumpPercent}%</span>
 							{/if}
 						</div>
 					</div>
@@ -478,20 +478,20 @@
 			💡 Did You Know?
 		</div>
 		<p class="text-xs text-text-muted leading-relaxed">
-			Elon's tweets have historically moved DOGE price by 50-300% within hours.
-			In Jan 2021, a single tweet ("One word: Doge") triggered a 900% rally over a week.
+			Viral memes have historically moved DOGE price by 50-300% within hours.
 			DOGE was created in 2013 as a joke based on the Shiba Inu meme.
-			It now has a market cap in the tens of billions.
+			It became a cultural phenomenon and now has a market cap in the tens of billions.
+			Meme coins are pure speculation — timing is everything.
 		</p>
 	</div>
 </div>
 
 <style>
-	.tweet-banner {
+	.meme-banner {
 		background: linear-gradient(135deg, rgba(194, 166, 51, 0.08) 0%, rgba(194, 166, 51, 0.02) 100%);
 	}
 
-	.tweet-pulse-bg {
+	.meme-pulse-bg {
 		background: radial-gradient(ellipse at center, rgba(194, 166, 51, 0.06) 0%, transparent 70%);
 		animation: pulseBg 2s ease-in-out infinite;
 	}
