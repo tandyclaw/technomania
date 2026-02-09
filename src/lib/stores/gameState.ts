@@ -179,6 +179,25 @@ export interface GameState {
 	// Hall of Fame (personal bests)
 	hallOfFame: HallOfFameStats;
 
+	// Contracts
+	contracts?: {
+		active: Array<{
+			id: string;
+			description: string;
+			icon: string;
+			target: { type: string; division?: string; tierIndex?: number; target: number };
+			reward: { type: string; amount: number; durationMs?: number; label: string };
+			timeLimitMs: number;
+			createdAt: number;
+			progress: number;
+			completed: boolean;
+			expired: boolean;
+		}>;
+		spawnTimerMs: number;
+		nextSpawnMs: number;
+		totalCompleted: number;
+	};
+
 	// Meta
 	achievements: string[];
 	stats: GameStats;

@@ -23,6 +23,7 @@
 	import { hapticTierPurchase, hapticProductionComplete, hapticPrestige } from '$lib/utils/haptics';
 	import { eventBus } from '$lib/engine/EventBus';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
+	import { DIVISIONS } from '$lib/divisions';
 	import { tickRandomEvents, initRandomEventListeners } from '$lib/systems/RandomEventSystem';
 	import EventModal from '$lib/ui/EventModal.svelte';
 	import { flashSaveIndicator } from '$lib/stores/saveIndicator';
@@ -163,36 +164,69 @@
 				<div class="text-4xl mb-3">👋</div>
 				<h2 class="text-xl font-bold text-text-primary mb-2">Welcome Back, Founder</h2>
 				<p class="text-sm text-text-secondary mb-2">
-					You were away for <span class="text-solar-gold font-semibold">{formatOfflineTime(offlineMs)}</span>.
+					You were away for <span class="text-solar-gold font-semibold">{formatOfflineTime(offlineMs)}</span>
+				</p>
+				<p class="text-[10px] text-text-muted mb-3">
+					⏩ {(offlineMs / 3600000).toFixed(1)} hours of production compressed
 				</p>
 
 				{#if offlineReport && (offlineReport.cashEarned > 0 || offlineReport.researchPointsEarned > 0)}
-					<div class="bg-bg-tertiary/50 rounded-xl p-3 mb-4 space-y-1.5">
-						<p class="text-xs text-text-muted uppercase tracking-wider">While you were away</p>
-						{#if offlineReport.cashEarned > 0}
-							<div class="flex items-center justify-center gap-1.5">
-								<span>💰</span>
-								<span class="text-sm font-bold text-bio-green">
-									+{formatCurrency(offlineReport.cashEarned)}
-								</span>
+					<div class="bg-bg-tertiary/50 rounded-xl p-3 mb-3 space-y-2">
+						<p class="text-xs text-text-muted uppercase tracking-wider mb-2">While you were away</p>
+
+						<!-- Total earnings -->
+						<div class="flex items-center justify-center gap-2 pb-2 border-b border-white/5">
+							{#if offlineReport.cashEarned > 0}
+								<div class="flex items-center gap-1">
+									<span>💰</span>
+									<span class="text-sm font-bold text-bio-green">
+										+{formatCurrency(offlineReport.cashEarned)}
+									</span>
+								</div>
+							{/if}
+							{#if offlineReport.researchPointsEarned > 0}
+								<div class="flex items-center gap-1">
+									<span>🔬</span>
+									<span class="text-sm font-bold text-neural-purple">
+										+{offlineReport.researchPointsEarned} RP
+									</span>
+								</div>
+							{/if}
+						</div>
+
+						<!-- Per-division breakdown -->
+						{#if offlineReport.divisionReports.length > 0}
+							<div class="space-y-1.5 text-left">
+								{#each offlineReport.divisionReports as divReport}
+									{@const divMeta = DIVISIONS[divReport.divisionId]}
+									{#if divReport.cashEarned > 0 && divMeta}
+										<div class="flex items-center justify-between text-xs">
+											<div class="flex items-center gap-1.5">
+												<span class="text-sm">{divMeta.icon}</span>
+												<span class="text-text-secondary">{divMeta.name}</span>
+											</div>
+											<span class="text-bio-green font-mono tabular-nums font-medium">
+												+{formatCurrency(divReport.cashEarned)}
+											</span>
+										</div>
+									{/if}
+								{/each}
 							</div>
 						{/if}
-						{#if offlineReport.researchPointsEarned > 0}
-							<div class="flex items-center justify-center gap-1.5">
-								<span>🔬</span>
-								<span class="text-sm font-bold text-neural-purple">
-									+{offlineReport.researchPointsEarned} RP
-								</span>
-							</div>
-						{/if}
-						<p class="text-[10px] text-text-muted">
-							{Math.round(offlineReport.efficiency * 100)}% offline efficiency
+
+						<p class="text-[10px] text-text-muted pt-1">
+							{Math.round(offlineReport.efficiency * 100)}% offline efficiency · Chiefs kept your divisions running
 						</p>
 					</div>
 				{:else}
-					<p class="text-sm text-text-secondary mb-4">
-						Hire Division Chiefs to earn while you're away!
-					</p>
+					<div class="bg-bg-tertiary/50 rounded-xl p-3 mb-3">
+						<p class="text-sm text-text-secondary">
+							Hire Division Chiefs to earn while you're away!
+						</p>
+						<p class="text-[10px] text-text-muted mt-1">
+							Chiefs automate production so you earn offline
+						</p>
+					</div>
 				{/if}
 
 				<button
@@ -200,7 +234,7 @@
 					class="w-full py-3 px-6 rounded-xl bg-electric-blue text-white font-semibold
 						   transition-all duration-200 active:scale-95 touch-manipulation"
 				>
-					Let's Go
+					Let's Go 🚀
 				</button>
 			</div>
 		</div>

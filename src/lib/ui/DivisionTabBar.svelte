@@ -27,6 +27,7 @@
 	];
 
 	const moreTabs: TabItem[] = [
+		{ id: 'contracts', name: 'Contracts', shortName: 'Contracts', icon: '📜', color: '#44DD88' },
 		{ id: 'upgrades', name: 'Upgrades', shortName: 'Upgrades', icon: '🔧', color: '#FF8844' },
 		{ id: 'treasury', name: 'Treasury', shortName: 'Treasury', icon: '🏦', color: '#44AA77' },
 		{ id: 'research', name: 'Research', shortName: 'R&D', icon: '🔬', color: '#9944FF' },

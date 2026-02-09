@@ -12,6 +12,7 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import IncomeSparkline from '$lib/ui/IncomeSparkline.svelte';
 	import { getPlanetInfo } from '$lib/systems/PrestigeSystem';
+	import ShareCard from '$lib/ui/ShareCard.svelte';
 
 	// Division ordering for display
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
@@ -28,6 +29,8 @@
 	let nextPlanet = $derived(getPlanetInfo(prestigeCount + 1));
 	let futurePlanet = $derived(getPlanetInfo(prestigeCount + 2));
 	let showVictory = $state(false);
+	let showShareCard = $state(false);
+	let shareCardMilestone = $state<'colony' | 'billion' | 'all-divisions' | 'prestige' | 'custom'>('colony');
 
 	function handleNewGamePlus() {
 		const success = gameManager.newGamePlus();
@@ -401,11 +404,22 @@
 					🔄 New Game+
 				</button>
 			</div>
+			<button
+				onclick={() => { showVictory = false; shareCardMilestone = 'colony'; showShareCard = true; }}
+				class="w-full mt-2 py-2 px-4 rounded-xl bg-white/5 text-text-muted font-medium text-xs
+					   transition-all active:scale-95 touch-manipulation hover:bg-white/10"
+			>
+				📤 Share Achievement
+			</button>
 			<p class="text-[10px] text-text-muted mt-2">
 				NG+ resets progress but costs scale ×{(1.5 ** ((state.ngPlusLevel ?? 0) + 1)).toFixed(2)}
 			</p>
 		</div>
 	</div>
+{/if}
+
+{#if showShareCard}
+	<ShareCard milestone={shareCardMilestone} onClose={() => showShareCard = false} />
 {/if}
 
 <style>

@@ -2,6 +2,9 @@
 	import { gameState } from '$lib/stores/gameState';
 	import { ACHIEVEMENTS, type AchievementCategory } from '$lib/systems/AchievementSystem';
 	import { formatCurrency } from '$lib/engine/BigNumber';
+	import ShareCard from '$lib/ui/ShareCard.svelte';
+
+	let showShareCard = $state(false);
 
 	let gs = $derived($gameState);
 	let unlockedIds = $derived(new Set(gs.achievements));
@@ -150,5 +153,18 @@
 				</div>
 			{/if}
 		</div>
+
+		<!-- Share button -->
+		<button
+			onclick={() => showShareCard = true}
+			class="w-full mt-3 py-2.5 px-4 rounded-xl bg-white/5 text-text-secondary font-medium text-xs
+				   transition-all active:scale-95 touch-manipulation hover:bg-white/10 border border-white/5"
+		>
+			📤 Share Your Stats
+		</button>
 	</div>
 </div>
+
+{#if showShareCard}
+	<ShareCard milestone="custom" headline="Check out my Moonshot stats!" onClose={() => showShareCard = false} />
+{/if}

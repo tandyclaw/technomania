@@ -8,6 +8,7 @@
 	import TreasuryView from '$lib/ui/views/TreasuryView.svelte';
 	import AchievementsView from '$lib/ui/views/AchievementsView.svelte';
 	import UpgradesView from '$lib/ui/views/UpgradesView.svelte';
+	import ContractsView from '$lib/ui/views/ContractsView.svelte';
 </script>
 
 {#key $activeTab}
