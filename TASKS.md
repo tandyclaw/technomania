@@ -55,7 +55,7 @@
 |----|-------------|--------|-------|----------|------|
 | T022 | SpaceX division screen with 6 tiers (Falcon 1→Mars Lander) | DONE | MERGED | P0 | T013, T019 |
 | T023 | Timed production + chief automation for SpaceX | DONE | MERGED | P0 | T022, T020, T054 |
-| T024 | Launch cadence mechanic (launches/month) | PLANNED | PLAN | P1 | T022 |
+| T024 | Launch cadence mechanic (launches/month) | DONE | MERGED | P1 | T022 |
 | T025 | Power consumption for rocket facilities | DONE | MERGED | P0 | T022, T019 |
 
 ## 5. Third Vertical — Tesla (EVs)
