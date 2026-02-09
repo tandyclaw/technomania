@@ -102,7 +102,13 @@
 | T043 | Tutorial system (step-by-step guided first 5 min) | PLANNED | PLAN | P1 | T017, T018 |
 | T044 | Tooltip system for real-world engineering explanations | PLANNED | PLAN | P2 | T013 |
 
-## 10. Polish & Deploy
+## 10. QoL & AdCap Mechanics
+
+| ID | Description | Status | Phase | Priority | Deps |
+|----|-------------|--------|-------|----------|------|
+| T056 | **Buy quantity toggle (×1, ×10, ×100, Max)** — AdCap-style switch on division screen that changes all buy buttons | PLANNED | PLAN | P0 | T014 |
+
+## 11. Polish & Deploy (was 10)
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
@@ -113,7 +119,7 @@
 | T049 | Cloudflare Pages deployment pipeline | PLANNED | PLAN | P1 | — |
 | T050 | Balance pass — playtest all 3 divisions for 2-4h flow | PLANNED | PLAN | P0 | T017-T042 |
 
-## 11. Future Features
+## 12. Future Features
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
