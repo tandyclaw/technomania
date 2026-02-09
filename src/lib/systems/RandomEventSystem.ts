@@ -41,6 +41,7 @@ const DIVISION_NAMES: Record<string, string> = {
 	tesla: 'Manufacturing',
 	ai: 'AI',
 	tunnels: 'Tunnels',
+	robotics: 'Robotics',
 };
 
 function getUnlockedDivisions(): string[] {
@@ -637,6 +638,9 @@ export function getBuffRevenueMultiplier(divisionId?: string): number {
 				break;
 		}
 
+		// Free launches buff — 2x revenue for Rockets division
+		if (b.id === 'free_launches' && divisionId === 'spacex') mult *= 2;
+
 		// Division-specific celebrity/talent buffs
 		if (divisionId) {
 			if (b.id === `celebrity_${divisionId}`) mult *= 2;
@@ -657,6 +661,7 @@ export function getBuffSpeedMultiplier(divisionId?: string): number {
 	for (const b of buffs) {
 		if (b.id === 'ai_speed' && divisionId === 'ai') mult *= 2;
 		if (b.id === 'tunnel_collapse' && divisionId === 'tunnels') mult *= 0.9;
+		if (b.id === 'power_surge' && divisionId === 'teslaenergy') mult *= 2;
 		if (divisionId && b.id === `talent_${divisionId}`) mult *= 1.3;
 	}
 
