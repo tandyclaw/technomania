@@ -118,7 +118,7 @@
 	<!-- Division header (tap to toggle stats) -->
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="flex items-center gap-3 cursor-pointer active:opacity-80 touch-manipulation" onclick={() => showStatsSummary = !showStatsSummary}
+	<div class="flex items-center gap-3 cursor-pointer active:opacity-80 touch-manipulation" onclick={() => showStatsSummary = !showStatsSummary}>
 		<div
 			class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0"
 			style="background-color: {division.color}12; border: 1px solid {division.color}25;"
@@ -377,3 +377,14 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	.animate-slide-down {
+		animation: slideDown 0.2s ease-out;
+	}
+
+	@keyframes slideDown {
+		from { opacity: 0; transform: translateY(-8px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+</style>

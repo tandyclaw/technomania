@@ -411,11 +411,11 @@
 <!-- Victory Screen -->
 {#if showVictory}
 	<div
-		class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] px-4"
+		class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] px-4 modal-mobile-fullscreen-container"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-solar-gold/30 text-center">
+		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-solar-gold/30 text-center modal-mobile-fullscreen">
 			<div class="text-5xl mb-3">{nextPlanet.emoji}</div>
 			<h2 class="text-xl font-bold mb-1" style="color: {nextPlanet.color};">{nextPlanet.name} Colony Established!</h2>
 			<p class="text-sm text-text-secondary mb-1">Humanity is now multi-planetary.</p>
