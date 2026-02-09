@@ -3,6 +3,7 @@
 	import DashboardView from '$lib/ui/views/DashboardView.svelte';
 	import DivisionView from '$lib/ui/views/DivisionView.svelte';
 	import ResearchView from '$lib/ui/views/ResearchView.svelte';
+	import PrestigeView from '$lib/ui/views/PrestigeView.svelte';
 	import SettingsView from '$lib/ui/views/SettingsView.svelte';
 </script>
 
@@ -12,6 +13,8 @@
 			<DashboardView />
 		{:else if $activeTab === 'research'}
 			<ResearchView />
+		{:else if $activeTab === 'prestige'}
+			<PrestigeView />
 		{:else if $activeTab === 'settings'}
 			<SettingsView />
 		{:else}

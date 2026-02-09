@@ -6,6 +6,8 @@
 	import ChiefCard from './ChiefCard.svelte';
 	import BottleneckCard from './BottleneckCard.svelte';
 	import BuyQuantityToggle from './BuyQuantityToggle.svelte';
+	import LaunchCadencePanel from './LaunchCadencePanel.svelte';
+	import ProductionRatePanel from './ProductionRatePanel.svelte';
 	import { getUnlockCost } from '$lib/engine/ProductionEngine';
 	import { getActiveBottlenecks, resolveBottleneck, getBottleneckDef, type BottleneckDef } from '$lib/systems/BottleneckSystem';
 	import { buyQuantity } from '$lib/stores/buyQuantity';
@@ -100,6 +102,14 @@
 				</div>
 			</div>
 		</div>
+	{/if}
+
+	<!-- Division-specific flavor panels (T024, T028) -->
+	{#if state.unlocked && division.id === 'spacex'}
+		<LaunchCadencePanel color={division.color} />
+	{/if}
+	{#if state.unlocked && division.id === 'tesla'}
+		<ProductionRatePanel color={division.color} />
 	{/if}
 
 	<!-- Chief card (THE key hire mechanic) -->

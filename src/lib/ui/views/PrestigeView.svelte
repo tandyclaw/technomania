@@ -3,12 +3,12 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 
-	let state = $derived($gameState);
-	let foundersVision = $derived(state.foundersVision);
-	let prestigeCount = $derived(state.prestigeCount);
-	let totalValueEarned = $derived(state.totalValueEarned);
-	let currentMultiplier = $derived(gameManager.getPrestigeMultiplier(state));
-	let visionEarnable = $derived(gameManager.calculatePrestigeVision(state));
+	let gs = $derived($gameState);
+	let foundersVision = $derived(gs.foundersVision);
+	let prestigeCount = $derived(gs.prestigeCount);
+	let totalValueEarned = $derived(gs.totalValueEarned);
+	let currentMultiplier = $derived(gameManager.getPrestigeMultiplier(gs));
+	let visionEarnable = $derived(gameManager.calculatePrestigeVision(gs));
 	let postPrestigeVision = $derived(foundersVision + visionEarnable);
 	let postPrestigeMultiplier = $derived(1 + postPrestigeVision * 0.1);
 	let canPrestige = $derived(visionEarnable > 0);
@@ -142,7 +142,7 @@
 			<div class="flex items-center justify-between">
 				<span class="text-sm text-text-secondary">Current Cash</span>
 				<span class="text-sm font-bold text-text-primary tabular-nums font-mono">
-					{formatCurrency(state.cash)}
+					{formatCurrency(gs.cash)}
 				</span>
 			</div>
 			<div class="flex items-center justify-between">

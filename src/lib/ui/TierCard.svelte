@@ -5,6 +5,7 @@
 	import { calculateCost, calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBuyable } from '$lib/systems/ProductionSystem';
 	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
+	import Tooltip from './Tooltip.svelte';
 
 	let {
 		tier,
@@ -187,8 +188,11 @@
 		<div class="flex-1 min-w-0">
 			<div class="flex items-start justify-between gap-2">
 				<div class="min-w-0">
-					<h3 class="text-sm font-semibold text-text-primary truncate">
+					<h3 class="text-sm font-semibold text-text-primary truncate flex items-center gap-1.5">
 						{tierData.name}
+						{#if tierData.tooltip}
+							<Tooltip text={tierData.tooltip} {color} />
+						{/if}
 					</h3>
 					{#if tier.unlocked}
 						<p class="text-xs text-text-muted mt-0.5 line-clamp-1">

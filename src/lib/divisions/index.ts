@@ -13,6 +13,7 @@ import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 export interface TierData {
 	name: string;
 	description: string;
+	tooltip: string;
 	config: ProductionConfig;
 	powerMW?: number;
 }

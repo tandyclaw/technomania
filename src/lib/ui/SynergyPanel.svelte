@@ -3,15 +3,15 @@
 	import { DIVISIONS } from '$lib/divisions';
 	import { MVP_SYNERGIES, getSynergyProgress, type Synergy } from '$lib/systems/SynergySystem';
 
-	let state = $derived($gameState);
-	let synergyProgress = $derived(getSynergyProgress(state, MVP_SYNERGIES));
+	let gs = $derived($gameState);
+	let synergyProgress = $derived(getSynergyProgress(gs, MVP_SYNERGIES));
 	let activeSynergies = $derived(synergyProgress.filter((s) => s.active));
 	let inactiveSynergies = $derived(synergyProgress.filter((s) => !s.active));
 
 	// Only show panel if at least 2 divisions are unlocked (synergies become relevant)
 	let divisionsUnlocked = $derived(
 		(['teslaenergy', 'spacex', 'tesla'] as const).filter(
-			(id) => state.divisions[id].unlocked
+			(id) => gs.divisions[id].unlocked
 		).length
 	);
 	let showPanel = $derived(divisionsUnlocked >= 2);

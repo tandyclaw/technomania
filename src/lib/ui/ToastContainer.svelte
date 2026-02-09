@@ -15,6 +15,8 @@
 <!-- Toast container — fixed position, above everything except modals -->
 <div class="toast-container fixed top-14 left-0 right-0 z-[80] flex flex-col items-center gap-1.5 px-3 pointer-events-none">
 	{#each $toasts as toast (toast.id)}
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
 			class="toast-item pointer-events-auto max-w-sm w-full rounded-xl border px-3.5 py-2.5
 				   backdrop-blur-md shadow-lg shadow-black/20 cursor-pointer select-none"

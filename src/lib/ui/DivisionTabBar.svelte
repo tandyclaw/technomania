@@ -29,13 +29,13 @@
 	style="padding-bottom: env(safe-area-inset-bottom, 0px);"
 	aria-label="Division navigation"
 >
-	<div class="flex items-stretch justify-around max-w-2xl mx-auto">
+	<div class="flex items-stretch max-w-2xl mx-auto overflow-x-auto scrollbar-hide">
 		{#each tabs as tab}
 			{@const isActive = $activeTab === tab.id}
 			<button
 				onclick={() => handleTabClick(tab.id)}
 				class="tab-button group relative flex flex-col items-center justify-center gap-0.5
-					   py-2 px-1 flex-1
+					   py-2 px-1 flex-1 shrink-0
 					   transition-all duration-200
 					   active:scale-90 touch-manipulation"
 				aria-current={isActive ? 'page' : undefined}
@@ -76,6 +76,15 @@
 	/* Ensure minimum 44px touch target for accessibility */
 	.tab-button {
 		min-height: 52px;
-		min-width: 64px;
+		min-width: 48px;
+	}
+
+	/* Hide scrollbar while keeping scroll functionality */
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
 	}
 </style>

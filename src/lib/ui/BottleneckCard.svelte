@@ -19,6 +19,14 @@
 
 	let canAfford = $derived(def.resolveCost > 0 && cash >= def.resolveCost);
 	let severityPercent = $derived(Math.round(bottleneck.severity * 100));
+	let isProductionHell = $derived(def.isProductionHell ?? false);
+
+	// Pick a random production hell flavor line (stable per render)
+	let hellFlavorLine = $derived(
+		def.productionHellFlavor && def.productionHellFlavor.length > 0
+			? def.productionHellFlavor[Math.floor(Date.now() / 10000) % def.productionHellFlavor.length]
+			: null
+	);
 
 	const categoryIcons: Record<string, string> = {
 		engineering: '🔧',
@@ -28,33 +36,39 @@
 		scaling: '🏭',
 	};
 
-	let categoryIcon = $derived(categoryIcons[def.category] ?? '⚠️');
+	let categoryIcon = $derived(isProductionHell ? '🔥' : (categoryIcons[def.category] ?? '⚠️'));
 </script>
 
 <div
-	class="bottleneck-card relative rounded-xl border overflow-hidden"
-	style="background-color: #FF444410; border-color: #FF444430;"
+	class="relative rounded-xl border overflow-hidden"
+	class:bottleneck-card={!isProductionHell}
+	class:production-hell-card={isProductionHell}
+	style="background-color: {isProductionHell ? '#FF220018' : '#FF444410'}; border-color: {isProductionHell ? '#FF444050' : '#FF444030'};"
 >
 	<!-- Severity indicator bar -->
 	<div
-		class="absolute top-0 left-0 h-1 transition-all duration-300"
-		style="width: {severityPercent}%; background-color: #FF4444;"
+		class="absolute top-0 left-0 transition-all duration-300"
+		style="width: {severityPercent}%; background-color: {isProductionHell ? '#FF6600' : '#FF4444'}; height: {isProductionHell ? '3px' : '4px'};"
 	></div>
 
 	<div class="p-3.5">
 		<div class="flex items-start gap-2.5">
 			<!-- Icon -->
-			<div class="w-9 h-9 rounded-lg flex items-center justify-center text-lg shrink-0 bg-rocket-red/10">
+			<div
+				class="w-9 h-9 rounded-lg flex items-center justify-center text-lg shrink-0"
+				class:hell-icon-pulse={isProductionHell}
+				style="background-color: {isProductionHell ? '#FF440020' : 'rgba(255, 68, 68, 0.1)'};"
+			>
 				{categoryIcon}
 			</div>
 
 			<!-- Content -->
 			<div class="flex-1 min-w-0">
 				<div class="flex items-center gap-2">
-					<h4 class="text-sm font-bold text-rocket-red truncate">
+					<h4 class="text-sm font-bold truncate" style="color: {isProductionHell ? '#FF6600' : '#FF4444'};">
 						{def.name}
 					</h4>
-					<span class="text-[10px] font-mono font-bold text-rocket-red/70 shrink-0">
+					<span class="text-[10px] font-mono font-bold shrink-0" style="color: {isProductionHell ? '#FF660090' : '#FF444070'};">
 						-{severityPercent}% speed
 					</span>
 				</div>
@@ -64,6 +78,11 @@
 				{#if def.flavorText}
 					<p class="text-[10px] text-text-muted mt-1 italic">
 						"{def.flavorText}"
+					</p>
+				{/if}
+				{#if isProductionHell && hellFlavorLine}
+					<p class="text-[10px] mt-1.5 italic font-medium" style="color: #FF660090;">
+						⚡ {hellFlavorLine}
 					</p>
 				{/if}
 			</div>
@@ -101,6 +120,24 @@
 	@keyframes bottleneckPulse {
 		0%, 100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
 		50% { box-shadow: 0 0 8px 0 rgba(255, 68, 68, 0.15); }
+	}
+
+	.production-hell-card {
+		animation: productionHellPulse 1.5s ease-in-out infinite;
+	}
+
+	@keyframes productionHellPulse {
+		0%, 100% { box-shadow: 0 0 0 0 rgba(255, 102, 0, 0); }
+		50% { box-shadow: 0 0 16px 2px rgba(255, 102, 0, 0.25); }
+	}
+
+	.hell-icon-pulse {
+		animation: hellIconGlow 1s ease-in-out infinite alternate;
+	}
+
+	@keyframes hellIconGlow {
+		0% { transform: scale(1); }
+		100% { transform: scale(1.1); }
 	}
 
 	button:disabled {

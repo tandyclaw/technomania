@@ -14,6 +14,7 @@ import { tickProduction } from './ProductionEngine';
 import { tickResearch, tickRPGeneration } from '$lib/systems/ResearchSystem';
 import { tickBottlenecks, resetBottleneckNotifications } from '$lib/systems/BottleneckSystem';
 import { tickCrypto, resetCryptoAccumulators } from '$lib/systems/CryptoSystem';
+import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefaultFlavorStats } from '$lib/systems/FlavorMechanics';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 2;
@@ -102,6 +103,7 @@ class GameManager {
 		// Start systems
 		this.startAutoSave();
 		this.addBrowserListeners();
+		initFlavorMechanics();
 		gameLoop.start();
 
 		// Wire up game tick to update play time, production, and bottlenecks
@@ -147,6 +149,7 @@ class GameManager {
 		gameLoop.stop();
 		this.stopAutoSave();
 		this.removeBrowserListeners();
+		destroyFlavorMechanics();
 		await this.save();
 		this.initialized = false;
 	}
@@ -209,6 +212,7 @@ class GameManager {
 		gameState.set(fresh);
 		resetBottleneckNotifications();
 		resetCryptoAccumulators();
+		resetFlavorStats();
 
 		eventBus.emit('prestige:complete', {
 			visionEarned,
@@ -332,6 +336,31 @@ class GameManager {
 		// Ensure activeSynergies field exists (added with synergy system)
 		if (!migrated.activeSynergies) {
 			migrated.activeSynergies = [];
+		}
+
+		// Ensure crypto state exists (added with crypto treasury system)
+		if (!migrated.crypto) {
+			migrated.crypto = {
+				btcPrice: 42_000,
+				btcOwned: 0,
+				btcPriceHistory: [42_000],
+				totalInvested: 0,
+			};
+		}
+
+		// Ensure activeResearch field exists (added with research system)
+		if (migrated.activeResearch === undefined) {
+			migrated.activeResearch = null;
+		}
+
+		// Ensure researchPoints field exists
+		if (migrated.researchPoints === undefined) {
+			migrated.researchPoints = 0;
+		}
+
+		// Ensure flavorStats field exists (added with T024/T028)
+		if (!migrated.flavorStats) {
+			migrated.flavorStats = getDefaultFlavorStats();
 		}
 
 		migrated.version = CURRENT_VERSION;

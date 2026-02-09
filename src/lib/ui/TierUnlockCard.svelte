@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { TierData } from '$lib/divisions';
 	import { formatCurrency } from '$lib/engine/BigNumber';
+	import Tooltip from './Tooltip.svelte';
 
 	let {
 		tierData,
@@ -54,8 +55,11 @@
 
 		<!-- Info section -->
 		<div class="flex-1 min-w-0">
-			<h3 class="text-sm font-semibold text-text-secondary truncate">
+			<h3 class="text-sm font-semibold text-text-secondary truncate flex items-center gap-1.5">
 				{tierData.name}
+				{#if tierData.tooltip}
+					<Tooltip text={tierData.tooltip} {color} />
+				{/if}
 			</h3>
 			<p class="text-xs text-text-muted mt-0.5 line-clamp-1">
 				{tierData.description}

@@ -30,8 +30,21 @@ export interface BottleneckDef {
 	severity: number;
 	/** Cash cost to resolve the bottleneck */
 	resolveCost: number;
+	/** Research point cost to resolve (alternative resolution path) */
+	researchCost?: number;
+	/** Time to wait for auto-resolution in ms */
+	waitDurationMs?: number;
 	/** Flavor text shown when bottleneck triggers */
 	flavorText: string;
+	/**
+	 * T033: "Production Hell" — special bottleneck with extra flavor.
+	 * Gets unique UI treatment (pulsing red, extra text, harder to resolve).
+	 */
+	isProductionHell?: boolean;
+	/** Extra flavor text lines shown for Production Hell events */
+	productionHellFlavor?: string[];
+	/** Real-world tooltip explaining the engineering concept behind this bottleneck */
+	tooltip?: string;
 	/** Return true if the bottleneck should activate given current game state */
 	shouldActivate: (state: GameState) => boolean;
 	/** Return true if the bottleneck auto-resolves (e.g., player fixes the underlying cause) */
@@ -55,6 +68,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 3,
 		waitDurationMs: 120_000, // 2 minutes
 		flavorText: 'Utility companies are pushing back on net metering.',
+		tooltip: 'The "duck curve" — California\'s grid sees huge solar oversupply at midday and steep demand ramps at sunset. Too much distributed solar without storage can cause voltage instability and frequency deviations.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			return tiers[0].count + tiers[1].count > 50;
@@ -71,6 +85,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 8,
 		waitDurationMs: 300_000, // 5 minutes
 		flavorText: 'Every automaker wants the same battery cells you do.',
+		tooltip: 'The global battery cell supply chain depends on lithium, cobalt, nickel, and manganese. As of 2024, demand for EV and storage batteries is growing ~30% annually, outpacing mining and refining capacity.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			return tiers[2].count > 20;
@@ -87,6 +102,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 15,
 		waitDurationMs: 600_000, // 10 minutes
 		flavorText: 'Environmental impact studies take forever.',
+		tooltip: 'In the US, utility-scale energy projects often wait 4-5 years in interconnection queues. Environmental impact assessments, zoning permits, and grid studies create massive delays for clean energy deployment.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			return tiers[4].count > 5;
@@ -103,6 +119,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 5,
 		waitDurationMs: 180_000, // 3 minutes
 		flavorText: 'TSMC is at max capacity. Everyone wants chips.',
+		tooltip: 'Solar inverters convert DC from panels to AC for the grid. They rely on IGBTs and MOSFETs — power semiconductors that faced severe shortages in 2021-2023 due to auto industry competition and fab capacity limits.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			// Triggers when Solar Roof count > 15
@@ -120,6 +137,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 20,
 		waitDurationMs: 480_000, // 8 minutes
 		flavorText: 'There are 2,000 GW of projects waiting in line ahead of you.',
+		tooltip: 'As of 2024, over 2,600 GW of generation and storage projects sit in US interconnection queues — 5x the entire current grid capacity. Average wait time is 5 years. This is the #1 bottleneck for clean energy growth.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.teslaenergy.tiers;
 			// Triggers when Virtual Power Plant count > 3
@@ -139,6 +157,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 4,
 		waitDurationMs: 150_000, // 2.5 minutes
 		flavorText: 'FAA wants a word about your launch frequency.',
+		tooltip: 'SpaceX operates pads at Cape Canaveral (LC-40), KSC (LC-39A), and Vandenberg (SLC-4E). Turnaround between launches requires pad refurbishment, propellant loading, and range safety clearance — limiting cadence to ~every 3 days per pad.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
 			return tiers[1].count > 30;
@@ -155,6 +174,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 12,
 		waitDurationMs: 420_000, // 7 minutes
 		flavorText: 'Each tile is hand-applied. There are 18,000 of them.',
+		tooltip: 'Starship uses ~18,000 hexagonal heat shield tiles made of silica fiber. Unlike the Space Shuttle\'s unique tiles, SpaceX uses uniform shapes for manufacturability. Tiles must survive 1,400°C during reentry at Mach 25.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
 			return tiers[4].count > 5;
@@ -187,6 +207,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 6,
 		waitDurationMs: 240_000, // 4 minutes
 		flavorText: '"Full flow staged combustion is hard. We knew that." — Elon',
+		tooltip: 'Raptor is the first operational full-flow staged combustion engine — both turbopumps run fuel-rich and oxidizer-rich preburners. This is thermodynamically optimal but incredibly hard to build. Each Starship uses 33 Raptors on the booster alone.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
 			// Triggers when Heavy Falcon count > 15
@@ -204,6 +225,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 5,
 		waitDurationMs: 180_000, // 3 minutes
 		flavorText: 'Cape Canaveral can only handle so many launches per week.',
+		tooltip: 'The Eastern Range at Cape Canaveral is managed by the US Space Force. All launches share the same airspace and tracking assets. SpaceX\'s rapid launch cadence has pushed the range to adopt autonomous flight safety systems (AFSS) to reduce scheduling conflicts.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
 			// Triggers when Falcon 1 count > 40
@@ -214,18 +236,26 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	// ── Tesla EVs (5 bottlenecks) ─────────────────────────────────────────────
 	{
 		id: 'ts_production_hell',
-		name: 'Production Hell',
-		description: 'Model 3 production line is a nightmare. Welcome to the machine.',
+		name: '🔥 PRODUCTION HELL 🔥',
+		description: 'Model 3 production line is a nightmare. Robots are fighting each other. Humans are sleeping on the floor. Welcome to the machine.',
 		division: 'tesla',
 		category: 'scaling',
-		severity: 0.30,
-		resolveCost: 75000,
-		researchCost: 10,
-		waitDurationMs: 360_000, // 6 minutes
-		flavorText: '"I\'m sleeping on the factory floor." — Elon, probably.',
+		severity: 0.50,
+		resolveCost: 250000,
+		researchCost: 20,
+		waitDurationMs: 600_000, // 10 minutes — much longer than normal
+		flavorText: '"I\'m sleeping on the factory floor." — Elon, 2018.',
+		isProductionHell: true,
+		productionHellFlavor: [
+			'The paint shop is a disaster. Every car needs rework.',
+			'Robots keep crashing into each other on the body line.',
+			'Battery module production is in a tent in the parking lot.',
+			'Elon is personally inspecting every weld. This can\'t scale.',
+			'"Manufacturing is hard. Manufacturing is really, really hard."',
+		],
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
-			return tiers[3].count > 10;
+			return tiers[3].count >= 10;
 		},
 	},
 	{
@@ -292,6 +322,31 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 			const tiers = state.divisions.tesla.tiers;
 			// Triggers when Cybertruck count > 5
 			return tiers[5].count > 5;
+		},
+	},
+	{
+		id: 'ts_cybertruck_production_hell',
+		name: '🔥 CYBERTRUCK HELL 🔥',
+		description: 'Stainless steel is nearly impossible to stamp. Every panel is a custom job. The entire factory is a bottleneck.',
+		division: 'tesla',
+		category: 'scaling',
+		severity: 0.55,
+		resolveCost: 500000,
+		researchCost: 30,
+		waitDurationMs: 900_000, // 15 minutes — the hardest bottleneck in the game
+		flavorText: '"The Cybertruck is our best product ever. Also the hardest to build." — Elon, 2024.',
+		isProductionHell: true,
+		productionHellFlavor: [
+			'Stainless steel body panels require a completely new stamping process.',
+			'The exoskeleton design means you can\'t fix panels — the whole body IS the frame.',
+			'Laser-cutting each panel takes 3x longer than stamping aluminum.',
+			'The giant wiper motor keeps failing QC. There\'s only ONE wiper.',
+			'"This truck was designed by aliens who hate manufacturing engineers."',
+		],
+		shouldActivate: (state) => {
+			const tiers = state.divisions.tesla.tiers;
+			// Triggers when Cybertruck count >= 10
+			return tiers[5].count >= 10;
 		},
 	},
 

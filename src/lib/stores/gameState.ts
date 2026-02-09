@@ -42,6 +42,18 @@ export interface GameSettings {
 	offlineProgressEnabled: boolean;
 }
 
+export interface LaunchLogEntry {
+	ts: number;
+	tier: number;
+	name: string;
+	units: number;
+}
+
+export interface FlavorStats {
+	launchLog: LaunchLogEntry[];
+	productionLog: LaunchLogEntry[];
+}
+
 export interface CryptoState {
 	btcPrice: number;
 	btcOwned: number;
@@ -78,6 +90,9 @@ export interface GameState {
 	unlockedResearch: string[];
 	activeResearch: { id: string; progress: number } | null;
 
+	// Flavor mechanics (T024, T028)
+	flavorStats: FlavorStats;
+
 	// Crypto Treasury
 	crypto: CryptoState;
 
@@ -106,6 +121,11 @@ export function createDefaultState(): GameState {
 		powerConsumed: 0,
 
 		activeSynergies: [],
+
+		flavorStats: {
+			launchLog: [],
+			productionLog: [],
+		},
 
 		divisions: {
 			spacex: createDefaultDivision(6),
