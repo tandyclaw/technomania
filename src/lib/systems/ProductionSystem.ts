@@ -17,9 +17,10 @@ export interface ProductionConfig {
 
 /**
  * Calculate cost of next purchase for a tier
+ * @param ngPlusMultiplier - NG+ cost multiplier (1.5^ngPlusLevel), default 1
  */
-export function calculateCost(config: ProductionConfig, count: number): number {
-	return config.baseCost * Math.pow(config.costMultiplier, count);
+export function calculateCost(config: ProductionConfig, count: number, ngPlusMultiplier: number = 1): number {
+	return config.baseCost * Math.pow(config.costMultiplier, count) * ngPlusMultiplier;
 }
 
 /**
@@ -52,10 +53,10 @@ export function calculateProductionTime(config: ProductionConfig, chiefLevel: nu
 /**
  * Calculate total cost to buy N units starting from currentCount
  */
-export function calculateBulkCost(config: ProductionConfig, currentCount: number, quantity: number): number {
+export function calculateBulkCost(config: ProductionConfig, currentCount: number, quantity: number, ngPlusMultiplier: number = 1): number {
 	let total = 0;
 	for (let i = 0; i < quantity; i++) {
-		total += calculateCost(config, currentCount + i);
+		total += calculateCost(config, currentCount + i, ngPlusMultiplier);
 	}
 	return total;
 }
@@ -63,11 +64,11 @@ export function calculateBulkCost(config: ProductionConfig, currentCount: number
 /**
  * Calculate maximum units purchasable with a given budget
  */
-export function calculateMaxBuyable(config: ProductionConfig, currentCount: number, budget: number): number {
+export function calculateMaxBuyable(config: ProductionConfig, currentCount: number, budget: number, ngPlusMultiplier: number = 1): number {
 	let count = 0;
 	let totalCost = 0;
 	while (true) {
-		const nextCost = calculateCost(config, currentCount + count);
+		const nextCost = calculateCost(config, currentCount + count, ngPlusMultiplier);
 		if (totalCost + nextCost > budget) break;
 		totalCost += nextCost;
 		count++;

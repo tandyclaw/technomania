@@ -47,12 +47,20 @@ export interface MarsColonyState {
 	newGamePlusCount: number;
 }
 
+/** New Game+ level — 0 means normal game, 1+ means NG+ cycles completed */
+export function getNgPlusCostMultiplier(ngPlusLevel: number): number {
+	if (ngPlusLevel <= 0) return 1;
+	return Math.pow(1.5, ngPlusLevel);
+}
+
 export interface GameSettings {
 	musicEnabled: boolean;
 	sfxEnabled: boolean;
 	notificationsEnabled: boolean;
 	offlineProgressEnabled: boolean;
 	floatingTextEnabled: boolean;
+	hapticEnabled: boolean;
+	theme: 'dark' | 'light';
 }
 
 export interface LaunchLogEntry {
@@ -142,6 +150,9 @@ export interface GameState {
 	// Mars Colony
 	marsColony: MarsColonyState;
 
+	// New Game+
+	ngPlusLevel: number;
+
 	// Meta
 	achievements: string[];
 	stats: GameStats;
@@ -212,6 +223,8 @@ export function createDefaultState(): GameState {
 			newGamePlusCount: 0,
 		},
 
+		ngPlusLevel: 0,
+
 		achievements: [],
 		stats: {
 			totalTaps: 0,
@@ -228,7 +241,9 @@ export function createDefaultState(): GameState {
 			sfxEnabled: true,
 			notificationsEnabled: true,
 			offlineProgressEnabled: true,
-			floatingTextEnabled: true
+			floatingTextEnabled: true,
+			hapticEnabled: true,
+			theme: 'dark' as const
 		}
 	};
 }

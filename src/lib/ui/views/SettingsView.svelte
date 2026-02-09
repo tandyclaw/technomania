@@ -22,6 +22,18 @@
 	let notificationsEnabled = $derived($gameState.settings.notificationsEnabled);
 	let offlineProgressEnabled = $derived($gameState.settings.offlineProgressEnabled);
 	let floatingTextEnabled = $derived($gameState.settings.floatingTextEnabled ?? true);
+	let hapticEnabled = $derived($gameState.settings.hapticEnabled ?? true);
+	let theme = $derived($gameState.settings.theme ?? 'dark');
+
+	function toggleTheme() {
+		const newTheme = theme === 'dark' ? 'light' : 'dark';
+		gameState.update((s) => ({
+			...s,
+			settings: { ...s.settings, theme: newTheme }
+		}));
+		document.documentElement.classList.toggle('light', newTheme === 'light');
+		localStorage.setItem('tech-tycoon-theme', newTheme);
+	}
 
 	function toggleSetting(key: keyof GameState['settings']) {
 		gameState.update((s) => ({
@@ -248,6 +260,53 @@
 					aria-label="Toggle floating income text"
 				>
 					<span class="toggle-thumb" class:active={floatingTextEnabled}></span>
+				</button>
+			</div>
+
+			<!-- Haptic Feedback -->
+			<div class="flex items-center justify-between px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5">
+				<div class="flex items-center gap-3">
+					<span class="text-lg" aria-hidden="true">📳</span>
+					<div>
+						<span class="text-sm font-medium text-text-primary block">Haptic Feedback</span>
+						<span class="text-[10px] text-text-muted">Vibrate on purchases & events</span>
+					</div>
+				</div>
+				<button
+					onclick={() => toggleSetting('hapticEnabled')}
+					class="toggle-switch"
+					class:active={hapticEnabled}
+					role="switch"
+					aria-checked={hapticEnabled}
+					aria-label="Toggle haptic feedback"
+				>
+					<span class="toggle-thumb" class:active={hapticEnabled}></span>
+				</button>
+			</div>
+		</div>
+	</section>
+
+	<!-- Appearance -->
+	<section class="space-y-1">
+		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Appearance</h2>
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 divide-y divide-white/5">
+			<div class="flex items-center justify-between px-4 py-3">
+				<div class="flex items-center gap-3">
+					<span class="text-lg" aria-hidden="true">{theme === 'dark' ? '🌙' : '☀️'}</span>
+					<div>
+						<span class="text-sm font-medium text-text-primary block">Theme</span>
+						<span class="text-[10px] text-text-muted">{theme === 'dark' ? 'Dark mode' : 'Light mode'}</span>
+					</div>
+				</div>
+				<button
+					onclick={toggleTheme}
+					class="toggle-switch"
+					class:active={theme === 'light'}
+					role="switch"
+					aria-checked={theme === 'light'}
+					aria-label="Toggle light theme"
+				>
+					<span class="toggle-thumb" class:active={theme === 'light'}></span>
 				</button>
 			</div>
 		</div>

@@ -15,7 +15,10 @@
 	import TutorialOverlay from '$lib/ui/TutorialOverlay.svelte';
 	import SynergyCelebration from '$lib/ui/SynergyCelebration.svelte';
 	import ParticleEffects from '$lib/ui/ParticleEffects.svelte';
+	import KeyboardShortcuts from '$lib/ui/KeyboardShortcuts.svelte';
 	import { celebrationState, dismissCelebration } from '$lib/stores/synergyCelebrationStore';
+	import { hapticTierPurchase, hapticProductionComplete, hapticPrestige } from '$lib/utils/haptics';
+	import { eventBus } from '$lib/engine/EventBus';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
 
 	let { children } = $props();
@@ -28,6 +31,7 @@
 	let cleanupTutorial: (() => void) | null = null;
 	let cleanupAchievements: (() => void) | null = null;
 	let cleanupActivity: (() => void) | null = null;
+	let cleanupHaptics: (() => void)[] = [];
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
@@ -49,6 +53,20 @@
 		cleanupTutorial = initTutorialListeners();
 		tutorialStore.tryStart();
 
+		// Haptic feedback listeners
+		cleanupHaptics = [
+			eventBus.on('upgrade:purchased', () => hapticTierPurchase()),
+			eventBus.on('chief:hired', () => hapticTierPurchase()),
+			eventBus.on('production:complete', () => hapticProductionComplete()),
+			eventBus.on('prestige:complete', () => hapticPrestige()),
+		];
+
+		// Restore theme from settings
+		const savedTheme = localStorage.getItem('tech-tycoon-theme');
+		if (savedTheme === 'light') {
+			document.documentElement.classList.add('light');
+		}
+
 		loading = false;
 	});
 
@@ -57,6 +75,7 @@
 		cleanupTutorial?.();
 		cleanupAchievements?.();
 		cleanupActivity?.();
+		cleanupHaptics.forEach(fn => fn());
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -139,6 +158,9 @@
 			</div>
 		</div>
 	{/if}
+
+	<!-- Keyboard shortcuts -->
+	<KeyboardShortcuts />
 
 	<!-- Particle effects overlay -->
 	<ParticleEffects />

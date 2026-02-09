@@ -9,6 +9,7 @@
 	import LaunchCadencePanel from './LaunchCadencePanel.svelte';
 	import ProductionRatePanel from './ProductionRatePanel.svelte';
 	import { getUnlockCost } from '$lib/engine/ProductionEngine';
+	import { ngPlusCostMultiplier } from '$lib/stores/ngPlus';
 	import { getActiveBottlenecks, resolveBottleneck, resolveBottleneckWithRP, startBottleneckWait, getBottleneckDef, type BottleneckDef } from '$lib/systems/BottleneckSystem';
 	import { buyQuantity } from '$lib/stores/buyQuantity';
 
@@ -180,7 +181,7 @@
 					<TierUnlockCard
 						tierData={division.tiers[i]}
 						tierIndex={i}
-						unlockCost={getUnlockCost(division.id, i)}
+						unlockCost={getUnlockCost(division.id, i) * $ngPlusCostMultiplier}
 						color={division.color}
 						{cash}
 						onUnlock={() => onUnlockTier?.(i)}

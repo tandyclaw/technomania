@@ -8,6 +8,7 @@
 	import { getCycleDurationMs } from '$lib/systems/ProductionSystem';
 	import SynergyPanel from '$lib/ui/SynergyPanel.svelte';
 	import { activityFeed } from '$lib/stores/activityStore';
+	import IncomeSparkline from '$lib/ui/IncomeSparkline.svelte';
 
 	// Division ordering for display
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels'] as const;
@@ -98,6 +99,10 @@
 				style="background: var(--color-bio-green);"
 			></div>
 		{/if}
+		<!-- Income sparkline -->
+		<div class="relative z-10">
+			<IncomeSparkline incomePerSec={totalIncomePerSec} />
+		</div>
 	</div>
 
 	<!-- Quick Stats Grid -->

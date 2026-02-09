@@ -274,6 +274,71 @@ class GameManager {
 	}
 
 	/**
+	 * New Game+ — reset most progress but carry over prestige bonuses, achievements, NG+ level
+	 * Available after Mars Colony completion
+	 */
+	newGamePlus(): boolean {
+		const current = get(gameState);
+
+		// Must have completed Mars colony
+		if (!current.marsColony?.completed) return false;
+
+		const fresh = createDefaultState();
+		const newNgLevel = (current.ngPlusLevel ?? 0) + 1;
+
+		// Carry over: prestige bonuses (colony tech), achievement progress, NG+ level
+		fresh.ngPlusLevel = newNgLevel;
+		fresh.colonyTech = current.colonyTech;
+		fresh.prestigeCount = current.prestigeCount;
+		fresh.achievements = [...current.achievements];
+		fresh.settings = { ...current.settings };
+
+		// Preserve lifetime stats
+		fresh.stats = {
+			...fresh.stats,
+			sessionsPlayed: current.stats.sessionsPlayed,
+			totalCashEarned: current.stats.totalCashEarned,
+			totalResearchCompleted: current.stats.totalResearchCompleted,
+			totalTaps: current.stats.totalTaps,
+			playTimeMs: current.stats.playTimeMs,
+			totalProductions: current.stats.totalProductions,
+			totalPrestiges: current.stats.totalPrestiges,
+			highestIncomePerSec: current.stats.highestIncomePerSec,
+		};
+
+		// Reset Mars colony but track NG+ count
+		fresh.marsColony = {
+			progress: 0,
+			completed: false,
+			completedAt: 0,
+			newGamePlusCount: newNgLevel,
+		};
+
+		// After first prestige, all MVP divisions start unlocked
+		if (fresh.prestigeCount >= 1) {
+			fresh.divisions.teslaenergy.unlocked = true;
+			fresh.divisions.spacex.unlocked = true;
+			fresh.divisions.tesla.unlocked = true;
+		} else {
+			fresh.divisions.teslaenergy.unlocked = true;
+		}
+
+		triggerParticle('confetti');
+		gameState.set(fresh);
+		resetBottleneckNotifications();
+		resetTreasuryAccumulators();
+		resetFlavorStats();
+		resetCelebrations();
+
+		eventBus.emit('newgameplus:complete', {
+			ngPlusLevel: newNgLevel,
+		});
+
+		this.save();
+		return true;
+	}
+
+	/**
 	 * Hard reset — wipe everything and start completely fresh
 	 */
 	async hardReset(): Promise<void> {
@@ -449,6 +514,11 @@ class GameManager {
 		// Ensure marsColony exists
 		if (!migrated.marsColony) {
 			migrated.marsColony = { progress: 0, completed: false, completedAt: 0, newGamePlusCount: 0 };
+		}
+
+		// Ensure ngPlusLevel exists
+		if (migrated.ngPlusLevel === undefined) {
+			migrated.ngPlusLevel = migrated.marsColony.newGamePlusCount ?? 0;
 		}
 
 		// Ensure new stats fields exist

@@ -5,6 +5,7 @@
 	import { calculateCost, calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBuyable } from '$lib/systems/ProductionSystem';
 	import { getEffectiveCycleDurationMs } from '$lib/engine/ProductionEngine';
 	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
+	import { ngPlusCostMultiplier } from '$lib/stores/ngPlus';
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
 	import Tooltip from './Tooltip.svelte';
 	import { triggerParticle } from '$lib/stores/particleStore';
@@ -44,20 +45,21 @@
 
 	// Buy quantity from global toggle
 	let qty = $derived($buyQuantity);
+	let ngMult = $derived($ngPlusCostMultiplier);
 
 	// Effective quantity for display — for 'max', compute how many we can afford
 	let effectiveQty = $derived.by(() => {
 		if (qty === 'max') {
-			return calculateMaxBuyable(tierData.config, tier.count, cash);
+			return calculateMaxBuyable(tierData.config, tier.count, cash, ngMult);
 		}
 		return qty;
 	});
 
 	// Cost calculation based on quantity
 	let cost = $derived.by(() => {
-		if (effectiveQty <= 0) return calculateCost(tierData.config, tier.count);
-		if (effectiveQty === 1) return calculateCost(tierData.config, tier.count);
-		return calculateBulkCost(tierData.config, tier.count, effectiveQty);
+		if (effectiveQty <= 0) return calculateCost(tierData.config, tier.count, ngMult);
+		if (effectiveQty === 1) return calculateCost(tierData.config, tier.count, ngMult);
+		return calculateBulkCost(tierData.config, tier.count, effectiveQty, ngMult);
 	});
 
 	let revenue = $derived(calculateRevenue(tierData.config, tier.count, tier.level));

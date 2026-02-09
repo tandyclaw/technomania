@@ -40,6 +40,16 @@
 	--color-text-muted: #556677;
 }
 
+/* Light theme overrides */
+html.light {
+	--color-bg-primary: #f0f2f5;
+	--color-bg-secondary: #ffffff;
+	--color-bg-tertiary: #e4e7ec;
+	--color-text-primary: #1a1a2e;
+	--color-text-secondary: #555566;
+	--color-text-muted: #888899;
+}
+
 html {
 	background-color: var(--color-bg-primary);
 	color: var(--color-text-primary);

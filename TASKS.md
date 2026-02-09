@@ -160,9 +160,9 @@
 |----|-------------|--------|-------|----------|------|
 | T067 | Particle effects on big purchases/milestones (confetti, sparks) | DONE | MERGED | P2 | — |
 | T068 | Tier card visual upgrade (glow effects, rarity borders at high levels) | DONE | MERGED | P2 | T017 |
-| T069 | Dashboard income graph (sparkline of last 60s income) | PLANNED | — | P2 | T012 |
+| T069 | Dashboard income graph (sparkline of last 60s income) | DONE | — | P2 | T012 |
 | T070 | Floating "+$X" text on production payouts | DONE | — | P1 | T054 |
-| T071 | Haptic feedback on mobile (navigator.vibrate) | PLANNED | — | P2 | — |
+| T071 | Haptic feedback on mobile (navigator.vibrate) | DONE | — | P2 | — |
 
 ## 17. Endgame — Mars Colony
 
@@ -176,9 +176,9 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T075 | "Buy All" button for chiefs (auto-purchase all affordable upgrades) | PLANNED | — | P2 | T020 |
-| T076 | Keyboard shortcuts (1-5 for tabs, space to collect) | PLANNED | — | P2 | — |
-| T077 | Dark/light theme toggle in settings | PLANNED | — | P2 | T048 |
+| T075 | "Buy All" button for chiefs (auto-purchase all affordable upgrades) | DONE | — | P2 | T020 |
+| T076 | Keyboard shortcuts (1-5 for tabs, space to collect) | DONE | — | P2 | — |
+| T077 | Dark/light theme toggle in settings | DONE | — | P2 | T048 |
 | T078 | Import/Export save as base64 string | DONE | MERGED | P1 | T003 |
 
 ---

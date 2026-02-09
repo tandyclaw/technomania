@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { DIVISION_CHIEFS, CHIEF_LEVELS, getNextChiefCost, getChiefLevelData, getNextChiefLevelData } from '$lib/systems/ChiefSystem';
+	import { ngPlusCostMultiplier } from '$lib/stores/ngPlus';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 
 	let {
@@ -19,10 +20,28 @@
 	let chief = $derived(DIVISION_CHIEFS[divisionId]);
 	let currentLevelData = $derived(getChiefLevelData(chiefLevel));
 	let nextLevelData = $derived(getNextChiefLevelData(chiefLevel));
-	let nextCost = $derived(getNextChiefCost(chiefLevel));
+	let baseNextCost = $derived(getNextChiefCost(chiefLevel));
+	let nextCost = $derived(baseNextCost !== null ? baseNextCost * $ngPlusCostMultiplier : null);
 	let canAfford = $derived(nextCost !== null && cash >= nextCost);
 	let isMaxLevel = $derived(chiefLevel >= CHIEF_LEVELS.length);
 	let isHired = $derived(chiefLevel > 0);
+
+	// Buy Max calculation
+	let buyMaxInfo = $derived(() => {
+		let totalCost = 0;
+		let levels = 0;
+		let level = chiefLevel;
+		let remaining = cash;
+		while (level < CHIEF_LEVELS.length) {
+			const cost = CHIEF_LEVELS[level].cost;
+			if (remaining < cost) break;
+			remaining -= cost;
+			totalCost += cost;
+			level++;
+			levels++;
+		}
+		return { levels, totalCost };
+	});
 
 	// Celebration state
 	let showCelebration = $state(false);
@@ -34,6 +53,18 @@
 		onHire();
 		// Trigger celebration animation
 		celebrationLevel = prevLevel + 1;
+		showCelebration = true;
+		setTimeout(() => { showCelebration = false; }, 2500);
+	}
+
+	function handleBuyMax() {
+		if (!onHire) return;
+		const info = buyMaxInfo();
+		if (info.levels === 0) return;
+		for (let i = 0; i < info.levels; i++) {
+			onHire();
+		}
+		celebrationLevel = chiefLevel;
 		showCelebration = true;
 		setTimeout(() => { showCelebration = false; }, 2500);
 	}
@@ -167,6 +198,20 @@
 					<p class="text-[10px] text-text-muted mt-1.5 text-center">
 						Next: {nextLevelData.speedMultiplier}x speed · {nextLevelData.description}
 					</p>
+				{/if}
+
+				<!-- Buy Max button -->
+				{#if isHired && buyMaxInfo().levels > 1}
+					{@const info = buyMaxInfo()}
+					<button
+						onclick={handleBuyMax}
+						class="mt-2 w-full flex items-center justify-between px-4 py-2 rounded-lg text-xs font-bold
+							   transition-all duration-200 active:scale-[0.97] touch-manipulation"
+						style="background-color: {color}10; color: {color}; border: 1px solid {color}25;"
+					>
+						<span>🚀 Buy Max (+{info.levels} levels)</span>
+						<span class="font-mono tabular-nums opacity-80">{formatCurrency(info.totalCost)}</span>
+					</button>
 				{/if}
 			{:else}
 				<div class="mt-3 text-center py-2">

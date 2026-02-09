@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { gameState } from '$lib/stores/gameState';
+	import { gameState, getNgPlusCostMultiplier } from '$lib/stores/gameState';
 	import { getDivision } from '$lib/divisions';
 	import { purchaseTier, purchaseTierBulk, tapProduce, hireChief, unlockTier, unlockDivision } from '$lib/engine/ProductionEngine';
 	import { getDivisionUnlockRequirement } from '$lib/systems/DivisionUnlockSystem';
@@ -12,8 +12,10 @@
 	let division = $derived(getDivision(divisionId));
 	let divState = $derived($gameState.divisions[divisionId as keyof typeof $gameState.divisions]);
 	let cash = $derived($gameState.cash);
+	let ngMult = $derived(getNgPlusCostMultiplier($gameState.ngPlusLevel));
 	let unlockReq = $derived(getDivisionUnlockRequirement(divisionId));
-	let canAffordDivision = $derived(unlockReq ? cash >= unlockReq.cost : false);
+	let divUnlockCost = $derived(unlockReq ? unlockReq.cost * ngMult : 0);
+	let canAffordDivision = $derived(unlockReq ? cash >= divUnlockCost : false);
 
 	// Division unlock celebration state
 	let showUnlockCelebration = $state(false);
@@ -133,12 +135,12 @@
 							   border: 2px solid {canAffordDivision ? division.color + '40' : 'transparent'};"
 						disabled={!canAffordDivision}
 					>
-						<span>🚀 Invest {unlockReq ? formatCurrency(unlockReq.cost) : ''}</span>
+						<span>🚀 Invest {unlockReq ? formatCurrency(divUnlockCost) : ''}</span>
 					</button>
 
 					{#if !canAffordDivision}
 						<p class="text-xs text-text-muted mt-2">
-							Need {unlockReq ? formatCurrency(unlockReq.cost) : ''} · Current: {formatCurrency(cash)}
+							Need {unlockReq ? formatCurrency(divUnlockCost) : ''} · Current: {formatCurrency(cash)}
 						</p>
 					{/if}
 				</div>
