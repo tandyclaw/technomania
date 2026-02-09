@@ -150,16 +150,16 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T064 | Statistics tracking (total earned, time played, taps, productions, etc.) | PLANNED | — | P1 | T007 |
-| T065 | Statistics view in Settings or dedicated tab | PLANNED | — | P1 | T064 |
+| T064 | Statistics tracking (total earned, time played, taps, productions, etc.) | DONE | MERGED | P1 | T007 |
+| T065 | Statistics view in Settings or dedicated tab | DONE | MERGED | P1 | T064 |
 | T066 | Live activity feed on Dashboard (last 10 events: purchases, unlocks, milestones) | DONE | — | P1 | T004 |
 
 ## 16. Visual Polish & Juice
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T067 | Particle effects on big purchases/milestones (confetti, sparks) | PLANNED | — | P2 | — |
-| T068 | Tier card visual upgrade (glow effects, rarity borders at high levels) | PLANNED | — | P2 | T017 |
+| T067 | Particle effects on big purchases/milestones (confetti, sparks) | DONE | MERGED | P2 | — |
+| T068 | Tier card visual upgrade (glow effects, rarity borders at high levels) | DONE | MERGED | P2 | T017 |
 | T069 | Dashboard income graph (sparkline of last 60s income) | PLANNED | — | P2 | T012 |
 | T070 | Floating "+$X" text on production payouts | DONE | — | P1 | T054 |
 | T071 | Haptic feedback on mobile (navigator.vibrate) | PLANNED | — | P2 | — |
@@ -168,8 +168,8 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T072 | Mars Colony progress tracker (visible goal: % to colonization) | PLANNED | — | P1 | T040 |
-| T073 | Mars Colony victory screen with stats summary | PLANNED | — | P1 | T072 |
+| T072 | Mars Colony progress tracker (visible goal: % to colonization) | DONE | MERGED | P1 | T040 |
+| T073 | Mars Colony victory screen with stats summary | DONE | MERGED | P1 | T072 |
 | T074 | New Game+ with harder scaling after colony completion | PLANNED | — | P2 | T072 |
 
 ## 18. Quality of Life
@@ -179,7 +179,7 @@
 | T075 | "Buy All" button for chiefs (auto-purchase all affordable upgrades) | PLANNED | — | P2 | T020 |
 | T076 | Keyboard shortcuts (1-5 for tabs, space to collect) | PLANNED | — | P2 | — |
 | T077 | Dark/light theme toggle in settings | PLANNED | — | P2 | T048 |
-| T078 | Import/Export save as base64 string | PLANNED | — | P1 | T003 |
+| T078 | Import/Export save as base64 string | DONE | MERGED | P1 | T003 |
 
 ---
 
