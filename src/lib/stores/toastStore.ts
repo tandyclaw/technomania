@@ -83,11 +83,6 @@ export function clearToasts(): void {
 
 // ─── EventBus Listeners ─────────────────────────────────────────────────────
 
-/** Throttle: don't spam production toasts — batch them */
-let productionBatch: { division: string; tier: number; amount: number }[] = [];
-let productionBatchTimer: ReturnType<typeof setTimeout> | null = null;
-const PRODUCTION_BATCH_MS = 800;
-
 function getDivisionName(divId: string): string {
 	return DIVISIONS[divId]?.name ?? divId;
 }
@@ -106,18 +101,8 @@ function getTierName(divId: string, tierIndex: number): string {
 export function initToastListeners(): () => void {
 	const unsubs: (() => void)[] = [];
 
-	// Production complete — batched to avoid spam
-	unsubs.push(
-		eventBus.on('production:complete', (data) => {
-			productionBatch.push(data);
-			if (!productionBatchTimer) {
-				productionBatchTimer = setTimeout(() => {
-					flushProductionBatch();
-					productionBatchTimer = null;
-				}, PRODUCTION_BATCH_MS);
-			}
-		})
-	);
+	// NOTE: No toast for regular production:complete — too spammy
+	// Cash flow is shown in the resource bar and tier cards instead
 
 	// Chief hired
 	unsubs.push(
@@ -197,49 +182,5 @@ export function initToastListeners(): () => void {
 
 	return () => {
 		for (const unsub of unsubs) unsub();
-		if (productionBatchTimer) {
-			clearTimeout(productionBatchTimer);
-			productionBatchTimer = null;
-		}
-		productionBatch = [];
 	};
-}
-
-/**
- * Flush batched production events into a single (or grouped) toast
- */
-function flushProductionBatch(): void {
-	if (productionBatch.length === 0) return;
-
-	// Group by division
-	const byDivision = new Map<string, { totalAmount: number; tiers: Set<number> }>();
-	for (const event of productionBatch) {
-		const existing = byDivision.get(event.division);
-		if (existing) {
-			existing.totalAmount += event.amount;
-			existing.tiers.add(event.tier);
-		} else {
-			byDivision.set(event.division, { totalAmount: event.amount, tiers: new Set([event.tier]) });
-		}
-	}
-
-	// Only show toasts for larger payouts (avoid spamming tiny Solar Panel revenue)
-	for (const [divId, group] of byDivision) {
-		// Skip if total payout is very small (less than $10)
-		if (group.totalAmount < 10) continue;
-
-		const divName = getDivisionName(divId);
-		const color = getDivisionColor(divId);
-		const tierCount = group.tiers.size;
-		const tierLabel = tierCount === 1
-			? getTierName(divId, [...group.tiers][0])
-			: `${tierCount} tiers`;
-
-		addToast('success', '💰', `${divName}`, `${tierLabel} earned ${formatCurrency(group.totalAmount)}`, {
-			color,
-			durationMs: 2500,
-		});
-	}
-
-	productionBatch = [];
 }
