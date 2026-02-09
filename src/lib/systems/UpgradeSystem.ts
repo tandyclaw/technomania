@@ -48,10 +48,10 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'rocket_speed_3', name: 'Orbital Refueling', description: '3x Starship speed', category: 'speed', cost: 50_000_000, target: 'spacex', tierIndex: 4, value: 3, requiresMilestone: { divisionId: 'spacex', tierIndex: 4, threshold: 25 } },
 
 	// === MANUFACTURING UPGRADES (6) ===
-	{ id: 'ev_speed_1', name: 'CNC Automation', description: '2x Workshop speed', category: 'speed', cost: 15_000, target: 'tesla', tierIndex: 0, value: 2 },
-	{ id: 'ev_rev_1', name: 'Lean Production', description: '3x Assembly Line revenue', category: 'revenue', cost: 75_000, target: 'tesla', tierIndex: 1, value: 3 },
+	{ id: 'ev_speed_1', name: 'Gigapress', description: '2x Electric Car Workshop speed', category: 'speed', cost: 15_000, target: 'tesla', tierIndex: 0, value: 2 },
+	{ id: 'ev_rev_1', name: 'Lean Production', description: '3x Vehicle Assembly Line revenue', category: 'revenue', cost: 75_000, target: 'tesla', tierIndex: 1, value: 3 },
 	{ id: 'ev_speed_2', name: 'Process Optimization', description: '2x all Manufacturing speed', category: 'speed', cost: 750_000, target: 'tesla', tierIndex: -1, value: 2 },
-	{ id: 'ev_rev_2', name: 'Bulk Contracts', description: '3x Orbital Foundry revenue', category: 'revenue', cost: 3_000_000, target: 'tesla', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tesla', tierIndex: 3, count: 15 } },
+	{ id: 'ev_rev_2', name: 'Vertical Integration', description: '3x Lithium Mines & Chip Fabs revenue', category: 'revenue', cost: 3_000_000, target: 'tesla', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tesla', tierIndex: 3, count: 15 } },
 	{ id: 'ev_cost_1', name: 'Supply Chain Mastery', description: 'Manufacturing tiers cost 20% less', category: 'cost', cost: 200_000, target: 'tesla', tierIndex: -1, value: 0.8 },
 	{ id: 'ev_speed_3', name: 'Autonomous Forge', description: '3x Colony Forge speed', category: 'speed', cost: 25_000_000, target: 'tesla', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tesla', tierIndex: 5, threshold: 25 } },
 

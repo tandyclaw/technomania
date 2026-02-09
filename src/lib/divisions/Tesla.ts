@@ -1,8 +1,9 @@
 /**
  * Manufacturing.ts — Manufacturing division
- * From garage workshop to full Mars colony industrial base
+ * From hand-built EVs to full Mars colony industrial base
  *
- * PROGRESSION DESIGN:
+ * PROGRESSION: cars → mass production → vertical integration → Mars manufacturing
+ *
  * - Unlocks at $2,500 (reachable ~5-7 min)
  * - Medium cycle times (manufacturing is factory work)
  * - This becomes the MONEY ENGINE at scale
@@ -14,9 +15,9 @@ import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export const TESLA_TIERS: { name: string; description: string; tooltip: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
-		name: 'Small Workshop',
-		description: 'Hand-built prototypes. Every empire starts in a garage.',
-		tooltip: 'A single workbench, a soldering iron, and a dream. Prototype by hand, iterate fast, prove the concept works before scaling.',
+		name: 'Electric Car Workshop',
+		description: 'Hand-built electric sports cars. Prove EVs are the future.',
+		tooltip: 'A small team hand-assembling electric sports cars. Low volume, high impact. Prove that EVs can be fast, desirable, and cool — not boring golf carts.',
 		powerMW: -0.02,
 		config: {
 			baseCost: 15,
@@ -27,9 +28,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Assembly Line',
-		description: 'Standardized production. Efficiency at scale.',
-		tooltip: 'Interchangeable parts, division of labor, conveyor systems. What took a craftsman a day now takes minutes. Henry Ford figured this out in 1913.',
+		name: 'Vehicle Assembly Line',
+		description: 'Mass-produce EVs. Sedans, SUVs, trucks at scale.',
+		tooltip: 'Conveyor belts, robotic welders, stamping presses. Interchangeable parts and division of labor turn hand-built cars into thousands per week. Production Hell awaits.',
 		powerMW: -0.1,
 		config: {
 			baseCost: 500,
@@ -41,8 +42,8 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 	},
 	{
 		name: 'Gigafactory',
-		description: 'Massive automated facility. Batteries, vehicles, solar — all under one roof.',
-		tooltip: 'A single building producing more battery capacity than the entire world did a decade ago. Raw materials in one end, finished products out the other.',
+		description: 'Batteries, vehicles, solar panels — vertically integrated under one roof.',
+		tooltip: 'A single building producing more battery capacity than the entire world did a decade ago. Raw lithium in one end, finished vehicles and powerwalls out the other. The machine that builds the machine.',
 		powerMW: -0.5,
 		config: {
 			baseCost: 25000,
@@ -53,9 +54,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Orbital Foundry',
-		description: 'Zero-gravity manufacturing. Materials impossible to make on Earth.',
-		tooltip: 'Microgravity enables perfect crystal growth, flawless fiber optics, and exotic alloys. No convection, no sedimentation — just pure physics.',
+		name: 'Lithium Mines & Chip Fabs',
+		description: 'Own your supply chain. Mine lithium, fabricate chips in-house.',
+		tooltip: 'Vertical integration taken to the extreme. Open-pit lithium mines in Nevada, semiconductor fabs producing custom chips. No more begging suppliers — you ARE the supplier.',
 		powerMW: -2,
 		config: {
 			baseCost: 5000000,
@@ -80,8 +81,8 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 	},
 	{
 		name: 'Colony Forge',
-		description: 'Full industrial base on Mars. Self-sustaining civilization.',
-		tooltip: 'Steel mills, chip fabs, chemical plants — everything needed to sustain a million people without Earth resupply. This is the endgame of manufacturing.',
+		description: 'Full industrial base on Mars. Mining, smelting, fabrication. Self-sustaining.',
+		tooltip: 'Steel mills, chip fabs, chemical plants — everything needed to sustain a million people without Earth resupply. From raw Martian rock to finished goods. This is civilization.',
 		powerMW: -30,
 		config: {
 			baseCost: 50000000000,

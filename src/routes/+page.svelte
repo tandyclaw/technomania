@@ -6,7 +6,7 @@
 	const divisions = [
 		{ name: 'Energy', icon: '☀️', color: '#FFCC44', desc: 'Solar, batteries & grid storage' },
 		{ name: 'Rockets', icon: '🚀', color: '#FF4444', desc: 'Reusable rockets & Mars colonization' },
-		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'Workshops to Colony Forges' },
+		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'EVs to Gigafactories to Mars' },
 		{ name: 'AI', icon: '🤖', color: '#9944FF', desc: 'Chatbots to AGI' },
 		{ name: 'Tunnels', icon: '🚇', color: '#FF8844', desc: 'Underground transit & hyperloop' },
 		{ name: 'Robotics', icon: '🦾', color: '#FF6644', desc: 'Automate the physical world' },

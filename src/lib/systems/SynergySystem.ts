@@ -69,7 +69,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'tesla_teslaenergy_batteries',
 		name: 'Integrated Supply Chain',
-		description: 'Manufacturing and Energy share battery cell production, boosting output for both.',
+		description: 'EV manufacturing and Energy share battery cell production, boosting output for both.',
 		flavorText: 'Same cells, same factory, two products. Vertical integration.',
 		icon: '🏭☀️',
 		requirement: {
@@ -111,9 +111,9 @@ export const MVP_SYNERGIES: Synergy[] = [
 	// ── AI Synergies ─────────────────────────────────────────────────────────
 	{
 		id: 'ai_tesla_autopilot',
-		name: 'AI Quality Control',
-		description: 'AI vision systems detect defects and optimize production yields.',
-		flavorText: 'Neural nets inspect every unit faster than any human could.',
+		name: 'AI-Powered Autopilot',
+		description: 'AI models improve self-driving capabilities and factory automation.',
+		flavorText: 'Neural nets trained on billions of miles of driving data — and factory floor telemetry.',
 		icon: '🤖🏭',
 		requirement: {
 			sourceDivision: 'ai',
@@ -198,8 +198,8 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'robotics_tesla_assembly',
 		name: 'Robotic Assembly',
-		description: 'Robots speed up manufacturing on the production line.',
-		flavorText: 'Robotic arms weld, fabricate, and assemble 24/7 without breaks.',
+		description: 'Robots build vehicles and components faster on the production line.',
+		flavorText: 'Robotic arms weld, paint, and assemble 24/7 without breaks.',
 		icon: '🦾🏭',
 		requirement: {
 			sourceDivision: 'robotics',
