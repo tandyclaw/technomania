@@ -2,12 +2,15 @@
 	import { activeTab } from '$lib/stores/navigation';
 	import DashboardView from '$lib/ui/views/DashboardView.svelte';
 	import DivisionView from '$lib/ui/views/DivisionView.svelte';
+	import ResearchView from '$lib/ui/views/ResearchView.svelte';
 </script>
 
 {#key $activeTab}
 	<div class="view-container">
 		{#if $activeTab === 'dashboard'}
 			<DashboardView />
+		{:else if $activeTab === 'research'}
+			<ResearchView />
 		{:else}
 			<DivisionView divisionId={$activeTab} />
 		{/if}

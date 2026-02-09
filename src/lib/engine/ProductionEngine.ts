@@ -27,6 +27,8 @@ import { calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSys
 import { calculatePowerBalance, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 import { getNextChiefCost } from '$lib/systems/ChiefSystem';
 import { getDivisionUnlockCost } from '$lib/systems/DivisionUnlockSystem';
+import { getActiveSynergies, getSynergyMultiplier, MVP_SYNERGIES } from '$lib/systems/SynergySystem';
+import { getBottleneckMultiplier } from '$lib/systems/BottleneckSystem';
 import { eventBus } from './EventBus';
 
 const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla'] as const;
@@ -80,6 +82,20 @@ export function tickProduction(deltaMs: number): void {
 			changed = true;
 		}
 
+		// Calculate active synergies
+		const activeSynergies = getActiveSynergies(state, MVP_SYNERGIES);
+		const activeSynergyIds = activeSynergies.map((s) => s.id);
+
+		// Update synergy tracking if changed
+		const prevIds = state.activeSynergies ?? [];
+		if (
+			activeSynergyIds.length !== prevIds.length ||
+			activeSynergyIds.some((id, idx) => id !== prevIds[idx])
+		) {
+			newState.activeSynergies = activeSynergyIds;
+			changed = true;
+		}
+
 		for (const divId of DIVISION_IDS) {
 			const divState = newState.divisions[divId];
 			if (!divState.unlocked) continue;
@@ -89,6 +105,13 @@ export function tickProduction(deltaMs: number): void {
 
 			// Power deficit slows non-Tesla Energy divisions
 			const efficiencyMult = divId === 'teslaenergy' ? 1 : powerEfficiency;
+
+			// Bottleneck penalty: active bottlenecks slow production
+			const bottleneckMult = getBottleneckMultiplier(divId, newState);
+
+			// Synergy multipliers for this division
+			const synergySpeedMult = getSynergyMultiplier(activeSynergies, divId, 'speed_boost');
+			const synergyRevenueMult = getSynergyMultiplier(activeSynergies, divId, 'revenue_boost');
 
 			for (let i = 0; i < divState.tiers.length; i++) {
 				const tier = divState.tiers[i];
@@ -107,8 +130,9 @@ export function tickProduction(deltaMs: number): void {
 				if (!tierData) continue;
 
 				const cycleDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
-				// Apply power efficiency to production speed (slower if power deficit)
-				const effectiveDurationMs = cycleDurationMs / efficiencyMult;
+				// Apply power efficiency, synergy speed, and bottleneck penalties to production speed
+				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult;
+				const effectiveDurationMs = cycleDurationMs / combinedSpeedMult;
 				const progressDelta = deltaMs / effectiveDurationMs;
 				tier.progress += progressDelta;
 				changed = true;
@@ -117,7 +141,8 @@ export function tickProduction(deltaMs: number): void {
 				if (tier.progress >= 1.0) {
 					const completedCycles = Math.floor(tier.progress);
 					const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-					const totalRevenue = revenue * completedCycles;
+					// Apply synergy revenue boost
+					const totalRevenue = revenue * completedCycles * synergyRevenueMult;
 
 					newState.cash += totalRevenue;
 					newState.totalValueEarned += totalRevenue;

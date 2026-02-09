@@ -11,6 +11,8 @@ import { eventBus } from './EventBus';
 import { calculateOfflineProgress, applyOfflineReport, type OfflineReport } from './OfflineCalculator';
 import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
 import { tickProduction } from './ProductionEngine';
+import { tickResearch, tickRPGeneration } from '$lib/systems/ResearchSystem';
+import { tickBottlenecks, resetBottleneckNotifications } from '$lib/systems/BottleneckSystem';
 
 /** Current save version — increment when state schema changes */
 const CURRENT_VERSION = 2;
@@ -101,11 +103,18 @@ class GameManager {
 		this.addBrowserListeners();
 		gameLoop.start();
 
-		// Wire up game tick to update play time and tick production
+		// Wire up game tick to update play time, production, and bottlenecks
 		let playTimeAccumulator = 0;
 		gameLoop.onTick((deltaMs) => {
 			// Tick production engine every tick (100ms) for smooth progress bars
 			tickProduction(deltaMs);
+
+			// Tick research progress and RP generation
+			tickResearch(deltaMs);
+			tickRPGeneration(deltaMs);
+
+			// Tick bottleneck detection (internally throttled to every 2s)
+			tickBottlenecks(deltaMs);
 
 			// Update play time only every ~1s to reduce store churn
 			playTimeAccumulator += deltaMs;
@@ -194,6 +203,7 @@ class GameManager {
 		}
 
 		gameState.set(fresh);
+		resetBottleneckNotifications();
 
 		eventBus.emit('prestige:complete', {
 			visionEarned,
@@ -305,6 +315,11 @@ class GameManager {
 				}
 			}
 			migrated.version = 2;
+		}
+
+		// Ensure activeSynergies field exists (added with synergy system)
+		if (!migrated.activeSynergies) {
+			migrated.activeSynergies = [];
 		}
 
 		migrated.version = CURRENT_VERSION;

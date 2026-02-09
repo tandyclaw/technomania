@@ -4,7 +4,11 @@
 	import TierCard from './TierCard.svelte';
 	import TierUnlockCard from './TierUnlockCard.svelte';
 	import ChiefCard from './ChiefCard.svelte';
+	import BottleneckCard from './BottleneckCard.svelte';
 	import { getUnlockCost } from '$lib/engine/ProductionEngine';
+	import { getActiveBottlenecks, resolveBottleneck, getBottleneckDef, type BottleneckDef } from '$lib/systems/BottleneckSystem';
+
+	import { gameState } from '$lib/stores/gameState';
 
 	let {
 		division,
@@ -23,6 +27,13 @@
 		onHireChief?: () => void;
 		onUnlockTier?: (tierIndex: number) => void;
 	} = $props();
+
+	// Active bottlenecks for this division
+	let activeBottlenecks = $derived(getActiveBottlenecks(division.id, $gameState));
+
+	function handleResolveBottleneck(bottleneckId: string) {
+		resolveBottleneck(division.id, bottleneckId);
+	}
 
 	// Calculate overall division progress
 	let unlockedTiers = $derived(state.tiers.filter(t => t.unlocked).length);
@@ -98,6 +109,24 @@
 			{cash}
 			onHire={onHireChief}
 		/>
+	{/if}
+
+	<!-- Active bottlenecks -->
+	{#if state.unlocked && activeBottlenecks.length > 0}
+		<div class="space-y-2">
+			<h2 class="text-xs font-semibold text-rocket-red uppercase tracking-wider flex items-center gap-1.5">
+				<span>⚠️</span> Active Bottlenecks
+			</h2>
+			{#each activeBottlenecks as { state: bState, def } (bState.id)}
+				<BottleneckCard
+					bottleneck={bState}
+					{def}
+					{cash}
+					color={division.color}
+					onResolve={() => handleResolveBottleneck(bState.id)}
+				/>
+			{/each}
+		</div>
 	{/if}
 
 	<!-- Tier list (scrollable area) -->

@@ -57,6 +57,9 @@ export interface GameState {
 	powerGenerated: number; // MW
 	powerConsumed: number; // MW
 
+	// Synergies — IDs of currently active synergies
+	activeSynergies: string[];
+
 	// Divisions
 	divisions: {
 		spacex: DivisionState;
@@ -91,6 +94,8 @@ export function createDefaultState(): GameState {
 
 		powerGenerated: 0,
 		powerConsumed: 0,
+
+		activeSynergies: [],
 
 		divisions: {
 			spacex: createDefaultDivision(6),

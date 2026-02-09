@@ -14,6 +14,7 @@
 		{ id: 'spacex', name: 'SpaceX', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
 		{ id: 'tesla', name: 'Tesla', shortName: 'EVs', icon: '🔋', color: '#4488FF' },
 		{ id: 'teslaenergy', name: 'Tesla Energy', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
+		{ id: 'research', name: 'Research', shortName: 'Research', icon: '🔬', color: '#9944FF' },
 	];
 
 	function handleTabClick(tabId: string) {

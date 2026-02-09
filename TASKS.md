@@ -71,7 +71,7 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T030 | Bottleneck detection engine (trigger on thresholds) | PLANNED | PLAN | P0 | T017, T022, T026 |
+| T030 | Bottleneck detection engine (trigger on thresholds) | DONE | MERGED | P0 | T017, T022, T026 |
 | T031 | Bottleneck resolution UI (research/money/time paths) | PLANNED | PLAN | P0 | T030 |
 | T032 | 3-5 bottlenecks per division (data definitions) | PLANNED | PLAN | P0 | T030 |
 | T033 | "Production Hell" event for Tesla | PLANNED | PLAN | P1 | T027, T030 |
@@ -80,9 +80,9 @@
 
 | ID | Description | Status | Phase | Priority | Deps |
 |----|-------------|--------|-------|----------|------|
-| T034 | Synergy detection engine | PLANNED | PLAN | P0 | T017, T022, T026 |
+| T034 | Synergy detection engine | DONE | BUILD | P0 | T017, T022, T026 |
 | T035 | Synergy notification UI ("SYNERGY DISCOVERED!") | PLANNED | PLAN | P1 | T034, T016 |
-| T036 | MVP synergies: Tesla Energy→SpaceX power, Tesla↔Tesla Energy batteries | PLANNED | PLAN | P0 | T034 |
+| T036 | MVP synergies: Tesla Energy→SpaceX power, Tesla↔Tesla Energy batteries | DONE | BUILD | P0 | T034 |
 
 ## 8. Research & Prestige
 
@@ -133,9 +133,9 @@
 
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
-| P0 | 35 | 27 | 8 |
+| P0 | 35 | 28 | 7 |
 | P1 | 11 | 1 | 10 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **52** | **28** | **24** |
+| **Total** | **52** | **29** | **23** |
 
 **Next task to pick up:** T030 (Bottleneck detection engine) or T056 (Buy quantity toggle).

@@ -6,6 +6,7 @@
 	import { activeTab } from '$lib/stores/navigation';
 	import SmoothProgressBar from '$lib/ui/SmoothProgressBar.svelte';
 	import { getCycleDurationMs } from '$lib/systems/ProductionSystem';
+	import SynergyPanel from '$lib/ui/SynergyPanel.svelte';
 
 	// Division ordering for display
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla'] as const;
@@ -124,6 +125,9 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Synergies -->
+	<SynergyPanel />
 
 	<!-- Division Cards -->
 	<div>
