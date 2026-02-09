@@ -74,7 +74,8 @@ export interface GameSettings {
 	offlineProgressEnabled: boolean;
 	floatingTextEnabled: boolean;
 	hapticEnabled: boolean;
-	theme: 'dark' | 'light';
+	theme: 'dark' | 'light' | 'oled';
+	highContrast?: boolean;
 }
 
 export interface LaunchLogEntry {

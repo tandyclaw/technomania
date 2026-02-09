@@ -34,7 +34,7 @@
 		<!-- Notification bell -->
 		<NotificationCenter />
 		<!-- Cash -->
-		<div class="flex items-center gap-1.5 min-w-0 flex-1" aria-label="Cash">
+		<div class="flex items-center gap-1.5 min-w-0 flex-1" aria-label="Cash" aria-live="polite" aria-atomic="true">
 			<span class="text-base leading-none shrink-0" aria-hidden="true">💰</span>
 			<div class="flex flex-col min-w-0">
 				<span class="text-[10px] text-text-muted leading-none uppercase tracking-wider font-medium">Cash</span>
@@ -109,7 +109,7 @@
 
 	<!-- Power deficit banner -->
 	{#if powerStatus === 'deficit'}
-		<div class="deficit-banner flex items-center justify-center gap-2 px-3 py-1 bg-rocket-red/10 border-b border-rocket-red/20" data-testid="power-deficit-banner">
+		<div class="deficit-banner flex items-center justify-center gap-2 px-3 py-1 bg-rocket-red/10 border-b border-rocket-red/20" data-testid="power-deficit-banner" role="alert">
 			<span class="text-[10px] font-semibold text-rocket-red uppercase tracking-wider">
 				⚠ Power Deficit — Production at {Math.round(powerEff * 100)}%
 			</span>

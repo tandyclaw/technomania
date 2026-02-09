@@ -13,7 +13,7 @@
 </script>
 
 <!-- Toast container — fixed position, above everything except modals -->
-<div class="toast-container fixed top-14 left-0 right-0 z-[80] flex flex-col items-center gap-1.5 px-3 pointer-events-none">
+<div class="toast-container fixed top-14 left-0 right-0 z-[80] flex flex-col items-center gap-1.5 px-3 pointer-events-none" aria-live="polite" aria-atomic="false">
 	{#each $toasts as toast (toast.id)}
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->

@@ -85,9 +85,17 @@
 		];
 
 		// Restore theme from settings
-		const savedTheme = localStorage.getItem('tech-tycoon-theme');
+		const savedTheme = localStorage.getItem('tech-tycoon-theme') as 'dark' | 'light' | 'oled' | null;
+		document.documentElement.classList.remove('light', 'oled');
 		if (savedTheme === 'light') {
 			document.documentElement.classList.add('light');
+		} else if (savedTheme === 'oled') {
+			document.documentElement.classList.add('oled');
+		}
+		// Restore high contrast
+		const savedHC = localStorage.getItem('tech-tycoon-high-contrast');
+		if (savedHC === 'true') {
+			document.documentElement.classList.add('high-contrast');
 		}
 
 		// Contracts system

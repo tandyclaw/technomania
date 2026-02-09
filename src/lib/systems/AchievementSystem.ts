@@ -203,6 +203,147 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 		condition: (s) => !!(s as any)._achievementFlags?.tourist },
 	{ id: 'hidden_hoarder', name: 'Hoarder', description: 'Have 500+ total tiers across all divisions', icon: '📦', category: 'special', rarity: 'Epic', hidden: true,
 		condition: (s) => countTotalUnits(s) >= 500 },
+
+	// === Speed Run Achievements ===
+	{ id: 'speed_1k_2min', name: 'Speed Demon Capitalist', description: 'Earn $1K in under 2 minutes', icon: '⏱️', category: 'special', rarity: 'Rare', hidden: true,
+		condition: (s) => s.stats.totalCashEarned >= 1_000 && s.stats.playTimeMs < 2 * 60 * 1000 },
+	{ id: 'speed_10k_5min', name: 'Blitz Builder', description: 'Earn $10K in under 5 minutes', icon: '⚡', category: 'special', rarity: 'Rare', hidden: true,
+		condition: (s) => s.stats.totalCashEarned >= 10_000 && s.stats.playTimeMs < 5 * 60 * 1000 },
+	{ id: 'speed_100k_10min', name: 'Lightning Mogul', description: 'Earn $100K in under 10 minutes', icon: '🌩️', category: 'special', rarity: 'Epic', hidden: true,
+		condition: (s) => s.stats.totalCashEarned >= 100_000 && s.stats.playTimeMs < 10 * 60 * 1000 },
+	{ id: 'speed_all_div_30min', name: 'Speedrun: Full Portfolio', description: 'Unlock all divisions in under 30 minutes', icon: '🏎️', category: 'special', rarity: 'Epic', hidden: true,
+		condition: (s) => Object.values(s.divisions).every(d => d.unlocked) && s.stats.playTimeMs < 30 * 60 * 1000 },
+	{ id: 'speed_colony_30min', name: 'Express Colony', description: 'Launch a colony in under 30 minutes', icon: '🚄', category: 'prestige', rarity: 'Legendary', hidden: true,
+		condition: (s) => (s.hallOfFame?.fastestColonyTimes ?? []).some(t => t.timeMs < 30 * 60 * 1000) },
+
+	// === Collection Achievements ===
+	{ id: 'prod_2000', name: 'Empire of Things', description: 'Own 2,000 total units', icon: '🏗️', category: 'production', rarity: 'Rare',
+		condition: (s) => countTotalUnits(s) >= 2_000 },
+	{ id: 'prod_10000', name: 'World Domination', description: 'Own 10,000 total units', icon: '🌐', category: 'production', rarity: 'Legendary',
+		condition: (s) => countTotalUnits(s) >= 10_000 },
+	{ id: 'tier_max_any', name: 'Maxed Out', description: 'Reach 1000+ on any single tier', icon: '📈', category: 'production', rarity: 'Epic',
+		condition: (s) => Object.values(s.divisions).some(d => d.tiers.some(t => t.count >= 1000)) },
+	{ id: 'tier_max_500', name: 'Half K Club', description: 'Reach 500 on any single tier', icon: '🎯', category: 'production', rarity: 'Rare',
+		condition: (s) => Object.values(s.divisions).some(d => d.tiers.some(t => t.count >= 500)) },
+
+	// === Economy / Cash on Hand ===
+	{ id: 'cash_10k', name: 'Rainy Day Fund', description: 'Have $10K cash at once', icon: '🏧', category: 'income', rarity: 'Common',
+		condition: (s) => s.cash >= 10_000 },
+	{ id: 'cash_100k', name: 'Liquid Assets', description: 'Have $100K cash at once', icon: '💵', category: 'income', rarity: 'Common',
+		condition: (s) => s.cash >= 100_000 },
+	{ id: 'cash_1m', name: 'Cash Millionaire', description: 'Have $1M cash at once', icon: '💰', category: 'income', rarity: 'Rare',
+		condition: (s) => s.cash >= 1_000_000 },
+	{ id: 'cash_10m', name: 'War Chest', description: 'Have $10M cash at once', icon: '🏦', category: 'income', rarity: 'Rare',
+		condition: (s) => s.cash >= 10_000_000 },
+	{ id: 'cash_100m', name: 'Dragon\'s Hoard', description: 'Have $100M cash at once', icon: '🐉', category: 'income', rarity: 'Epic',
+		condition: (s) => s.cash >= 100_000_000 },
+	{ id: 'cash_1b', name: 'Scrooge McDuck', description: 'Have $1B cash at once', icon: '🦆', category: 'income', rarity: 'Epic',
+		condition: (s) => s.cash >= 1_000_000_000 },
+
+	// === Research Achievements ===
+	{ id: 'research_5', name: 'Lab Rat', description: 'Complete 5 research projects', icon: '🐀', category: 'special', rarity: 'Common',
+		condition: (s) => s.unlockedResearch.length >= 5 },
+	{ id: 'research_20', name: 'Think Tank', description: 'Complete 20 research projects', icon: '🧠', category: 'special', rarity: 'Rare',
+		condition: (s) => s.unlockedResearch.length >= 20 },
+	{ id: 'rp_1k', name: 'Knowledge Economy', description: 'Spend 1K research points total', icon: '📚', category: 'special', rarity: 'Common',
+		condition: (s) => s.stats.totalResearchCompleted >= 5 },
+	{ id: 'rp_10k', name: 'Research University', description: 'Complete 30+ research projects', icon: '🎓', category: 'special', rarity: 'Epic',
+		condition: (s) => s.unlockedResearch.length >= 30 },
+
+	// === Prestige / Colony Achievements ===
+	{ id: 'prestige_7', name: 'Lucky Seven', description: 'Launch 7 colonies', icon: '🍀', category: 'prestige', rarity: 'Epic',
+		condition: (s) => s.prestigeCount >= 7 },
+	{ id: 'prestige_15', name: 'Galactic Federation', description: 'Launch 15 colonies', icon: '🌌', category: 'prestige', rarity: 'Legendary',
+		condition: (s) => s.prestigeCount >= 15 },
+	{ id: 'prestige_20', name: 'Star Empire', description: 'Launch 20 colonies', icon: '👑', category: 'prestige', rarity: 'Legendary',
+		condition: (s) => s.prestigeCount >= 20 },
+	{ id: 'mars_complete', name: 'Mars Colonized', description: 'Complete the Mars colony', icon: '🔴', category: 'prestige', rarity: 'Rare',
+		condition: (s) => s.marsColony.completed },
+	{ id: 'ng_plus_1', name: 'New Game+', description: 'Start New Game+ for the first time', icon: '🔄', category: 'prestige', rarity: 'Epic',
+		condition: (s) => s.ngPlusLevel >= 1 },
+	{ id: 'ng_plus_3', name: 'Third Time\'s the Charm', description: 'Reach New Game+ level 3', icon: '🔄', category: 'prestige', rarity: 'Legendary',
+		condition: (s) => s.ngPlusLevel >= 3 },
+
+	// === Division Mastery / Stars ===
+	{ id: 'div_star_first', name: 'First Star', description: 'Earn a division star', icon: '⭐', category: 'divisions', rarity: 'Rare',
+		condition: (s) => Object.values(s.divisionStars ?? {}).some(v => v >= 1) },
+	{ id: 'div_star_all', name: 'All-Star', description: 'Earn a star in every division', icon: '🌟', category: 'divisions', rarity: 'Epic',
+		condition: (s) => { const stars = s.divisionStars ?? {}; return Object.keys(s.divisions).every(k => (stars[k] ?? 0) >= 1); } },
+	{ id: 'div_star_5_any', name: 'Five-Star General', description: 'Earn 5 stars in any division', icon: '⭐', category: 'divisions', rarity: 'Epic',
+		condition: (s) => Object.values(s.divisionStars ?? {}).some(v => v >= 5) },
+
+	// === Synergy Achievements ===
+	{ id: 'synergy_3', name: 'Synergist', description: 'Discover 3 synergies', icon: '🔗', category: 'special', rarity: 'Common',
+		condition: (s) => s.activeSynergies.length >= 3 },
+	{ id: 'synergy_7', name: 'Network Effect', description: 'Discover 7 synergies', icon: '🕸️', category: 'special', rarity: 'Rare',
+		condition: (s) => s.activeSynergies.length >= 7 },
+	{ id: 'synergy_10', name: 'Synergy Master', description: 'Discover 10 synergies', icon: '🔗', category: 'special', rarity: 'Rare',
+		condition: (s) => s.activeSynergies.length >= 10 },
+
+	// === Tap Achievements ===
+	{ id: 'taps_500', name: 'Dedicated Tapper', description: 'Tap 500 times', icon: '👆', category: 'production', rarity: 'Common',
+		condition: (s) => s.stats.totalTaps >= 500 },
+	{ id: 'taps_50000', name: 'Tap Legend', description: 'Tap 50,000 times', icon: '🏅', category: 'production', rarity: 'Legendary',
+		condition: (s) => s.stats.totalTaps >= 50_000 },
+
+	// === Income Rate Achievements ===
+	{ id: 'ips_100', name: 'Passive Income', description: 'Reach $100/s income', icon: '📈', category: 'income', rarity: 'Common',
+		condition: (s) => s.stats.highestIncomePerSec >= 100 },
+	{ id: 'ips_10k', name: 'Money Printer', description: 'Reach $10K/s income', icon: '🖨️', category: 'income', rarity: 'Rare',
+		condition: (s) => s.stats.highestIncomePerSec >= 10_000 },
+	{ id: 'ips_1m', name: 'Cash Tsunami', description: 'Reach $1M/s income', icon: '🌊', category: 'income', rarity: 'Epic',
+		condition: (s) => s.stats.highestIncomePerSec >= 1_000_000 },
+	{ id: 'ips_1b', name: 'Infinite Money Glitch', description: 'Reach $1B/s income', icon: '♾️', category: 'income', rarity: 'Legendary',
+		condition: (s) => s.stats.highestIncomePerSec >= 1_000_000_000 },
+
+	// === Session / Time Achievements ===
+	{ id: 'sessions_10', name: 'Regular', description: 'Play 10 sessions', icon: '📅', category: 'special', rarity: 'Common',
+		condition: (s) => s.stats.sessionsPlayed >= 10 },
+	{ id: 'sessions_50', name: 'Dedicated', description: 'Play 50 sessions', icon: '📅', category: 'special', rarity: 'Rare',
+		condition: (s) => s.stats.sessionsPlayed >= 50 },
+	{ id: 'sessions_100', name: 'Addicted', description: 'Play 100 sessions', icon: '📅', category: 'special', rarity: 'Epic',
+		condition: (s) => s.stats.sessionsPlayed >= 100 },
+	{ id: 'playtime_1h', name: 'Hour One', description: 'Play for 1 hour total', icon: '⏰', category: 'special', rarity: 'Common',
+		condition: (s) => s.stats.playTimeMs >= 60 * 60 * 1000 },
+	{ id: 'playtime_10h', name: 'Time Sink', description: 'Play for 10 hours total', icon: '⏰', category: 'special', rarity: 'Rare',
+		condition: (s) => s.stats.playTimeMs >= 10 * 60 * 60 * 1000 },
+	{ id: 'playtime_24h', name: 'Full Day', description: 'Play for 24 hours total', icon: '🕐', category: 'special', rarity: 'Epic',
+		condition: (s) => s.stats.playTimeMs >= 24 * 60 * 60 * 1000 },
+
+	// === Hidden / Secret (Easter Eggs) ===
+	{ id: 'hidden_midnight', name: 'Witching Hour', description: 'Play at exactly midnight (00:00)', icon: '🕛', category: 'special', rarity: 'Rare', hidden: true,
+		condition: () => { const now = new Date(); return now.getHours() === 0 && now.getMinutes() === 0; } },
+	{ id: 'hidden_weekend', name: 'Weekend Warrior', description: 'Play on both Saturday and Sunday', icon: '🎉', category: 'special', rarity: 'Common', hidden: true,
+		condition: () => { const d = new Date().getDay(); return d === 0 || d === 6; } },
+	{ id: 'hidden_logo_tap', name: 'Easter Egg Hunter', description: 'Tap the logo 10 times', icon: '🥚', category: 'special', rarity: 'Rare', hidden: true,
+		condition: (s) => !!(s as any)._achievementFlags?.logoTap10 },
+	{ id: 'hidden_broke', name: 'Broke', description: 'Have exactly $0', icon: '💸', category: 'special', rarity: 'Rare', hidden: true,
+		condition: (s) => s.cash === 0 },
+	{ id: 'hidden_palindrome', name: 'Palindrome', description: 'Have a palindrome cash amount (e.g. $12321)', icon: '🔢', category: 'special', rarity: 'Epic', hidden: true,
+		condition: (s) => { const str = Math.floor(s.cash).toString(); return str.length >= 3 && str === str.split('').reverse().join(''); } },
+	{ id: 'hidden_42', name: 'The Answer', description: 'Own exactly 42 total units', icon: '🌀', category: 'special', rarity: 'Rare', hidden: true,
+		condition: (s) => countTotalUnits(s) === 42 },
+	{ id: 'hidden_all_same', name: 'Perfectly Balanced', description: 'All unlocked divisions have the same total units', icon: '⚖️', category: 'special', rarity: 'Epic', hidden: true,
+		condition: (s) => {
+			const divs = Object.values(s.divisions).filter(d => d.unlocked);
+			if (divs.length < 2) return false;
+			const counts = divs.map(d => d.tiers.reduce((sum, t) => sum + t.count, 0));
+			return counts.every(c => c > 0 && c === counts[0]);
+		} },
+	{ id: 'hidden_new_year', name: 'Happy New Year!', description: 'Play on January 1st', icon: '🎆', category: 'special', rarity: 'Rare', hidden: true,
+		condition: () => { const now = new Date(); return now.getMonth() === 0 && now.getDate() === 1; } },
+
+	// === Contract Milestones ===
+	{ id: 'contracts_5', name: 'Side Hustle', description: 'Complete 5 contracts', icon: '📋', category: 'special', rarity: 'Common',
+		condition: (s) => (s.contracts?.totalCompleted ?? 0) >= 5 },
+	{ id: 'contracts_200', name: 'Contract King', description: 'Complete 200 contracts', icon: '👑', category: 'special', rarity: 'Legendary',
+		condition: (s) => (s.contracts?.totalCompleted ?? 0) >= 200 },
+
+	// === Bottleneck Achievements ===
+	{ id: 'bottleneck_5', name: 'Troubleshooter', description: 'Resolve 5 bottlenecks', icon: '🔧', category: 'special', rarity: 'Common',
+		condition: (s) => Object.values(s.divisions).reduce((sum, d) => sum + d.bottlenecks.filter(b => b.resolved).length, 0) >= 5 },
+	{ id: 'bottleneck_20', name: 'Efficiency Expert', description: 'Resolve 20 bottlenecks', icon: '⚙️', category: 'special', rarity: 'Rare',
+		condition: (s) => Object.values(s.divisions).reduce((sum, d) => sum + d.bottlenecks.filter(b => b.resolved).length, 0) >= 20 },
 ];
 
 function countTotalUnits(s: GameState): number {

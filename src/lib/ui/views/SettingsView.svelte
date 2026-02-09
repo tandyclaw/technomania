@@ -29,15 +29,57 @@
 	let floatingTextEnabled = $derived($gameState.settings.floatingTextEnabled ?? true);
 	let hapticEnabled = $derived($gameState.settings.hapticEnabled ?? true);
 	let theme = $derived($gameState.settings.theme ?? 'dark');
+	let highContrast = $derived($gameState.settings.highContrast ?? false);
 
-	function toggleTheme() {
-		const newTheme = theme === 'dark' ? 'light' : 'dark';
+	const themeOptions: { value: 'dark' | 'light' | 'oled'; label: string; icon: string; desc: string }[] = [
+		{ value: 'dark', label: 'Dark', icon: '🌙', desc: 'Default dark theme' },
+		{ value: 'light', label: 'Light', icon: '☀️', desc: 'Easy on the eyes' },
+		{ value: 'oled', label: 'OLED Dark', icon: '🖤', desc: 'Pure black, saves battery' },
+	];
+
+	function applyTheme(newTheme: 'dark' | 'light' | 'oled') {
+		// Enable smooth transition
+		document.documentElement.classList.add('theme-transition');
+		
+		// Remove all theme classes
+		document.documentElement.classList.remove('light', 'oled');
+		
+		// Apply new theme class
+		if (newTheme === 'light') {
+			document.documentElement.classList.add('light');
+		} else if (newTheme === 'oled') {
+			document.documentElement.classList.add('oled');
+		}
+		
+		// Persist
+		localStorage.setItem('tech-tycoon-theme', newTheme);
+		
+		// Remove transition class after animation completes
+		setTimeout(() => {
+			document.documentElement.classList.remove('theme-transition');
+		}, 350);
+	}
+
+	function setTheme(newTheme: 'dark' | 'light' | 'oled') {
 		gameState.update((s) => ({
 			...s,
 			settings: { ...s.settings, theme: newTheme }
 		}));
-		document.documentElement.classList.toggle('light', newTheme === 'light');
-		localStorage.setItem('tech-tycoon-theme', newTheme);
+		applyTheme(newTheme);
+	}
+
+	function toggleHighContrast() {
+		const newVal = !highContrast;
+		gameState.update((s) => ({
+			...s,
+			settings: { ...s.settings, highContrast: newVal }
+		}));
+		document.documentElement.classList.add('theme-transition');
+		document.documentElement.classList.toggle('high-contrast', newVal);
+		localStorage.setItem('tech-tycoon-high-contrast', String(newVal));
+		setTimeout(() => {
+			document.documentElement.classList.remove('theme-transition');
+		}, 350);
 	}
 
 	function toggleSetting(key: keyof GameState['settings']) {
@@ -341,23 +383,45 @@
 	<section class="space-y-1">
 		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Appearance</h2>
 		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 divide-y divide-white/5">
+			<!-- Theme selector -->
+			<div class="px-4 py-3">
+				<span class="text-sm font-medium text-text-primary block mb-2">Theme</span>
+				<div class="grid grid-cols-3 gap-2">
+					{#each themeOptions as opt}
+						<button
+							onclick={() => setTheme(opt.value)}
+							class="flex flex-col items-center gap-1 p-2.5 rounded-lg border transition-all duration-200 active:scale-95 touch-manipulation
+								{theme === opt.value
+									? 'border-electric-blue bg-electric-blue/10'
+									: 'border-white/5 hover:border-white/10 bg-bg-tertiary/30'}"
+							aria-pressed={theme === opt.value}
+						>
+							<span class="text-lg" aria-hidden="true">{opt.icon}</span>
+							<span class="text-xs font-semibold text-text-primary">{opt.label}</span>
+							<span class="text-[9px] text-text-muted leading-tight text-center">{opt.desc}</span>
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<!-- High Contrast toggle -->
 			<div class="flex items-center justify-between px-4 py-3">
 				<div class="flex items-center gap-3">
-					<span class="text-lg" aria-hidden="true">{theme === 'dark' ? '🌙' : '☀️'}</span>
+					<span class="text-lg" aria-hidden="true">🔲</span>
 					<div>
-						<span class="text-sm font-medium text-text-primary block">Theme</span>
-						<span class="text-[10px] text-text-muted">{theme === 'dark' ? 'Dark mode' : 'Light mode'}</span>
+						<span class="text-sm font-medium text-text-primary block">High Contrast</span>
+						<span class="text-[10px] text-text-muted">Stronger text & borders</span>
 					</div>
 				</div>
 				<button
-					onclick={toggleTheme}
+					onclick={toggleHighContrast}
 					class="toggle-switch"
-					class:active={theme === 'light'}
+					class:active={highContrast}
 					role="switch"
-					aria-checked={theme === 'light'}
-					aria-label="Toggle light theme"
+					aria-checked={highContrast}
+					aria-label="Toggle high contrast mode"
 				>
-					<span class="toggle-thumb" class:active={theme === 'light'}></span>
+					<span class="toggle-thumb" class:active={highContrast}></span>
 				</button>
 			</div>
 		</div>
