@@ -56,22 +56,36 @@ export interface FlavorStats {
 	productionLog: LaunchLogEntry[];
 }
 
-export interface CryptoState {
+export interface TreasuryState {
+	// Savings (safe, 5% APY)
+	savings: number;
+	
+	// Index Fund (medium risk)
+	indexPrice: number;
+	indexShares: number;
+	indexInvested: number;
+	indexHistory: number[];
+	
+	// Bitcoin (high risk)
 	btcPrice: number;
 	btcOwned: number;
-	btcPriceHistory: number[];
-	totalInvested: number; // Total USD spent buying BTC (for P&L calculation)
-
-	// DOGE meme coin
+	btcInvested: number;
+	btcHistory: number[];
+	
+	// Meme Coins (extreme risk)
 	dogePrice: number;
 	dogeOwned: number;
-	dogePriceHistory: number[];
-	dogeTotalInvested: number;
+	dogeInvested: number;
+	dogeHistory: number[];
+	
 	/** Active meme pump event — remaining duration in ms, 0 = none */
 	memePumpMs: number;
 	/** Multiplier applied by the current meme pump */
 	memePumpMultiplier: number;
 }
+
+/** @deprecated Use TreasuryState */
+export type CryptoState = TreasuryState;
 
 export interface GameState {
 	version: number;
@@ -105,8 +119,8 @@ export interface GameState {
 	// Flavor mechanics (T024, T028)
 	flavorStats: FlavorStats;
 
-	// Crypto Treasury
-	crypto: CryptoState;
+	// Treasury (investments)
+	treasury: TreasuryState;
 
 	// Prestige
 	prestigeCount: number;
@@ -148,16 +162,24 @@ export function createDefaultState(): GameState {
 		unlockedResearch: [],
 		activeResearch: null,
 
-		crypto: {
+		treasury: {
+			savings: 0,
+			
+			indexPrice: 100,
+			indexShares: 0,
+			indexInvested: 0,
+			indexHistory: [100],
+			
 			btcPrice: 42_000,
 			btcOwned: 0,
-			btcPriceHistory: [42_000],
-			totalInvested: 0,
-
+			btcInvested: 0,
+			btcHistory: [42_000],
+			
 			dogePrice: 0.08,
 			dogeOwned: 0,
-			dogePriceHistory: [0.08],
-			dogeTotalInvested: 0,
+			dogeInvested: 0,
+			dogeHistory: [0.08],
+			
 			memePumpMs: 0,
 			memePumpMultiplier: 1,
 		},

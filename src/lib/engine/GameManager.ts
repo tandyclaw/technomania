@@ -13,7 +13,7 @@ import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
 import { tickProduction } from './ProductionEngine';
 import { tickResearch, tickRPGeneration } from '$lib/systems/ResearchSystem';
 import { tickBottlenecks, resetBottleneckNotifications } from '$lib/systems/BottleneckSystem';
-import { tickCrypto, resetCryptoAccumulators } from '$lib/systems/CryptoSystem';
+import { tickTreasury, resetTreasuryAccumulators } from '$lib/systems/TreasurySystem';
 import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefaultFlavorStats } from '$lib/systems/FlavorMechanics';
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 import { initSoundListeners } from '$lib/systems/SoundManager';
@@ -124,7 +124,7 @@ class GameManager {
 			tickBottlenecks(deltaMs);
 
 			// Tick crypto price simulation
-			tickCrypto(deltaMs);
+			tickTreasury(deltaMs);
 
 			// Update play time only every ~1s to reduce store churn
 			playTimeAccumulator += deltaMs;
@@ -219,7 +219,7 @@ class GameManager {
 
 		gameState.set(fresh);
 		resetBottleneckNotifications();
-		resetCryptoAccumulators();
+		resetTreasuryAccumulators();
 		resetFlavorStats();
 		resetCelebrations();
 
