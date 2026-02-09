@@ -2,63 +2,152 @@
 	import { gameState } from '$lib/stores/gameState';
 	import { DIVISIONS } from '$lib/divisions';
 	import { formatCurrency } from '$lib/engine/BigNumber';
+	import { eventBus } from '$lib/engine/EventBus';
+	import { DIVISION_CHIEFS } from '$lib/systems/ChiefSystem';
+	import { onMount } from 'svelte';
+	import { notifications } from '$lib/stores/eventStore';
 
 	let state = $derived($gameState);
+	let notifs = $derived($notifications);
 	let hidden = $state(false);
 
-	// Generate messages based on game state
-	let messages = $derived(generateMessages(state));
+	// ─── Event-driven news feed ──────────────────────────────────────────────
+	// These are pushed in real-time as things happen in the game
 
-	function generateMessages(s: typeof state): string[] {
+	let eventNews: string[] = $state([]);
+	const MAX_EVENT_NEWS = 20;
+
+	function pushNews(headline: string) {
+		eventNews = [headline, ...eventNews].slice(0, MAX_EVENT_NEWS);
+	}
+
+	onMount(() => {
+		const unsubs = [
+			eventBus.on('achievement:unlocked', (data) => {
+				pushNews(`🏆 ACHIEVEMENT: "${data.name}" unlocked — ${data.description}`);
+			}),
+			eventBus.on('chief:hired', (data) => {
+				const chief = DIVISION_CHIEFS[data.division];
+				const meta = DIVISIONS[data.division];
+				if (chief && meta) {
+					if (data.level === 1) {
+						pushNews(`HIRING: ${chief.name} joins as ${chief.title} for ${meta.name}`);
+					} else {
+						pushNews(`PROMOTION: ${chief.name} promoted to Level ${data.level} — ${meta.name} efficiency soars`);
+					}
+				}
+			}),
+			eventBus.on('research:complete', (data) => {
+				pushNews(`SCIENCE: Research labs discover "${data.name}" — new possibilities unlocked`);
+			}),
+			eventBus.on('division:unlocked', (data) => {
+				const meta = DIVISIONS[data.division];
+				if (meta) {
+					pushNews(`BREAKING: ${meta.name} division launched — analysts predict massive growth`);
+				}
+			}),
+			eventBus.on('tier:unlocked', (data) => {
+				const meta = DIVISIONS[data.division];
+				if (meta) {
+					const tierName = meta.tiers[data.tier]?.name ?? `Tier ${data.tier + 1}`;
+					pushNews(`EXPANSION: ${meta.name} unveils new ${tierName} production line`);
+				}
+			}),
+			eventBus.on('synergy:discovered', (data) => {
+				const src = DIVISIONS[data.source]?.name ?? data.source;
+				const tgt = DIVISIONS[data.target]?.name ?? data.target;
+				pushNews(`SYNERGY: ${src} × ${tgt} collaboration discovered — ${data.bonus}`);
+			}),
+			eventBus.on('prestige:complete', (data) => {
+				pushNews(`BREAKING: Colony #${data.totalVision} launched — humanity expands across the solar system`);
+			}),
+			eventBus.on('bottleneck:hit', (data) => {
+				const meta = DIVISIONS[data.division];
+				if (meta) {
+					pushNews(`⚠️ ALERT: ${meta.name} hits ${data.type} bottleneck — ${data.description}`);
+				}
+			}),
+			eventBus.on('bottleneck:resolved', (data) => {
+				const meta = DIVISIONS[data.division];
+				if (meta) {
+					pushNews(`RESOLVED: ${meta.name} ${data.type} bottleneck cleared — production resumes`);
+				}
+			}),
+		];
+
+		return () => unsubs.forEach((fn) => fn());
+	});
+
+	// ─── Static tips ─────────────────────────────────────────────────────────
+
+	const TIPS: string[] = [
+		'TIP: Hire chiefs to automate production while you\'re away',
+		'TIP: Synergies between divisions boost revenue — unlock more divisions!',
+		'TIP: Pull down on the dashboard to save your game',
+		'TIP: Upgrade tiers to multiply your income per unit',
+		'TIP: Research new technologies to unlock powerful bonuses',
+		'TIP: Watch for random events — choosing wisely gives huge buffs',
+	];
+
+	// ─── Snapshot-based news (re-derived each tick) ──────────────────────────
+
+	let snapshotNews = $derived(generateSnapshotNews(state));
+
+	function generateSnapshotNews(s: typeof state): string[] {
 		const msgs: string[] = [];
 
-		// Tips (always available)
-		msgs.push('TIP: Hire chiefs to automate production while you\'re away');
-		msgs.push('TIP: Synergies between divisions boost revenue — unlock more divisions!');
-		msgs.push('TIP: Pull down on the dashboard to save your game');
-
-		// Dynamic messages based on state
-		const totalTiers = Object.values(s.divisions).reduce(
-			(sum, d) => sum + d.tiers.reduce((s2, t) => s2 + t.count, 0), 0
-		);
-
-		if (totalTiers > 0) {
-			msgs.push(`EMPIRE UPDATE: Your company now operates ${totalTiers} production units across all divisions`);
+		// Revenue milestones
+		const incomePerSec = s.stats.highestIncomePerSec;
+		if (incomePerSec > 0) {
+			const thresholds = [100, 1000, 10_000, 100_000, 1_000_000, 1e9, 1e12];
+			for (const t of thresholds) {
+				if (incomePerSec >= t) {
+					msgs.push(`MARKET: Revenue surges past ${formatCurrency(t)}/s across all divisions`);
+				}
+			}
 		}
 
-		if (s.stats.totalTaps > 100) {
-			msgs.push(`BREAKING: CEO has personally overseen ${s.stats.totalTaps.toLocaleString()} production cycles`);
-		}
-
-		if (s.cash > 1_000_000) {
-			msgs.push(`MARKETS: Tech stocks surge as your empire crosses ${formatCurrency(s.cash)} in net worth`);
-		}
-
-		if (s.researchPoints > 100) {
-			msgs.push(`SCIENCE: Your R&D labs have accumulated ${Math.floor(s.researchPoints).toLocaleString()} research points`);
-		}
-
-		// Division-specific messages
+		// Division production milestones
 		for (const [divId, divState] of Object.entries(s.divisions)) {
 			const meta = DIVISIONS[divId];
 			if (!meta || !divState.unlocked) continue;
 
 			const totalOwned = divState.tiers.reduce((sum: number, t) => sum + t.count, 0);
-			if (totalOwned > 50) {
-				msgs.push(`INDUSTRY: Your ${meta.name} division now operates ${totalOwned} units — analysts are impressed`);
+			const milestones = [10, 25, 50, 100, 250, 500, 1000];
+			for (const m of milestones) {
+				if (totalOwned >= m && totalOwned < m * 2.5) {
+					msgs.push(`BREAKING: ${meta.name} division just hit ${m} units!`);
+					break;
+				}
 			}
 
 			if (divState.chiefLevel > 0) {
-				msgs.push(`HR: ${meta.name} division chief (Lv.${divState.chiefLevel}) reports record automation efficiency`);
-			}
-
-			// Tier-specific flavor
-			const tier0 = divState.tiers[0];
-			if (tier0 && tier0.count >= 100) {
-				msgs.push(`MILESTONE: Your fleet of ${tier0.count} ${meta.tiers[0]?.name ?? 'units'} reaches a new record`);
+				const chief = DIVISION_CHIEFS[divId];
+				if (chief) {
+					msgs.push(`HR: ${chief.name} (Lv.${divState.chiefLevel}) reports record ${meta.name} automation efficiency`);
+				}
 			}
 		}
 
+		// Cash milestones
+		if (s.cash > 1_000_000) {
+			msgs.push(`MARKETS: Tech stocks surge as empire crosses ${formatCurrency(s.cash)} in net worth`);
+		}
+
+		// Research points
+		if (s.researchPoints > 100) {
+			msgs.push(`SCIENCE: R&D labs have accumulated ${Math.floor(s.researchPoints).toLocaleString()} research points`);
+		}
+
+		// Mars colony
+		if (s.marsColony.progress > 0 && !s.marsColony.completed) {
+			msgs.push(`COLONY: Mars colony progress at ${s.marsColony.progress.toFixed(1)}% — humanity edges closer to the stars`);
+		}
+		if (s.marsColony.completed) {
+			msgs.push('BREAKING: Mars colony successfully established — a new era for humanity begins');
+		}
+
+		// SpaceX
 		if (s.divisions.spacex.unlocked) {
 			const rockets = s.divisions.spacex.tiers.reduce((sum, t) => sum + t.count, 0);
 			if (rockets > 10) {
@@ -66,38 +155,72 @@
 			}
 		}
 
-		if (s.marsColony.progress > 0 && !s.marsColony.completed) {
-			msgs.push(`COLONY: Mars colony progress at ${s.marsColony.progress.toFixed(1)}% — humanity edges closer to the stars`);
+		// Synergies
+		if (s.activeSynergies.length > 0) {
+			msgs.push(`SYNERGY: ${s.activeSynergies.length} active cross-division synergies boosting the empire`);
 		}
 
-		if (s.marsColony.completed) {
-			msgs.push('BREAKING: Mars colony successfully established — a new era for humanity begins');
-		}
-
+		// Prestige
 		if (s.prestigeCount > 0) {
 			msgs.push(`HISTORY: ${s.prestigeCount} colonies launched across the solar system`);
 		}
 
-		if (s.activeSynergies.length > 0) {
-			msgs.push(`SYNERGY: ${s.activeSynergies.length} active cross-division synergies boosting your empire`);
-		}
-
-		if (s.stats.highestIncomePerSec > 10000) {
-			msgs.push(`RECORD: Peak income of ${formatCurrency(s.stats.highestIncomePerSec)}/s — Wall Street is watching`);
-		}
-
+		// Bitcoin
 		if (s.treasury.btcOwned > 0) {
-			msgs.push('CRYPTO: Your Bitcoin holdings draw attention from institutional investors');
+			msgs.push('CRYPTO: Bitcoin holdings draw attention from institutional investors');
 		}
 
+		// NG+
 		if (s.ngPlusLevel > 0) {
 			msgs.push(`MULTIVERSE: Timeline #${s.ngPlusLevel + 1} — the laws of economics are... different here`);
+		}
+
+		// Tap milestone
+		if (s.stats.totalTaps > 100) {
+			msgs.push(`BREAKING: CEO has personally overseen ${s.stats.totalTaps.toLocaleString()} production cycles`);
 		}
 
 		return msgs;
 	}
 
-	// Cycle through messages
+	// ─── Notification-sourced news (events that already fired) ───────────────
+
+	let notifNews = $derived(
+		notifs
+			.filter((n) => n.type === 'event')
+			.slice(0, 5)
+			.map((n) => `EVENT: ${n.title} — ${n.message}`)
+	);
+
+	// ─── Combine all sources, weighted toward dynamic content ────────────────
+
+	let messages = $derived(buildTickerMessages());
+
+	function buildTickerMessages(): string[] {
+		const dynamic = [...eventNews, ...notifNews, ...snapshotNews];
+
+		if (dynamic.length === 0) {
+			// No game activity yet — show tips only
+			return TIPS;
+		}
+
+		// Deduplicate
+		const seen = new Set<string>();
+		const deduped: string[] = [];
+		for (const msg of dynamic) {
+			if (!seen.has(msg)) {
+				seen.add(msg);
+				deduped.push(msg);
+			}
+		}
+
+		// Mix in 1-2 tips among the dynamic news
+		const tipCount = Math.min(2, TIPS.length);
+		const selectedTips = TIPS.sort(() => Math.random() - 0.5).slice(0, tipCount);
+
+		return [...deduped, ...selectedTips];
+	}
+
 	let tickerText = $derived(messages.join('   ●   '));
 </script>
 
