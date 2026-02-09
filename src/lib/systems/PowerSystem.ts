@@ -3,7 +3,7 @@
  * The meta-game: every facility needs electricity
  *
  * Energy tiers GENERATE power (positive powerMW)
- * SpaceX SpaceX & Tesla tiers CONSUME Manufacturing tiers CONSUME power (negative powerMW)
+ * Rockets & Manufacturing tiers CONSUME power (negative powerMW)
  *
  * When consumption > generation, a power deficit exists.
  * Deficit reduces production speed for all non-Energy divisions.
@@ -17,7 +17,7 @@ const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'roboti
 /**
  * Recalculate total power generated and consumed from current game state.
  * Energy tiers have positive powerMW (generation).
- * SpaceX/Manufacturing tiers have negative powerMW (consumption).
+ * Rockets/Manufacturing tiers have negative powerMW (consumption).
  * Returns { generated, consumed } in MW.
  */
 export function calculatePowerBalance(state: GameState): { generated: number; consumed: number } {

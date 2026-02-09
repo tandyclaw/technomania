@@ -12,9 +12,9 @@
  * It only starts a production cycle. Cash comes from completion.
  *
  * Power system (T019):
- * - Tesla Energy tiers generate power (positive powerMW)
- * - SpaceX/Tesla tiers consume power (negative powerMW)
- * - When consumed > generated, non-Tesla Energy production speed is reduced
+ * - Energy tiers generate power (positive powerMW)
+ * - Rockets/Manufacturing tiers consume power (negative powerMW)
+ * - When consumed > generated, non-Energy production speed is reduced
  * - Minimum 10% efficiency to avoid total standstill
  *
  * IMPORTANT: All state mutations create new object references for Svelte 5 reactivity.
@@ -58,7 +58,7 @@ const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'roboti
  * Get the EFFECTIVE cycle duration for a tier, including all speed modifiers:
  * - Base cycle duration from tier config
  * - Chief speed bonus
- * - Power efficiency (non-Tesla Energy divisions)
+ * - Power efficiency (non-Energy divisions)
  * - Synergy speed boosts
  * - Bottleneck penalties
  *
@@ -79,7 +79,7 @@ export function getEffectiveCycleDurationMs(
 	// Base duration with chief speed bonus
 	const baseDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
 
-	// Power efficiency (Tesla Energy is immune)
+	// Power efficiency (Energy is immune)
 	const { generated, consumed } = calculatePowerBalance(state);
 	const powerEfficiency = divisionId === 'teslaenergy' ? 1 : calculatePowerEfficiency(generated, consumed);
 
@@ -205,7 +205,7 @@ export function tickProduction(deltaMs: number): void {
 			const divMeta = DIVISIONS[divId];
 			if (!divMeta) continue;
 
-			// Power deficit slows non-Tesla Energy divisions
+			// Power deficit slows non-Energy divisions
 			const efficiencyMult = divId === 'teslaenergy' ? 1 : powerEfficiency;
 
 			// Bottleneck penalty: active bottlenecks slow production

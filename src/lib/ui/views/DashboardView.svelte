@@ -185,6 +185,16 @@
 		</div>
 	</div>
 
+	<!-- Share Progress -->
+	<button
+		onclick={() => { shareCardMilestone = 'custom'; showShareCard = true; }}
+		class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-electric-blue/10 to-neural-purple/10
+			   border border-white/5 hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation
+			   flex items-center justify-center gap-2 text-sm font-medium text-text-secondary"
+	>
+		<span>📤</span> Share Progress
+	</button>
+
 	<!-- Synergies -->
 	<SynergyPanel />
 

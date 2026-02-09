@@ -27,6 +27,8 @@
 		Object.values(gs.divisions).filter(d => d.unlocked).length
 	);
 	let coloniesLaunched = $derived(gs.stats.totalPrestiges);
+	let colonyProgress = $derived(gs.marsColony?.progress ?? 0);
+	let netWorth = $derived(gs.cash + gs.stats.totalCashEarned);
 
 	let totalIncomePerSec = $derived(computeTotalIncomePerSec(gs));
 
@@ -56,19 +58,33 @@
 		return `${minutes}m`;
 	}
 
-	let milestoneHeadline = $derived(
-		headline ??
-		(milestone === 'colony' ? `I just colonized ${planet.name}!` :
-		 milestone === 'billion' ? `I hit $1B/s income!` :
-		 milestone === 'all-divisions' ? `I unlocked all 6 divisions!` :
-		 milestone === 'prestige' ? `I launched a new colony!` :
-		 `Check out my progress!`)
-	);
+	// Fun taglines based on game state
+	function pickTagline(): string {
+		if (headline) return headline;
+		if (milestone === 'colony') return `I just colonized ${planet.name}!`;
+		if (milestone === 'billion') return `I hit $1B/s income!`;
+		if (milestone === 'all-divisions') return `I unlocked all 6 divisions!`;
+		if (milestone === 'prestige') return `I launched a new colony!`;
+
+		// Fun dynamic taglines for "custom" / share progress
+		if (colonyProgress > 0 && colonyProgress < 100) return `${Math.round(colonyProgress)}% to Mars Colony!`;
+		if (gs.marsColony?.completed) return `Mars is mine. What's next?`;
+		if (totalIncomePerSec >= 1e12) return `I'm making ${formatCurrency(totalIncomePerSec)}/s in Moonshot!`;
+		if (totalIncomePerSec >= 1e9) return `Billionaire status achieved 💰`;
+		if (totalIncomePerSec >= 1e6) return `From zero to ${formatCurrency(totalIncomePerSec)}/s!`;
+		if (divisionsUnlocked >= 6) return `All 6 divisions unlocked. Empire mode.`;
+		if (coloniesLaunched > 0) return `${coloniesLaunched} ${coloniesLaunched === 1 ? 'colony' : 'colonies'} launched and counting!`;
+		if (divisionsUnlocked >= 3) return `Building an empire, ${divisionsUnlocked} divisions deep`;
+		return `I'm making ${formatCurrency(totalIncomePerSec)}/s in Moonshot!`;
+	}
+
+	let milestoneHeadline = $derived(pickTagline());
 
 	let shareText = $derived(
 		`🚀 ${milestoneHeadline} in Moonshot!\n` +
 		`${playTimeStr} | ${formatCurrency(totalIncomePerSec)}/s income | ${divisionsUnlocked} divisions` +
 		(coloniesLaunched > 0 ? ` | ${coloniesLaunched} colonies` : '') +
+		(colonyProgress > 0 && colonyProgress < 100 ? ` | ${Math.round(colonyProgress)}% to Mars` : '') +
 		`\nPlay free: https://moonshot.game`
 	);
 
@@ -118,12 +134,12 @@
 
 				<div class="grid grid-cols-2 gap-2 mb-4">
 					<div class="bg-white/5 rounded-xl p-2.5">
-						<div class="text-[10px] text-white/40 uppercase tracking-wider">Time Played</div>
-						<div class="text-sm font-bold text-white font-mono tabular-nums">{playTimeStr}</div>
-					</div>
-					<div class="bg-white/5 rounded-xl p-2.5">
 						<div class="text-[10px] text-white/40 uppercase tracking-wider">Income/s</div>
 						<div class="text-sm font-bold text-bio-green font-mono tabular-nums">{formatCurrency(totalIncomePerSec)}</div>
+					</div>
+					<div class="bg-white/5 rounded-xl p-2.5">
+						<div class="text-[10px] text-white/40 uppercase tracking-wider">Net Worth</div>
+						<div class="text-sm font-bold text-solar-gold font-mono tabular-nums">{formatCurrency(netWorth)}</div>
 					</div>
 					<div class="bg-white/5 rounded-xl p-2.5">
 						<div class="text-[10px] text-white/40 uppercase tracking-wider">Divisions</div>
@@ -131,7 +147,17 @@
 					</div>
 					<div class="bg-white/5 rounded-xl p-2.5">
 						<div class="text-[10px] text-white/40 uppercase tracking-wider">Colonies</div>
-						<div class="text-sm font-bold text-solar-gold font-mono tabular-nums">{coloniesLaunched}</div>
+						<div class="text-sm font-bold text-neural-purple font-mono tabular-nums">{coloniesLaunched}</div>
+					</div>
+					<div class="bg-white/5 rounded-xl p-2.5">
+						<div class="text-[10px] text-white/40 uppercase tracking-wider">Mars Colony</div>
+						<div class="text-sm font-bold font-mono tabular-nums" class:text-bio-green={gs.marsColony?.completed} class:text-white={!gs.marsColony?.completed}>
+							{gs.marsColony?.completed ? '✓ Done' : `${Math.round(colonyProgress)}%`}
+						</div>
+					</div>
+					<div class="bg-white/5 rounded-xl p-2.5">
+						<div class="text-[10px] text-white/40 uppercase tracking-wider">Play Time</div>
+						<div class="text-sm font-bold text-white font-mono tabular-nums">{playTimeStr}</div>
 					</div>
 				</div>
 

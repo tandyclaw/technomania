@@ -1,11 +1,11 @@
 /**
  * FlavorMechanics.ts — Division-specific flavor stat tracking
  *
- * T024: SpaceX launch cadence (launches per month)
+ * T024: Rockets launch cadence (launches per month)
  * T028: Manufacturing production rate (units per week)
  *
  * Each completed production cycle on a division's tiers counts as:
- * - A "launch" for SpaceX
+ * - A "launch" for Rockets
  * - A "unit produced" for Manufacturing
  *
  * Stats are tracked with timestamps so we can calculate rolling windows
@@ -34,7 +34,7 @@ export interface LaunchLogEntry {
 }
 
 export interface FlavorStats {
-	/** SpaceX: recent launch log (capped at 50 entries) */
+	/** Rockets: recent launch log (capped at 50 entries) */
 	launchLog: LaunchLogEntry[];
 	/** Manufacturing: recent production log (capped at 50 entries) */
 	productionLog: LaunchLogEntry[];
@@ -59,7 +59,7 @@ export function getDefaultFlavorStats(): FlavorStats {
 }
 
 /**
- * Count SpaceX launches in the rolling "month" window.
+ * Count Rockets launches in the rolling "month" window.
  */
 export function getLaunchesThisMonth(stats: FlavorStats): number {
 	const cutoff = Date.now() - GAME_MONTH_MS;

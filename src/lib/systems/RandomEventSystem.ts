@@ -37,10 +37,10 @@ interface EventDef {
 
 const DIVISION_NAMES: Record<string, string> = {
 	teslaenergy: 'Energy',
-	spacex: 'SpaceX',
+	spacex: 'Rockets',
 	tesla: 'Manufacturing',
-	ai: 'xAI',
-	tunnels: 'Boring Co.',
+	ai: 'AI',
+	tunnels: 'Tunnels',
 };
 
 function getUnlockedDivisions(): string[] {
@@ -87,10 +87,10 @@ const EVENT_DEFS: EventDef[] = [
 			},
 		],
 	},
-	// 2. SpaceX Contract
+	// 2. Rocket Contract
 	{
 		id: 'spacex_contract',
-		title: 'SpaceX Government Contract',
+		title: 'Government Launch Contract',
 		icon: '🛰️',
 		description: 'NASA wants to partner on a launch contract. Pick your reward.',
 		color: '#4488FF',
@@ -100,14 +100,14 @@ const EVENT_DEFS: EventDef[] = [
 			{
 				label: 'Free Launches (30s)',
 				icon: '🚀',
-				description: 'All SpaceX production costs waived for 30 seconds.',
+				description: 'All Rockets production costs waived for 30 seconds.',
 				action: () => {
 					addBuff({
 						id: 'free_launches',
 						name: 'Free Launches',
 						icon: '🚀',
 						durationMs: 30000,
-						effect: 'Free SpaceX production',
+						effect: 'Free Rockets production',
 						color: 'text-electric-blue',
 					});
 				},
@@ -192,7 +192,7 @@ const EVENT_DEFS: EventDef[] = [
 		id: 'viral_tweet',
 		title: 'Viral Tweet! 🐦',
 		icon: '🐦',
-		description: 'Elon tweeted something and it went mega-viral. Revenue is spiking!',
+		description: 'Your company tweeted something and it went mega-viral. Revenue is spiking!',
 		color: '#44DDFF',
 		timerMs: 0,
 		choices: () => [],
@@ -450,12 +450,12 @@ const EVENT_DEFS: EventDef[] = [
 			}));
 		},
 	},
-	// 16. Elon Goes on Podcast
+	// 16. CEO Goes on Podcast
 	{
 		id: 'podcast_appearance',
-		title: 'Elon on Joe Rogan',
+		title: 'CEO Podcast Appearance',
 		icon: '🎙️',
-		description: 'Elon went on a 3-hour podcast. The internet is buzzing.',
+		description: 'You went on a 3-hour podcast. The internet is buzzing.',
 		color: '#9944FF',
 		timerMs: 0,
 		choices: () => [],

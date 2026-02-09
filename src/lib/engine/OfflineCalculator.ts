@@ -42,7 +42,7 @@ export interface DivisionOfflineReport {
 const TIER_BASE_REVENUE: Record<string, number[]> = {
 	teslaenergy: [0.5, 3, 15, 80, 400, 2000],    // Nuclear Reactor → Wireless Energy Beaming
 	spacex:      [1, 8, 50, 300, 1500, 8000],     // Small Orbital Rocket → Starship Lander
-	tesla:       [2, 12, 60, 350, 2000],           // Workshop → Mars Fabricator
+	tesla:       [2, 12, 60, 350, 2000, 10000],    // Electric Cars → Colony Kit Factory
 	ai:          [3, 20, 100, 600, 3000, 15000],   // Chatbot → AGI
 	tunnels:     [4, 25, 120, 700, 3500, 18000],   // Test Bore → Hyperloop
 	robotics:    [5, 30, 130, 750, 3800, 20000],   // Assembly Bot → General Purpose Robot
@@ -51,7 +51,7 @@ const TIER_BASE_REVENUE: Record<string, number[]> = {
 const TIER_BASE_PRODUCTION: Record<string, number[]> = {
 	teslaenergy: [0.1, 0.5, 2, 10, 50, 200],     // MW generation contribution
 	spacex:      [0.01, 0.05, 0.2, 1, 5, 20],     // Launches/period contribution
-	tesla:       [0.02, 0.1, 0.5, 3, 15],          // Units/period contribution
+	tesla:       [0.02, 0.1, 0.5, 3, 15, 80],      // Units/period contribution
 	ai:          [0.02, 0.1, 0.5, 3, 15, 80],     // AI compute contribution
 	tunnels:     [0.01, 0.08, 0.4, 2, 10, 50],    // Tunnel length contribution
 	robotics:    [0.02, 0.1, 0.5, 3, 12, 60],     // Robot production contribution
@@ -59,7 +59,7 @@ const TIER_BASE_PRODUCTION: Record<string, number[]> = {
 
 const DIVISION_NAMES: Record<string, string> = {
 	teslaenergy: 'Energy',
-	spacex: 'SpaceX',
+	spacex: 'Rockets',
 	tesla: 'Manufacturing',
 	ai: 'AI',
 	tunnels: 'Tunnels',
@@ -105,7 +105,7 @@ export function calculateOfflineProgress(
 		divisionReports.push(report);
 		totalCashEarned += report.cashEarned;
 
-		// Tesla Energy generates power (MW) that other divisions need
+		// Energy generates power (MW) that other divisions need
 		if (divId === 'teslaenergy') {
 			totalPowerGenerated += calculatePowerGeneration(divState, offlineSeconds);
 		}
@@ -183,7 +183,7 @@ function calculateDivisionOffline(
 }
 
 /**
- * Calculate power generation from Tesla Energy during offline time
+ * Calculate power generation from Energy during offline time
  */
 function calculatePowerGeneration(
 	divState: DivisionState,
