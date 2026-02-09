@@ -4,7 +4,7 @@
  *
  * PROGRESSION: cars → mass production → vertical integration → orbital → colony kits
  *
- * - Unlocks at $2,500 (reachable ~5-7 min)
+ * - Unlocks at $2,500 (reachable ~3.5 min)
  * - Medium cycle times (manufacturing is factory work)
  * - This becomes the MONEY ENGINE at scale
  * - Highest revenue potential but steep late-game costs

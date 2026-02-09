@@ -5,11 +5,12 @@
  * PROGRESSION: nuclear → solar → batteries → rocket fuel → space solar → wireless beaming
  * Each tier builds toward powering a Mars colony from Earth and beyond.
  *
- * MATH CHECK:
- * - Start $25, Tier 1 costs $5
- * - Buy 5 reactors, each earns $1/0.6s = $1.67/s
- * - 5 reactors = $8.33/s → reach $500 (Rockets) in ~1 minute
- * - This is the "flying" feeling
+ * MATH CHECK (verified Feb 2026 simulation):
+ * - Start $25, buy 4 reactors immediately ($5 * 1.07^0..3 ≈ $22)
+ * - Each earns $1/0.6s = $1.67/s → 4 reactors = $6.67/s
+ * - Exponential buying: ~68 reactors + 25 solars by ~2min
+ * - Reach $500 (Rockets) at ~1 min, $2500 (Mfg) at ~3.5 min
+ * - This is the "flying" feeling — new division every few minutes
  */
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';

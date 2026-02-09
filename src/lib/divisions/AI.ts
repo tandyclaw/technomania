@@ -2,12 +2,12 @@
  * AI.ts — Artificial Intelligence division
  * From chatbots to AGI — research-hungry, power-hungry
  *
- * PROGRESSION DESIGN:
- * - Unlocks at $50,000 (mid-game)
- * - Research-point consumer (RP cost baked into cash costs, negative RP generation)
+ * PROGRESSION DESIGN (balanced Feb 2026):
+ * - Unlocks at $10,000 (~8 min) — fills the post-Manufacturing gap
  * - Heavy power consumer (data centers)
  * - Medium-fast cycles (software ships faster than hardware)
  * - Revenue scales aggressively at higher tiers
+ * - Chatbot ROI (0.053/s per $) competitive with mid-tier energy items
  */
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
@@ -19,8 +19,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		tooltip: 'Rule-based chatbots are the gateway drug to AI. Low cost, surprisingly useful.',
 		powerMW: -0.05,
 		config: {
-			baseCost: 50000,
-			baseRevenue: 8000,
+			baseCost: 10000,
+			baseRevenue: 1600,
 			cycleDuration: 3,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
@@ -32,8 +32,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		tooltip: 'Training a frontier LLM costs tens of millions in compute. The results are worth it.',
 		powerMW: -0.5,
 		config: {
-			baseCost: 500000,
-			baseRevenue: 80000,
+			baseCost: 100000,
+			baseRevenue: 16000,
 			cycleDuration: 8,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
@@ -45,8 +45,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		tooltip: 'An AI that can process text, images, audio, and video opens entirely new markets.',
 		powerMW: -2,
 		config: {
-			baseCost: 5000000,
-			baseRevenue: 800000,
+			baseCost: 1000000,
+			baseRevenue: 160000,
 			cycleDuration: 20,
 			costMultiplier: 1.13,
 			revenueMultiplier: 1.0
@@ -58,8 +58,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		tooltip: 'Agents don\'t just answer questions — they complete tasks autonomously. This changes everything.',
 		powerMW: -10,
 		config: {
-			baseCost: 50000000,
-			baseRevenue: 8000000,
+			baseCost: 10000000,
+			baseRevenue: 1600000,
 			cycleDuration: 50,
 			costMultiplier: 1.14,
 			revenueMultiplier: 1.0
@@ -71,8 +71,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		tooltip: 'At this scale, your data center consumes as much power as a small city.',
 		powerMW: -50,
 		config: {
-			baseCost: 500000000,
-			baseRevenue: 80000000,
+			baseCost: 100000000,
+			baseRevenue: 16000000,
 			cycleDuration: 120,
 			costMultiplier: 1.16,
 			revenueMultiplier: 1.0
@@ -84,8 +84,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		tooltip: 'An intelligence that can do anything a human can do — and more. Handle with care.',
 		powerMW: -200,
 		config: {
-			baseCost: 5000000000,
-			baseRevenue: 1000000000,
+			baseCost: 1000000000,
+			baseRevenue: 200000000,
 			cycleDuration: 300,
 			costMultiplier: 1.20,
 			revenueMultiplier: 1.0

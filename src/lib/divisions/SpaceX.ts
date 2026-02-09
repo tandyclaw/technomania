@@ -2,12 +2,12 @@
  * Rockets.ts — Space Launch division
  * From small orbital rockets to Mars landers
  *
- * PROGRESSION DESIGN:
- * - Unlocks at $500 (reachable in ~1 min of Energy play)
+ * PROGRESSION DESIGN (verified Feb 2026):
+ * - Unlocks at $500 (~1 min of Energy play)
  * - Slower cycles than Energy (launches are events, not taps)
  * - Higher revenue per cycle compensates for longer waits
  * - Power CONSUMER — need Energy infrastructure to support
- * - Tier 1 costs $30 so you need a few before it's meaningful
+ * - Rocket ROI (0.08) is competitive with Solar (0.089), good second buy
  */
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
