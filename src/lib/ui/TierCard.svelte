@@ -129,6 +129,7 @@
 	let prevProducing = $state(false);
 	let prevProgress = $state(0);
 	let completionPulse = $state(false);
+	let kachingFlash = $state(false);
 
 	// Listen for production completion — only show popups for MANUAL taps (no chief)
 	$effect(() => {
@@ -139,6 +140,10 @@
 			// Pulse animation on cycle complete
 			completionPulse = true;
 			setTimeout(() => { completionPulse = false; }, 600);
+
+			// Ka-ching gold flash
+			kachingFlash = true;
+			setTimeout(() => { kachingFlash = false; }, 400);
 
 			// Only show payout popups when manually tapping (no chief automation)
 			if (revenue > 0 && chiefLevel === 0) {
@@ -189,7 +194,8 @@
 				: 'bg-bg-secondary/60 border-white/5'
 			: 'bg-bg-secondary/20 border-white/[0.02] opacity-40'}
 		{rarity.name === 'legendary' ? 'legendary-pulse' : ''}
-		{completionPulse ? 'completion-pulse' : ''}"
+		{completionPulse ? 'completion-pulse' : ''}
+		{kachingFlash ? 'kaching-flash' : ''}"
 	style="{tier.unlocked && tier.count > 0
 		? `border-color: ${rarity.color}30; box-shadow: ${rarity.glow};`
 		: ''}"
@@ -449,10 +455,23 @@
 		animation: completionFlash 0.6s ease-out;
 	}
 
+	.completion-pulse {
+		animation: completionFlash 0.6s ease-out;
+	}
+
 	@keyframes completionFlash {
-		0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.15); }
-		50% { box-shadow: 0 0 12px 2px rgba(255, 255, 255, 0.08); }
-		100% { box-shadow: none; }
+		0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); }
+		30% { transform: scale(1.015); box-shadow: 0 0 20px 4px rgba(255, 255, 255, 0.12); }
+		100% { transform: scale(1); box-shadow: none; }
+	}
+
+	.kaching-flash {
+		animation: kachingGold 0.4s ease-out;
+	}
+
+	@keyframes kachingGold {
+		0% { border-color: rgba(255, 215, 0, 0.8); box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+		100% { border-color: transparent; box-shadow: none; }
 	}
 
 	@keyframes legendaryGlow {

@@ -35,12 +35,31 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
 </svelte:head>
 
-<div class="min-h-screen bg-bg-primary flex flex-col overflow-x-hidden">
+<div class="min-h-screen bg-bg-primary flex flex-col overflow-x-hidden scroll-smooth">
 	<!-- Hero -->
 	<header class="relative overflow-hidden">
 		<div class="absolute inset-0 opacity-10">
 			<div class="grid-bg"></div>
 		</div>
+
+		<!-- Animated stars -->
+		<div class="stars-container absolute inset-0 overflow-hidden pointer-events-none">
+			{#each Array(40) as _, i}
+				<div
+					class="star absolute rounded-full bg-white"
+					style="
+						width: {1 + Math.random() * 2}px;
+						height: {1 + Math.random() * 2}px;
+						top: {Math.random() * 100}%;
+						left: {Math.random() * 100}%;
+						animation: twinkle {2 + Math.random() * 4}s ease-in-out {Math.random() * 3}s infinite;
+					"
+				></div>
+			{/each}
+		</div>
+
+		<!-- Floating rocket -->
+		<div class="rocket-float absolute text-4xl opacity-10 pointer-events-none select-none" aria-hidden="true">🚀</div>
 
 		<!-- Floating orbs -->
 		<div class="absolute top-20 left-[10%] w-64 h-64 rounded-full blur-[100px] opacity-20 bg-electric-blue"></div>
@@ -111,7 +130,7 @@
 					<p class="text-xs text-text-muted leading-relaxed">{div.desc}</p>
 					<div
 						class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-						style="box-shadow: inset 0 0 30px {div.color}12, 0 0 15px {div.color}06"
+						style="box-shadow: inset 0 0 40px {div.color}30, 0 0 25px {div.color}20; border: 1px solid {div.color}40;"
 					></div>
 				</div>
 			{/each}
@@ -168,6 +187,32 @@
 		</div>
 	</section>
 
+	<!-- How Long -->
+	<section class="max-w-5xl mx-auto px-4 py-12 md:py-20 w-full">
+		<h2 class="text-center text-text-secondary text-xs font-mono tracking-[0.3em] uppercase mb-8">
+			How Long Will It Take?
+		</h2>
+		<div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 max-w-3xl mx-auto">
+			<div class="text-center">
+				<div class="text-2xl mb-1">💰</div>
+				<p class="text-sm font-semibold text-text-primary">First Million</p>
+				<p class="text-xs text-text-muted mt-0.5">~10 min</p>
+			</div>
+			<div class="text-text-muted text-lg hidden md:block">·</div>
+			<div class="text-center">
+				<div class="text-2xl mb-1">🪐</div>
+				<p class="text-sm font-semibold text-text-primary">First Colony</p>
+				<p class="text-xs text-text-muted mt-0.5">~2 hours</p>
+			</div>
+			<div class="text-text-muted text-lg hidden md:block">·</div>
+			<div class="text-center">
+				<div class="text-2xl mb-1">🌟</div>
+				<p class="text-sm font-semibold text-text-primary">Kepler-452b</p>
+				<p class="text-xs text-text-muted mt-0.5">Good luck 😏</p>
+			</div>
+		</div>
+	</section>
+
 	<!-- CTA -->
 	<section class="max-w-5xl mx-auto px-4 py-16 md:py-24 w-full text-center">
 		<p class="text-text-muted text-sm mb-4 font-mono">Ready to build the future?</p>
@@ -206,5 +251,23 @@
 	@keyframes grid-scroll {
 		0% { transform: translate(0, 0); }
 		100% { transform: translate(50px, 50px); }
+	}
+
+	@keyframes twinkle {
+		0%, 100% { opacity: 0.2; }
+		50% { opacity: 0.9; }
+	}
+
+	.rocket-float {
+		right: 15%;
+		bottom: -40px;
+		animation: rocketRise 20s linear infinite;
+	}
+
+	@keyframes rocketRise {
+		0% { transform: translateY(0) rotate(-30deg); opacity: 0; }
+		10% { opacity: 0.1; }
+		80% { opacity: 0.1; }
+		100% { transform: translateY(-600px) rotate(-30deg); opacity: 0; }
 	}
 </style>

@@ -71,6 +71,14 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'tunnel_cost_1', name: 'Modular Segments', description: 'Tunnel tiers cost 20% less', category: 'cost', cost: 750_000, target: 'tunnels', tierIndex: -1, value: 0.8 },
 	{ id: 'tunnel_speed_3', name: 'Vacuum Tube Tech', description: '3x Hyperloop speed', category: 'speed', cost: 75_000_000, target: 'tunnels', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tunnels', tierIndex: 5, threshold: 25 } },
 
+	// === ROBOTICS UPGRADES (6) ===
+	{ id: 'robot_speed_1', name: 'Servo Overclocking', description: '2x Assembly Bot speed', category: 'speed', cost: 40_000, target: 'robotics', tierIndex: 0, value: 2 },
+	{ id: 'robot_rev_1', name: 'Logistics Contracts', description: '3x Warehouse Drone revenue', category: 'revenue', cost: 200_000, target: 'robotics', tierIndex: 1, value: 3 },
+	{ id: 'robot_speed_2', name: 'Motion Planning AI', description: '2x all Robotics speed', category: 'speed', cost: 4_000_000, target: 'robotics', tierIndex: -1, value: 2 },
+	{ id: 'robot_rev_2', name: 'Consumer Sales', description: '3x Home Robot revenue', category: 'revenue', cost: 20_000_000, target: 'robotics', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'robotics', tierIndex: 3, count: 10 } },
+	{ id: 'robot_cost_1', name: 'Standardized Parts', description: 'Robotics tiers cost 20% less', category: 'cost', cost: 1_000_000, target: 'robotics', tierIndex: -1, value: 0.8 },
+	{ id: 'robot_speed_3', name: 'Self-Replicating Bots', description: '5x General Purpose Robot speed', category: 'speed', cost: 200_000_000, target: 'robotics', tierIndex: 5, value: 5, requiresMilestone: { divisionId: 'robotics', tierIndex: 5, threshold: 25 } },
+
 	// === GLOBAL UPGRADES (6) ===
 	{ id: 'global_rev_1', name: 'Brand Power', description: '2x all revenue', category: 'revenue', cost: 5_000_000, target: 'all', tierIndex: -1, value: 2 },
 	{ id: 'global_speed_1', name: 'Operations Excellence', description: '2x all speed', category: 'speed', cost: 10_000_000, target: 'all', tierIndex: -1, value: 2 },

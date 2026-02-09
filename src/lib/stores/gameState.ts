@@ -53,6 +53,19 @@ export function getNgPlusCostMultiplier(ngPlusLevel: number): number {
 	return Math.pow(1.5, ngPlusLevel);
 }
 
+export interface PlanetBestTime {
+	planetIndex: number;
+	planetName: string;
+	timeMs: number; // time from colony start to launch
+}
+
+export interface HallOfFameStats {
+	fastestColonyTimes: PlanetBestTime[]; // best time per planet
+	highestIncomePerSec: number;
+	mostColoniesLaunched: number;
+	totalCashAllTime: number;
+}
+
 export interface GameSettings {
 	musicEnabled: boolean;
 	sfxEnabled: boolean;
@@ -159,6 +172,13 @@ export interface GameState {
 	// New Game+
 	ngPlusLevel: number;
 
+	// Daily Rewards
+	dailyRewardLastClaim: number; // timestamp of last claim
+	dailyRewardStreak: number; // consecutive days
+
+	// Hall of Fame (personal bests)
+	hallOfFame: HallOfFameStats;
+
 	// Meta
 	achievements: string[];
 	stats: GameStats;
@@ -235,6 +255,16 @@ export function createDefaultState(): GameState {
 		},
 
 		ngPlusLevel: 0,
+
+		dailyRewardLastClaim: 0,
+		dailyRewardStreak: 0,
+
+		hallOfFame: {
+			fastestColonyTimes: [],
+			highestIncomePerSec: 0,
+			mostColoniesLaunched: 0,
+			totalCashAllTime: 0,
+		},
 
 		achievements: [],
 		stats: {

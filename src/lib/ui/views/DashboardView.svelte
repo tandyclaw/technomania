@@ -86,7 +86,7 @@
 	<!-- Welcome header -->
 	<div>
 		<div class="flex items-center gap-2">
-			<h1 class="text-xl font-bold text-text-primary">Moonshot</h1>
+			<h1 class="text-xl font-bold text-text-primary">{currentPlanet.emoji} Moonshot</h1>
 			{#if ngPlusLevel > 0}
 				<span
 					class="px-2 py-0.5 rounded-md text-xs font-bold"
@@ -177,8 +177,8 @@
 		</div>
 		<div class="w-full h-3 rounded-full bg-bg-tertiary overflow-hidden">
 			<div
-				class="h-full rounded-full transition-all duration-500"
-				style="width: {marsProgress}%; background: linear-gradient(90deg, {currentPlanet.color}, {nextPlanet.color});"
+				class="h-full rounded-full transition-all duration-500 colony-progress-bar"
+				style="width: {marsProgress}%; background: linear-gradient(90deg, {currentPlanet.color}, {nextPlanet.color}); --bar-color-1: {currentPlanet.color}; --bar-color-2: {nextPlanet.color};"
 			></div>
 		</div>
 		<p class="text-[10px] text-text-muted mt-1.5">
