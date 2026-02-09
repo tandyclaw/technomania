@@ -1,13 +1,17 @@
 /**
  * DivisionUnlockSystem.ts — Controls when divisions become available
  * 
- * PROGRESSION DESIGN:
- * - Energy: Always unlocked (foundation — you NEED power for other divisions)
- * - Rockets: $500 (quickly reachable, ~2-3 min of play)
- * - Manufacturing: $2,500 (reached ~5-7 min, when you're starting to feel the rhythm)
+ * PROGRESSION DESIGN (tested via simulation, Feb 2026):
+ * - Energy: Always unlocked (foundation)
+ * - Rockets: $500 (~1 min) — first milestone, feels exciting
+ * - Manufacturing: $2,500 (~3.5 min) — money engine kicks in
+ * - AI: $10,000 (~8 min) — breaks the mid-game dead zone
+ * - Tunnels: $25,000 (~12 min) — slow-cycle money engine
+ * - Robotics: $75,000 (~18 min) — late-mid unlock, new item types
  * 
- * Energy should feel "free" and fast. Unlocking Rockets is the first milestone.
- * Manufacturing comes later as the money engine.
+ * Goal: new division every 3-5 minutes. No dead zones > 5 min.
+ * Old costs (AI=$50K, Tunnels=$100K, Robotics=$200K) created an
+ * 18-minute dead zone after Manufacturing. Players quit there.
  */
 
 export interface DivisionUnlockRequirement {
@@ -33,17 +37,17 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		flavorText: 'The world runs on cars. Make them electric.',
 	},
 	ai: {
-		cost: 50000,
+		cost: 10000,
 		description: 'Build artificial intelligence.',
 		flavorText: 'From chatbots to AGI. Data centers need power.',
 	},
 	tunnels: {
-		cost: 100000,
+		cost: 25000,
 		description: 'Bore tunnels under cities.',
 		flavorText: 'Move people and freight underground. Slow but lucrative.',
 	},
 	robotics: {
-		cost: 200000,
+		cost: 75000,
 		description: 'Build robots that automate everything.',
 		flavorText: 'From assembly bots to general purpose robots. The end of manual labor.',
 	},

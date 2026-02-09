@@ -112,8 +112,8 @@ body {
 	}
 }
 
-/* Touch-friendly defaults */
-button, a, [role="button"] {
+/* Touch-friendly defaults — manipulation disables double-tap zoom */
+* {
 	touch-action: manipulation;
 	-webkit-tap-highlight-color: transparent;
 }
