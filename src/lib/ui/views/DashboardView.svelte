@@ -12,6 +12,8 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import IncomeSparkline from '$lib/ui/IncomeSparkline.svelte';
 	import { getPlanetInfo } from '$lib/systems/PrestigeSystem';
+	import { contractState } from '$lib/systems/ContractSystem';
+	import type { Contract } from '$lib/systems/ContractSystem';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
 
 	// Division ordering for display
@@ -79,6 +81,20 @@
 
 	let powerBalance = $derived(state.powerGenerated - state.powerConsumed);
 	let prestigeMultiplier = $derived(1 + colonyTech * 0.03);
+
+	let activeContracts = $derived($contractState.active.filter((c: Contract) => !c.completed && !c.expired));
+	let dashNow = $state(Date.now());
+
+	$effect(() => {
+		const interval = setInterval(() => { dashNow = Date.now(); }, 500);
+		return () => clearInterval(interval);
+	});
+
+	function contractTimeLeft(c: Contract): string {
+		const remaining = Math.max(0, c.timeLimitMs - (dashNow - c.createdAt));
+		const sec = Math.ceil(remaining / 1000);
+		return `${Math.floor(sec / 60)}:${(sec % 60).toString().padStart(2, '0')}`;
+	}
 
 	function navigateToDivision(divId: string) {
 		activeTab.set(divId);
@@ -166,6 +182,36 @@
 
 	<!-- Synergies -->
 	<SynergyPanel />
+
+	<!-- Active Contracts (compact) -->
+	{#if activeContracts.length > 0}
+		<div>
+			<div class="flex items-center justify-between mb-2">
+				<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">Active Contracts</h2>
+				<button onclick={() => activeTab.set('contracts')} class="text-[10px] text-electric-blue">View All →</button>
+			</div>
+			<div class="space-y-2">
+				{#each activeContracts as contract (contract.id)}
+					{@const pct = contract.target.target > 0 ? Math.min(100, (contract.progress / contract.target.target) * 100) : 0}
+					<button
+						onclick={() => activeTab.set('contracts')}
+						class="w-full text-left bg-bg-secondary/40 rounded-lg border border-white/5 p-3 flex items-center gap-2.5 hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
+					>
+						<span class="text-lg shrink-0">{contract.icon}</span>
+						<div class="flex-1 min-w-0">
+							<p class="text-xs text-text-primary truncate">{contract.description}</p>
+							<div class="w-full h-1 rounded-full bg-bg-tertiary mt-1 overflow-hidden">
+								<div class="h-full rounded-full bg-electric-blue transition-all duration-300" style="width: {pct}%;"></div>
+							</div>
+						</div>
+						<span class="text-[10px] font-bold tabular-nums font-mono text-text-muted shrink-0">
+							{contractTimeLeft(contract)}
+						</span>
+					</button>
+				{/each}
+			</div>
+		</div>
+	{/if}
 
 	<!-- Colony Progress -->
 	<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4">

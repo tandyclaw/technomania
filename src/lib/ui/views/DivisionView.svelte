@@ -23,10 +23,12 @@
 
 	function handleBuyTier(tierIndex: number) {
 		const qty = $buyQuantity;
+		console.log('[DEBUG] handleBuyTier', { tierIndex, qty, divisionId });
 		if (qty === 1) {
 			purchaseTier(divisionId, tierIndex);
 		} else {
-			purchaseTierBulk(divisionId, tierIndex, qty);
+			const result = purchaseTierBulk(divisionId, tierIndex, qty);
+			console.log('[DEBUG] purchaseTierBulk result:', result);
 		}
 	}
 

@@ -27,6 +27,8 @@
 	import { tickRandomEvents, initRandomEventListeners } from '$lib/systems/RandomEventSystem';
 	import EventModal from '$lib/ui/EventModal.svelte';
 	import { flashSaveIndicator } from '$lib/stores/saveIndicator';
+	import { tickContracts, initContractListeners, loadContractState } from '$lib/systems/ContractSystem';
+	import NewsTicker from '$lib/ui/NewsTicker.svelte';
 
 	let { children } = $props();
 	let loading = $state(true);
@@ -45,6 +47,8 @@
 	let cleanupHaptics: (() => void)[] = [];
 	let cleanupRandomEvents: (() => void) | null = null;
 	let cleanupEventTick: (() => void) | null = null;
+	let cleanupContracts: (() => void) | null = null;
+	let cleanupContractTick: (() => void) | null = null;
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
@@ -80,6 +84,12 @@
 			document.documentElement.classList.add('light');
 		}
 
+		// Contracts system
+		cleanupContracts = initContractListeners();
+		cleanupContractTick = gameLoop.onTick((deltaMs) => {
+			tickContracts(deltaMs);
+		});
+
 		// Random events system
 		cleanupRandomEvents = initRandomEventListeners();
 		cleanupEventTick = gameLoop.onTick((deltaMs) => {
@@ -97,6 +107,8 @@
 		cleanupHaptics.forEach(fn => fn());
 		cleanupRandomEvents?.();
 		cleanupEventTick?.();
+		cleanupContracts?.();
+		cleanupContractTick?.();
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -265,6 +277,7 @@
 	<div class="game-shell min-h-screen bg-bg-primary flex flex-col">
 		<!-- Fixed top resource bar -->
 		<ResourceBar />
+		<NewsTicker />
 		<SaveIndicator />
 		<ToastContainer />
 		<FloatingText />

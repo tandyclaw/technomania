@@ -19,6 +19,8 @@
 			<ResearchView />
 		{:else if $activeTab === 'prestige'}
 			<PrestigeView />
+		{:else if $activeTab === 'contracts'}
+			<ContractsView />
 		{:else if $activeTab === 'upgrades'}
 			<UpgradesView />
 		{:else if $activeTab === 'treasury'}

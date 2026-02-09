@@ -7,6 +7,14 @@
 	let revMult = $derived($contractRevenueMult);
 	let now = $state(Date.now());
 
+	function formatCompact(n: number): string {
+		if (n >= 1e12) return (n / 1e12).toFixed(1) + 'T';
+		if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+		if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+		if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+		return n.toFixed(0);
+	}
+
 	// Update timer every 200ms
 	$effect(() => {
 		const interval = setInterval(() => {
@@ -82,12 +90,7 @@
 				{@const tPct = timePct(contract)}
 				{@const isUrgent = tPct > 75 && !contract.completed && !contract.expired}
 				<div
-					class="bg-bg-secondary/40 rounded-xl border overflow-hidden transition-all duration-300"
-					class:border-bio-green/30={contract.completed}
-					class:border-rocket-red/30={contract.expired}
-					class:border-solar-gold/20={isUrgent && !contract.completed && !contract.expired}
-					class:border-white/5={!contract.completed && !contract.expired && !isUrgent}
-					class:opacity-50={contract.expired}
+					class="bg-bg-secondary/40 rounded-xl border overflow-hidden transition-all duration-300 {contract.completed ? 'border-green-500/30' : contract.expired ? 'border-red-500/30 opacity-50' : isUrgent ? 'border-yellow-500/20' : 'border-white/5'}"
 				>
 					<div class="p-4">
 						<div class="flex items-start gap-3">
@@ -150,12 +153,4 @@
 	{/if}
 </div>
 
-<script context="module" lang="ts">
-	function formatCompact(n: number): string {
-		if (n >= 1e12) return (n / 1e12).toFixed(1) + 'T';
-		if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
-		if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-		if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
-		return n.toFixed(0);
-	}
-</script>
+<!-- end -->

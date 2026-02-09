@@ -7,6 +7,7 @@ import { get } from 'svelte/store';
 import { gameState, createDefaultState, type GameState, type DivisionState } from '$lib/stores/gameState';
 import { gameLoop } from './GameLoop';
 import { saveGame, loadGame, deleteSave } from './SaveManager';
+import { loadContractState } from '$lib/systems/ContractSystem';
 import { eventBus } from './EventBus';
 import { calculateOfflineProgress, applyOfflineReport, type OfflineReport } from './OfflineCalculator';
 import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
@@ -95,6 +96,11 @@ class GameManager {
 
 			// Apply loaded state
 			gameState.set(migrated);
+
+			// Restore contract state
+			if (migrated.contracts) {
+				loadContractState(migrated.contracts as Parameters<typeof loadContractState>[0]);
+			}
 		} else {
 			// New game — start fresh
 			isNewGame = true;

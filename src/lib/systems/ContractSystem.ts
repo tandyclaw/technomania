@@ -280,12 +280,15 @@ export function tickContracts(deltaMs: number): void {
 	}
 
 	if (changed || spawnTimerMs !== cs.spawnTimerMs) {
-		contractState.set({
+		const newCs = {
 			...cs,
 			active: filtered,
 			spawnTimerMs,
 			nextSpawnMs,
-		});
+		};
+		contractState.set(newCs);
+		// Sync to gameState for persistence
+		gameState.update((s) => ({ ...s, contracts: newCs }));
 	}
 }
 
