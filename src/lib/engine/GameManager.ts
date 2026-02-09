@@ -180,21 +180,21 @@ class GameManager {
 
 	/**
 	 * Prestige reset (IPO) — keep permanent progress, reset everything else
-	 * Returns the amount of Founder's Vision earned
+	 * Returns the amount of Colony Tech earned
 	 */
 	prestige(): number {
 		const current = get(gameState);
 
-		// Calculate Founder's Vision earned from total value
-		const visionEarned = this.calculatePrestigeVision(current);
+		// Calculate Colony Tech earned from total value
+		const techEarned = this.calculatePrestigeVision(current);
 
-		if (visionEarned <= 0) return 0;
+		if (techEarned <= 0) return 0;
 
 		// Create fresh state but preserve permanent progress
 		const fresh = createDefaultState();
 
 		// Preserve across prestige
-		fresh.foundersVision = current.foundersVision + visionEarned;
+		fresh.colonyTech = current.colonyTech + techEarned;
 		fresh.prestigeCount = current.prestigeCount + 1;
 		fresh.unlockedResearch = [...current.unlockedResearch]; // Keep research
 		fresh.achievements = [...current.achievements]; // Keep achievements
@@ -224,14 +224,14 @@ class GameManager {
 		resetCelebrations();
 
 		eventBus.emit('prestige:complete', {
-			visionEarned,
-			totalVision: fresh.foundersVision,
+			techEarned,
+			totalColonyTech: fresh.colonyTech,
 		});
 
 		// Auto-save after prestige
 		this.save();
 
-		return visionEarned;
+		return techEarned;
 	}
 
 	/**
@@ -268,26 +268,28 @@ class GameManager {
 	}
 
 	/**
-	 * Calculate how much Founder's Vision a prestige would yield
+	 * Calculate how much Colony Tech a prestige would yield
 	 */
 	calculatePrestigeVision(state?: GameState): number {
 		const s = state ?? get(gameState);
 
-		// Base formula: log2(totalValueEarned / 1,000,000,000) rounded down
-		// Minimum threshold: $1B total value earned
-		if (s.totalValueEarned < 1_000_000_000) return 0;
+		// Base formula: log2(totalValueEarned / 100,000,000) rounded down
+		// Minimum threshold: $100M total value earned
+		if (s.totalValueEarned < 100_000_000) return 0;
 
-		const vision = Math.floor(Math.log2(s.totalValueEarned / 1_000_000_000));
-		return Math.max(0, vision);
+		// Each 2x earnings = +1 Colony Tech
+		// $100M = 0, $200M = 1, $400M = 2, $800M = 3, etc.
+		const tech = Math.floor(Math.log2(s.totalValueEarned / 100_000_000));
+		return Math.max(0, tech);
 	}
 
 	/**
-	 * Get the prestige multiplier from Founder's Vision
-	 * Each Vision point = +10% to all production/revenue
+	 * Get the prestige multiplier from Colony Tech
+	 * Each Colony Tech point = +3% production speed
 	 */
 	getPrestigeMultiplier(state?: GameState): number {
 		const s = state ?? get(gameState);
-		return 1 + s.foundersVision * 0.1;
+		return 1 + s.colonyTech * 0.03;
 	}
 
 	/**
@@ -317,7 +319,7 @@ class GameManager {
 			migrated.unlockedResearch = migrated.unlockedResearch ?? [];
 			migrated.totalValueEarned = migrated.totalValueEarned ?? 0;
 			migrated.prestigeCount = migrated.prestigeCount ?? 0;
-			migrated.foundersVision = migrated.foundersVision ?? 0;
+			migrated.colonyTech = migrated.colonyTech ?? 0;
 		}
 
 		// Version 1 → Version 2: Tesla gets 6th tier (Cybertruck), cycleDuration replaces baseTime

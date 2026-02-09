@@ -96,7 +96,7 @@ export interface GameState {
 	cash: number;
 	researchPoints: number;
 	influence: number;
-	foundersVision: number;
+	colonyTech: number;
 
 	// Power
 	powerGenerated: number; // MW
@@ -141,7 +141,7 @@ export function createDefaultState(): GameState {
 		cash: 25,
 		researchPoints: 0,
 		influence: 0,
-		foundersVision: 0,
+		colonyTech: 0,
 
 		powerGenerated: 0,
 		powerConsumed: 0,

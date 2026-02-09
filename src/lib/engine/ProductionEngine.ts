@@ -33,12 +33,12 @@ import { queueSynergyCelebration } from '$lib/stores/synergyCelebrationStore';
 import { eventBus } from './EventBus';
 
 /**
- * Calculate the prestige multiplier from Founder's Vision.
- * Each Vision point = +10% to all production/revenue.
+ * Calculate the prestige multiplier from Colony Tech.
+ * Each Colony Tech point = +3% production speed.
  * Inlined here to avoid circular dependency with GameManager.
  */
 function getPrestigeMultiplier(state: GameState): number {
-	return 1 + (state.foundersVision ?? 0) * 0.1;
+	return 1 + (state.colonyTech ?? 0) * 0.03;
 }
 
 const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla'] as const;
@@ -124,7 +124,7 @@ export function tickProduction(deltaMs: number): void {
 		const newState = cloneState(state);
 		let changed = false;
 
-		// Calculate prestige multiplier (Founder's Vision: +10% per point)
+		// Calculate prestige multiplier (Colony Tech: +10% per point)
 		const prestigeMultiplier = getPrestigeMultiplier(state);
 
 		// Calculate power balance for efficiency multiplier
@@ -211,7 +211,7 @@ export function tickProduction(deltaMs: number): void {
 				if (tier.progress >= 1.0) {
 					const completedCycles = Math.floor(tier.progress);
 					const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-					// Apply synergy revenue boost + prestige (Founder's Vision) multiplier
+					// Apply synergy revenue boost + prestige (Colony Tech) multiplier
 					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier;
 
 					newState.cash += totalRevenue;

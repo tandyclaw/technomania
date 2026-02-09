@@ -1,9 +1,13 @@
 /**
  * DivisionUnlockSystem.ts — Controls when divisions become available
  * 
- * Energy: Always unlocked (the foundation — you need power for everything)
- * Rockets: Unlocks for $1,000 (start your space program)
- * EVs: Unlocks for $10,000 (build your car company)
+ * PROGRESSION DESIGN:
+ * - Energy: Always unlocked (foundation — you NEED power for other divisions)
+ * - Rockets: $500 (quickly reachable, ~2-3 min of play)
+ * - EVs: $2,500 (reached ~5-7 min, when you're starting to feel the rhythm)
+ * 
+ * Energy should feel "free" and fast. Unlocking Rockets is the first milestone.
+ * EVs come later as the money engine.
  */
 
 export interface DivisionUnlockRequirement {
@@ -19,13 +23,13 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		flavorText: 'Sustainable energy is the first step. Power your dreams.',
 	},
 	spacex: {
-		cost: 1000,
-		description: 'Start your rocket program. Failure is an option — and expected.',
-		flavorText: 'Getting to orbit is hard. Getting to Mars is harder. Let\'s begin.',
+		cost: 500,
+		description: 'Start your rocket program.',
+		flavorText: 'Getting to orbit is hard. Getting to Mars is harder.',
 	},
 	tesla: {
-		cost: 10000,
-		description: 'Build electric vehicles. End the age of oil.',
+		cost: 2500,
+		description: 'Build electric vehicles at scale.',
 		flavorText: 'The world runs on cars. Make them electric.',
 	},
 };

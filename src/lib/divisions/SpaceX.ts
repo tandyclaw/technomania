@@ -1,10 +1,13 @@
 /**
  * Rockets.ts — Space Launch division
- * Progression from small orbital rockets to Mars landers
- * Each facility CONSUMES power (negative powerMW = consumer)
+ * From small orbital rockets to Mars landers
  *
- * cycleDuration = how long one production cycle takes (in seconds)
- * Revenue is earned ONLY when the cycle completes (Adventure Capitalist style)
+ * PROGRESSION DESIGN:
+ * - Unlocks at $500 (reachable in ~1 min of Energy play)
+ * - Slower cycles than Energy (launches are events, not taps)
+ * - Higher revenue per cycle compensates for longer waits
+ * - Power CONSUMER — need Energy infrastructure to support
+ * - Tier 1 costs $30 so you need a few before it's meaningful
  */
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
@@ -12,45 +15,81 @@ import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 export const SPACEX_TIERS: { name: string; description: string; tooltip: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
 		name: 'Small Orbital Rocket',
-		description: 'Your first orbital vehicle. Expect failures before success.',
-		tooltip: 'Small orbital rockets are the proving ground for any space program. Most early attempts fail — it took multiple tries before the first private company reached orbit. Each failure teaches you something.',
-		powerMW: -0.001,
-		config: { baseCost: 4, baseRevenue: 1, cycleDuration: 0.6, costMultiplier: 1.07, revenueMultiplier: 1.0 }
+		description: 'Your first orbital vehicle. Expect failures.',
+		tooltip: 'Small orbital rockets are the proving ground for any space program. Most early attempts fail.',
+		powerMW: -0.01,
+		config: {
+			baseCost: 30,
+			baseRevenue: 6,
+			cycleDuration: 2.5,      // Launches take time
+			costMultiplier: 1.08,
+			revenueMultiplier: 1.0
+		}
 	},
 	{
 		name: 'Reusable Booster',
 		description: 'Land and refly. This changes everything.',
-		tooltip: 'Reusable rockets cut launch costs by 90%. Instead of throwing away a $50M booster, you land it and fly again. A single booster can fly 20+ times. This is what makes space economically viable.',
-		powerMW: -0.01,
-		config: { baseCost: 60, baseRevenue: 8, cycleDuration: 3, costMultiplier: 1.15, revenueMultiplier: 1.0 }
+		tooltip: 'Reusable rockets cut launch costs by 90%. A single booster can fly 20+ times.',
+		powerMW: -0.05,
+		config: {
+			baseCost: 250,
+			baseRevenue: 50,
+			cycleDuration: 6,
+			costMultiplier: 1.10,
+			revenueMultiplier: 1.0
+		}
 	},
 	{
 		name: 'Crew Capsule',
 		description: 'Carry humans to orbit. Life support is hard.',
-		tooltip: 'Building a spacecraft that keeps humans alive in the vacuum of space is incredibly difficult. Redundant systems, abort capabilities, re-entry heat shields — every detail matters when lives are at stake.',
-		powerMW: -0.1,
-		config: { baseCost: 720, baseRevenue: 90, cycleDuration: 6, costMultiplier: 1.14, revenueMultiplier: 1.0 }
+		tooltip: 'Building a spacecraft that keeps humans alive in vacuum is incredibly difficult.',
+		powerMW: -0.2,
+		config: {
+			baseCost: 2000,
+			baseRevenue: 400,
+			cycleDuration: 15,
+			costMultiplier: 1.12,
+			revenueMultiplier: 1.0
+		}
 	},
 	{
 		name: 'Heavy Lift Vehicle',
-		description: 'Triple-core monster. Massive payloads to deep space.',
-		tooltip: 'Heavy lift rockets can send large payloads beyond Earth orbit — to the Moon, asteroids, or Mars. Three cores firing together produce incredible thrust, but synchronizing them is an engineering nightmare.',
-		powerMW: -0.5,
-		config: { baseCost: 8640, baseRevenue: 1080, cycleDuration: 12, costMultiplier: 1.12, revenueMultiplier: 1.0 }
+		description: 'Triple-core monster. Massive payloads.',
+		tooltip: 'Heavy lift rockets can send large payloads beyond Earth orbit — to the Moon or Mars.',
+		powerMW: -1,
+		config: {
+			baseCost: 15000,
+			baseRevenue: 3000,
+			cycleDuration: 35,
+			costMultiplier: 1.13,
+			revenueMultiplier: 1.0
+		}
 	},
 	{
 		name: 'Super Heavy Starship',
-		description: 'Fully reusable. 100+ tons to orbit. The Mars vehicle.',
-		tooltip: 'A fully reusable super-heavy rocket changes everything. 100+ tons to orbit means you can launch entire space stations, or enough supplies to start a Mars colony. This is the vehicle that makes humanity multiplanetary.',
-		powerMW: -2,
-		config: { baseCost: 103680, baseRevenue: 12960, cycleDuration: 36, costMultiplier: 1.11, revenueMultiplier: 1.0 }
+		description: 'Fully reusable. 100+ tons to orbit.',
+		tooltip: 'A fully reusable super-heavy rocket changes everything. This is the Mars vehicle.',
+		powerMW: -5,
+		config: {
+			baseCost: 120000,
+			baseRevenue: 25000,
+			cycleDuration: 90,
+			costMultiplier: 1.15,
+			revenueMultiplier: 1.0
+		}
 	},
 	{
 		name: 'Mars Lander',
 		description: 'Touch down on the red planet. The holy grail.',
-		tooltip: 'Landing on Mars is brutally hard — thin atmosphere means parachutes barely work, but enough air that you need heat shields. A successful Mars lander carrying 100 tons of cargo is how you bootstrap a colony.',
-		powerMW: -10,
-		config: { baseCost: 1244160, baseRevenue: 155520, cycleDuration: 96, costMultiplier: 1.10, revenueMultiplier: 1.0 }
+		tooltip: 'Landing on Mars is brutally hard. A successful lander is how you bootstrap a colony.',
+		powerMW: -20,
+		config: {
+			baseCost: 1000000,
+			baseRevenue: 200000,
+			cycleDuration: 180,      // 3 minutes — a real event
+			costMultiplier: 1.17,
+			revenueMultiplier: 1.0
+		}
 	}
 ];
 

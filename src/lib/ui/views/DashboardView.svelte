@@ -13,7 +13,7 @@
 
 	let state = $derived($gameState);
 	let prestigeCount = $derived(state.prestigeCount);
-	let foundersVision = $derived(state.foundersVision);
+	let colonyTech = $derived(state.colonyTech);
 
 	// Calculate per-division income/s
 	function getDivisionIncomePerSec(divMeta: DivisionMeta, divState: DivisionState): number {
@@ -54,7 +54,7 @@
 	);
 
 	let powerBalance = $derived(state.powerGenerated - state.powerConsumed);
-	let prestigeMultiplier = $derived(1 + foundersVision * 0.1);
+	let prestigeMultiplier = $derived(1 + colonyTech * 0.03);
 
 	function navigateToDivision(divId: string) {
 		activeTab.set(divId);
@@ -117,7 +117,7 @@
 		<div class="bg-bg-secondary/60 rounded-xl p-3 border border-white/[0.03]">
 			<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Prestige</div>
 			<div class="text-lg font-bold text-neural-purple tabular-nums mt-0.5">
-				{#if foundersVision > 0}
+				{#if colonyTech > 0}
 					×{prestigeMultiplier.toFixed(1)}
 				{:else}
 					<span class="text-text-muted">—</span>
