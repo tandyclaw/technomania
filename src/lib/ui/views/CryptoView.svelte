@@ -32,10 +32,14 @@
 	let tweetTimeLeft = $derived(Math.ceil(crypto.elonTweetPumpMs / 1000));
 	let tweetPumpPercent = $derived(Math.round((crypto.elonTweetMultiplier - 1) * 100));
 
-	// BTC buy amounts
-	const BTC_BUY_AMOUNTS = [100, 1000, 10000];
-	// DOGE buy amounts
-	const DOGE_BUY_AMOUNTS = [10, 100, 1000];
+	// Custom amount inputs
+	let btcBuyAmount = $state('');
+	let btcSellPercent = $state(100);
+	let dogeBuyAmount = $state('');
+	let dogeSellPercent = $state(100);
+
+	// Quick buy percentages
+	const QUICK_PERCENTS = [10, 25, 50, 100];
 
 	// Sparkline rendering
 	function sparklinePath(history: number[], width: number, height: number): string {
@@ -72,10 +76,47 @@
 		return amount.toFixed(2);
 	}
 
-	function handleBuyBtc(amount: number) { buyBtc(amount); }
-	function handleSellAllBtc() { sellAllBtc(); }
-	function handleBuyDoge(amount: number) { buyDoge(amount); }
-	function handleSellAllDoge() { sellAllDoge(); }
+	// BTC handlers
+	function handleBuyBtcPercent(percent: number) {
+		const amount = cash * (percent / 100);
+		if (amount > 0) buyBtc(amount);
+	}
+
+	function handleBuyBtcCustom() {
+		const amount = parseFloat(btcBuyAmount);
+		if (!isNaN(amount) && amount > 0 && amount <= cash) {
+			buyBtc(amount);
+			btcBuyAmount = '';
+		}
+	}
+
+	function handleSellBtc() {
+		const amount = crypto.btcOwned * (btcSellPercent / 100);
+		if (amount > 0) sellBtc(amount);
+	}
+
+	// DOGE handlers
+	function handleBuyDogePercent(percent: number) {
+		const amount = cash * (percent / 100);
+		if (amount > 0) buyDoge(amount);
+	}
+
+	function handleBuyDogeCustom() {
+		const amount = parseFloat(dogeBuyAmount);
+		if (!isNaN(amount) && amount > 0 && amount <= cash) {
+			buyDoge(amount);
+			dogeBuyAmount = '';
+		}
+	}
+
+	function handleSellDoge() {
+		const amount = crypto.dogeOwned * (dogeSellPercent / 100);
+		if (amount > 0) sellDoge(amount);
+	}
+
+	// Sell value previews
+	let btcSellValue = $derived(btcValue * (btcSellPercent / 100));
+	let dogeSellValue = $derived(dogeValue * (dogeSellPercent / 100));
 </script>
 
 <div class="crypto-view space-y-5">
@@ -195,33 +236,84 @@
 				</div>
 			{/if}
 
-			<!-- Buy buttons -->
-			<div class="mt-3 flex items-center gap-2">
-				{#each BTC_BUY_AMOUNTS as amount}
+			<!-- Buy section -->
+			<div class="mt-4 space-y-2">
+				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Buy BTC</div>
+				
+				<!-- Quick buy buttons -->
+				<div class="flex items-center gap-2">
+					{#each QUICK_PERCENTS as percent}
+						{@const amount = cash * (percent / 100)}
+						<button
+							onclick={() => handleBuyBtcPercent(percent)}
+							disabled={cash <= 0}
+							class="flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150
+								   active:scale-[0.95] touch-manipulation"
+							style="background-color: {cash > 0 ? '#F7931A15' : 'var(--color-bg-tertiary)'};
+								   color: {cash > 0 ? '#F7931A' : 'var(--color-text-muted)'};
+								   border: 1px solid {cash > 0 ? '#F7931A25' : 'transparent'};"
+						>
+							{percent}%
+						</button>
+					{/each}
+				</div>
+
+				<!-- Custom amount input -->
+				<div class="flex items-center gap-2">
+					<div class="relative flex-1">
+						<span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">$</span>
+						<input
+							type="number"
+							bind:value={btcBuyAmount}
+							placeholder="Custom amount"
+							min="0"
+							max={cash}
+							class="w-full pl-7 pr-3 py-2 rounded-lg bg-bg-tertiary border border-white/5 text-sm text-text-primary
+								   placeholder:text-text-muted/50 focus:outline-none focus:border-[#F7931A]/50"
+						/>
+					</div>
 					<button
-						onclick={() => handleBuyBtc(amount)}
-						disabled={cash < amount}
-						class="flex-1 py-2 px-2 rounded-lg text-xs font-semibold transition-all duration-150
+						onclick={handleBuyBtcCustom}
+						disabled={!btcBuyAmount || parseFloat(btcBuyAmount) <= 0 || parseFloat(btcBuyAmount) > cash}
+						class="px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-150
 							   active:scale-[0.95] touch-manipulation"
-						style="background-color: {cash >= amount ? '#F7931A15' : 'var(--color-bg-tertiary)'};
-							   color: {cash >= amount ? '#F7931A' : 'var(--color-text-muted)'};
-							   border: 1px solid {cash >= amount ? '#F7931A25' : 'transparent'};"
+						style="background-color: {btcBuyAmount && parseFloat(btcBuyAmount) > 0 && parseFloat(btcBuyAmount) <= cash ? '#F7931A' : 'var(--color-bg-tertiary)'};
+							   color: {btcBuyAmount && parseFloat(btcBuyAmount) > 0 && parseFloat(btcBuyAmount) <= cash ? '#000' : 'var(--color-text-muted)'};"
 					>
-						Buy {formatCurrency(amount, 0)}
+						Buy
 					</button>
-				{/each}
+				</div>
 			</div>
 
-			<!-- Sell All -->
+			<!-- Sell section -->
 			{#if crypto.btcOwned > 0}
-				<button
-					onclick={handleSellAllBtc}
-					class="mt-2 w-full py-2 rounded-lg text-xs font-semibold
-						   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
-						   transition-all duration-150 active:scale-[0.97] touch-manipulation"
-				>
-					Sell All BTC ({formatCurrency(btcValue)})
-				</button>
+				<div class="mt-4 space-y-2">
+					<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Sell BTC</div>
+					
+					<!-- Slider -->
+					<div class="space-y-1">
+						<input
+							type="range"
+							bind:value={btcSellPercent}
+							min="1"
+							max="100"
+							class="w-full accent-rocket-red"
+						/>
+						<div class="flex justify-between text-[10px] text-text-muted">
+							<span>{btcSellPercent}% ({(crypto.btcOwned * btcSellPercent / 100).toFixed(6)} BTC)</span>
+							<span>{formatCurrency(btcSellValue)}</span>
+						</div>
+					</div>
+
+					<button
+						onclick={handleSellBtc}
+						class="w-full py-2 rounded-lg text-xs font-semibold
+							   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
+							   transition-all duration-150 active:scale-[0.97] touch-manipulation"
+					>
+						Sell {btcSellPercent}% ({formatCurrency(btcSellValue)})
+					</button>
+				</div>
 			{/if}
 		</div>
 	</div>
@@ -298,33 +390,84 @@
 				</div>
 			{/if}
 
-			<!-- Buy buttons -->
-			<div class="mt-3 flex items-center gap-2">
-				{#each DOGE_BUY_AMOUNTS as amount}
+			<!-- Buy section -->
+			<div class="mt-4 space-y-2">
+				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Buy DOGE</div>
+				
+				<!-- Quick buy buttons -->
+				<div class="flex items-center gap-2">
+					{#each QUICK_PERCENTS as percent}
+						{@const amount = cash * (percent / 100)}
+						<button
+							onclick={() => handleBuyDogePercent(percent)}
+							disabled={cash <= 0}
+							class="flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150
+								   active:scale-[0.95] touch-manipulation"
+							style="background-color: {cash > 0 ? '#C2A63315' : 'var(--color-bg-tertiary)'};
+								   color: {cash > 0 ? '#C2A633' : 'var(--color-text-muted)'};
+								   border: 1px solid {cash > 0 ? '#C2A63325' : 'transparent'};"
+						>
+							{percent}%
+						</button>
+					{/each}
+				</div>
+
+				<!-- Custom amount input -->
+				<div class="flex items-center gap-2">
+					<div class="relative flex-1">
+						<span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">$</span>
+						<input
+							type="number"
+							bind:value={dogeBuyAmount}
+							placeholder="Custom amount"
+							min="0"
+							max={cash}
+							class="w-full pl-7 pr-3 py-2 rounded-lg bg-bg-tertiary border border-white/5 text-sm text-text-primary
+								   placeholder:text-text-muted/50 focus:outline-none focus:border-[#C2A633]/50"
+						/>
+					</div>
 					<button
-						onclick={() => handleBuyDoge(amount)}
-						disabled={cash < amount}
-						class="flex-1 py-2 px-2 rounded-lg text-xs font-semibold transition-all duration-150
+						onclick={handleBuyDogeCustom}
+						disabled={!dogeBuyAmount || parseFloat(dogeBuyAmount) <= 0 || parseFloat(dogeBuyAmount) > cash}
+						class="px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-150
 							   active:scale-[0.95] touch-manipulation"
-						style="background-color: {cash >= amount ? '#C2A63315' : 'var(--color-bg-tertiary)'};
-							   color: {cash >= amount ? '#C2A633' : 'var(--color-text-muted)'};
-							   border: 1px solid {cash >= amount ? '#C2A63325' : 'transparent'};"
+						style="background-color: {dogeBuyAmount && parseFloat(dogeBuyAmount) > 0 && parseFloat(dogeBuyAmount) <= cash ? '#C2A633' : 'var(--color-bg-tertiary)'};
+							   color: {dogeBuyAmount && parseFloat(dogeBuyAmount) > 0 && parseFloat(dogeBuyAmount) <= cash ? '#000' : 'var(--color-text-muted)'};"
 					>
-						Buy {formatCurrency(amount, 0)}
+						Buy
 					</button>
-				{/each}
+				</div>
 			</div>
 
-			<!-- Sell All -->
+			<!-- Sell section -->
 			{#if crypto.dogeOwned > 0}
-				<button
-					onclick={handleSellAllDoge}
-					class="mt-2 w-full py-2 rounded-lg text-xs font-semibold
-						   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
-						   transition-all duration-150 active:scale-[0.97] touch-manipulation"
-				>
-					Sell All DOGE ({formatCurrency(dogeValue)})
-				</button>
+				<div class="mt-4 space-y-2">
+					<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Sell DOGE</div>
+					
+					<!-- Slider -->
+					<div class="space-y-1">
+						<input
+							type="range"
+							bind:value={dogeSellPercent}
+							min="1"
+							max="100"
+							class="w-full accent-rocket-red"
+						/>
+						<div class="flex justify-between text-[10px] text-text-muted">
+							<span>{dogeSellPercent}% ({formatDogeAmount(crypto.dogeOwned * dogeSellPercent / 100)} DOGE)</span>
+							<span>{formatCurrency(dogeSellValue)}</span>
+						</div>
+					</div>
+
+					<button
+						onclick={handleSellDoge}
+						class="w-full py-2 rounded-lg text-xs font-semibold
+							   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
+							   transition-all duration-150 active:scale-[0.97] touch-manipulation"
+					>
+						Sell {dogeSellPercent}% ({formatCurrency(dogeSellValue)})
+					</button>
+				</div>
 			{/if}
 		</div>
 	</div>
@@ -371,5 +514,21 @@
 	button:disabled {
 		cursor: not-allowed;
 		opacity: 0.4;
+	}
+
+	input[type="range"] {
+		height: 6px;
+		border-radius: 3px;
+		background: var(--color-bg-tertiary);
+	}
+
+	input[type="number"] {
+		-moz-appearance: textfield;
+	}
+
+	input[type="number"]::-webkit-outer-spin-button,
+	input[type="number"]::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
 	}
 </style>
