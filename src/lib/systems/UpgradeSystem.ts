@@ -32,12 +32,12 @@ export interface Upgrade {
 
 export const ALL_UPGRADES: Upgrade[] = [
 	// === ENERGY UPGRADES (6) ===
-	{ id: 'energy_speed_1', name: 'Efficient Panels', description: '2x Solar Panel speed', category: 'speed', cost: 5_000, target: 'teslaenergy', tierIndex: 0, value: 2 },
-	{ id: 'energy_rev_1', name: 'Premium Batteries', description: '3x Home Battery revenue', category: 'revenue', cost: 25_000, target: 'teslaenergy', tierIndex: 1, value: 3 },
+	{ id: 'energy_speed_1', name: 'Reactor Overdrive', description: '2x Nuclear Reactor speed', category: 'speed', cost: 5_000, target: 'teslaenergy', tierIndex: 0, value: 2 },
+	{ id: 'energy_rev_1', name: 'Solar Concentrators', description: '3x Solar Panel Farm revenue', category: 'revenue', cost: 25_000, target: 'teslaenergy', tierIndex: 1, value: 3 },
 	{ id: 'energy_speed_2', name: 'Rapid Deployment', description: '2x all Energy speed', category: 'speed', cost: 500_000, target: 'teslaenergy', tierIndex: -1, value: 2 },
-	{ id: 'energy_rev_2', name: 'Grid Premium', description: '3x Grid Battery Farm revenue', category: 'revenue', cost: 2_000_000, target: 'teslaenergy', tierIndex: 4, value: 3, requiresTierCount: { divisionId: 'teslaenergy', tierIndex: 4, count: 10 } },
-	{ id: 'energy_cost_1', name: 'Bulk Solar Discount', description: 'Energy tiers cost 20% less', category: 'cost', cost: 100_000, target: 'teslaenergy', tierIndex: -1, value: 0.8 },
-	{ id: 'energy_speed_3', name: 'Virtual Grid AI', description: '3x Virtual Power Plant speed', category: 'speed', cost: 10_000_000, target: 'teslaenergy', tierIndex: 5, value: 3, requiresTierCount: { divisionId: 'teslaenergy', tierIndex: 5, count: 5 } },
+	{ id: 'energy_rev_2', name: 'Orbital Collectors', description: '3x Space Solar Array revenue', category: 'revenue', cost: 2_000_000, target: 'teslaenergy', tierIndex: 4, value: 3, requiresTierCount: { divisionId: 'teslaenergy', tierIndex: 4, count: 10 } },
+	{ id: 'energy_cost_1', name: 'Bulk Energy Discount', description: 'Energy tiers cost 20% less', category: 'cost', cost: 100_000, target: 'teslaenergy', tierIndex: -1, value: 0.8 },
+	{ id: 'energy_speed_3', name: 'Beaming Amplifiers', description: '3x Wireless Energy Beaming speed', category: 'speed', cost: 10_000_000, target: 'teslaenergy', tierIndex: 5, value: 3, requiresTierCount: { divisionId: 'teslaenergy', tierIndex: 5, count: 5 } },
 
 	// === ROCKETS UPGRADES (6) ===
 	{ id: 'rocket_speed_1', name: 'Rapid Turnaround', description: '2x Small Rocket speed', category: 'speed', cost: 10_000, target: 'spacex', tierIndex: 0, value: 2 },
@@ -48,12 +48,12 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'rocket_speed_3', name: 'Orbital Refueling', description: '3x Starship speed', category: 'speed', cost: 50_000_000, target: 'spacex', tierIndex: 4, value: 3, requiresMilestone: { divisionId: 'spacex', tierIndex: 4, threshold: 25 } },
 
 	// === MANUFACTURING UPGRADES (6) ===
-	{ id: 'ev_speed_1', name: 'Gigapress', description: '2x Electric Car Workshop speed', category: 'speed', cost: 15_000, target: 'tesla', tierIndex: 0, value: 2 },
-	{ id: 'ev_rev_1', name: 'Lean Production', description: '3x Vehicle Assembly Line revenue', category: 'revenue', cost: 75_000, target: 'tesla', tierIndex: 1, value: 3 },
+	{ id: 'ev_speed_1', name: 'Gigapress', description: '2x Electric Cars speed', category: 'speed', cost: 15_000, target: 'tesla', tierIndex: 0, value: 2 },
+	{ id: 'ev_rev_1', name: 'Lean Production', description: '3x Gigafactory revenue', category: 'revenue', cost: 75_000, target: 'tesla', tierIndex: 1, value: 3 },
 	{ id: 'ev_speed_2', name: 'Process Optimization', description: '2x all Manufacturing speed', category: 'speed', cost: 750_000, target: 'tesla', tierIndex: -1, value: 2 },
-	{ id: 'ev_rev_2', name: 'Vertical Integration', description: '3x Lithium Mines & Chip Fabs revenue', category: 'revenue', cost: 3_000_000, target: 'tesla', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tesla', tierIndex: 3, count: 15 } },
+	{ id: 'ev_rev_2', name: 'Vertical Integration', description: '3x Chip Fabrication revenue', category: 'revenue', cost: 3_000_000, target: 'tesla', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tesla', tierIndex: 3, count: 15 } },
 	{ id: 'ev_cost_1', name: 'Supply Chain Mastery', description: 'Manufacturing tiers cost 20% less', category: 'cost', cost: 200_000, target: 'tesla', tierIndex: -1, value: 0.8 },
-	{ id: 'ev_speed_3', name: 'Autonomous Drilling', description: '3x Martian Mining Complex speed', category: 'speed', cost: 25_000_000, target: 'tesla', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tesla', tierIndex: 5, threshold: 25 } },
+	{ id: 'ev_speed_3', name: 'Colony Assembly Line', description: '3x Colony Kit Factory speed', category: 'speed', cost: 25_000_000, target: 'tesla', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tesla', tierIndex: 5, threshold: 25 } },
 
 	// === AI UPGRADES (6) ===
 	{ id: 'ai_speed_1', name: 'GPU Cluster', description: '2x Chatbot speed', category: 'speed', cost: 20_000, target: 'ai', tierIndex: 0, value: 2 },

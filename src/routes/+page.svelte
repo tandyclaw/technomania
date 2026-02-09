@@ -4,9 +4,9 @@
 	let launched = $state(false);
 
 	const divisions = [
-		{ name: 'Energy', icon: '☀️', color: '#FFCC44', desc: 'Solar, batteries & grid storage' },
+		{ name: 'Energy', icon: '⚡', color: '#FFCC44', desc: 'Nuclear, solar, batteries & space power' },
 		{ name: 'Rockets', icon: '🚀', color: '#FF4444', desc: 'Reusable rockets & Mars colonization' },
-		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'EVs to Gigafactories to Mars' },
+		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'Cars to chip fabs to orbital shipyards' },
 		{ name: 'AI', icon: '🤖', color: '#9944FF', desc: 'Chatbots to AGI' },
 		{ name: 'Tunnels', icon: '🚇', color: '#FF8844', desc: 'Underground transit & hyperloop' },
 		{ name: 'Robotics', icon: '🦾', color: '#FF6644', desc: 'Automate the physical world' },

@@ -40,8 +40,8 @@ export interface DivisionOfflineReport {
  * For now, these are reasonable defaults for the MVP
  */
 const TIER_BASE_REVENUE: Record<string, number[]> = {
-	teslaenergy: [0.5, 3, 15, 80, 400, 2000],    // Solar Panels → Megapack
-	spacex:      [1, 8, 50, 300, 1500, 8000],     // Falcon 1 → Mars Lander
+	teslaenergy: [0.5, 3, 15, 80, 400, 2000],    // Nuclear Reactor → Wireless Energy Beaming
+	spacex:      [1, 8, 50, 300, 1500, 8000],     // Small Orbital Rocket → Starship Lander
 	tesla:       [2, 12, 60, 350, 2000],           // Workshop → Mars Fabricator
 	ai:          [3, 20, 100, 600, 3000, 15000],   // Chatbot → AGI
 	tunnels:     [4, 25, 120, 700, 3500, 18000],   // Test Bore → Hyperloop

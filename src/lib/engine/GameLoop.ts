@@ -3,7 +3,7 @@
  * Handles delta time, tick rate, and offline calculation
  *
  * Tick rate: ~100ms (10 ticks/sec) for smooth progress bars on fast cycles
- * (Solar Panels = 0.5s cycle, needs multiple visual updates per cycle)
+ * (Nuclear Reactor = 0.5s cycle, needs multiple visual updates per cycle)
  */
 
 export type TickCallback = (deltaMs: number) => void;

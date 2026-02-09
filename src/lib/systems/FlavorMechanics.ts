@@ -27,7 +27,7 @@ export interface LaunchLogEntry {
 	ts: number;
 	/** Tier index that completed */
 	tier: number;
-	/** Tier name (e.g., "Falcon 9") */
+	/** Tier name (e.g., "Small Orbital Rocket") */
 	name: string;
 	/** Number of units that produced (tier count at time of completion) */
 	units: number;

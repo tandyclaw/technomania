@@ -59,7 +59,7 @@ export const TUTORIAL_STEPS = [
 	{
 		id: 'buy-more',
 		title: 'Scale Up',
-		message: 'Buy more Solar Panels to increase your revenue. More units = more cash per cycle.',
+		message: 'Buy more Nuclear Reactors to increase your revenue. More units = more cash per cycle.',
 		target: 'tier-buy-0',
 		position: 'above' as const,
 	},
