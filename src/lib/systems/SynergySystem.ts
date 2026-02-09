@@ -68,10 +68,10 @@ export const MVP_SYNERGIES: Synergy[] = [
 	},
 	{
 		id: 'tesla_teslaenergy_batteries',
-		name: 'Shared Battery Supply Chain',
-		description: 'EVs and Energy share battery cell manufacturing, boosting production for both.',
+		name: 'Integrated Supply Chain',
+		description: 'Manufacturing and Energy share battery cell production, boosting output for both.',
 		flavorText: 'Same cells, same factory, two products. Vertical integration.',
-		icon: '🔋☀️',
+		icon: '🏭☀️',
 		requirement: {
 			sourceDivision: 'tesla',
 			sourceMinTiers: 2,
@@ -83,7 +83,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'teslaenergy_tesla_batteries',
 		name: 'Gigafactory Synergy',
-		description: 'Energy battery tech feeds back into vehicle range and manufacturing efficiency.',
+		description: 'Energy battery tech feeds back into manufacturing efficiency and throughput.',
 		flavorText: 'Next-gen cells change everything. Energy density is destiny.',
 		icon: '☀️🔋',
 		requirement: {
@@ -97,9 +97,9 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'spacex_tesla_materials',
 		name: 'Aerospace Materials Transfer',
-		description: 'Rocket-grade alloys and manufacturing tech improve vehicle construction.',
-		flavorText: 'Stainless steel expertise from rockets to trucks.',
-		icon: '🚀🔋',
+		description: 'Rocket-grade alloys and composites improve factory output quality.',
+		flavorText: 'Stainless steel expertise from rockets to production lines.',
+		icon: '🚀🏭',
 		requirement: {
 			sourceDivision: 'spacex',
 			sourceMinTiers: 3,

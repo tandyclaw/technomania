@@ -1,6 +1,6 @@
 /**
- * EVs.ts — Electric Vehicles division
- * From sports car proof-of-concept to mass market dominance
+ * Manufacturing.ts — Manufacturing division
+ * From garage workshop to full Mars colony industrial base
  *
  * PROGRESSION DESIGN:
  * - Unlocks at $2,500 (reachable ~5-7 min)
@@ -14,85 +14,85 @@ import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export const TESLA_TIERS: { name: string; description: string; tooltip: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
-		name: 'Electric Sports Car',
-		description: 'Prove EVs can be desirable. Change perception.',
-		tooltip: 'The first step is proving electric cars aren\'t boring golf carts. Build the brand.',
+		name: 'Small Workshop',
+		description: 'Hand-built prototypes. Every empire starts in a garage.',
+		tooltip: 'A single workbench, a soldering iron, and a dream. Prototype by hand, iterate fast, prove the concept works before scaling.',
 		powerMW: -0.02,
 		config: {
-			baseCost: 125,
-			baseRevenue: 20,
+			baseCost: 15,
+			baseRevenue: 3,
 			cycleDuration: 3,
 			costMultiplier: 1.08,
 			revenueMultiplier: 1.0
 		}
 	},
 	{
-		name: 'Luxury Sedan',
-		description: 'Premium EV with serious range. Build credibility.',
-		tooltip: 'A luxury sedan with 300+ mile range proves EVs are practical, not just toys.',
+		name: 'Assembly Line',
+		description: 'Standardized production. Efficiency at scale.',
+		tooltip: 'Interchangeable parts, division of labor, conveyor systems. What took a craftsman a day now takes minutes. Henry Ford figured this out in 1913.',
 		powerMW: -0.1,
 		config: {
-			baseCost: 800,
-			baseRevenue: 150,
+			baseCost: 500,
+			baseRevenue: 90,
 			cycleDuration: 8,
 			costMultiplier: 1.10,
 			revenueMultiplier: 1.0
 		}
 	},
 	{
-		name: 'Electric SUV',
-		description: 'Family-sized EV. Harder to build than sedans.',
-		tooltip: 'SUVs are where the real money is. Larger vehicles mean new engineering challenges.',
+		name: 'Gigafactory',
+		description: 'Massive automated facility. Batteries, vehicles, solar — all under one roof.',
+		tooltip: 'A single building producing more battery capacity than the entire world did a decade ago. Raw materials in one end, finished products out the other.',
 		powerMW: -0.5,
 		config: {
-			baseCost: 6000,
-			baseRevenue: 1200,
+			baseCost: 25000,
+			baseRevenue: 5000,
 			cycleDuration: 18,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
 		}
 	},
 	{
-		name: 'Mass Market Sedan',
-		description: 'Affordable EV for everyone. Production Hell awaits.',
-		tooltip: 'This is the real test. Scaling to hundreds of thousands is a nightmare.',
+		name: 'Orbital Foundry',
+		description: 'Zero-gravity manufacturing. Materials impossible to make on Earth.',
+		tooltip: 'Microgravity enables perfect crystal growth, flawless fiber optics, and exotic alloys. No convection, no sedimentation — just pure physics.',
 		powerMW: -2,
 		config: {
-			baseCost: 50000,
-			baseRevenue: 10000,
+			baseCost: 5000000,
+			baseRevenue: 1000000,
 			cycleDuration: 40,
 			costMultiplier: 1.13,
 			revenueMultiplier: 1.0
 		}
 	},
 	{
-		name: 'Compact Crossover',
-		description: 'Best-seller potential. Gigafactory at full speed.',
-		tooltip: 'Build this at scale and you can become the best-selling car company in the world.',
+		name: 'Mars Fabricator',
+		description: '3D-print structures from Martian regolith. Build with what\'s there.',
+		tooltip: 'In-situ resource utilization (ISRU). Extract iron from regolith, sinter bricks, print habitats. Shipping from Earth costs $1M/kg — local manufacturing is survival.',
 		powerMW: -10,
 		config: {
-			baseCost: 400000,
-			baseRevenue: 80000,
+			baseCost: 500000000,
+			baseRevenue: 100000000,
 			cycleDuration: 100,
 			costMultiplier: 1.15,
 			revenueMultiplier: 1.0
 		}
 	},
 	{
-		name: 'Electric Truck',
-		description: 'Trucks are America. Crack this market and you win.',
-		tooltip: 'Pickup trucks are the best-selling vehicles. An electric truck that can haul and tow is the key.',
+		name: 'Colony Forge',
+		description: 'Full industrial base on Mars. Self-sustaining civilization.',
+		tooltip: 'Steel mills, chip fabs, chemical plants — everything needed to sustain a million people without Earth resupply. This is the endgame of manufacturing.',
 		powerMW: -30,
 		config: {
-			baseCost: 3000000,
-			baseRevenue: 600000,
-			cycleDuration: 200,      // Long cycles = you NEED automation
+			baseCost: 50000000000,
+			baseRevenue: 10000000000,
+			cycleDuration: 200,
 			costMultiplier: 1.18,
 			revenueMultiplier: 1.0
 		}
 	}
 ];
 
-export const TESLA_COLOR = '#4488FF';
-export const TESLA_ICON = '🚗';
-export const TESLA_NAME = 'EVs';
+export const TESLA_COLOR = '#44AAFF';
+export const TESLA_ICON = '🏭';
+export const TESLA_NAME = 'Manufacturing';

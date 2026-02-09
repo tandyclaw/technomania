@@ -87,13 +87,13 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 		condition: (s) => s.stats.totalTaps >= 1_000 },
 
 	// === Prestige ===
-	{ id: 'prestige_first', name: 'First IPO', description: 'Complete your first IPO', icon: '📈', category: 'prestige',
+	{ id: 'prestige_first', name: 'First Colony', description: 'Launch your first colony', icon: '🪐', category: 'prestige',
 		condition: (s) => s.prestigeCount >= 1 },
-	{ id: 'prestige_3', name: 'Serial Founder', description: 'Complete 3 IPOs', icon: '📈', category: 'prestige',
+	{ id: 'prestige_3', name: 'Serial Founder', description: 'Launch 3 colonies', icon: '🪐', category: 'prestige',
 		condition: (s) => s.prestigeCount >= 3 },
-	{ id: 'prestige_5', name: 'Venture Legend', description: 'Complete 5 IPOs', icon: '🏛️', category: 'prestige',
+	{ id: 'prestige_5', name: 'Venture Legend', description: 'Launch 5 colonies', icon: '🏛️', category: 'prestige',
 		condition: (s) => s.prestigeCount >= 5 },
-	{ id: 'prestige_10', name: 'IPO Machine', description: 'Complete 10 IPOs', icon: '💫', category: 'prestige',
+	{ id: 'prestige_10', name: 'Colony Empire', description: 'Launch 10 colonies', icon: '💫', category: 'prestige',
 		condition: (s) => s.prestigeCount >= 10 },
 
 	// === Special ===

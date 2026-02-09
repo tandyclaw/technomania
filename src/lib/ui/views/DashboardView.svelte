@@ -146,7 +146,7 @@
 			</div>
 		</div>
 		<div class="bg-bg-secondary/60 rounded-xl p-3 border border-white/[0.03]">
-			<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Prestige</div>
+			<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Colony Tech</div>
 			<div class="text-lg font-bold text-neural-purple tabular-nums mt-0.5">
 				{#if colonyTech > 0}
 					×{prestigeMultiplier.toFixed(1)}
@@ -362,7 +362,7 @@
 					<span class="text-text-primary font-mono tabular-nums">{formatNumber(state.stats.totalTaps, 0)}</span>
 				</div>
 				<div class="flex justify-between text-sm">
-					<span class="text-text-muted">Prestiges</span>
+					<span class="text-text-muted">Colonies</span>
 					<span class="text-text-primary font-mono tabular-nums">{state.stats.totalPrestiges}</span>
 				</div>
 				<div class="flex justify-between text-sm">

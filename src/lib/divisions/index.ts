@@ -44,7 +44,7 @@ export const DIVISIONS: Record<string, DivisionMeta> = {
 		name: TESLA_NAME,
 		icon: TESLA_ICON,
 		color: TESLA_COLOR,
-		description: 'Electrify transportation. End oil.',
+		description: 'Scale production. Build anything.',
 		tiers: TESLA_TIERS,
 	},
 	teslaenergy: {

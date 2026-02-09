@@ -417,7 +417,7 @@
 				<span class="text-text-primary font-mono tabular-nums">{formatCurrency(highestIncomePerSec, 1)}/s</span>
 			</div>
 			<div class="flex justify-between text-sm">
-				<span class="text-text-muted">Total Prestiges</span>
+				<span class="text-text-muted">Total Colonies</span>
 				<span class="text-text-primary font-mono tabular-nums">{totalPrestiges}</span>
 			</div>
 		</div>
@@ -446,7 +446,7 @@
 					Are you sure? This deletes everything.
 				</p>
 				<p class="text-xs text-text-muted mb-5">
-					All progress, prestige, research — gone forever. No undo.
+					All progress, colonies, research — gone forever. No undo.
 				</p>
 			</div>
 			<div class="flex gap-3">

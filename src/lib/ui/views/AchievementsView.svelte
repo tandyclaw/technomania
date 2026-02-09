@@ -10,7 +10,7 @@
 		{ key: 'income', label: 'Income', icon: '💰' },
 		{ key: 'divisions', label: 'Divisions', icon: '🏢' },
 		{ key: 'production', label: 'Production', icon: '🏭' },
-		{ key: 'prestige', label: 'Prestige', icon: '📈' },
+		{ key: 'prestige', label: 'Colonies', icon: '🪐' },
 		{ key: 'special', label: 'Special', icon: '⭐' },
 	];
 

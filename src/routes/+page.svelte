@@ -17,7 +17,7 @@
 		{ icon: '🔗', title: 'Cross-Division Synergies', desc: 'AI powers robots. Robots build EVs. EVs use your energy grid.' },
 		{ icon: '⚡', title: 'Random Events', desc: 'Government subsidies, viral tweets, tunnel collapses — adapt or lose' },
 		{ icon: '🔬', title: 'Research Tree', desc: 'Invest in R&D to unlock permanent upgrades across your empire' },
-		{ icon: '📈', title: 'Prestige & Vision Points', desc: 'IPO, reset, come back stronger with permanent mega-upgrades' },
+		{ icon: '🪐', title: 'Colonies & Colony Tech', desc: 'Launch colonies, reset, come back stronger with permanent mega-upgrades' },
 		{ icon: '🪐', title: 'Mars Colony Endgame', desc: 'Build toward colonization. Then do it again harder in New Game+' },
 	];
 
@@ -68,7 +68,7 @@
 			</p>
 
 			<p class="text-sm text-text-muted mb-10 font-mono">
-				6 divisions · 36 tiers · 120 milestones · infinite prestige
+				6 divisions · 36 tiers · 120 milestones · infinite colonies
 			</p>
 
 			<button
@@ -156,7 +156,7 @@
 			<div class="text-text-muted text-2xl hidden md:block">→</div>
 			<div class="text-center px-4">
 				<div class="text-3xl mb-2">📈</div>
-				<p class="text-sm font-semibold text-text-primary">IPO & Prestige</p>
+				<p class="text-sm font-semibold text-text-primary">Colonies & Colony Tech</p>
 				<p class="text-xs text-text-muted mt-1">Reset with permanent multipliers</p>
 			</div>
 			<div class="text-text-muted text-2xl hidden md:block">→</div>

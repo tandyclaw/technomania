@@ -684,7 +684,7 @@ export function initRandomEventListeners(): () => void {
 
 	unsubs.push(
 		eventBus.on('prestige:complete', (data) => {
-			addNotification('milestone', '🚀', 'IPO Complete!', `Earned ${data.visionEarned} Colony Tech.`);
+			addNotification('milestone', '🪐', 'Colony Launched!', `Earned ${data.visionEarned} Colony Tech.`);
 		})
 	);
 

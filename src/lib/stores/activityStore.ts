@@ -70,7 +70,7 @@ export function initActivityListeners(): () => void {
 		addEntry('🏆', `Achievement: ${d.name}`);
 	}));
 	unsubs.push(eventBus.on('prestige:complete', (d) => {
-		addEntry('🚀', `IPO complete! Earned ${d.visionEarned} Vision`);
+		addEntry('🚀', `Colony launched! Earned ${d.visionEarned} Colony Tech`);
 	}));
 
 	return () => { for (const u of unsubs) u(); };

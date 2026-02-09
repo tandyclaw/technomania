@@ -12,6 +12,18 @@
 	let state = $derived($gameState);
 	let treasury = $derived(state.treasury);
 	let cash = $derived(state.cash);
+	let totalEarned = $derived(state.stats.totalCashEarned);
+
+	// Unlock thresholds
+	const TREASURY_UNLOCK = 500_000;
+	const INDEX_UNLOCK = 1_000_000;
+	const BTC_UNLOCK = 5_000_000;
+	const DOGE_UNLOCK = 25_000_000;
+
+	let treasuryUnlocked = $derived(totalEarned >= TREASURY_UNLOCK);
+	let indexUnlocked = $derived(totalEarned >= INDEX_UNLOCK);
+	let btcUnlocked = $derived(totalEarned >= BTC_UNLOCK);
+	let dogeUnlocked = $derived(totalEarned >= DOGE_UNLOCK);
 
 	// Savings - always safe
 	let savingsInterestRate = $derived(0.05); // 5% APY equivalent (shown as per-cycle)
@@ -113,6 +125,23 @@
 			Invest your profits. Different risk levels, different rewards.
 		</p>
 	</div>
+
+	{#if !treasuryUnlocked}
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-8 text-center space-y-3">
+			<div class="text-4xl">🔒</div>
+			<h2 class="text-lg font-bold text-text-primary">Treasury Locked</h2>
+			<p class="text-sm text-text-muted">
+				Earn <span class="font-bold text-electric-blue">{formatCurrency(TREASURY_UNLOCK)}</span> total cash to unlock investments.
+			</p>
+			<div class="w-full bg-bg-tertiary rounded-full h-2 overflow-hidden">
+				<div class="h-full bg-electric-blue/60 rounded-full transition-all duration-500"
+					style="width: {Math.min(100, (totalEarned / TREASURY_UNLOCK) * 100)}%"></div>
+			</div>
+			<p class="text-xs text-text-muted tabular-nums font-mono">
+				{formatCurrency(totalEarned)} / {formatCurrency(TREASURY_UNLOCK)}
+			</p>
+		</div>
+	{:else}
 
 	<!-- Meme Pump Banner -->
 	{#if memeActive}
@@ -230,6 +259,18 @@
 	</div>
 
 	<!-- ═══ INDEX FUND ═══ -->
+	{#if !indexUnlocked}
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 opacity-60">
+			<div class="flex items-center gap-3">
+				<div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl shrink-0"
+					style="background-color: #4488FF15; border: 1px solid #4488FF25;">🔒</div>
+				<div>
+					<h2 class="text-base font-bold text-text-primary">Index Fund</h2>
+					<div class="text-xs text-text-muted">Unlocks at {formatCurrency(INDEX_UNLOCK)} total earned</div>
+				</div>
+			</div>
+		</div>
+	{:else}
 	<div class="bg-bg-secondary/40 rounded-xl border border-white/5 overflow-hidden">
 		<div class="p-4">
 			<div class="flex items-start justify-between gap-3">
@@ -326,7 +367,21 @@
 		</div>
 	</div>
 
+	{/if}
+
 	<!-- ═══ BITCOIN ═══ -->
+	{#if !btcUnlocked}
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 opacity-60">
+			<div class="flex items-center gap-3">
+				<div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl shrink-0"
+					style="background-color: #F7931A15; border: 1px solid #F7931A25;">🔒</div>
+				<div>
+					<h2 class="text-base font-bold text-text-primary">Bitcoin</h2>
+					<div class="text-xs text-text-muted">Unlocks at {formatCurrency(BTC_UNLOCK)} total earned</div>
+				</div>
+			</div>
+		</div>
+	{:else}
 	<div class="bg-bg-secondary/40 rounded-xl border border-white/5 overflow-hidden">
 		<div class="p-4">
 			<div class="flex items-start justify-between gap-3">
@@ -420,7 +475,21 @@
 		</div>
 	</div>
 
+	{/if}
+
 	<!-- ═══ MEME COIN ═══ -->
+	{#if !dogeUnlocked}
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 opacity-60">
+			<div class="flex items-center gap-3">
+				<div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl shrink-0"
+					style="background-color: #C2A63315; border: 1px solid #C2A63325;">🔒</div>
+				<div>
+					<h2 class="text-base font-bold text-text-primary">Meme Coin</h2>
+					<div class="text-xs text-text-muted">Unlocks at {formatCurrency(DOGE_UNLOCK)} total earned</div>
+				</div>
+			</div>
+		</div>
+	{:else}
 	<div class="relative bg-bg-secondary/40 rounded-xl border overflow-hidden"
 		style="border-color: {memeActive ? '#C2A63360' : 'rgba(255,255,255,0.05)'};">
 		{#if memeActive}
@@ -534,6 +603,8 @@
 		</div>
 	</div>
 
+	{/if}
+
 	<!-- Risk disclaimer -->
 	<div class="bg-bg-secondary/30 rounded-xl p-4 border border-white/5">
 		<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium mb-2">
@@ -546,6 +617,7 @@
 			<strong style="color: #C2A633;">Meme Coins:</strong> Pure gambling. You've been warned.
 		</p>
 	</div>
+	{/if}
 </div>
 
 <style>

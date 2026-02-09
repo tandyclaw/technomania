@@ -176,7 +176,7 @@ export function initToastListeners(): () => void {
 	// Prestige complete
 	unsubs.push(
 		eventBus.on('prestige:complete', (data) => {
-			addToast('achievement', '🚀', 'IPO Complete!', `Earned ${data.visionEarned} Founder\'s Vision. Total: ${data.totalVision}`, { color: '#FFCC44', durationMs: 6000 });
+			addToast('achievement', '🪐', 'Colony Launched!', `Earned ${data.visionEarned} Colony Tech. Total: ${data.totalVision}`, { color: '#FFCC44', durationMs: 6000 });
 		})
 	);
 

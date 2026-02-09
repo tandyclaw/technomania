@@ -19,7 +19,7 @@
 		{ id: 'dashboard', name: 'Dashboard', shortName: 'Home', icon: '📊', color: '#e8ecf1' },
 		{ id: 'teslaenergy', name: 'Energy', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
 		{ id: 'spacex', name: 'Rockets', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
-		{ id: 'tesla', name: 'EVs', shortName: 'EVs', icon: '🚗', color: '#4488FF' },
+		{ id: 'tesla', name: 'Manufacturing', shortName: 'Mfg', icon: '🏭', color: '#44AAFF' },
 		{ id: 'ai', name: 'AI', shortName: 'AI', icon: '🤖', color: '#AA44FF' },
 		{ id: 'tunnels', name: 'Tunnels', shortName: 'Tunnels', icon: '🚇', color: '#CC7744' },
 		{ id: 'robotics', name: 'Robotics', shortName: 'Robots', icon: '🦾', color: '#FF6644' },
@@ -30,7 +30,7 @@
 		{ id: 'treasury', name: 'Treasury', shortName: 'Treasury', icon: '🏦', color: '#44AA77' },
 		{ id: 'research', name: 'Research', shortName: 'R&D', icon: '🔬', color: '#9944FF' },
 		{ id: 'achievements', name: 'Achievements', shortName: 'Trophies', icon: '🏆', color: '#FFCC44' },
-		{ id: 'prestige', name: 'The IPO', shortName: 'IPO', icon: '📈', color: '#9944FF' },
+		{ id: 'prestige', name: 'New Colony', shortName: 'Colony', icon: '🪐', color: '#9944FF' },
 		{ id: 'settings', name: 'Settings', shortName: 'Settings', icon: '⚙️', color: '#8899aa' },
 	];
 
