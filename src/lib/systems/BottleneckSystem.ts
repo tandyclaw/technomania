@@ -315,8 +315,8 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_truck_production_hell',
-		name: '🔥 FORGE HELL 🔥',
-		description: 'Colony-scale manufacturing on Mars is orders of magnitude harder than Earth.',
+		name: '🔥 MINING HELL 🔥',
+		description: 'Martian mining operations are orders of magnitude harder than Earth.',
 		division: 'tesla',
 		category: 'scaling',
 		severity: 0.55,

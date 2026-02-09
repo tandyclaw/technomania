@@ -1,8 +1,8 @@
 /**
  * Manufacturing.ts — Manufacturing division
- * From hand-built EVs to full Mars colony industrial base
+ * From hand-built EVs to building everything needed to colonize Mars
  *
- * PROGRESSION: cars → mass production → vertical integration → Mars manufacturing
+ * PROGRESSION: cars → mass production → vertical integration → orbital → colony kits
  *
  * - Unlocks at $2,500 (reachable ~5-7 min)
  * - Medium cycle times (manufacturing is factory work)
@@ -67,9 +67,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Mars Fabricator',
-		description: '3D-print structures from Martian regolith. Build with what\'s there.',
-		tooltip: 'In-situ resource utilization (ISRU). Extract iron from regolith, sinter bricks, print habitats. Shipping from Earth costs $1M/kg — local manufacturing is survival.',
+		name: 'Orbital Shipyard',
+		description: 'Assemble spacecraft and stations in orbit. Zero-gravity manufacturing at scale.',
+		tooltip: 'Massive orbital assembly platforms. Build components too large to launch whole — space stations, fuel depots, interplanetary vehicles. Microgravity enables alloys and optics impossible on Earth.',
 		powerMW: -10,
 		config: {
 			baseCost: 500000000,
@@ -80,9 +80,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Martian Mining Complex',
-		description: 'Extract iron, water ice, and rare minerals from Mars. The red planet is your supply chain.',
-		tooltip: 'Deep drilling rigs, autonomous ore processors, water ice extractors. Mars has iron oxide everywhere, water ice at the poles, and rare earth elements underground. Mine it all — Earth resupply costs $1M/kg.',
+		name: 'Colony Kit Factory',
+		description: 'Mass-produce everything needed for Mars. Habitats, rovers, life support — ready to ship.',
+		tooltip: 'The ultimate logistics challenge. Prefab habitats, sealed rovers, ISRU equipment, life support modules, medical supplies — everything a million colonists need, packed into Starships. One shot to get it right.',
 		powerMW: -30,
 		config: {
 			baseCost: 50000000000,

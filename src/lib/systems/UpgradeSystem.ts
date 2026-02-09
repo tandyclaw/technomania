@@ -53,7 +53,7 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'ev_speed_2', name: 'Process Optimization', description: '2x all Manufacturing speed', category: 'speed', cost: 750_000, target: 'tesla', tierIndex: -1, value: 2 },
 	{ id: 'ev_rev_2', name: 'Vertical Integration', description: '3x Lithium Mines & Chip Fabs revenue', category: 'revenue', cost: 3_000_000, target: 'tesla', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tesla', tierIndex: 3, count: 15 } },
 	{ id: 'ev_cost_1', name: 'Supply Chain Mastery', description: 'Manufacturing tiers cost 20% less', category: 'cost', cost: 200_000, target: 'tesla', tierIndex: -1, value: 0.8 },
-	{ id: 'ev_speed_3', name: 'Autonomous Forge', description: '3x Colony Forge speed', category: 'speed', cost: 25_000_000, target: 'tesla', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tesla', tierIndex: 5, threshold: 25 } },
+	{ id: 'ev_speed_3', name: 'Autonomous Drilling', description: '3x Martian Mining Complex speed', category: 'speed', cost: 25_000_000, target: 'tesla', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tesla', tierIndex: 5, threshold: 25 } },
 
 	// === AI UPGRADES (6) ===
 	{ id: 'ai_speed_1', name: 'GPU Cluster', description: '2x Chatbot speed', category: 'speed', cost: 20_000, target: 'ai', tierIndex: 0, value: 2 },
