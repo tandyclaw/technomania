@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { TierState } from '$lib/stores/gameState';
+	import type { TierState, GameState } from '$lib/stores/gameState';
 	import type { TierData } from '$lib/divisions';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { calculateCost, calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBuyable } from '$lib/systems/ProductionSystem';
+	import { getEffectiveCycleDurationMs } from '$lib/engine/ProductionEngine';
 	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
 	import Tooltip from './Tooltip.svelte';
@@ -11,18 +12,22 @@
 		tier,
 		tierData,
 		tierIndex,
+		divisionId,
 		chiefLevel = 0,
 		color,
 		cash = 0,
+		gameState,
 		onBuy,
 		onTap,
 	}: {
 		tier: TierState;
 		tierData: TierData;
 		tierIndex: number;
+		divisionId: string;
 		chiefLevel?: number;
 		color: string;
 		cash?: number;
+		gameState?: GameState;
 		onBuy?: () => void;
 		onTap?: () => boolean;
 	} = $props();
@@ -46,7 +51,13 @@
 	});
 
 	let revenue = $derived(calculateRevenue(tierData.config, tier.count, tier.level));
-	let cycleDurationMs = $derived(getCycleDurationMs(tierData.config, chiefLevel));
+	
+	// Use effective cycle duration (includes power efficiency, synergies, bottlenecks)
+	let cycleDurationMs = $derived(
+		gameState 
+			? getEffectiveCycleDurationMs(gameState, divisionId, tierIndex)
+			: getCycleDurationMs(tierData.config, chiefLevel)
+	);
 	let revenuePerSec = $derived(tier.count > 0 ? (revenue / cycleDurationMs) * 1000 : 0);
 	let canAfford = $derived(cash >= cost && effectiveQty > 0);
 

@@ -42,6 +42,49 @@ function getPrestigeMultiplier(state: GameState): number {
 }
 
 const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla'] as const;
+
+/**
+ * Get the EFFECTIVE cycle duration for a tier, including all speed modifiers:
+ * - Base cycle duration from tier config
+ * - Chief speed bonus
+ * - Power efficiency (non-Tesla Energy divisions)
+ * - Synergy speed boosts
+ * - Bottleneck penalties
+ *
+ * This is what the progress bar animation should use.
+ */
+export function getEffectiveCycleDurationMs(
+	state: GameState,
+	divisionId: string,
+	tierIndex: number
+): number {
+	const divState = state.divisions[divisionId as DivisionId];
+	if (!divState?.unlocked) return 1000;
+
+	const divMeta = DIVISIONS[divisionId];
+	const tierData = divMeta?.tiers[tierIndex];
+	if (!tierData) return 1000;
+
+	// Base duration with chief speed bonus
+	const baseDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
+
+	// Power efficiency (Tesla Energy is immune)
+	const { generated, consumed } = calculatePowerBalance(state);
+	const powerEfficiency = divisionId === 'teslaenergy' ? 1 : calculatePowerEfficiency(generated, consumed);
+
+	// Synergy speed boosts
+	const activeSynergies = getActiveSynergies(state, MVP_SYNERGIES);
+	const synergySpeedMult = getSynergyMultiplier(activeSynergies, divisionId, 'speed_boost');
+
+	// Bottleneck penalties
+	const bottleneckMult = getBottleneckMultiplier(divisionId, state);
+
+	// Combined speed multiplier
+	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult;
+
+	// Effective duration (higher speed = shorter duration)
+	return baseDurationMs / combinedSpeedMult;
+}
 type DivisionId = (typeof DIVISION_IDS)[number];
 
 /**

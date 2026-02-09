@@ -168,9 +168,11 @@
 						{tier}
 						tierData={division.tiers[i]}
 						tierIndex={i}
+						divisionId={division.id}
 						chiefLevel={state.chiefLevel}
 						color={division.color}
 						{cash}
+						gameState={$gameState}
 						onBuy={() => onBuyTier?.(i)}
 						onTap={onTapTier ? (() => onTapTier(i)) : undefined}
 					/>
