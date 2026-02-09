@@ -3,9 +3,11 @@
 	import ResourceBar from '$lib/ui/ResourceBar.svelte';
 	import DivisionTabBar from '$lib/ui/DivisionTabBar.svelte';
 	import SaveIndicator from '$lib/ui/SaveIndicator.svelte';
+	import ToastContainer from '$lib/ui/ToastContainer.svelte';
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameManager } from '$lib/engine/GameManager';
 	import { formatCurrency } from '$lib/engine/BigNumber';
+	import { initToastListeners } from '$lib/stores/toastStore';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
 
 	let { children } = $props();
@@ -14,8 +16,12 @@
 	let offlineMs = $state(0);
 	let offlineReport = $state<OfflineReport | null>(null);
 	let showWelcomeBack = $state(false);
+	let cleanupToasts: (() => void) | null = null;
 
 	onMount(async () => {
+		// Wire up EventBus → toast notifications
+		cleanupToasts = initToastListeners();
+
 		const result = await gameManager.initialize();
 		isNewGame = result.isNewGame;
 		offlineMs = result.offlineMs;
@@ -30,6 +36,7 @@
 	});
 
 	onDestroy(() => {
+		cleanupToasts?.();
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -117,6 +124,7 @@
 		<!-- Fixed top resource bar -->
 		<ResourceBar />
 		<SaveIndicator />
+		<ToastContainer />
 
 		<!-- Main scrollable content area -->
 		<main

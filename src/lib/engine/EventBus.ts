@@ -7,7 +7,10 @@ export type EventHandler<T = unknown> = (data: T) => void;
 
 export interface GameEvents {
 	'production:complete': { division: string; tier: number; amount: number };
+	'production:started': { division: string; tier: number };
 	'upgrade:purchased': { division: string; tier: number; level: number };
+	'tier:unlocked': { division: string; tier: number };
+	'division:unlocked': { division: string };
 	'research:complete': { id: string; name: string };
 	'bottleneck:hit': { division: string; type: string; description: string };
 	'bottleneck:resolved': { division: string; type: string };

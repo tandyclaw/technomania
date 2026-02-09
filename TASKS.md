@@ -37,7 +37,7 @@
 | T013 | Division detail view template | DONE | MERGED | P0 | T009 |
 | T014 | Upgrade/purchase button component | DONE | MERGED | P0 | T006 |
 | T015 | Progress bar component (production progress) | DONE | MERGED | P0 | — |
-| T016 | Notification/toast system for events | PLANNED | PLAN | P1 | T004 |
+| T016 | Notification/toast system for events | DONE | MERGED | P1 | T004 |
 
 ## 3. First Vertical — Tesla Energy (Foundation)
 
@@ -134,8 +134,8 @@
 | Priority | Total | Done | Remaining |
 |----------|-------|------|-----------|
 | P0 | 35 | 27 | 8 |
-| P1 | 11 | 0 | 11 |
+| P1 | 11 | 1 | 10 |
 | P2 | 6 | 0 | 6 |
-| **Total** | **52** | **27** | **25** |
+| **Total** | **52** | **28** | **24** |
 
-**Next task to pick up:** T030 (Bottleneck system) or T016 (Notification/toast system).
+**Next task to pick up:** T030 (Bottleneck detection engine) or T056 (Buy quantity toggle).
