@@ -55,7 +55,7 @@
 	{#if divState.unlocked}
 		<DivisionDetailTemplate
 			{division}
-			state={divState}
+			divState={divState}
 			{cash}
 			onBuyTier={handleBuyTier}
 			onTapTier={handleTapTier}

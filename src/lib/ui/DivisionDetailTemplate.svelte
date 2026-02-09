@@ -21,13 +21,13 @@
 	// Division income calculation for stats summary
 	function getDivIncomePerSec(): number {
 		let total = 0;
-		for (let i = 0; i < state.tiers.length; i++) {
-			const t = state.tiers[i];
+		for (let i = 0; i < divState.tiers.length; i++) {
+			const t = divState.tiers[i];
 			if (!t.unlocked || t.count === 0) continue;
 			const td = division.tiers[i];
 			if (!td) continue;
 			const rev = calculateRevenue(td.config, t.count, t.level);
-			const dur = getCycleDurationMs(td.config, state.chiefLevel);
+			const dur = getCycleDurationMs(td.config, divState.chiefLevel);
 			total += (rev / dur) * 1000;
 		}
 		return total;
@@ -38,7 +38,7 @@
 
 	let {
 		division,
-		state,
+		divState,
 		cash = 0,
 		onBuyTier,
 		onTapTier,
@@ -46,7 +46,7 @@
 		onUnlockTier,
 	}: {
 		division: DivisionMeta;
-		state: DivisionState;
+		divState: DivisionState;
 		cash?: number;
 		onBuyTier?: (tierIndex: number) => void;
 		onTapTier?: (tierIndex: number) => boolean;
@@ -83,21 +83,21 @@
 	}
 
 	// Calculate overall division progress
-	let unlockedTiers = $derived(state.tiers.filter(t => t.unlocked).length);
-	let totalTiers = $derived(state.tiers.length);
+	let unlockedTiers = $derived(divState.tiers.filter(t => t.unlocked).length);
+	let totalTiers = $derived(divState.tiers.length);
 	let progressPercent = $derived(Math.round((unlockedTiers / totalTiers) * 100));
 
 	// Total owned units across all tiers
-	let totalOwned = $derived(state.tiers.reduce((sum, t) => sum + t.count, 0));
+	let totalOwned = $derived(divState.tiers.reduce((sum, t) => sum + t.count, 0));
 
 	// Count of tiers that are idle (ready to tap) and not automated
 	let readyToCollectCount = $derived(
-		state.tiers.filter((t, i) => t.unlocked && t.count > 0 && !t.producing && state.chiefLevel === 0).length
+		divState.tiers.filter((t, i) => t.unlocked && t.count > 0 && !t.producing && divState.chiefLevel === 0).length
 	);
 
 	function handleCollectAll() {
-		state.tiers.forEach((t, i) => {
-			if (t.unlocked && t.count > 0 && !t.producing && state.chiefLevel === 0) {
+		divState.tiers.forEach((t, i) => {
+			if (t.unlocked && t.count > 0 && !t.producing && divState.chiefLevel === 0) {
 				onTapTier?.(i);
 			}
 		});
@@ -109,7 +109,7 @@
 	// Check if previous tier is owned (has count > 0) for unlock gating
 	function isPreviousTierOwned(tierIndex: number): boolean {
 		if (tierIndex === 0) return true; // First tier always available
-		const prevTier = state.tiers[tierIndex - 1];
+		const prevTier = divState.tiers[tierIndex - 1];
 		return prevTier ? prevTier.count > 0 : false;
 	}
 </script>
@@ -153,7 +153,7 @@
 	</div>
 
 	<!-- Pull-down stats summary (tap header to toggle) -->
-	{#if state.unlocked && showStatsSummary}
+	{#if divState.unlocked && showStatsSummary}
 		<div class="bg-bg-secondary/60 rounded-xl border border-white/5 p-3 space-y-2 animate-slide-down">
 			<div class="flex items-center justify-between">
 				<span class="text-xs text-text-muted uppercase tracking-wider font-medium">Division Stats</span>
@@ -174,8 +174,8 @@
 				</div>
 				<div class="bg-bg-tertiary/30 rounded-lg p-2">
 					<div class="text-text-muted">Automation</div>
-					<div class="font-bold" style="color: {state.chiefLevel > 0 ? division.color : 'var(--color-text-muted)'};">
-						{state.chiefLevel > 0 ? `Chief Lv.${state.chiefLevel}` : 'Manual'}
+					<div class="font-bold" style="color: {divState.chiefLevel > 0 ? division.color : 'var(--color-text-muted)'};">
+						{divState.chiefLevel > 0 ? `Chief Lv.${divState.chiefLevel}` : 'Manual'}
 					</div>
 				</div>
 			</div>
@@ -183,7 +183,7 @@
 	{/if}
 
 	<!-- Quick stats -->
-	{#if state.unlocked}
+	{#if divState.unlocked}
 		<div class="grid grid-cols-3 gap-2">
 			<div class="bg-bg-secondary/40 rounded-lg p-2 text-center border border-white/[0.03]">
 				<div class="text-[10px] text-text-muted uppercase tracking-wider">Tiers</div>
@@ -195,15 +195,15 @@
 			</div>
 			<div class="bg-bg-secondary/40 rounded-lg p-2 text-center border border-white/[0.03]">
 				<div class="text-[10px] text-text-muted uppercase tracking-wider">Chief</div>
-				<div class="text-sm font-bold tabular-nums" style="color: {state.chiefLevel > 0 ? division.color : 'var(--color-text-muted)'};">
-					{state.chiefLevel > 0 ? `Lv.${state.chiefLevel}` : 'None'}
+				<div class="text-sm font-bold tabular-nums" style="color: {divState.chiefLevel > 0 ? division.color : 'var(--color-text-muted)'};">
+					{divState.chiefLevel > 0 ? `Lv.${divState.chiefLevel}` : 'None'}
 				</div>
 			</div>
 		</div>
 	{/if}
 
 	<!-- Star & Worker bonuses -->
-	{#if state.unlocked && (divisionStars > 0 || workers > 0)}
+	{#if divState.unlocked && (divisionStars > 0 || workers > 0)}
 		<div class="flex gap-2">
 			{#if divisionStars > 0}
 				<div class="flex-1 bg-solar-gold/10 rounded-lg p-2 text-center border border-solar-gold/20">
@@ -221,18 +221,18 @@
 	{/if}
 
 	<!-- Division-specific flavor panels (T024, T028) -->
-	{#if state.unlocked && division.id === 'spacex'}
+	{#if divState.unlocked && division.id === 'spacex'}
 		<LaunchCadencePanel color={division.color} />
 	{/if}
-	{#if state.unlocked && division.id === 'tesla'}
+	{#if divState.unlocked && division.id === 'tesla'}
 		<ProductionRatePanel color={division.color} />
 	{/if}
 
 	<!-- Chief card (THE key hire mechanic) -->
-	{#if state.unlocked}
+	{#if divState.unlocked}
 		<ChiefCard
 			divisionId={division.id}
-			chiefLevel={state.chiefLevel}
+			chiefLevel={divState.chiefLevel}
 			color={division.color}
 			{cash}
 			onHire={onHireChief}
@@ -240,12 +240,12 @@
 	{/if}
 
 	<!-- Milestones panel -->
-	{#if state.unlocked}
+	{#if divState.unlocked}
 		<MilestonePanel divisionId={division.id} />
 	{/if}
 
 	<!-- Division Prestige -->
-	{#if state.unlocked}
+	{#if divState.unlocked}
 		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4">
 			<div class="flex items-center justify-between mb-2">
 				<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider flex items-center gap-1.5">
@@ -295,12 +295,12 @@
 	{/if}
 
 	<!-- Workers -->
-	{#if state.unlocked}
+	{#if divState.unlocked}
 		<WorkerPanel />
 	{/if}
 
 	<!-- Active bottlenecks -->
-	{#if state.unlocked && activeBottlenecks.length > 0}
+	{#if divState.unlocked && activeBottlenecks.length > 0}
 		<div class="space-y-2">
 			<h2 class="text-xs font-semibold text-rocket-red uppercase tracking-wider flex items-center gap-1.5">
 				<span>⚠️</span> Active Bottlenecks
@@ -321,7 +321,7 @@
 	{/if}
 
 	<!-- Tier list (scrollable area) -->
-	{#if state.unlocked}
+	{#if divState.unlocked}
 		<div class="tier-list space-y-2.5">
 			<div class="flex items-center justify-between">
 				<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
@@ -341,14 +341,14 @@
 					<BuyQuantityToggle color={division.color} />
 				</div>
 			</div>
-			{#each state.tiers as tier, i}
+			{#each divState.tiers as tier, i}
 				{#if tier.unlocked}
 					<TierCard
 						{tier}
 						tierData={division.tiers[i]}
 						tierIndex={i}
 						divisionId={division.id}
-						chiefLevel={state.chiefLevel}
+						chiefLevel={divState.chiefLevel}
 						color={division.color}
 						{cash}
 						gameState={$gameState}
