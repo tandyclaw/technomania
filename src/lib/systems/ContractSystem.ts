@@ -11,6 +11,8 @@ import { DIVISIONS } from '$lib/divisions';
 import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
 import { addToast } from '$lib/stores/toastStore';
 import { eventBus } from '$lib/engine/EventBus';
+import { playSound } from '$lib/systems/SoundManager';
+import { hapticContractComplete, hapticContractExpired } from '$lib/utils/haptics';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -69,7 +71,7 @@ export interface ContractState {
 export const contractState = writable<ContractState>({
 	active: [],
 	spawnTimerMs: 0,
-	nextSpawnMs: randomSpawnInterval(),
+	nextSpawnMs: 15_000, // First contract spawns quickly (15s)
 	totalCompleted: 0,
 });
 
@@ -206,6 +208,52 @@ function generateContract(state: GameState): Contract | null {
 		}));
 	}
 
+	// Revenue earning contract — earn X cash in Y minutes
+	if (incomePerSec > 0) {
+		const timeLimitMin = 3 + Math.floor(Math.random() * 4);
+		const cashTarget = Math.round(incomePerSec * timeLimitMin * 60 * (1.5 + Math.random()));
+		const rpReward = Math.max(20, Math.round(100 + incomePerSec * 0.8));
+
+		templates.push(() => ({
+			id: `contract_${++contractIdCounter}_${Date.now()}`,
+			description: `Earn $${formatCompact(cashTarget)} in ${timeLimitMin} min`,
+			icon: '💰',
+			target: { type: 'income', target: cashTarget },
+			reward: { type: 'rp', amount: rpReward, label: `${rpReward} RP` },
+			timeLimitMs: timeLimitMin * 60 * 1000,
+			createdAt: Date.now(),
+			progress: 0,
+			completed: false,
+			expired: false,
+		}));
+	}
+
+	// Multi-division produce contract — produce across any tier
+	if (unlocked.length >= 2) {
+		const timeLimitMin = 3 + Math.floor(Math.random() * 3);
+		const target = 50 + Math.floor(Math.random() * 150);
+		const multReward = 1.5 + Math.random() * 1.5; // 1.5× to 3×
+		const durationSec = 30 + Math.floor(Math.random() * 60);
+
+		templates.push(() => ({
+			id: `contract_${++contractIdCounter}_${Date.now()}`,
+			description: `Produce ${target} units (any division) in ${timeLimitMin} min`,
+			icon: '🏭',
+			target: { type: 'produce', target },
+			reward: {
+				type: 'revenue_mult',
+				amount: Math.round(multReward * 10) / 10,
+				durationMs: durationSec * 1000,
+				label: `${(Math.round(multReward * 10) / 10)}× revenue for ${durationSec}s`,
+			},
+			timeLimitMs: timeLimitMin * 60 * 1000,
+			createdAt: Date.now(),
+			progress: 0,
+			completed: false,
+			expired: false,
+		}));
+	}
+
 	if (templates.length === 0) return null;
 	return templates[Math.floor(Math.random() * templates.length)]();
 }
@@ -242,6 +290,8 @@ export function tickContracts(deltaMs: number): void {
 		if (elapsed >= contract.timeLimitMs) {
 			contract.expired = true;
 			changed = true;
+			playSound('contractExpired');
+			hapticContractExpired();
 			continue;
 		}
 
@@ -294,6 +344,10 @@ export function tickContracts(deltaMs: number): void {
 
 function completeContract(contract: Contract, state: GameState): void {
 	contract.completed = true;
+
+	// Sound & haptic feedback
+	playSound('contractComplete');
+	hapticContractComplete();
 
 	// Apply reward
 	switch (contract.reward.type) {
@@ -354,8 +408,8 @@ export function initContractListeners(): () => void {
 					if (contract.completed || contract.expired) continue;
 					if (
 						contract.target.type === 'produce' &&
-						contract.target.division === data.division &&
-						contract.target.tierIndex === data.tier
+						(contract.target.division === undefined || contract.target.division === data.division) &&
+						(contract.target.tierIndex === undefined || contract.target.tierIndex === data.tier)
 					) {
 						contract.progress += data.amount;
 						if (contract.progress >= contract.target.target) {

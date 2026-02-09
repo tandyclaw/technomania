@@ -181,6 +181,59 @@ function playFanfare(): void {
 }
 
 /**
+ * Play a triumphant "contract complete" jingle — ascending arpeggio with shimmer
+ */
+function playContractComplete(): void {
+	if (!isSfxEnabled()) return;
+	const ctx = getContext();
+	if (!ctx) return;
+
+	const now = ctx.currentTime;
+
+	// Quick ascending arpeggio: E5 → G#5 → B5 → E6
+	const notes = [659.25, 830.61, 987.77, 1318.51];
+	const delays = [0, 0.08, 0.16, 0.24];
+
+	notes.forEach((freq, i) => {
+		const osc = ctx.createOscillator();
+		const gain = ctx.createGain();
+		osc.type = 'triangle';
+		osc.frequency.setValueAtTime(freq, now + delays[i]);
+		gain.gain.setValueAtTime(0.001, now);
+		gain.gain.linearRampToValueAtTime(0.14, now + delays[i] + 0.02);
+		gain.gain.setValueAtTime(0.14, now + delays[i] + 0.12);
+		gain.gain.exponentialRampToValueAtTime(0.001, now + delays[i] + 0.3);
+		osc.connect(gain);
+		gain.connect(ctx.destination);
+		osc.start(now + delays[i]);
+		osc.stop(now + delays[i] + 0.32);
+	});
+}
+
+/**
+ * Play a short "expired/fail" sound — descending two-note
+ */
+function playContractExpired(): void {
+	if (!isSfxEnabled()) return;
+	const ctx = getContext();
+	if (!ctx) return;
+
+	const now = ctx.currentTime;
+
+	const osc = ctx.createOscillator();
+	const gain = ctx.createGain();
+	osc.type = 'sine';
+	osc.frequency.setValueAtTime(400, now);
+	osc.frequency.exponentialRampToValueAtTime(200, now + 0.2);
+	gain.gain.setValueAtTime(0.1, now);
+	gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+	osc.connect(gain);
+	gain.connect(ctx.destination);
+	osc.start(now);
+	osc.stop(now + 0.27);
+}
+
+/**
  * Map of sound names to play functions, for manual triggering
  */
 export const sounds = {
@@ -189,6 +242,8 @@ export const sounds = {
 	whoosh: playWhoosh,
 	fanfare: playFanfare,
 	tabWhoosh: playTabWhoosh,
+	contractComplete: playContractComplete,
+	contractExpired: playContractExpired,
 } as const;
 
 export type SoundName = keyof typeof sounds;
