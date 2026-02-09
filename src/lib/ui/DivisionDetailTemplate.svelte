@@ -57,6 +57,19 @@
 	// Total owned units across all tiers
 	let totalOwned = $derived(state.tiers.reduce((sum, t) => sum + t.count, 0));
 
+	// Count of tiers that are idle (ready to tap) and not automated
+	let readyToCollectCount = $derived(
+		state.tiers.filter((t, i) => t.unlocked && t.count > 0 && !t.producing && state.chiefLevel === 0).length
+	);
+
+	function handleCollectAll() {
+		state.tiers.forEach((t, i) => {
+			if (t.unlocked && t.count > 0 && !t.producing && state.chiefLevel === 0) {
+				onTapTier?.(i);
+			}
+		});
+	}
+
 	// Check if previous tier is owned (has count > 0) for unlock gating
 	function isPreviousTierOwned(tierIndex: number): boolean {
 		if (tierIndex === 0) return true; // First tier always available
@@ -161,7 +174,19 @@
 				<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">
 					Production Tiers
 				</h2>
-				<BuyQuantityToggle color={division.color} />
+				<div class="flex items-center gap-2">
+					{#if readyToCollectCount >= 2}
+						<button
+							onclick={handleCollectAll}
+							class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all duration-150
+								   active:scale-95 touch-manipulation animate-pulse"
+							style="background-color: {division.color}20; color: {division.color}; border: 1px solid {division.color}30;"
+						>
+							▶ Collect All
+						</button>
+					{/if}
+					<BuyQuantityToggle color={division.color} />
+				</div>
 			</div>
 			{#each state.tiers as tier, i}
 				{#if tier.unlocked}

@@ -4,7 +4,7 @@
  * and network-first for navigation/API requests.
  */
 
-const CACHE_NAME = 'being-elon-v1';
+const CACHE_NAME = 'tech-tycoon-v2';
 
 // Assets to pre-cache on install
 const PRECACHE_ASSETS = [

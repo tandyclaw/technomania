@@ -16,6 +16,7 @@
 	import SynergyCelebration from '$lib/ui/SynergyCelebration.svelte';
 	import ParticleEffects from '$lib/ui/ParticleEffects.svelte';
 	import KeyboardShortcuts from '$lib/ui/KeyboardShortcuts.svelte';
+	import InstallPrompt from '$lib/ui/InstallPrompt.svelte';
 	import { celebrationState, dismissCelebration } from '$lib/stores/synergyCelebrationStore';
 	import { hapticTierPurchase, hapticProductionComplete, hapticPrestige } from '$lib/utils/haptics';
 	import { eventBus } from '$lib/engine/EventBus';
@@ -194,6 +195,9 @@
 				{@render children()}
 			</div>
 		</main>
+
+		<!-- PWA install prompt -->
+		<InstallPrompt />
 
 		<!-- Fixed bottom tab bar -->
 		<DivisionTabBar />

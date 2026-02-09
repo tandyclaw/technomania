@@ -29,6 +29,9 @@ import { getNextChiefCost } from '$lib/systems/ChiefSystem';
 import { getDivisionUnlockCost } from '$lib/systems/DivisionUnlockSystem';
 import { getActiveSynergies, getSynergyMultiplier, MVP_SYNERGIES, type Synergy } from '$lib/systems/SynergySystem';
 import { getBottleneckMultiplier } from '$lib/systems/BottleneckSystem';
+import { getMilestoneSpeedMultiplier, getMilestoneRevenueMultiplier } from '$lib/systems/MilestoneSystem';
+import { getUpgradeSpeedMultiplier, getUpgradeRevenueMultiplier } from '$lib/systems/UpgradeSystem';
+import { getMegaUpgradeSpeedMultiplier, getMegaUpgradeRevenueMultiplier, getVisionPointRevenueMultiplier } from '$lib/systems/PrestigeSystem';
 import { queueSynergyCelebration } from '$lib/stores/synergyCelebrationStore';
 import { eventBus } from './EventBus';
 

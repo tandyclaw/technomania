@@ -117,6 +117,11 @@ export interface GameState {
 	influence: number;
 	colonyTech: number;
 
+	// Upgrades & Milestones
+	purchasedUpgrades: string[];
+	visionPoints: number;
+	purchasedMegaUpgrades: string[];
+
 	// Power
 	powerGenerated: number; // MW
 	powerConsumed: number; // MW
@@ -169,6 +174,10 @@ export function createDefaultState(): GameState {
 		researchPoints: 0,
 		influence: 0,
 		colonyTech: 0,
+
+		purchasedUpgrades: [],
+		visionPoints: 0,
+		purchasedMegaUpgrades: [],
 
 		powerGenerated: 0,
 		powerConsumed: 0,
