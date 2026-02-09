@@ -323,15 +323,15 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		resolveCost: 500000,
 		researchCost: 30,
 		waitDurationMs: 900_000,
-		flavorText: 'Everything that can go wrong in a factory goes wrong worse on Mars.',
-		tooltip: 'Manufacturing on Mars means no resupply runs, no specialized vendors, no overnight parts delivery. Every broken tool is a crisis.',
+		flavorText: 'Everything that can go wrong in a mine goes wrong worse on Mars.',
+		tooltip: 'Mining on Mars means no resupply runs, no specialized vendors, no overnight parts delivery. Every broken drill bit is a crisis.',
 		isProductionHell: true,
 		productionHellFlavor: [
 			'Martian dust is infiltrating the precision machining equipment.',
 			'The regolith sintering furnace keeps overheating — no atmosphere to dissipate heat.',
 			'A critical cutting tool broke. The replacement is 6 months away on Earth.',
-			'The 3D printer jammed mid-habitat. Half a wall is now structural waste.',
-			'"Building a factory on Mars was designed by optimists who hate engineers."',
+			'The ore sorter is rejecting 80% of material. Calibration is way off for Martian minerals.',
+			'"Mining Mars was designed by optimists who hate engineers."',
 		],
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
