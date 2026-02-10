@@ -282,7 +282,7 @@
 			{:else if marsProgress >= 25}
 				Supply lines established
 			{:else}
-				Complete all divisions, tiers, and research to colonize {nextPlanet.name}
+				Complete all content and fund the mission to colonize {nextPlanet.name}
 			{/if}
 		</p>
 		{#if showColonyBreakdown}
@@ -306,6 +306,10 @@
 				<div class="flex justify-between">
 					<span>👔 Chiefs</span>
 					<span class="tabular-nums">{colonyBreakdown.chiefs}/{colonyBreakdown.chiefsMax}% — {colonyBreakdown.chiefsCurrent}/{colonyBreakdown.chiefsTotal} levels</span>
+				</div>
+				<div class="flex justify-between">
+					<span>💰 Cash</span>
+					<span class="tabular-nums">{colonyBreakdown.cash}/{colonyBreakdown.cashMax}% — ${colonyBreakdown.cashCurrent >= 1e9 ? (colonyBreakdown.cashCurrent / 1e9).toFixed(1) + 'B' : colonyBreakdown.cashCurrent >= 1e6 ? (colonyBreakdown.cashCurrent / 1e6).toFixed(0) + 'M' : colonyBreakdown.cashCurrent.toFixed(0)}/$10B</span>
 				</div>
 			</div>
 		{/if}

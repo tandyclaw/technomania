@@ -514,6 +514,7 @@ class GameManager {
 		levels: number; levelsMax: number; levelsCurrent: number; levelsTarget: number;
 		research: number; researchMax: number; researchDone: number; researchTotal: number;
 		chiefs: number; chiefsMax: number; chiefsCurrent: number; chiefsTotal: number;
+		cash: number; cashMax: number; cashCurrent: number; cashTarget: number;
 	} {
 		const divIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 
@@ -527,7 +528,7 @@ class GameManager {
 		for (const id of divIds) {
 			unlockedTiers += state.divisions[id].tiers.filter(t => t.unlocked).length;
 		}
-		const tiers = Math.round((unlockedTiers / 36) * 25 * 100) / 100;
+		const tiers = Math.round((unlockedTiers / 36) * 20 * 100) / 100;
 
 		// Tier levels (25%) — sum of min(count, 100) per tier vs 3600
 		let levelsCurrent = 0;
@@ -536,7 +537,7 @@ class GameManager {
 				levelsCurrent += Math.min(tier.count, 100);
 			}
 		}
-		const levels = Math.round((levelsCurrent / 3600) * 25 * 100) / 100;
+		const levels = Math.round((levelsCurrent / 3600) * 20 * 100) / 100;
 
 		// Research completed (20%)
 		const researchTotal = TECH_TREE.length;
@@ -550,18 +551,24 @@ class GameManager {
 		}
 		const chiefs = Math.round((chiefsCurrent / 36) * 15 * 100) / 100;
 
+		// Cash on hand (10%) — need $10B to fund the mission
+		const cashTarget = 10_000_000_000;
+		const cashCurrent = Math.min(state.cash, cashTarget);
+		const cash = Math.round((cashCurrent / cashTarget) * 10 * 100) / 100;
+
 		return {
 			divisions, divisionsMax: 15, divisionsUnlocked: unlockedDivs, divisionsTotal: 6,
-			tiers, tiersMax: 25, tiersUnlocked: unlockedTiers, tiersTotal: 36,
-			levels, levelsMax: 25, levelsCurrent, levelsTarget: 3600,
+			tiers, tiersMax: 20, tiersUnlocked: unlockedTiers, tiersTotal: 36,
+			levels, levelsMax: 20, levelsCurrent, levelsTarget: 3600,
 			research, researchMax: 20, researchDone, researchTotal,
 			chiefs, chiefsMax: 15, chiefsCurrent, chiefsTotal: 36,
+			cash, cashMax: 10, cashCurrent, cashTarget,
 		};
 	}
 
 	private calculateMarsProgress(state: GameState): number {
 		const b = this.getMarsProgressBreakdown(state);
-		const progress = b.divisions + b.tiers + b.levels + b.research + b.chiefs;
+		const progress = b.divisions + b.tiers + b.levels + b.research + b.chiefs + b.cash;
 		return Math.min(100, Math.round(progress * 100) / 100);
 	}
 
