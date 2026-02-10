@@ -4,18 +4,17 @@
 	let launched = $state(false);
 
 	const divisions = [
-		{ name: 'Energy', icon: '⚡', color: '#FFCC44', desc: 'Solar & batteries. Power everything.' },
-		{ name: 'Rockets', icon: '🚀', color: '#FF4444', desc: 'Build rockets. Get to Mars.' },
-		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'Scale production. Build anything.' },
-		{ name: 'AI', icon: '🤖', color: '#9944FF', desc: 'From chatbots to AGI.' },
-		{ name: 'Tunnels', icon: '🚇', color: '#FF8844', desc: 'Move people underground.' },
-		{ name: 'Robotics', icon: '🦾', color: '#FF6644', desc: 'Automate everything.' },
+		{ name: 'Energy', icon: '⚡', color: '#FFCC44', desc: 'Solar & batteries. Power Earth and Mars.' },
+		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'Vehicles, equipment, colony kits.' },
+		{ name: 'Rockets', icon: '🚀', color: '#FF4444', desc: 'Build rockets. Reach orbit. Get to Mars.' },
+		{ name: 'AI', icon: '🤖', color: '#9944FF', desc: 'Data centers to AGI. Automate everything.' },
+		{ name: 'Robotics', icon: '🦾', color: '#FF6644', desc: 'Build robots for Mars construction.' },
 	];
 
 	const features = [
 		{ icon: '🔗', title: 'Cross-Division Synergies', desc: 'AI powers robots. Robots run factories. Factories use your energy grid.' },
 		{ icon: '🔬', title: 'Research Tree', desc: 'Invest in R&D to unlock permanent upgrades across your empire.' },
-		{ icon: '⚡', title: 'Random Events', desc: 'Government subsidies, viral tweets, tunnel collapses — adapt or lose.' },
+		{ icon: '⚡', title: 'Random Events', desc: 'Government subsidies, viral tweets, dust storms — adapt or lose.' },
 		{ icon: '🪐', title: 'Mars Endgame', desc: 'Everything builds toward one goal: a self-sustaining colony on Mars.' },
 	];
 
@@ -27,14 +26,14 @@
 
 <svelte:head>
 	<title>Moonshot — Build a Tech Empire</title>
-	<meta name="description" content="Build rockets, scale manufacturing, train AI, dig tunnels, and colonize Mars. An idle tycoon game about building the future — one tap at a time." />
+	<meta name="description" content="Build rockets, scale manufacturing, train AI, deploy robots, and colonize Mars. An idle tycoon game about building the future — one tap at a time." />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Moonshot — Build a Tech Empire" />
-	<meta property="og:description" content="Build rockets, train AI, dig tunnels, and colonize Mars. A free idle tycoon game — no downloads, works on mobile." />
+	<meta property="og:description" content="Build rockets, train AI, deploy robots, and colonize Mars. A free idle tycoon game — no downloads, works on mobile." />
 	<meta property="og:image" content="/icon-512.png" />
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:title" content="Moonshot — Build a Tech Empire" />
-	<meta name="twitter:description" content="Build rockets, train AI, dig tunnels, and colonize Mars. A free idle tycoon game." />
+	<meta name="twitter:description" content="Build rockets, train AI, deploy robots, and colonize Mars. A free idle tycoon game." />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -77,7 +76,7 @@
 				<span class="bg-gradient-to-br from-white via-white to-text-secondary bg-clip-text text-transparent">
 					MOON
 				</span>
-				<span class="bg-gradient-to-br from-solar-gold via-tunnel-orange to-rocket-red bg-clip-text text-transparent">
+				<span class="bg-gradient-to-br from-solar-gold via-rocket-red to-rocket-red bg-clip-text text-transparent">
 					SHOT
 				</span>
 			</h1>
@@ -88,13 +87,13 @@
 			</p>
 
 			<p class="text-sm text-text-muted mb-10 font-mono [text-wrap:balance]">
-				6 divisions · 36 tiers · synergies ·&nbsp;colonies
+				5 divisions · 30 tiers · synergies ·&nbsp;colonies
 			</p>
 
 			<button
 				onclick={handleStart}
 				class="group relative inline-flex items-center gap-3 px-10 py-5 md:px-14 md:py-6
-					   bg-gradient-to-r from-solar-gold to-tunnel-orange
+					   bg-gradient-to-r from-solar-gold to-rocket-red
 					   text-bg-primary font-extrabold text-lg md:text-xl
 					   rounded-2xl shadow-lg shadow-solar-gold/25
 					   hover:shadow-xl hover:shadow-solar-gold/40
@@ -104,7 +103,7 @@
 				<span class="relative z-10">
 					{launched ? '🚀 Launching...' : '🚀 Start Building'}
 				</span>
-				<div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-solar-gold/90 to-tunnel-orange/90 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+				<div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-solar-gold/90 to-rocket-red/90 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 			</button>
 
 			<p class="mt-5 text-xs text-text-muted [text-wrap:balance]">
@@ -116,7 +115,7 @@
 	<!-- Divisions -->
 	<section class="max-w-5xl mx-auto px-4 py-16 md:py-24 w-full">
 		<h2 class="text-center text-text-secondary text-xs font-mono tracking-[0.3em] uppercase mb-10">
-			Six Divisions · One Mission
+			Five Divisions · One Mission
 		</h2>
 
 		<div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
@@ -190,7 +189,7 @@
 		<button
 			onclick={handleStart}
 			class="inline-flex items-center gap-2 px-8 py-4
-				   bg-gradient-to-r from-solar-gold to-tunnel-orange
+				   bg-gradient-to-r from-solar-gold to-rocket-red
 				   text-bg-primary font-extrabold text-lg
 				   rounded-2xl shadow-lg shadow-solar-gold/20
 				   hover:shadow-xl active:scale-95 transition-all duration-200
@@ -205,6 +204,9 @@
 		<p class="text-xs text-text-muted">
 			Moonshot · An idle game about building the future
 		</p>
+		<a href="/about" class="text-xs text-text-muted hover:text-text-secondary transition-colors mt-2 inline-block">
+			About the Game
+		</a>
 	</footer>
 </div>
 
