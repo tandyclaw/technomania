@@ -454,6 +454,7 @@ class GameManager {
 			localStorage.removeItem('tech_tycoon_tutorial_done');
 			localStorage.removeItem('tech_tycoon_emergency_save');
 			localStorage.removeItem('tech-tycoon-browser-notifications');
+			localStorage.removeItem('moonshot-seasonal-participated');
 		} catch {
 			// ignore
 		}

@@ -162,8 +162,9 @@ export const SEASONAL_EVENTS: SeasonalEvent[] = [
 		progressBarColor: '#EF4444',
 		isActive: (d) => {
 			const bf = getBlackFriday(d.getFullYear());
-			const diff = Math.abs(d.getTime() - bf.getTime());
-			return diff < 24 * 60 * 60 * 1000; // same day
+			return d.getFullYear() === bf.getFullYear() &&
+				d.getMonth() === bf.getMonth() &&
+				d.getDate() === bf.getDate();
 		},
 	},
 	{
