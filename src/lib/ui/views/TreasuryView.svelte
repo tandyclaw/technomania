@@ -48,12 +48,6 @@
 	// Investment percentages
 	const QUICK_PERCENTS = [10, 25, 50, 100];
 
-	// Sell percentages (state)
-	let savingsWithdrawPercent = $state(100);
-	let indexSellPercent = $state(100);
-	let btcSellPercent = $state(100);
-	let dogeSellPercent = $state(100);
-
 	// Custom inputs
 	let savingsAmount = $state('');
 	let indexAmount = $state('');
@@ -101,11 +95,6 @@
 		if (amount > 0) sellFn(amount);
 	}
 
-	// Sell value previews
-	let savingsWithdrawValue = $derived(treasury.savings * (savingsWithdrawPercent / 100));
-	let indexSellValue = $derived(indexValue * (indexSellPercent / 100));
-	let btcSellValue = $derived(btcValue * (btcSellPercent / 100));
-	let dogeSellValue = $derived(dogeValue * (dogeSellPercent / 100));
 </script>
 
 <div class="treasury-view space-y-4">
@@ -231,21 +220,17 @@
 			{#if treasury.savings > 0}
 				<div class="mt-4 space-y-2">
 					<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Withdraw</div>
-					<div class="space-y-1">
-						<input type="range" bind:value={savingsWithdrawPercent} min="1" max="100"
-							class="w-full accent-bio-green" />
-						<div class="flex justify-between text-[10px] text-text-muted">
-							<span>{savingsWithdrawPercent}%</span>
-							<span>{formatCurrency(savingsWithdrawValue)}</span>
-						</div>
+					<div class="flex items-center gap-2">
+						{#each QUICK_PERCENTS as percent}
+							<button
+								onclick={() => handleSellPercent(withdrawSavings, treasury.savings, percent)}
+								class="flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150
+									   active:scale-[0.95] touch-manipulation"
+								style="background-color: #FF444415; color: #FF4444; border: 1px solid #FF444425;">
+								{percent}%
+							</button>
+						{/each}
 					</div>
-					<button
-						onclick={() => handleSellPercent(withdrawSavings, treasury.savings, savingsWithdrawPercent)}
-						class="w-full py-2 rounded-lg text-xs font-semibold
-							   bg-bio-green/10 text-bio-green border border-bio-green/20
-							   transition-all duration-150 active:scale-[0.97] touch-manipulation">
-						Withdraw {formatCurrency(savingsWithdrawValue)}
-					</button>
 				</div>
 			{/if}
 		</div>
@@ -328,21 +313,17 @@
 			{#if treasury.indexShares > 0}
 				<div class="mt-4 space-y-2">
 					<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Sell Shares</div>
-					<div class="space-y-1">
-						<input type="range" bind:value={indexSellPercent} min="1" max="100"
-							class="w-full accent-rocket-red" />
-						<div class="flex justify-between text-[10px] text-text-muted">
-							<span>{indexSellPercent}% ({(treasury.indexShares * indexSellPercent / 100).toFixed(2)} shares)</span>
-							<span>{formatCurrency(indexSellValue)}</span>
-						</div>
+					<div class="flex items-center gap-2">
+						{#each QUICK_PERCENTS as percent}
+							<button
+								onclick={() => handleSellPercent(sellIndex, treasury.indexShares, percent)}
+								class="flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150
+									   active:scale-[0.95] touch-manipulation"
+								style="background-color: #FF444415; color: #FF4444; border: 1px solid #FF444425;">
+								{percent}%
+							</button>
+						{/each}
 					</div>
-					<button
-						onclick={() => handleSellPercent(sellIndex, treasury.indexShares, indexSellPercent)}
-						class="w-full py-2 rounded-lg text-xs font-semibold
-							   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
-							   transition-all duration-150 active:scale-[0.97] touch-manipulation">
-						Sell {indexSellPercent}% ({formatCurrency(indexSellValue)})
-					</button>
 				</div>
 			{/if}
 		</div>
@@ -422,21 +403,17 @@
 			{#if treasury.btcOwned > 0}
 				<div class="mt-4 space-y-2">
 					<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Sell BTC</div>
-					<div class="space-y-1">
-						<input type="range" bind:value={btcSellPercent} min="1" max="100"
-							class="w-full accent-rocket-red" />
-						<div class="flex justify-between text-[10px] text-text-muted">
-							<span>{btcSellPercent}% ({(treasury.btcOwned * btcSellPercent / 100).toFixed(6)} BTC)</span>
-							<span>{formatCurrency(btcSellValue)}</span>
-						</div>
+					<div class="flex items-center gap-2">
+						{#each QUICK_PERCENTS as percent}
+							<button
+								onclick={() => handleSellPercent(sellBtc, treasury.btcOwned, percent)}
+								class="flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150
+									   active:scale-[0.95] touch-manipulation"
+								style="background-color: #FF444415; color: #FF4444; border: 1px solid #FF444425;">
+								{percent}%
+							</button>
+						{/each}
 					</div>
-					<button
-						onclick={() => handleSellPercent(sellBtc, treasury.btcOwned, btcSellPercent)}
-						class="w-full py-2 rounded-lg text-xs font-semibold
-							   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
-							   transition-all duration-150 active:scale-[0.97] touch-manipulation">
-						Sell {btcSellPercent}% ({formatCurrency(btcSellValue)})
-					</button>
 				</div>
 			{/if}
 		</div>
@@ -536,21 +513,17 @@
 			{#if treasury.dogeOwned > 0}
 				<div class="mt-4 space-y-2">
 					<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Sell Meme Coins</div>
-					<div class="space-y-1">
-						<input type="range" bind:value={dogeSellPercent} min="1" max="100"
-							class="w-full accent-rocket-red" />
-						<div class="flex justify-between text-[10px] text-text-muted">
-							<span>{dogeSellPercent}%</span>
-							<span>{formatCurrency(dogeSellValue)}</span>
-						</div>
+					<div class="flex items-center gap-2">
+						{#each QUICK_PERCENTS as percent}
+							<button
+								onclick={() => handleSellPercent(sellDoge, treasury.dogeOwned, percent)}
+								class="flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150
+									   active:scale-[0.95] touch-manipulation"
+								style="background-color: #FF444415; color: #FF4444; border: 1px solid #FF444425;">
+								{percent}%
+							</button>
+						{/each}
 					</div>
-					<button
-						onclick={() => handleSellPercent(sellDoge, treasury.dogeOwned, dogeSellPercent)}
-						class="w-full py-2 rounded-lg text-xs font-semibold
-							   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
-							   transition-all duration-150 active:scale-[0.97] touch-manipulation">
-						Sell {dogeSellPercent}% ({formatCurrency(dogeSellValue)})
-					</button>
 				</div>
 			{/if}
 		</div>
@@ -577,13 +550,7 @@
 		opacity: 0.4;
 	}
 
-	input[type="range"] {
-		height: 6px;
-		border-radius: 3px;
-		background: var(--color-bg-tertiary);
-	}
-
-	@keyframes dogeGlow {
+@keyframes dogeGlow {
 		0%, 100% { opacity: 0.4; }
 		50% { opacity: 1; }
 	}
