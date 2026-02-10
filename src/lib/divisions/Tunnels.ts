@@ -62,8 +62,8 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		flavor: 'Same-day delivery, but make it subterranean. The moles approve.',
 		powerMW: -15,
 		config: {
-			baseCost: 12000000,
-			baseRevenue: 1800000,
+			baseCost: 8000000,
+			baseRevenue: 1200000,
 			cycleDuration: 70,
 			costMultiplier: 1.14,
 			revenueMultiplier: 1.0

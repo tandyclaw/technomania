@@ -48,8 +48,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Falls down 47 times a day. Gets up 48. Boston Dynamics energy.',
 		powerMW: -5,
 		config: {
-			baseCost: 4000000,
-			baseRevenue: 500000,
+			baseCost: 2500000,
+			baseRevenue: 350000,
 			cycleDuration: 35,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
