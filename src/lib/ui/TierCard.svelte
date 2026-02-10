@@ -158,19 +158,22 @@
 		const producing = tier.producing;
 		const progress = tier.progress;
 
+		// Detect cycle completion — only one trigger per cycle (not both)
 		const justCompleted = prevProducing && !producing && prevProgress > 0.5;
-		const cycleCompleted = producing && progress < prevProgress && prevProgress > 0.8;
+		const cycleCompleted = !justCompleted && producing && progress < prevProgress && prevProgress > 0.8;
 
 		if (justCompleted || cycleCompleted) {
-			// Pulse animation on cycle complete (clear previous to avoid stacking)
-			completionPulse = true;
-			clearTimeout(pulseTimeout);
-			pulseTimeout = setTimeout(() => { completionPulse = false; }, 600);
+			if (chiefLevel === 0) {
+				// Manual tap: full pulse + flash
+				completionPulse = true;
+				clearTimeout(pulseTimeout);
+				pulseTimeout = setTimeout(() => { completionPulse = false; }, 600);
 
-			// Ka-ching gold flash
-			kachingFlash = true;
-			clearTimeout(flashTimeout);
-			flashTimeout = setTimeout(() => { kachingFlash = false; }, 400);
+				kachingFlash = true;
+				clearTimeout(flashTimeout);
+				flashTimeout = setTimeout(() => { kachingFlash = false; }, 400);
+			}
+			// Chief automation: no pulse/flash — just progress bar reset is enough visual feedback
 
 			// Only show payout popups when manually tapping (no chief automation)
 			if (revenue > 0 && chiefLevel === 0) {
