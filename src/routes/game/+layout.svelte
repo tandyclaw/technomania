@@ -34,6 +34,8 @@
 	import NewsTicker from '$lib/ui/NewsTicker.svelte';
 	import MiniGame from '$lib/ui/MiniGame.svelte';
 	import { initMiniGameListeners, tickMiniGame } from '$lib/systems/MiniGameSystem';
+	import SeasonalBanner from '$lib/ui/SeasonalBanner.svelte';
+	import { initSeasonalEvents } from '$lib/systems/SeasonalEventSystem';
 
 	let { children } = $props();
 	let loading = $state(true);
@@ -116,6 +118,9 @@
 		cleanupContractTick = gameLoop.onTick((deltaMs) => {
 			tickContracts(deltaMs);
 		});
+
+		// Seasonal events (date-based, check on load)
+		initSeasonalEvents();
 
 		// Mini-games system
 		cleanupMiniGames = initMiniGameListeners();
@@ -344,6 +349,7 @@
 		<!-- Fixed top resource bar -->
 		<ResourceBar />
 		<NewsTicker />
+		<SeasonalBanner />
 		<SaveIndicator />
 		<ToastContainer />
 		<FloatingText />

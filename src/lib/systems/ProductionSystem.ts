@@ -6,6 +6,8 @@
  * Tap starts a cycle → progress bar fills → cash awarded on completion
  */
 
+import { getSeasonalMultipliers } from '$lib/systems/SeasonalEventSystem';
+
 export interface ProductionConfig {
 	baseCost: number;
 	baseRevenue: number;
@@ -28,7 +30,8 @@ export function calculateCost(config: ProductionConfig, count: number, ngPlusMul
  * Revenue = baseRevenue * count * revenueMultiplier^level
  */
 export function calculateRevenue(config: ProductionConfig, count: number, level: number): number {
-	return config.baseRevenue * count * Math.pow(config.revenueMultiplier, level);
+	const seasonal = getSeasonalMultipliers();
+	return config.baseRevenue * count * Math.pow(config.revenueMultiplier, level) * seasonal.revenue;
 }
 
 /**
@@ -40,7 +43,8 @@ export function getCycleDurationMs(config: ProductionConfig, chiefLevel: number)
 	if (chiefLevel === 0) return baseMs;
 	const speedMultipliers = [1, 2, 5, 10, 50, 100];
 	const speedMultiplier = speedMultipliers[chiefLevel - 1] ?? 1;
-	return baseMs / speedMultiplier;
+	const seasonal = getSeasonalMultipliers();
+	return baseMs / (speedMultiplier * seasonal.speed);
 }
 
 /**
