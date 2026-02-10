@@ -434,7 +434,7 @@
 			class="flex-1 overflow-y-auto overscroll-y-contain scroll-smooth"
 			style="
 				padding-top: calc(env(safe-area-inset-top, 0px) + 2.75rem);
-				padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+				padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem);
 				{pullDistance > 0 ? `transform: translateY(${pullDistance}px);` : ''}
 				transition: {pulling ? 'none' : 'transform 0.3s ease-out'};
 			"
