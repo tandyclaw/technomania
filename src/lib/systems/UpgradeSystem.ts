@@ -141,7 +141,7 @@ export function purchaseUpgrade(upgradeId: string): boolean {
 	});
 
 	if (success) {
-		eventBus.emit('upgrade:purchased', { upgradeId });
+		eventBus.emit('upgrade:purchased', { division: '', tier: 0, level: 0, upgradeId });
 	}
 
 	return success;
