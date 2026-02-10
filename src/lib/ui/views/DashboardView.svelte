@@ -37,6 +37,30 @@
 	let showShareCard = $state(false);
 	let shareCardMilestone = $state<'colony' | 'billion' | 'all-divisions' | 'prestige' | 'custom'>('colony');
 
+	// Logo tap easter egg
+	let logoTapCount = $state(0);
+	let logoTapTimer: ReturnType<typeof setTimeout> | null = null;
+	let showLogoEasterEgg = $state(false);
+
+	function handleLogoTap() {
+		logoTapCount++;
+		// Reset counter after 3s of no taps
+		if (logoTapTimer) clearTimeout(logoTapTimer);
+		logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 3000);
+
+		if (logoTapCount >= 10) {
+			logoTapCount = 0;
+			showLogoEasterEgg = true;
+			// Set achievement flag
+			gameState.update(s => ({
+				...s,
+				_achievementFlags: { ...((s as any)._achievementFlags ?? {}), logoTap10: true },
+			} as any));
+			// Hide animation after 2.5s
+			setTimeout(() => { showLogoEasterEgg = false; }, 2500);
+		}
+	}
+
 	function handleNewGamePlus() {
 		const success = gameManager.newGamePlus();
 		if (success) {
@@ -110,7 +134,12 @@
 	<!-- Welcome header -->
 	<div>
 		<div class="flex items-center gap-2">
-			<h1 class="text-dashboard-title font-bold text-text-primary">{currentPlanet.emoji} Moonshot</h1>
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<h1
+				class="text-dashboard-title font-bold text-text-primary select-none cursor-pointer"
+				class:logo-shake={showLogoEasterEgg}
+				onclick={handleLogoTap}
+			>{currentPlanet.emoji} Moonshot</h1>
 			{#if ngPlusLevel > 0}
 				<span
 					class="px-2 py-0.5 rounded-md text-xs font-bold"
@@ -418,6 +447,21 @@
 	</div>
 </div>
 
+<!-- Logo Easter Egg Confetti -->
+{#if showLogoEasterEgg}
+	<div class="confetti-container">
+		{#each Array(30) as _, i}
+			<div
+				class="confetti-piece"
+				style="left: {Math.random() * 100}%; animation-delay: {Math.random() * 0.8}s; background-color: {['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff6bb5','#a855f7'][i % 6]}; border-radius: {Math.random() > 0.5 ? '50%' : '2px'}; width: {6 + Math.random() * 8}px; height: {6 + Math.random() * 8}px;"
+			></div>
+		{/each}
+		<div class="fixed inset-0 flex items-center justify-center z-[10000] pointer-events-none">
+			<span class="text-6xl animate-bounce">🥚</span>
+		</div>
+	</div>
+{/if}
+
 <!-- Victory Screen -->
 {#if showVictory}
 	<div
@@ -528,5 +572,36 @@
 	@keyframes stripes {
 		from { background-position: 0 0; }
 		to { background-position: 20px 0; }
+	}
+
+	.logo-shake {
+		animation: shake 0.4s ease-in-out 3;
+	}
+
+	@keyframes shake {
+		0%, 100% { transform: translateX(0); }
+		25% { transform: translateX(-4px) rotate(-2deg); }
+		75% { transform: translateX(4px) rotate(2deg); }
+	}
+
+	.confetti-container {
+		pointer-events: none;
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		overflow: hidden;
+	}
+
+	.confetti-piece {
+		position: absolute;
+		width: 10px;
+		height: 10px;
+		top: -10px;
+		animation: confetti-fall 2.5s ease-in forwards;
+	}
+
+	@keyframes confetti-fall {
+		0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+		100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 	}
 </style>
