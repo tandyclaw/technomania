@@ -63,16 +63,18 @@
 
 <!-- More menu backdrop + popup -->
 {#if moreOpen}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="fixed inset-0 z-40"
 		onclick={handleBackdropClick}
+		onkeydown={(e) => { if (e.key === 'Escape') handleBackdropClick(); }}
+		role="presentation"
 	></div>
 	<div
 		class="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+3.75rem)] left-1/2 -translate-x-1/2 z-50
 			   w-[min(20rem,calc(100vw-2rem))] bg-bg-secondary border border-white/10 rounded-2xl shadow-2xl
 			   p-2 more-popup"
+		role="menu"
+		aria-label="More navigation options"
 	>
 		{#each moreTabs as tab}
 			{@const isActive = $activeTab === tab.id}
@@ -81,6 +83,8 @@
 				class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-150
 					   active:scale-[0.97] touch-manipulation
 					   {isActive ? 'bg-white/[0.06]' : 'hover:bg-white/[0.04]'}"
+				role="menuitem"
+				aria-label={tab.name}
 			>
 				<span class="text-xl leading-none relative" aria-hidden="true">
 					{tab.icon}
@@ -152,6 +156,8 @@
 				   transition-all duration-200
 				   active:scale-90 touch-manipulation"
 			aria-label="More tabs"
+			aria-expanded={moreOpen}
+			aria-haspopup="menu"
 		>
 			{#if isMoreActive}
 				<div

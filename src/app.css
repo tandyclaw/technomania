@@ -72,7 +72,7 @@ html.oled {
 	--color-bg-tertiary: #161616;
 	--color-text-primary: #f0f0f0;
 	--color-text-secondary: #8899aa;
-	--color-text-muted: #556677;
+	--color-text-muted: #7a8a9e;
 	--color-border: rgba(255, 255, 255, 0.08);
 	--color-border-hover: rgba(255, 255, 255, 0.15);
 }

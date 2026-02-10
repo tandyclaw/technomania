@@ -11,6 +11,7 @@
 		progress = 0,
 		cycleDurationMs = 1000,
 		color = '#4488FF',
+		label = '',
 	}: {
 		producing?: boolean;
 		/** Game-state progress 0-1 */
@@ -19,6 +20,8 @@
 		cycleDurationMs?: number;
 		/** Bar fill color */
 		color?: string;
+		/** Accessible label (only needed when not wrapped by a progressbar parent) */
+		label?: string;
 	} = $props();
 
 	// Transition duration = time between ticks (100ms) for smooth interpolation

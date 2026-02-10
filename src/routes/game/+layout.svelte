@@ -22,6 +22,7 @@
 	// import DailyRewardModal from '$lib/ui/DailyRewardModal.svelte';
 	import { celebrationState, dismissCelebration } from '$lib/stores/synergyCelebrationStore';
 	import { hapticTierPurchase, hapticProductionComplete, hapticPrestige } from '$lib/utils/haptics';
+	import { announce } from '$lib/utils/announce';
 	import { eventBus } from '$lib/engine/EventBus';
 	import type { OfflineReport } from '$lib/engine/OfflineCalculator';
 	import { DIVISIONS } from '$lib/divisions';
@@ -55,6 +56,7 @@
 	let cleanupContractTick: (() => void) | null = null;
 	let cleanupMiniGames: (() => void) | null = null;
 	let cleanupMiniGameTick: (() => void) | null = null;
+	let cleanupAnnouncements: (() => void)[] = [];
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
@@ -98,6 +100,17 @@
 			document.documentElement.classList.add('high-contrast');
 		}
 
+		// Screen reader announcements for key game events
+		cleanupAnnouncements = [
+			eventBus.on('achievement:unlocked', (d) => announce(`Achievement unlocked: ${d.name}. ${d.description}`)),
+			eventBus.on('chief:hired', (d) => announce(`Chief hired for ${d.division}, level ${d.level}`)),
+			eventBus.on('prestige:complete', (d) => announce(`Colony launched! Vision earned: ${d.visionEarned}`)),
+			eventBus.on('synergy:discovered', (d) => announce(`Synergy discovered: ${d.source} and ${d.target}. ${d.bonus}`)),
+			eventBus.on('research:complete', (d) => announce(`Research complete: ${d.name}`)),
+			eventBus.on('division:unlocked', (d) => announce(`New division unlocked: ${d.division}`)),
+			eventBus.on('power:shortage', () => announce('Warning: power deficit detected. Production reduced.')),
+		];
+
 		// Contracts system
 		cleanupContracts = initContractListeners();
 		cleanupContractTick = gameLoop.onTick((deltaMs) => {
@@ -131,6 +144,7 @@
 		cleanupContractTick?.();
 		cleanupMiniGames?.();
 		cleanupMiniGameTick?.();
+		cleanupAnnouncements.forEach(fn => fn());
 		if (typeof window !== 'undefined') {
 			gameManager.shutdown();
 		}
@@ -333,6 +347,9 @@
 		<SaveIndicator />
 		<ToastContainer />
 		<FloatingText />
+
+		<!-- Screen reader announcements for game events -->
+		<div id="game-announcements" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
 
 		<!-- Main scrollable content area -->
 		<!-- Pull-to-refresh indicator -->

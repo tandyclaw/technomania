@@ -72,6 +72,8 @@
 							? 'text-white'
 							: 'bg-bg-tertiary/40 text-text-muted hover:text-text-secondary'}"
 					style={isActive ? `background-color: ${color}30; color: ${color};` : ''}
+					aria-label="Quantity: {opt === 'max' ? 'Maximum' : opt}"
+					aria-pressed={isActive}
 				>
 					{opt === 'max' ? 'MAX' : `×${opt}`}
 				</button>

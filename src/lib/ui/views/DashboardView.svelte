@@ -135,7 +135,7 @@
 		style="background: linear-gradient(135deg, var(--color-bg-secondary) 0%, rgba(68, 136, 255, 0.08) 100%);"
 	>
 		<div class="relative z-10">
-			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-1">
+			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-1" id="total-income-label">
 				Total Income
 			</div>
 			<div class="text-income-display font-bold text-text-primary tabular-nums font-mono">
@@ -242,7 +242,7 @@
 				{marsProgress.toFixed(1)}%
 			</span>
 		</div>
-		<div class="w-full h-3 rounded-full bg-bg-tertiary overflow-hidden">
+		<div class="w-full h-3 rounded-full bg-bg-tertiary overflow-hidden" role="progressbar" aria-valuenow={Math.round(marsProgress)} aria-valuemin={0} aria-valuemax={100} aria-label="{nextPlanet.name} colony progress">
 			<div
 				class="h-full rounded-full transition-all duration-500 colony-progress-bar"
 				style="width: {marsProgress}%; background: linear-gradient(90deg, {currentPlanet.color}, {nextPlanet.color}); --bar-color-1: {currentPlanet.color}; --bar-color-2: {nextPlanet.color};"

@@ -68,7 +68,7 @@
 	{/if}
 
 	<!-- Progress bar -->
-	<div class="w-full h-2 rounded-full bg-bg-tertiary overflow-hidden">
+	<div class="w-full h-2 rounded-full bg-bg-tertiary overflow-hidden" role="progressbar" aria-valuenow={unlockedCount} aria-valuemin={0} aria-valuemax={totalCount} aria-label="Achievement progress: {unlockedCount} of {totalCount}">
 		<div
 			class="h-full rounded-full transition-all duration-500"
 			style="width: {(unlockedCount / totalCount) * 100}%; background: linear-gradient(90deg, #FFCC44, #FF8844);"
@@ -224,17 +224,19 @@
 {#if selectedAchievement}
 	{@const ach = selectedAchievement}
 	{@const isUnlocked = unlockedIds.has(ach.id)}
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
 		onclick={() => selectedAchievement = null}
+		onkeydown={(e) => { if (e.key === 'Escape') selectedAchievement = null; }}
+		role="dialog"
+		aria-modal="true"
+		aria-label="{ach.name} achievement details"
+		tabindex="-1"
 	>
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
 			class="bg-bg-primary border border-white/10 rounded-2xl p-5 max-w-xs w-full shadow-2xl"
 			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
 		>
 			<div class="flex items-center gap-3 mb-3">
 				<span class="text-4xl">{isUnlocked ? ach.icon : '🔒'}</span>

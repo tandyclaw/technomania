@@ -179,13 +179,14 @@
 						   color: {canAfford ? color : 'var(--color-text-muted)'};
 						   border: 1.5px solid {canAfford ? color + '35' : 'transparent'};"
 					disabled={!canAfford}
+					aria-label="{!isHired ? 'Hire' : 'Upgrade'} {chief?.name ?? 'Chief'}{nextCost !== null ? ` for ${formatCurrency(nextCost)}` : ''}"
 				>
 					<span class="flex items-center gap-2">
 						{#if !isHired}
-							<span class="text-base">👔</span>
+							<span class="text-base" aria-hidden="true">👔</span>
 							<span>Hire Chief</span>
 						{:else}
-							<span class="text-base">⬆️</span>
+							<span class="text-base" aria-hidden="true">⬆️</span>
 							<span>Upgrade to Lv.{chiefLevel + 1}</span>
 						{/if}
 					</span>

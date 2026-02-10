@@ -207,8 +207,6 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="tier-card relative rounded-xl border transition-all duration-200 overflow-hidden select-none
 		{tier.unlocked
@@ -223,9 +221,13 @@
 		? `border-color: ${rarity.color}30; box-shadow: ${rarity.glow};`
 		: ''}"
 	onclick={handleTap}
+	onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTap(e as any); } }}
 	ontouchstart={longPress.onTouchStart}
 	ontouchmove={longPress.onTouchMove}
 	ontouchend={longPress.onTouchEnd}
+	role={tier.unlocked && tier.count > 0 ? 'button' : undefined}
+	tabindex={tier.unlocked && tier.count > 0 ? 0 : undefined}
+	aria-label="{tierData.name} - Tier {tierIndex + 1}{tier.count > 0 ? `, ${tier.count} owned` : ''}{tier.producing ? ', producing' : ''}"
 	data-tutorial-id="tier-card-{tierIndex}"
 >
 	<!-- Tap ripple overlay -->
@@ -414,6 +416,7 @@
 							   color: {canAfford ? color : 'var(--color-text-muted)'};
 							   border: 1px solid {canAfford ? color + '25' : 'transparent'};"
 						disabled={!canAfford}
+						aria-label="{buyLabel} {tierData.name} for {costDisplay}"
 					>
 						<span>
 							{buyLabel}
@@ -430,10 +433,8 @@
 
 <!-- Long-press detailed tooltip -->
 {#if showLongPressTooltip}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center px-4" onclick={dismissTooltip}>
-		<div class="bg-bg-secondary rounded-xl p-4 max-w-xs w-full border border-white/10 shadow-2xl space-y-2 text-left" onclick={(e) => e.stopPropagation()}>
+	<div class="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center px-4" onclick={dismissTooltip} onkeydown={(e) => { if (e.key === 'Escape') dismissTooltip(); }} role="dialog" aria-modal="true" aria-label="{tierData.name} details" tabindex="-1">
+		<div class="bg-bg-secondary rounded-xl p-4 max-w-xs w-full border border-white/10 shadow-2xl space-y-2 text-left" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
 			<div class="flex items-center gap-2">
 				<div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold"
 					style="background-color: {color}15; color: {color};">T{tierIndex + 1}</div>
