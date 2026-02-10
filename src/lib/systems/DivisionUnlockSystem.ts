@@ -3,14 +3,13 @@
  * 
  * PROGRESSION DESIGN (tested via simulation, Feb 2026):
  * - Energy: Always unlocked (foundation)
- * - Rockets: $500 (~3 min) — first milestone, feels exciting
- * - Manufacturing: $2,500 (~9 min) — money engine kicks in
- * - AI: $5,000 (~17 min) — breaks the mid-game dead zone
- * - Tunnels: $12,000 (~24 min) — slow-cycle money engine
- * - Robotics: $40,000 (~32 min) — late-mid unlock, new item types
+ * - Rockets: $1,000 (~5 min) — first milestone
+ * - Manufacturing: $10,000 (~15 min) — real investment
+ * - AI: $50,000 (~30 min) — mid-game gate
+ * - Tunnels: $250,000 (~50 min) — late-mid, feels earned
+ * - Robotics: $1,000,000 (~80 min) — major commitment
  * 
- * Goal: new division every 5-10 minutes. AdCap-style pacing.
- * Cycle durations doubled from original Feb 2026 values.
+ * Goal: each division is a real achievement. Steeper curve like AdCap.
  */
 
 export interface DivisionUnlockRequirement {
@@ -26,27 +25,27 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		flavorText: 'Sustainable energy is the first step. Power your dreams.',
 	},
 	spacex: {
-		cost: 500,
+		cost: 1_000,
 		description: 'Start your rocket program.',
 		flavorText: 'Getting to orbit is hard. Getting to Mars is harder.',
 	},
 	tesla: {
-		cost: 2500,
+		cost: 10_000,
 		description: 'Scale production. Build anything.',
 		flavorText: 'The world runs on cars. Make them electric.',
 	},
 	ai: {
-		cost: 5000,
+		cost: 50_000,
 		description: 'Build artificial intelligence.',
 		flavorText: 'From chatbots to AGI. Data centers need power.',
 	},
 	tunnels: {
-		cost: 12000,
+		cost: 250_000,
 		description: 'Bore tunnels under cities.',
 		flavorText: 'Move people and freight underground. Slow but lucrative.',
 	},
 	robotics: {
-		cost: 40000,
+		cost: 1_000_000,
 		description: 'Build robots that automate everything.',
 		flavorText: 'From assembly bots to general purpose robots. The end of manual labor.',
 	},
