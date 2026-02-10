@@ -56,10 +56,10 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'ev_speed_3', name: 'Colony Assembly Line', description: '3x Colony Kit Factory speed', category: 'speed', cost: 25_000_000, target: 'tesla', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tesla', tierIndex: 5, threshold: 25 } },
 
 	// === AI UPGRADES (6) ===
-	{ id: 'ai_speed_1', name: 'GPU Cluster', description: '2x Chatbot speed', category: 'speed', cost: 20_000, target: 'ai', tierIndex: 0, value: 2 },
-	{ id: 'ai_rev_1', name: 'API Monetization', description: '3x Language Model revenue', category: 'revenue', cost: 100_000, target: 'ai', tierIndex: 1, value: 3 },
+	{ id: 'ai_speed_1', name: 'GPU Cluster', description: '2x Data Centers speed', category: 'speed', cost: 20_000, target: 'ai', tierIndex: 0, value: 2 },
+	{ id: 'ai_rev_1', name: 'API Monetization', description: '3x Model Training revenue', category: 'revenue', cost: 100_000, target: 'ai', tierIndex: 1, value: 3 },
 	{ id: 'ai_speed_2', name: 'Tensor Optimization', description: '2x all AI speed', category: 'speed', cost: 2_000_000, target: 'ai', tierIndex: -1, value: 2 },
-	{ id: 'ai_rev_2', name: 'Enterprise Contracts', description: '3x AI Assistant revenue', category: 'revenue', cost: 8_000_000, target: 'ai', tierIndex: 2, value: 3, requiresTierCount: { divisionId: 'ai', tierIndex: 2, count: 10 } },
+	{ id: 'ai_rev_2', name: 'Enterprise Contracts', description: '3x Agents revenue', category: 'revenue', cost: 8_000_000, target: 'ai', tierIndex: 2, value: 3, requiresTierCount: { divisionId: 'ai', tierIndex: 2, count: 10 } },
 	{ id: 'ai_cost_1', name: 'Open Source Models', description: 'AI tiers cost 20% less', category: 'cost', cost: 500_000, target: 'ai', tierIndex: -1, value: 0.8 },
 	{ id: 'ai_speed_3', name: 'Recursive Self-Improvement', description: '5x AGI speed', category: 'speed', cost: 100_000_000, target: 'ai', tierIndex: 5, value: 5, requiresMilestone: { divisionId: 'ai', tierIndex: 5, threshold: 25 } },
 

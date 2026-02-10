@@ -37,7 +37,7 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 	ai: {
 		cost: 50_000,
 		description: 'Build artificial intelligence.',
-		flavorText: 'From chatbots to AGI. Data centers need power.',
+		flavorText: 'From data centers to AGI. Compute needs power.',
 	},
 	tunnels: {
 		cost: 250_000,

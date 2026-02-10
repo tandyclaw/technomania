@@ -112,7 +112,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 	{
 		id: 'ai_tesla_autopilot',
 		name: 'AI-Powered Autopilot',
-		description: 'AI models improve self-driving capabilities and factory automation.',
+		description: 'AI-trained models optimize factory output and quality control.',
 		flavorText: 'Neural nets trained on billions of miles of driving data — and factory floor telemetry.',
 		icon: '🤖🏭',
 		requirement: {

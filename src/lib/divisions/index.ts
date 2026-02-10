@@ -61,7 +61,7 @@ export const DIVISIONS: Record<string, DivisionMeta> = {
 		name: AI_NAME,
 		icon: AI_ICON,
 		color: AI_COLOR,
-		description: 'Build intelligence. From chatbots to AGI.',
+		description: 'Build intelligence. From data centers to AGI.',
 		tiers: AI_TIERS,
 	},
 	tunnels: {

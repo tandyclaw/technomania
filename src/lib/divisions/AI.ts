@@ -1,23 +1,23 @@
 /**
  * AI.ts — Artificial Intelligence division
- * From chatbots to AGI — research-hungry, power-hungry
+ * From data centers to AGI — research-hungry, power-hungry
  *
  * PROGRESSION DESIGN (balanced Feb 2026):
  * - Unlocks at $5,000 (~17 min) — fills the post-Manufacturing gap
  * - Heavy power consumer (data centers)
  * - Medium-fast cycles (software ships faster than hardware)
  * - Revenue scales aggressively at higher tiers
- * - Chatbot ROI (0.053/s per $) competitive with mid-tier energy items
+ * - Data Centers ROI (0.053/s per $) competitive with mid-tier energy items
  */
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
 export const AI_TIERS: { name: string; description: string; tooltip: string; flavor?: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
-		name: 'Chatbot',
-		description: 'Simple conversational AI. Handles FAQs and customer support.',
-		tooltip: 'Rule-based chatbots are the gateway drug to AI. Low cost, surprisingly useful.',
-		flavor: '"Have you tried turning it off and on again?" — Your chatbot, to every customer.',
+		name: 'Data Centers',
+		description: 'Massive GPU farms. The foundation of all AI compute.',
+		tooltip: 'Hyperscale data centers consume megawatts of power and millions of gallons of cooling water. The cloud isn\'t weightless.',
+		flavor: 'Rows of blinking LEDs stretching to the horizon. Somewhere in there, intelligence is waking up.',
 		powerMW: -0.05,
 		config: {
 			baseCost: 5000,
@@ -28,10 +28,10 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		}
 	},
 	{
-		name: 'Language Model',
-		description: 'Large language model. Billions of parameters, trillions of tokens.',
-		tooltip: 'Training a frontier LLM costs tens of millions in compute. The results are worth it.',
-		flavor: 'It wrote a sonnet, a contract, and a breakup text. All before lunch.',
+		name: 'Model Training',
+		description: 'Train frontier models on trillions of tokens.',
+		tooltip: 'A single training run can cost $100M+ in compute. The resulting model is worth billions.',
+		flavor: 'Loss curve going down. Capabilities going up. Nobody knows exactly why.',
 		powerMW: -0.5,
 		config: {
 			baseCost: 50000,
@@ -42,10 +42,10 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		}
 	},
 	{
-		name: 'AI Assistant',
-		description: 'Multimodal assistant that sees, hears, and reasons.',
-		tooltip: 'An AI that can process text, images, audio, and video opens entirely new markets.',
-		flavor: 'Sees your calendar, hears your sighs, knows you\'re not "fine."',
+		name: 'Agents',
+		description: 'Autonomous AI that plans, reasons, and executes tasks.',
+		tooltip: 'AI agents don\'t just answer questions — they browse, code, negotiate, and ship. The workforce just changed forever.',
+		flavor: 'It booked your flight, refactored the codebase, and filed your taxes. You were asleep.',
 		powerMW: -2,
 		config: {
 			baseCost: 500000,
@@ -56,10 +56,10 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		}
 	},
 	{
-		name: 'Autonomous Agent',
-		description: 'AI that takes actions in the real world. Tool use, planning, execution.',
-		tooltip: 'Agents don\'t just answer questions — they complete tasks autonomously. This changes everything.',
-		flavor: 'Booked your flight, cancelled your meeting, and ordered dinner. You didn\'t ask.',
+		name: 'Neural Interface',
+		description: 'Direct brain-computer links. Thought becomes action.',
+		tooltip: 'BCIs decode neural signals into digital commands. Type, click, and control devices — just by thinking.',
+		flavor: 'The patient moved a cursor with her mind. Then she wrote a novel.',
 		powerMW: -10,
 		config: {
 			baseCost: 5000000,
@@ -70,10 +70,10 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		}
 	},
 	{
-		name: 'Neural Network Hub',
-		description: 'Massive GPU cluster. Training runs that take months.',
-		tooltip: 'At this scale, your data center consumes as much power as a small city.',
-		flavor: '100,000 GPUs humming in harmony. Your electricity bill has its own accountant.',
+		name: 'Embodied AI',
+		description: 'AI in physical form. Robots that think and adapt.',
+		tooltip: 'Embodied intelligence learns from the physical world — touch, balance, force. Silicon minds in steel bodies.',
+		flavor: 'It watched a human fold laundry once. Now it folds faster than you.',
 		powerMW: -50,
 		config: {
 			baseCost: 50000000,

@@ -26,7 +26,7 @@ function generateAllMilestones(): Milestone[] {
 		{ id: 'teslaenergy', tiers: ['Nuclear Reactor', 'Solar Panel Farm', 'Battery Megapack', 'Rocket Fuel Refinery', 'Space Solar Array', 'Wireless Energy Beaming'] },
 		{ id: 'spacex', tiers: ['Small Orbital Rocket', 'Reusable Booster', 'Crew Capsule', 'Heavy Lift Vehicle', 'Super Heavy Starship', 'Starship Lander'] },
 		{ id: 'tesla', tiers: ['Electric Cars', 'Gigafactory', 'Raw Material Processing', 'Chip Fabrication', 'Orbital Shipyard', 'Colony Kit Factory'] },
-		{ id: 'ai', tiers: ['Chatbot', 'Language Model', 'AI Assistant', 'Autonomous Agent', 'Neural Network Hub', 'AGI'] },
+		{ id: 'ai', tiers: ['Data Centers', 'Model Training', 'Agents', 'Neural Interface', 'Embodied AI', 'AGI'] },
 		{ id: 'tunnels', tiers: ['Test Bore', 'City Tunnel', 'Transit Loop', 'Freight Network', 'Continental Link', 'Hyperloop'] },
 		{ id: 'robotics', tiers: ['Assembly Bot', 'Warehouse Drone', 'Humanoid Prototype', 'Home Robot', 'Construction Mech', 'General Purpose Robot'] },
 	];
