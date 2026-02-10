@@ -38,12 +38,12 @@
 		style={isHired ? `background-color: ${color}08; border-color: ${color}20;` : ''}
 		data-tutorial-id="chief-card"
 	>
-		<div class="px-3 py-2.5">
+		<div class="px-2.5 py-1.5">
 			<!-- Single compact row: portrait + info + button -->
-			<div class="flex items-center gap-2.5">
+			<div class="flex items-center gap-2">
 				<!-- Portrait -->
 				<div
-					class="w-9 h-9 rounded-lg flex items-center justify-center text-lg shrink-0"
+					class="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0"
 					style="background-color: {isHired ? color + '20' : 'var(--color-bg-tertiary)'};"
 				>
 					{isHired ? chief.portrait : '👤'}
@@ -51,24 +51,17 @@
 
 				<!-- Info -->
 				<div class="flex-1 min-w-0">
-					<div class="flex items-center gap-1.5">
+					<div class="flex items-center gap-1">
 						<span class="text-xs font-bold truncate"
 							style="color: {isHired ? color : 'var(--color-text-primary)'};"
 						>
 							{chief.name}
 						</span>
 						{#if isHired && currentLevelData}
-							<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
+							<span class="text-[9px] font-bold px-1 py-px rounded-full shrink-0"
 								style="background-color: {color}20; color: {color};"
 							>
 								Lv.{chiefLevel} · {currentLevelData.speedMultiplier}x
-							</span>
-						{/if}
-						{#if isMaxLevel}
-							<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
-								style="background-color: {color}20; color: {color};"
-							>
-								MAX ✨
 							</span>
 						{/if}
 					</div>
@@ -77,11 +70,17 @@
 					</p>
 				</div>
 
-				<!-- Action button -->
-				{#if !isMaxLevel}
+				<!-- Action button or max label -->
+				{#if isMaxLevel}
+					<span class="shrink-0 text-[9px] font-bold px-2 py-1 rounded-lg"
+						style="background-color: {color}15; color: {color};"
+					>
+						MAX ✨
+					</span>
+				{:else}
 					<button
 						onclick={handleHire}
-						class="shrink-0 flex flex-col items-center px-3 py-1.5 rounded-lg text-xs font-bold
+						class="shrink-0 flex flex-col items-center px-2.5 py-1 rounded-lg text-xs font-bold
 							   transition-all duration-200 active:scale-[0.97] touch-manipulation"
 						style="background-color: {canAfford ? color + '20' : 'var(--color-bg-tertiary)'};
 							   color: {canAfford ? color : 'var(--color-text-muted)'};
