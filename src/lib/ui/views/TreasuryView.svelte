@@ -271,8 +271,8 @@
 			{#if treasury.indexShares > 0}
 				<div class="mt-3 grid grid-cols-3 gap-2">
 					<div>
-						<div class="text-[10px] text-text-muted uppercase">Shares</div>
-						<div class="text-sm font-bold tabular-nums text-text-primary">{formatNumber(treasury.indexShares)}</div>
+						<div class="text-[10px] text-text-muted uppercase">Invested</div>
+						<div class="text-sm font-bold tabular-nums text-text-primary">{formatCurrency(treasury.indexInvested)}</div>
 					</div>
 					<div>
 						<div class="text-[10px] text-text-muted uppercase">Value</div>
@@ -363,8 +363,8 @@
 			{#if treasury.btcOwned > 0}
 				<div class="mt-3 grid grid-cols-3 gap-2">
 					<div>
-						<div class="text-[10px] text-text-muted uppercase">Owned</div>
-						<div class="text-sm font-bold tabular-nums text-text-primary">{formatNumber(treasury.btcOwned)}</div>
+						<div class="text-[10px] text-text-muted uppercase">Invested</div>
+						<div class="text-sm font-bold tabular-nums text-text-primary">{formatCurrency(treasury.btcInvested)}</div>
 					</div>
 					<div>
 						<div class="text-[10px] text-text-muted uppercase">Value</div>
@@ -469,10 +469,8 @@
 			{#if treasury.dogeOwned > 0}
 				<div class="mt-3 grid grid-cols-3 gap-2">
 					<div>
-						<div class="text-[10px] text-text-muted uppercase">Owned</div>
-						<div class="text-sm font-bold tabular-nums text-text-primary">
-							{formatNumber(treasury.dogeOwned)}
-						</div>
+						<div class="text-[10px] text-text-muted uppercase">Invested</div>
+						<div class="text-sm font-bold tabular-nums text-text-primary">{formatCurrency(treasury.dogeInvested)}</div>
 					</div>
 					<div>
 						<div class="text-[10px] text-text-muted uppercase">Value</div>
