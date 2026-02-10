@@ -7,10 +7,9 @@
  *
  * MATH CHECK (verified Feb 2026 simulation):
  * - Start $25, buy 4 reactors immediately ($5 * 1.07^0..3 ≈ $22)
- * - Each earns $1/0.6s = $1.67/s → 4 reactors = $6.67/s
- * - Exponential buying: ~68 reactors + 25 solars by ~2min
- * - Reach $500 (Rockets) at ~1.5 min, $2500 (Mfg) at ~4.5 min
- * - This is the "flying" feeling — new division every few minutes
+ * - Each earns $1/1.2s = $0.83/s → 4 reactors = $3.33/s
+ * - Reach $500 (Rockets) at ~3 min, $2500 (Mfg) at ~9 min
+ * - Slower pacing (~50% of original) to match AdCap feel
  */
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
