@@ -7,6 +7,7 @@
 	import { setMusicEnabled, setMusicVolume } from '$lib/systems/MusicManager';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
 	import { tutorialStore } from '$lib/stores/tutorialStore';
+	import { isBrowserNotificationsEnabled, setBrowserNotificationsEnabled, requestPermissionIfNeeded } from '$lib/systems/BrowserNotificationService';
 
 	const GAME_VERSION = '0.1.0';
 
@@ -83,6 +84,17 @@
 	let hapticEnabled = $derived($gameState.settings.hapticEnabled ?? true);
 	let theme = $derived($gameState.settings.theme ?? 'dark');
 	let highContrast = $derived($gameState.settings.highContrast ?? false);
+	let browserNotifications = $state(isBrowserNotificationsEnabled());
+
+	async function toggleBrowserNotifications() {
+		const newVal = !browserNotifications;
+		if (newVal) {
+			const granted = await requestPermissionIfNeeded();
+			if (!granted) return; // Permission denied, don't enable
+		}
+		browserNotifications = newVal;
+		setBrowserNotificationsEnabled(newVal);
+	}
 
 	const themeOptions: { value: 'dark' | 'light' | 'oled'; label: string; icon: string; desc: string }[] = [
 		{ value: 'dark', label: 'Dark', icon: '🌙', desc: 'Default dark theme' },
@@ -350,6 +362,25 @@
 					aria-label="Toggle notifications"
 				>
 					<span class="toggle-thumb" class:active={notificationsEnabled}></span>
+				</button>
+			</div>
+			<div class="flex items-center justify-between px-4 py-3">
+				<div class="flex items-center gap-3">
+					<span class="text-lg" aria-hidden="true">📲</span>
+					<div>
+						<span class="text-sm font-medium text-text-primary block">Browser Notifications</span>
+						<span class="text-[10px] text-text-muted">Notify when tab is in background</span>
+					</div>
+				</div>
+				<button
+					onclick={toggleBrowserNotifications}
+					class="toggle-switch"
+					class:active={browserNotifications}
+					role="switch"
+					aria-checked={browserNotifications}
+					aria-label="Toggle browser notifications"
+				>
+					<span class="toggle-thumb" class:active={browserNotifications}></span>
 				</button>
 			</div>
 			<div class="flex items-center justify-between px-4 py-3">

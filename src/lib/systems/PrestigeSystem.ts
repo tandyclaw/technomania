@@ -257,6 +257,64 @@ export function getColonyMilestone(prestigeCount: number): {
 	};
 }
 
+// === PRESTIGE MILESTONES ===
+
+export interface PrestigeMilestone {
+	colonies: number;
+	name: string;
+	emoji: string;
+	bonus: string;
+	description: string;
+	effect: 'speed' | 'revenue' | 'vp_earn' | 'starting_tech';
+	multiplier: number;
+}
+
+export const PRESTIGE_MILESTONES: PrestigeMilestone[] = [
+	{ colonies: 2, name: 'Dual Colony', emoji: '🌐', bonus: '+10% speed', description: 'Two worlds under your banner', effect: 'speed', multiplier: 1.10 },
+	{ colonies: 5, name: 'Star Network', emoji: '🌟', bonus: '+25% revenue', description: 'A network of thriving colonies', effect: 'revenue', multiplier: 1.25 },
+	{ colonies: 8, name: 'Galactic Presence', emoji: '🛸', bonus: '+50% VP earned', description: 'Your vision echoes across the stars', effect: 'vp_earn', multiplier: 1.50 },
+	{ colonies: 10, name: 'Decaworld', emoji: '👑', bonus: '2× speed', description: 'Ten worlds bow to your genius', effect: 'speed', multiplier: 2.0 },
+	{ colonies: 15, name: 'Stellar Empire', emoji: '⚡', bonus: '3× revenue', description: 'An empire spanning light-years', effect: 'revenue', multiplier: 3.0 },
+	{ colonies: 20, name: 'Cosmic Dominion', emoji: '🔮', bonus: '5× speed', description: 'Reality bends to your will', effect: 'speed', multiplier: 5.0 },
+	{ colonies: 30, name: 'Multiverse Architect', emoji: '🌀', bonus: '10× revenue', description: 'You have transcended mere colonization', effect: 'revenue', multiplier: 10.0 },
+];
+
+/**
+ * Get all milestones achieved at a given colony count
+ */
+export function getAchievedMilestones(prestigeCount: number): PrestigeMilestone[] {
+	return PRESTIGE_MILESTONES.filter(m => prestigeCount >= m.colonies);
+}
+
+/**
+ * Get the next unachieved milestone
+ */
+export function getNextMilestone(prestigeCount: number): PrestigeMilestone | null {
+	return PRESTIGE_MILESTONES.find(m => prestigeCount < m.colonies) ?? null;
+}
+
+/**
+ * Get combined milestone speed multiplier
+ */
+export function getMilestoneSpeedMultiplier(prestigeCount: number): number {
+	let mult = 1;
+	for (const m of PRESTIGE_MILESTONES) {
+		if (prestigeCount >= m.colonies && m.effect === 'speed') mult *= m.multiplier;
+	}
+	return mult;
+}
+
+/**
+ * Get combined milestone revenue multiplier
+ */
+export function getMilestoneRevenueMultiplier(prestigeCount: number): number {
+	let mult = 1;
+	for (const m of PRESTIGE_MILESTONES) {
+		if (prestigeCount >= m.colonies && m.effect === 'revenue') mult *= m.multiplier;
+	}
+	return mult;
+}
+
 /**
  * Check if player should be nudged toward prestige
  */

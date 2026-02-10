@@ -35,6 +35,7 @@
 	import MiniGame from '$lib/ui/MiniGame.svelte';
 	import { initMiniGameListeners, tickMiniGame } from '$lib/systems/MiniGameSystem';
 	import SeasonalBanner from '$lib/ui/SeasonalBanner.svelte';
+	import { initBrowserNotifications } from '$lib/systems/BrowserNotificationService';
 	import WhatsNew from '$lib/ui/WhatsNew.svelte';
 	import { initSeasonalEvents } from '$lib/systems/SeasonalEventSystem';
 
@@ -60,6 +61,7 @@
 	let cleanupMiniGames: (() => void) | null = null;
 	let cleanupMiniGameTick: (() => void) | null = null;
 	let cleanupAnnouncements: (() => void)[] = [];
+	let cleanupBrowserNotifications: (() => void) | null = null;
 
 	onMount(async () => {
 		// Wire up EventBus → toast notifications
@@ -120,6 +122,9 @@
 			tickContracts(deltaMs);
 		});
 
+		// Browser notifications (idle, contracts, achievements)
+		cleanupBrowserNotifications = initBrowserNotifications();
+
 		// Seasonal events (date-based, check on load)
 		initSeasonalEvents();
 
@@ -147,6 +152,7 @@
 		cleanupRandomEvents?.();
 		cleanupEventTick?.();
 		cleanupContracts?.();
+		cleanupBrowserNotifications?.();
 		cleanupContractTick?.();
 		cleanupMiniGames?.();
 		cleanupMiniGameTick?.();
