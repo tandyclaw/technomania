@@ -472,10 +472,10 @@ export function tickTreasury(deltaMs: number): void {
 			}
 		}
 		
-		// Clamp prices — max 1000x in each direction from starting price
-		treasury.btcPrice = Math.min(Math.max(42, treasury.btcPrice), 42_000_000); // $42 to $42M (starting $42K)
-		treasury.dogePrice = Math.min(Math.max(0.00008, treasury.dogePrice), 80); // $0.00008 to $80 (starting $0.08)
-		treasury.indexPrice = Math.min(Math.max(0.1, treasury.indexPrice), 100_000); // $0.10 to $100K (starting $100)
+		// Clamp prices
+		treasury.btcPrice = Math.max(1000, treasury.btcPrice); // BTC floor only — volatile but realistic
+		treasury.dogePrice = Math.min(Math.max(0.00008, treasury.dogePrice), 80); // Meme coin: 1000x cap each direction
+		// Index has no clamp — steady growth fund, low risk
 		
 		// Record history
 		if (priceAccum >= PRICE_UPDATE_INTERVAL) {
