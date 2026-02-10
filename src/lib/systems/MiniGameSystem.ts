@@ -304,7 +304,7 @@ export function initMiniGameListeners(): () => void {
 	// Trigger power surge on energy production
 	cleanups.push(
 		eventBus.on('production:complete', (data) => {
-			if (data.division === 'teslaenergy' && Math.random() < 0.03) {
+			if (data.division === 'teslaenergy' && Math.random() < 0.002) {
 				const s = get(miniGameState);
 				if (!s.active && !onCooldown) {
 					triggerMiniGame('power-surge');
