@@ -614,15 +614,15 @@ export function activateBottleneck(divisionId: string, bottleneckId: string): vo
 			}
 		}
 
-		// Emit event for toast
-		eventBus.emit('bottleneck:hit', {
-			division: divisionId,
-			type: def.category,
-			bottleneckId,
-			description: def.description,
-		});
-
 		return { ...s };
+	});
+
+	// Emit after state update to prevent nested update overwrites
+	eventBus.emit('bottleneck:hit', {
+		division: divisionId,
+		type: def.category,
+		bottleneckId,
+		description: def.description,
 	});
 }
 
@@ -648,13 +648,13 @@ export function resolveBottleneck(divisionId: string, bottleneckId: string): boo
 			bottleneck.resolved = true;
 		}
 
-		eventBus.emit('bottleneck:resolved', {
-			division: divisionId,
-			bottleneckId,
-			type: 'cash',
-		});
-
 		return { ...s };
+	});
+
+	eventBus.emit('bottleneck:resolved', {
+		division: divisionId,
+		bottleneckId,
+		type: 'cash',
 	});
 
 	return true;
@@ -682,13 +682,13 @@ export function resolveBottleneckWithRP(divisionId: string, bottleneckId: string
 			bottleneck.resolved = true;
 		}
 
-		eventBus.emit('bottleneck:resolved', {
-			division: divisionId,
-			bottleneckId,
-			type: 'research',
-		});
-
 		return { ...s };
+	});
+
+	eventBus.emit('bottleneck:resolved', {
+		division: divisionId,
+		bottleneckId,
+		type: 'research',
 	});
 
 	return true;
@@ -732,22 +732,23 @@ export function tickBottleneckWaits(divisionId: string): void {
 		const elapsed = Date.now() - bottleneck.waitStartedAt;
 		if (elapsed >= def.waitDurationMs) {
 			// Wait complete — resolve it
+			const resolvedId = bottleneck.id;
 			gameState.update((s) => {
 				const div = s.divisions[divisionId as keyof typeof s.divisions];
-				const b = div?.bottlenecks.find((x) => x.id === bottleneck.id);
+				const b = div?.bottlenecks.find((x) => x.id === resolvedId);
 				if (b) {
 					b.active = false;
 					b.resolved = true;
 					b.waitStartedAt = undefined;
 				}
 
-				eventBus.emit('bottleneck:resolved', {
-					division: divisionId,
-					bottleneckId: bottleneck.id,
-					type: 'wait',
-				});
-
 				return { ...s };
+			});
+
+			eventBus.emit('bottleneck:resolved', {
+				division: divisionId,
+				bottleneckId: resolvedId,
+				type: 'wait',
 			});
 		}
 	}

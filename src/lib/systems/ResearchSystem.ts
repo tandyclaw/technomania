@@ -126,6 +126,8 @@ export function cancelResearch(): boolean {
  * Called from the game loop. Completes research when progress reaches 1.0.
  */
 export function tickResearch(deltaMs: number): void {
+	let completedResearch: { id: string; name: string } | null = null;
+
 	gameState.update((state) => {
 		if (!state.activeResearch) return state;
 
@@ -139,7 +141,7 @@ export function tickResearch(deltaMs: number): void {
 			// Research complete!
 			const newUnlocked = [...state.unlockedResearch, node.id];
 
-			eventBus.emit('research:complete', { id: node.id, name: node.name });
+			completedResearch = { id: node.id, name: node.name };
 
 			return {
 				...state,
@@ -157,6 +159,10 @@ export function tickResearch(deltaMs: number): void {
 			activeResearch: { id: state.activeResearch.id, progress: newProgress },
 		};
 	});
+
+	if (completedResearch) {
+		eventBus.emit('research:complete', completedResearch);
+	}
 }
 
 // ── RP Generation (T039) ──

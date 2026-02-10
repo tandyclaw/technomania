@@ -484,14 +484,16 @@ export function purchaseTierBulk(divisionId: string, tierIndex: number, quantity
 		newState.powerGenerated = generated;
 		newState.powerConsumed = consumed;
 
+		return newState;
+	});
+
+	if (purchased > 0) {
 		eventBus.emit('upgrade:purchased', {
 			division: divisionId,
 			tier: tierIndex,
-			level: newTier.level,
+			level: 0,
 		});
-
-		return newState;
-	});
+	}
 
 	return purchased;
 }
@@ -531,13 +533,15 @@ export function hireChief(divisionId: string): number {
 			}
 		}
 
+		return newState;
+	});
+
+	if (newLevel > 0) {
 		eventBus.emit('chief:hired', {
 			division: divisionId,
 			level: newLevel,
 		});
-
-		return newState;
-	});
+	}
 
 	return newLevel;
 }
@@ -574,13 +578,15 @@ export function unlockTier(divisionId: string, tierIndex: number): boolean {
 
 		success = true;
 
+		return newState;
+	});
+
+	if (success) {
 		eventBus.emit('tier:unlocked', {
 			division: divisionId,
 			tier: tierIndex,
 		});
-
-		return newState;
-	});
+	}
 
 	return success;
 }
@@ -627,12 +633,14 @@ export function unlockDivision(divisionId: string): boolean {
 
 		success = true;
 
+		return newState;
+	});
+
+	if (success) {
 		eventBus.emit('division:unlocked', {
 			division: divisionId,
 		});
-
-		return newState;
-	});
+	}
 
 	return success;
 }
