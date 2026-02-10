@@ -13,12 +13,13 @@
 	import { createLongPressDetector } from '$lib/utils/gestures';
 
 	// Rarity system based on tier count
-	function getRarity(count: number): { name: string; color: string; glow: string } {
-		if (count >= 100) return { name: 'legendary', color: '#FFD700', glow: '0 0 12px rgba(255, 215, 0, 0.4)' };
-		if (count >= 50) return { name: 'epic', color: '#A855F7', glow: '0 0 10px rgba(168, 85, 247, 0.3)' };
-		if (count >= 25) return { name: 'rare', color: '#3B82F6', glow: '0 0 8px rgba(59, 130, 246, 0.25)' };
-		if (count >= 10) return { name: 'uncommon', color: '#22C55E', glow: '0 0 6px rgba(34, 197, 94, 0.2)' };
-		return { name: 'common', color: '#6B7280', glow: 'none' };
+	function getRarity(count: number): { name: string; color: string; glow: string; dots: number } {
+		if (count >= 200) return { name: 'mythic', color: '#EF4444', glow: '0 0 14px rgba(239, 68, 68, 0.5)', dots: 4 };
+		if (count >= 100) return { name: 'legendary', color: '#FFD700', glow: '0 0 12px rgba(255, 215, 0, 0.4)', dots: 3 };
+		if (count >= 50) return { name: 'epic', color: '#A855F7', glow: '0 0 10px rgba(168, 85, 247, 0.3)', dots: 2 };
+		if (count >= 25) return { name: 'rare', color: '#3B82F6', glow: '0 0 8px rgba(59, 130, 246, 0.25)', dots: 1 };
+		if (count >= 10) return { name: 'uncommon', color: '#22C55E', glow: '0 0 6px rgba(34, 197, 94, 0.2)', dots: 0 };
+		return { name: 'common', color: '#6B7280', glow: 'none', dots: 0 };
 	}
 
 	let {
@@ -303,7 +304,15 @@
 						×{tier.count}
 					{/if}
 				</span>
-				<!-- Milestone info is in the count badge above -->
+				<!-- Milestone dots -->
+				<div class="flex items-center gap-[2px]">
+					{#each [25, 50, 100, 200] as threshold, i}
+						<div
+							class="rounded-full"
+							style="width: 4px; height: 4px; background-color: {tier.count >= threshold ? rarity.color : 'rgba(255,255,255,0.15)'};"
+						></div>
+					{/each}
+				</div>
 			{/if}
 		</div>
 
