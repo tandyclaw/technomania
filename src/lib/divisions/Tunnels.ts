@@ -73,6 +73,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		name: 'Continental Link',
 		description: 'Cross-country tunnel network. Coast to coast underground.',
 		tooltip: 'Thousands of miles of tunnel connecting major cities. The infrastructure project of the century.',
+		flavor: 'NY to LA in 45 minutes. Still faster than getting through TSA.',
 		powerMW: -60,
 		config: {
 			baseCost: 250000000,
@@ -86,6 +87,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		name: 'Hyperloop',
 		description: 'Near-vacuum tube transport. 700mph in a tunnel.',
 		tooltip: 'Partial vacuum + magnetic levitation + tunnel = faster than flying, cheaper than rockets.',
+		flavor: 'A pneumatic tube for humans. Your bank teller had the right idea all along.',
 		powerMW: -250,
 		config: {
 			baseCost: 2500000000,

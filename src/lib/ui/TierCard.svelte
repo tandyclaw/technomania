@@ -321,6 +321,11 @@
 						<p class="text-xs text-text-muted mt-0.5 line-clamp-1">
 							{tierData.description}
 						</p>
+						{#if tierData.flavor}
+							<p class="text-[10px] italic text-text-muted/60 mt-0.5 line-clamp-1">
+								{tierData.flavor}
+							</p>
+						{/if}
 					{:else}
 						<p class="text-xs text-text-muted mt-0.5">
 							🔒 Unlock previous tier to access
@@ -474,6 +479,11 @@
 					<p class="text-[11px] text-text-muted">{tierData.description}</p>
 				</div>
 			</div>
+			{#if tierData.flavor}
+				<p class="text-[11px] italic text-text-muted/70 border-l-2 pl-2" style="border-color: {color}40;">
+					{tierData.flavor}
+				</p>
+			{/if}
 			<div class="grid grid-cols-2 gap-2 text-xs">
 				<div><span class="text-text-muted">Count:</span> <span class="font-bold text-text-primary">{tier.count}</span></div>
 				<div><span class="text-text-muted">Revenue/cycle:</span> <span class="font-bold" style="color: {color};">{revenuePerCycle}</span></div>

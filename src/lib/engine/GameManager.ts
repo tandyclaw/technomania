@@ -7,7 +7,7 @@ import { get } from 'svelte/store';
 import { gameState, createDefaultState, type GameState, type DivisionState } from '$lib/stores/gameState';
 import { gameLoop } from './GameLoop';
 import { saveGame, loadGame, deleteSave, deleteAllBackups } from './SaveManager';
-import { loadContractState } from '$lib/systems/ContractSystem';
+import { loadContractState, resetContracts } from '$lib/systems/ContractSystem';
 import { eventBus } from './EventBus';
 import { calculateOfflineProgress, applyOfflineReport, type OfflineReport } from './OfflineCalculator';
 import { flashSaveIndicator, saveStatus } from '$lib/stores/saveIndicator';
@@ -419,6 +419,7 @@ class GameManager {
 		resetTreasuryAccumulators();
 		resetFlavorStats();
 		resetCelebrations();
+		resetContracts();
 
 		eventBus.emit('newgameplus:complete', {
 			ngPlusLevel: newNgLevel,
@@ -454,6 +455,7 @@ class GameManager {
 
 		resetBottleneckNotifications();
 		resetCelebrations();
+		resetContracts();
 
 		// Restart systems
 		this.startAutoSave();

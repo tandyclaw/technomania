@@ -463,3 +463,14 @@ export function loadContractState(saved: ContractState | undefined): void {
 	if (!saved) return;
 	contractState.set(saved);
 }
+
+/** Reset contracts (e.g. on prestige). Preserves totalCompleted. */
+export function resetContracts(): void {
+	contractState.update(cs => ({
+		active: [],
+		spawnTimerMs: 0,
+		nextSpawnMs: 15_000,
+		totalCompleted: cs.totalCompleted,
+	}));
+	contractRevenueMult.set({ mult: 1, expiresAt: 0 });
+}
