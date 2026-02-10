@@ -172,6 +172,56 @@ export function getDivisionTrueIncomePerSec(
 	return totalPerSec;
 }
 
+/**
+ * Calculate the TRUE income per second for a single tier, including ALL multipliers.
+ */
+export function getTierTrueIncomePerSec(
+	state: GameState,
+	divisionId: string,
+	tierIndex: number
+): number {
+	const divState = state.divisions[divisionId as DivisionId];
+	if (!divState?.unlocked) return 0;
+
+	const tier = divState.tiers[tierIndex];
+	if (!tier?.unlocked || tier.count === 0) return 0;
+
+	const divMeta = DIVISIONS[divisionId];
+	if (!divMeta) return 0;
+	const tierData = divMeta.tiers[tierIndex];
+	if (!tierData) return 0;
+
+	const prestigeMultiplier = getPrestigeMultiplier(state);
+	const { generated, consumed } = calculatePowerBalance(state);
+	const powerEfficiency = divisionId === 'teslaenergy' ? 1 : calculatePowerEfficiency(generated, consumed);
+	const activeSynergies = getActiveSynergies(state, MVP_SYNERGIES);
+	const synergySpeedMult = getSynergyMultiplier(activeSynergies, divisionId, 'speed_boost');
+	const synergyRevenueMult = getSynergyMultiplier(activeSynergies, divisionId, 'revenue_boost');
+	const bottleneckMult = getBottleneckMultiplier(divisionId, state);
+	const megaSpeedMult = getMegaUpgradeSpeedMultiplier(state);
+	const megaRevenueMult = getMegaUpgradeRevenueMultiplier(state);
+	const vpRevenueMult = getVisionPointRevenueMultiplier(state);
+	const divStarSpeedMult = getDivisionStarSpeedMultiplier(state, divisionId);
+	const divStarRevenueMult = getDivisionStarRevenueMultiplier(state, divisionId);
+	const workerMult = getWorkerEfficiencyMultiplier(state, divisionId);
+	const warpMult = getWarpDriveMultiplier(state);
+	const prestigeMilestoneSpeedMult = getPrestigeMilestoneSpeedMult(state.prestigeCount);
+	const prestigeMilestoneRevMult = getPrestigeMilestoneRevMult(state.prestigeCount);
+
+	const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
+	const milestoneRevMult = getMilestoneRevenueMultiplier(divisionId, tierIndex, state);
+	const upgradeRevMult = getUpgradeRevenueMultiplier(divisionId, tierIndex, state);
+	const totalRevenue = revenue * synergyRevenueMult * prestigeMultiplier * milestoneRevMult * upgradeRevMult * megaRevenueMult * vpRevenueMult * divStarRevenueMult * workerMult * prestigeMilestoneRevMult;
+
+	const baseDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
+	const milestoneSpeedMult = getMilestoneSpeedMultiplier(divisionId, tierIndex, state);
+	const upgradeSpeedMult = getUpgradeSpeedMultiplier(divisionId, tierIndex, state);
+	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult * prestigeMilestoneSpeedMult;
+	const effectiveDurationMs = (baseDurationMs * warpMult) / combinedSpeedMult;
+
+	return (totalRevenue / effectiveDurationMs) * 1000;
+}
+
 type DivisionId = (typeof DIVISION_IDS)[number];
 
 /**

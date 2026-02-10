@@ -3,7 +3,7 @@
 	import type { TierData } from '$lib/divisions';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { calculateCost, calculateRevenue, getCycleDurationMs, calculateBulkCost, calculateMaxBuyable } from '$lib/systems/ProductionSystem';
-	import { getEffectiveCycleDurationMs } from '$lib/engine/ProductionEngine';
+	import { getEffectiveCycleDurationMs, getTierTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 	import { buyQuantity, type BuyQuantity } from '$lib/stores/buyQuantity';
 	import { ngPlusCostMultiplier } from '$lib/stores/ngPlus';
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
@@ -72,7 +72,11 @@
 			? getEffectiveCycleDurationMs(gameState, divisionId, tierIndex)
 			: getCycleDurationMs(tierData.config, chiefLevel)
 	);
-	let revenuePerSec = $derived(tier.count > 0 ? (revenue / cycleDurationMs) * 1000 : 0);
+	let revenuePerSec = $derived(
+		gameState && tier.count > 0
+			? getTierTrueIncomePerSec(gameState, divisionId, tierIndex)
+			: tier.count > 0 ? (revenue / cycleDurationMs) * 1000 : 0
+	);
 	let canAfford = $derived(cash >= cost && effectiveQty > 0);
 	let rarity = $derived(getRarity(tier.count));
 

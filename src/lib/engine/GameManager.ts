@@ -4,7 +4,7 @@
  */
 
 import { get } from 'svelte/store';
-import { gameState, createDefaultState, type GameState, type DivisionState, type TreasuryState } from '$lib/stores/gameState';
+import { gameState, createDefaultState, type GameState, type TreasuryState } from '$lib/stores/gameState';
 import { gameLoop } from './GameLoop';
 import { saveGame, loadGame, deleteSave, deleteAllBackups } from './SaveManager';
 import { loadContractState, resetContracts } from '$lib/systems/ContractSystem';
@@ -21,7 +21,7 @@ import { initSoundListeners } from '$lib/systems/SoundManager';
 import { initMusicSystem, onPrestige as musicOnPrestige } from '$lib/systems/MusicManager';
 import { DIVISIONS } from '$lib/divisions';
 import { calculateVisionPoints, getStartingCashBonus, getAutoChiefsLevel, getPlanetInfo } from '$lib/systems/PrestigeSystem';
-import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+import { getDivisionTrueIncomePerSec } from './ProductionEngine';
 import { triggerParticle } from '$lib/stores/particleStore';
 
 /** Current save version — increment when state schema changes */
@@ -498,18 +498,7 @@ class GameManager {
 	private calculateTotalIncomePerSec(state: GameState): number {
 		let total = 0;
 		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
-			const divState = state.divisions[divId];
-			const divMeta = DIVISIONS[divId];
-			if (!divState?.unlocked || !divMeta) continue;
-			for (let i = 0; i < divState.tiers.length; i++) {
-				const tier = divState.tiers[i];
-				if (!tier.unlocked || tier.count === 0) continue;
-				const tierData = divMeta.tiers[i];
-				if (!tierData) continue;
-				const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-				const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-				total += (revenue / prodTimeMs) * 1000;
-			}
+			total += getDivisionTrueIncomePerSec(state, divId);
 		}
 		return total;
 	}

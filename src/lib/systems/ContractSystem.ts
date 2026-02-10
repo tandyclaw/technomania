@@ -8,7 +8,7 @@ import { get } from 'svelte/store';
 import { writable } from 'svelte/store';
 import { gameState, type GameState } from '$lib/stores/gameState';
 import { DIVISIONS } from '$lib/divisions';
-import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+import { getDivisionTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 import { addToast } from '$lib/stores/toastStore';
 import { eventBus } from '$lib/engine/EventBus';
 import { playSound } from '$lib/systems/SoundManager';
@@ -96,19 +96,8 @@ function getUnlockedDivisions(state: GameState): string[] {
 
 function getTotalIncomePerSec(state: GameState): number {
 	let total = 0;
-	for (const divId of Object.keys(state.divisions) as (keyof typeof state.divisions)[]) {
-		const divState = state.divisions[divId];
-		const divMeta = DIVISIONS[divId];
-		if (!divState.unlocked || !divMeta) continue;
-		for (let i = 0; i < divState.tiers.length; i++) {
-			const tier = divState.tiers[i];
-			if (!tier.unlocked || tier.count === 0) continue;
-			const tierData = divMeta.tiers[i];
-			if (!tierData) continue;
-			const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-			const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-			total += (revenue / prodTimeMs) * 1000;
-		}
+	for (const divId of Object.keys(state.divisions)) {
+		total += getDivisionTrueIncomePerSec(state, divId);
 	}
 	return total;
 }

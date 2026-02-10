@@ -14,23 +14,7 @@
 
 	import { gameState } from '$lib/stores/gameState';
 	import { formatCurrency } from '$lib/engine/BigNumber';
-	import { calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSystem';
-	// MilestonePanel removed — milestone info shown inline on tier badge
-
-	// Division income calculation for stats summary
-	function getDivIncomePerSec(): number {
-		let total = 0;
-		for (let i = 0; i < divState.tiers.length; i++) {
-			const t = divState.tiers[i];
-			if (!t.unlocked || t.count === 0) continue;
-			const td = division.tiers[i];
-			if (!td) continue;
-			const rev = calculateRevenue(td.config, t.count, t.level);
-			const dur = getCycleDurationMs(td.config, divState.chiefLevel);
-			total += (rev / dur) * 1000;
-		}
-		return total;
-	}
+	import { getDivisionTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 	// Workers and Division Prestige systems removed
 
 	let {
@@ -78,7 +62,7 @@
 	let totalOwned = $derived(divState.tiers.reduce((sum, t) => sum + t.count, 0));
 
 	let showStatsSummary = $state(false);
-	let divIncomePerSec = $derived(getDivIncomePerSec());
+	let divIncomePerSec = $derived(getDivisionTrueIncomePerSec($gameState, division.id));
 
 	// Check if previous tier is owned (has count > 0) for unlock gating
 	function isPreviousTierOwned(tierIndex: number): boolean {

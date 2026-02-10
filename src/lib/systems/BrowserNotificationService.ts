@@ -8,8 +8,7 @@ import { get } from 'svelte/store';
 import { gameState } from '$lib/stores/gameState';
 import { eventBus } from '$lib/engine/EventBus';
 import { formatCurrency } from '$lib/engine/BigNumber';
-import { DIVISIONS } from '$lib/divisions';
-import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+import { getDivisionTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 
 const STORAGE_KEY = 'tech-tycoon-browser-notifications';
 const MIN_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
@@ -74,18 +73,7 @@ function calculateIncomePerSec(): number {
 	const state = get(gameState);
 	let total = 0;
 	for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
-		const divState = state.divisions[divId];
-		const divMeta = DIVISIONS[divId];
-		if (!divState?.unlocked || !divMeta) continue;
-		for (let i = 0; i < divState.tiers.length; i++) {
-			const tier = divState.tiers[i];
-			if (!tier.unlocked || tier.count === 0) continue;
-			const tierData = divMeta.tiers[i];
-			if (!tierData) continue;
-			const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-			const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-			total += (revenue / prodTimeMs) * 1000;
-		}
+		total += getDivisionTrueIncomePerSec(state, divId);
 	}
 	return total;
 }

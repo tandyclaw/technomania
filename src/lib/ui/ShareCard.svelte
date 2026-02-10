@@ -3,7 +3,7 @@
 	import { DIVISIONS } from '$lib/divisions';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import { getPlanetInfo } from '$lib/systems/PrestigeSystem';
-	import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+	import { getDivisionTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 
 	interface ShareCardProps {
 		/** The milestone type that triggered this card */
@@ -34,19 +34,8 @@
 
 	function computeTotalIncomePerSec(state: GameState): number {
 		let total = 0;
-		for (const [id, divState] of Object.entries(state.divisions)) {
-			if (!divState.unlocked) continue;
-			const meta = DIVISIONS[id];
-			if (!meta) continue;
-			for (let i = 0; i < divState.tiers.length; i++) {
-				const tier = divState.tiers[i];
-				if (!tier.unlocked || tier.count === 0) continue;
-				const tierData = meta.tiers[i];
-				if (!tierData) continue;
-				const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-				const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-				total += (revenue / prodTimeMs) * 1000;
-			}
+		for (const id of Object.keys(state.divisions)) {
+			total += getDivisionTrueIncomePerSec(state, id);
 		}
 		return total;
 	}

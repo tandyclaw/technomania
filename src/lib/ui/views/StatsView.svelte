@@ -2,7 +2,7 @@
 	import { gameState, type DivisionState } from '$lib/stores/gameState';
 	import { DIVISIONS, type DivisionMeta } from '$lib/divisions';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
+	import { getDivisionTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 	import { getPlanetInfo } from '$lib/systems/PrestigeSystem';
 
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
@@ -17,26 +17,11 @@
 	let stats = $derived(state.stats);
 	let hallOfFame = $derived(state.hallOfFame ?? { fastestColonyTimes: [], highestIncomePerSec: 0, mostColoniesLaunched: 0, totalCashAllTime: 0 });
 
-	function getDivisionIncomePerSec(divMeta: DivisionMeta, divState: DivisionState): number {
-		if (!divState.unlocked) return 0;
-		let totalPerSec = 0;
-		for (let i = 0; i < divState.tiers.length; i++) {
-			const tier = divState.tiers[i];
-			if (!tier.unlocked || tier.count === 0) continue;
-			const tierData = divMeta.tiers[i];
-			if (!tierData) continue;
-			const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-			const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-			totalPerSec += (revenue / prodTimeMs) * 1000;
-		}
-		return totalPerSec;
-	}
-
 	let divisionData = $derived(
 		divisionIds.map((id) => {
 			const meta = DIVISIONS[id]!;
 			const divState = state.divisions[id];
-			const incomePerSec = getDivisionIncomePerSec(meta, divState);
+			const incomePerSec = getDivisionTrueIncomePerSec(state, id);
 			const totalOwned = divState.tiers.reduce((sum, t) => sum + t.count, 0);
 			const producingTiers = divState.tiers.filter(t => t.producing).length;
 			return { id, incomePerSec, totalOwned, producingTiers, unlocked: divState.unlocked, chiefLevel: divState.chiefLevel };
