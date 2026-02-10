@@ -30,11 +30,24 @@
 </script>
 
 <div
-	class="h-full rounded-full"
+	class="h-full rounded-full bar-fill"
+	class:bar-near-complete={producing && progress > 0.9}
 	style="
 		width: {producing ? progress * 100 : 0}%;
 		background-color: {color};
 		transition: width {transitionMs}ms linear;
 		contain: strict;
+		--bar-color: {color};
 	"
 ></div>
+
+<style>
+	.bar-fill {
+		position: relative;
+	}
+
+	.bar-near-complete {
+		box-shadow: 0 0 8px var(--bar-color), 0 0 2px var(--bar-color);
+		filter: brightness(1.3);
+	}
+</style>

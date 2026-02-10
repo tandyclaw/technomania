@@ -36,6 +36,8 @@
 						></div>
 					{/each}
 				</div>
+			{:else if event.type === 'screenPulse'}
+				<div class="screen-pulse"></div>
 			{/if}
 		{/each}
 	</div>
@@ -87,6 +89,25 @@
 		100% {
 			opacity: 0;
 			transform: rotate(var(--angle)) translateX(var(--dist)) scale(0);
+		}
+	}
+
+	.screen-pulse {
+		position: absolute;
+		inset: 0;
+		animation: screenPulseAnim 0.6s ease-out forwards;
+		border: 2px solid rgba(255, 215, 0, 0);
+		border-radius: 0;
+	}
+
+	@keyframes screenPulseAnim {
+		0% {
+			background: rgba(255, 215, 0, 0.08);
+			border-color: rgba(255, 215, 0, 0.3);
+		}
+		100% {
+			background: transparent;
+			border-color: transparent;
 		}
 	}
 </style>
