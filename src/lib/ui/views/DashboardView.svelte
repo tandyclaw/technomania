@@ -2,10 +2,10 @@
 	import { gameState, type DivisionState } from '$lib/stores/gameState';
 	import { DIVISIONS, type DivisionMeta } from '$lib/divisions';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { calculateRevenue, calculateProductionTime } from '$lib/systems/ProductionSystem';
 	import { activeTab } from '$lib/stores/navigation';
 	import SmoothProgressBar from '$lib/ui/SmoothProgressBar.svelte';
 	import { getCycleDurationMs } from '$lib/systems/ProductionSystem';
+	import { getDivisionTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 	import SynergyPanel from '$lib/ui/SynergyPanel.svelte';
 	// activityFeed removed from dashboard
 	import { getNgPlusAccentColor, getNgPlusHueShift } from '$lib/stores/ngPlus';
@@ -66,20 +66,9 @@
 		}
 	}
 
-	// Calculate per-division income/s
-	function getDivisionIncomePerSec(divMeta: DivisionMeta, divState: DivisionState): number {
-		if (!divState.unlocked) return 0;
-		let totalPerSec = 0;
-		for (let i = 0; i < divState.tiers.length; i++) {
-			const tier = divState.tiers[i];
-			if (!tier.unlocked || tier.count === 0) continue;
-			const tierData = divMeta.tiers[i];
-			if (!tierData) continue;
-			const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
-			const prodTimeMs = calculateProductionTime(tierData.config, divState.chiefLevel);
-			totalPerSec += (revenue / prodTimeMs) * 1000;
-		}
-		return totalPerSec;
+	// Calculate per-division income/s (uses engine helper with ALL multipliers)
+	function getDivisionIncomePerSec(divMeta: DivisionMeta, divState: DivisionState, divId: string): number {
+		return getDivisionTrueIncomePerSec(state, divId);
 	}
 
 	// Calculate totals
@@ -87,7 +76,7 @@
 		divisionIds.map((id) => {
 			const meta = DIVISIONS[id]!;
 			const divState = state.divisions[id];
-			const incomePerSec = getDivisionIncomePerSec(meta, divState);
+			const incomePerSec = getDivisionIncomePerSec(meta, divState, id);
 			const totalOwned = divState.tiers.reduce((sum, t) => sum + t.count, 0);
 			const unlockedTiers = divState.tiers.filter((t) => t.unlocked).length;
 			// Find the most active tier (highest progress if producing)
