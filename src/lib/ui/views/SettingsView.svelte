@@ -3,7 +3,7 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import { get } from 'svelte/store';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { exportSave as exportBase64, importSave as importBase64 } from '$lib/engine/SaveManager';
+	import { exportSave as exportBase64, importSave as importBase64, listBackups, restoreBackup, getCloudSaveStatus, type BackupInfo } from '$lib/engine/SaveManager';
 	import { setMusicEnabled, setMusicVolume } from '$lib/systems/MusicManager';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
 	import { tutorialStore } from '$lib/stores/tutorialStore';
@@ -19,6 +19,59 @@
 	let importSuccess = $state(false);
 	let exportSuccess = $state(false);
 	let clipboardCopied = $state(false);
+
+	// Backup system state
+	let backups = $state<BackupInfo[]>([]);
+	let showBackupSection = $state(false);
+	let backupLoading = $state(false);
+	let backupRestoreSuccess = $state(false);
+	let backupRestoreError = $state('');
+	let showRestoreConfirm = $state<number | null>(null);
+
+	// Cloud save stub
+	const cloudStatus = getCloudSaveStatus();
+
+	async function loadBackups() {
+		backupLoading = true;
+		try {
+			backups = await listBackups();
+		} catch {
+			backups = [];
+		}
+		backupLoading = false;
+	}
+
+	async function handleRestoreBackup(slot: number) {
+		backupRestoreError = '';
+		backupRestoreSuccess = false;
+		try {
+			const state = await restoreBackup(slot);
+			if (!state) {
+				backupRestoreError = 'Backup is corrupted or empty.';
+				return;
+			}
+			gameState.set(state);
+			await gameManager.save();
+			backupRestoreSuccess = true;
+			showRestoreConfirm = null;
+			setTimeout(() => (backupRestoreSuccess = false), 2000);
+		} catch {
+			backupRestoreError = 'Failed to restore backup.';
+		}
+	}
+
+	function formatBackupTime(ts: number): string {
+		if (!ts) return 'Unknown';
+		const d = new Date(ts);
+		const now = new Date();
+		const diffMs = now.getTime() - d.getTime();
+		const diffMin = Math.floor(diffMs / 60000);
+		if (diffMin < 1) return 'Just now';
+		if (diffMin < 60) return `${diffMin}m ago`;
+		const diffHr = Math.floor(diffMin / 60);
+		if (diffHr < 24) return `${diffHr}h ago`;
+		return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+	}
 
 	// Derive settings from game state
 	let musicEnabled = $derived($gameState.settings.musicEnabled);
@@ -503,6 +556,104 @@
 		</div>
 	</section>
 
+	<!-- Backup Saves -->
+	<section class="space-y-1">
+		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Backup Saves</h2>
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 space-y-3">
+			<p class="text-[10px] text-text-muted">Last 3 saves are kept automatically. Restore if your save gets corrupted.</p>
+
+			{#if !showBackupSection}
+				<button
+					onclick={() => { showBackupSection = true; loadBackups(); }}
+					class="w-full py-2.5 px-4 rounded-lg bg-bg-tertiary/50 border border-white/5
+						   hover:border-white/10 text-sm font-medium text-text-secondary
+						   transition-all active:scale-[0.98] touch-manipulation"
+				>
+					🗂️ View Backups
+				</button>
+			{:else}
+				{#if backupLoading}
+					<div class="text-center py-3">
+						<span class="text-sm text-text-muted animate-pulse">Loading backups...</span>
+					</div>
+				{:else if backups.length === 0}
+					<div class="text-center py-3">
+						<span class="text-sm text-text-muted">No backups yet. They'll appear after your next save.</span>
+					</div>
+				{:else}
+					{#each backups as backup}
+						<div class="flex items-center justify-between p-3 rounded-lg bg-bg-tertiary/30 border border-white/5">
+							<div class="flex-1">
+								<div class="flex items-center gap-2">
+									<span class="text-xs font-semibold text-text-primary">Slot {backup.slot + 1}</span>
+									{#if !backup.checksumValid}
+										<span class="text-[9px] px-1.5 py-0.5 rounded bg-rocket-red/20 text-rocket-red font-medium">⚠ Checksum Error</span>
+									{:else}
+										<span class="text-[9px] px-1.5 py-0.5 rounded bg-bio-green/20 text-bio-green font-medium">✓ Valid</span>
+									{/if}
+								</div>
+								<span class="text-[10px] text-text-muted">{formatBackupTime(backup.savedAt)} · v{backup.version}</span>
+							</div>
+							<button
+								onclick={() => (showRestoreConfirm = backup.slot)}
+								class="px-3 py-1.5 rounded-lg bg-electric-blue/10 border border-electric-blue/20
+									   text-xs font-semibold text-electric-blue
+									   hover:bg-electric-blue/20 transition-all active:scale-95 touch-manipulation"
+							>
+								Restore
+							</button>
+						</div>
+					{/each}
+				{/if}
+
+				{#if backupRestoreSuccess}
+					<p class="text-xs text-bio-green text-center font-semibold">✓ Backup restored successfully!</p>
+				{/if}
+				{#if backupRestoreError}
+					<p class="text-xs text-rocket-red text-center">{backupRestoreError}</p>
+				{/if}
+
+				<button
+					onclick={() => { showBackupSection = false; }}
+					class="w-full py-2 text-xs text-text-muted hover:text-text-secondary transition-colors"
+				>
+					Hide backups
+				</button>
+			{/if}
+		</div>
+	</section>
+
+	<!-- Cloud Save (Stub) -->
+	<section class="space-y-1">
+		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Cloud Save</h2>
+		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 space-y-3 opacity-60">
+			<div class="flex items-center gap-3">
+				<span class="text-lg" aria-hidden="true">☁️</span>
+				<div class="flex-1">
+					<span class="text-sm font-medium text-text-primary block">Cloud Sync</span>
+					<span class="text-[10px] text-text-muted">{cloudStatus.message}</span>
+				</div>
+				<span class="text-[9px] px-2 py-1 rounded-full bg-bg-tertiary text-text-muted font-semibold uppercase">Coming Soon</span>
+			</div>
+			<div class="flex gap-2">
+				<button
+					disabled
+					class="flex-1 py-2.5 px-3 rounded-lg bg-bg-tertiary/30 border border-white/5
+						   text-xs font-medium text-text-muted cursor-not-allowed"
+				>
+					⬆️ Upload
+				</button>
+				<button
+					disabled
+					class="flex-1 py-2.5 px-3 rounded-lg bg-bg-tertiary/30 border border-white/5
+						   text-xs font-medium text-text-muted cursor-not-allowed"
+				>
+					⬇️ Download
+				</button>
+			</div>
+		</div>
+	</section>
+
 	<!-- Danger Zone -->
 	<section class="space-y-1">
 		<h2 class="text-xs font-semibold text-rocket-red uppercase tracking-wider mb-2">Danger Zone</h2>
@@ -699,6 +850,45 @@
 			>
 				{importSuccess ? 'Done' : 'Cancel'}
 			</button>
+		</div>
+	</div>
+{/if}
+
+<!-- Restore Backup Confirmation Modal -->
+{#if showRestoreConfirm !== null}
+	<div
+		class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] px-4"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Confirm backup restore"
+	>
+		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-electric-blue/20">
+			<div class="text-center">
+				<div class="text-4xl mb-3">🗂️</div>
+				<h2 class="text-lg font-bold text-text-primary mb-2">Restore Backup</h2>
+				<p class="text-sm text-text-secondary mb-1">
+					Restore from Slot {showRestoreConfirm + 1}?
+				</p>
+				<p class="text-xs text-text-muted mb-5">
+					Your current save will be overwritten. A backup of it was already saved.
+				</p>
+			</div>
+			<div class="flex gap-3">
+				<button
+					onclick={() => (showRestoreConfirm = null)}
+					class="flex-1 py-3 px-4 rounded-xl bg-bg-tertiary text-text-secondary font-semibold text-sm
+						   transition-all active:scale-95 touch-manipulation"
+				>
+					Cancel
+				</button>
+				<button
+					onclick={() => { if (showRestoreConfirm !== null) handleRestoreBackup(showRestoreConfirm); }}
+					class="flex-1 py-3 px-4 rounded-xl bg-electric-blue text-white font-semibold text-sm
+						   transition-all active:scale-95 touch-manipulation"
+				>
+					Restore
+				</button>
+			</div>
 		</div>
 	</div>
 {/if}

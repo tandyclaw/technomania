@@ -105,11 +105,18 @@
 <style>
 	.animated-number {
 		display: inline;
-		transition: color 0.15s ease;
+		transition: color 0.15s ease, filter 0.15s ease;
 	}
 
 	.animated-number.counting {
-		/* Subtle brightness pulse while counting */
-		filter: brightness(1.15);
+		/* Brightness pulse + subtle scale while counting */
+		filter: brightness(1.2);
+		animation: countPulse 0.35s ease-out;
+	}
+
+	@keyframes countPulse {
+		0% { transform: scale(1); }
+		30% { transform: scale(1.06); }
+		100% { transform: scale(1); }
 	}
 </style>

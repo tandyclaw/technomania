@@ -6,7 +6,7 @@
 import { get } from 'svelte/store';
 import { gameState, createDefaultState, type GameState, type DivisionState } from '$lib/stores/gameState';
 import { gameLoop } from './GameLoop';
-import { saveGame, loadGame, deleteSave } from './SaveManager';
+import { saveGame, loadGame, deleteSave, deleteAllBackups } from './SaveManager';
 import { loadContractState } from '$lib/systems/ContractSystem';
 import { eventBus } from './EventBus';
 import { calculateOfflineProgress, applyOfflineReport, type OfflineReport } from './OfflineCalculator';
@@ -421,8 +421,9 @@ class GameManager {
 		gameLoop.stop();
 		this.stopAutoSave();
 
-		// Delete saved data
+		// Delete saved data and all backups
 		await deleteSave();
+		await deleteAllBackups();
 
 		// Clear tutorial completion flag so it replays
 		try {

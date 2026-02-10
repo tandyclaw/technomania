@@ -3,7 +3,7 @@
  */
 import { writable } from 'svelte/store';
 
-export type ParticleType = 'confetti' | 'spark';
+export type ParticleType = 'confetti' | 'spark' | 'screenPulse';
 
 export interface ParticleEvent {
 	type: ParticleType;

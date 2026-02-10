@@ -133,6 +133,11 @@
 
 	// Tap feedback state
 	let tapRipple = $state(false);
+	let rippleX = $state(50);
+	let rippleY = $state(50);
+
+	// Purchase glow state
+	let purchaseGlow = $state(false);
 
 	// Payout popup state
 	let payoutPopups = $state<{ id: number; amount: string; x: number; y: number }[]>([]);
@@ -174,7 +179,12 @@
 				payoutPopups = [...payoutPopups, { id, amount: `+${formatCurrency(revenue)}`, x: 50, y: 30 }];
 				setTimeout(() => {
 					payoutPopups = payoutPopups.filter(p => p.id !== id);
-				}, 1200);
+				}, 1400);
+
+				// Screen pulse for large payouts (>5% of current cash)
+				if (revenue > cash * 0.05 && cash > 0) {
+					triggerParticle('screenPulse');
+				}
 			}
 		}
 
@@ -191,9 +201,23 @@
 		const started = onTap();
 		if (!started) return;
 
+		// Get tap position relative to card for ripple origin
+		const card = (event.currentTarget as HTMLElement);
+		const rect = card.getBoundingClientRect();
+		let clientX: number, clientY: number;
+		if ('touches' in event && event.touches.length > 0) {
+			clientX = event.touches[0].clientX;
+			clientY = event.touches[0].clientY;
+		} else {
+			clientX = (event as MouseEvent).clientX;
+			clientY = (event as MouseEvent).clientY;
+		}
+		rippleX = ((clientX - rect.left) / rect.width) * 100;
+		rippleY = ((clientY - rect.top) / rect.height) * 100;
+
 		// Trigger ripple
 		tapRipple = true;
-		setTimeout(() => { tapRipple = false; }, 400);
+		setTimeout(() => { tapRipple = false; }, 500);
 	}
 
 	function handleBuy(event: MouseEvent) {
@@ -203,6 +227,11 @@
 		const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
 		const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
 		triggerParticle('spark', x, y);
+
+		// Purchase glow + bounce
+		purchaseGlow = true;
+		setTimeout(() => { purchaseGlow = false; }, 500);
+
 		onBuy?.();
 	}
 </script>
@@ -216,7 +245,8 @@
 			: 'bg-bg-secondary/20 border-white/[0.02] opacity-40'}
 		{rarity.name === 'legendary' ? 'legendary-pulse' : ''}
 		{completionPulse ? 'completion-pulse' : ''}
-		{kachingFlash ? 'kaching-flash' : ''}"
+		{kachingFlash ? 'kaching-flash' : ''}
+		{purchaseGlow ? 'purchase-glow' : ''}"
 	style="{tier.unlocked && tier.count > 0
 		? `border-color: ${rarity.color}30; box-shadow: ${rarity.glow};`
 		: ''}"
@@ -230,9 +260,10 @@
 	aria-label="{tierData.name} - Tier {tierIndex + 1}{tier.count > 0 ? `, ${tier.count} owned` : ''}{tier.producing ? ', producing' : ''}"
 	data-tutorial-id="tier-card-{tierIndex}"
 >
-	<!-- Tap ripple overlay -->
+	<!-- Tap ripple overlay (radial from touch point) -->
 	{#if tapRipple}
-		<div class="tap-ripple absolute inset-0 pointer-events-none z-10" style="background-color: {color};"></div>
+		<div class="tap-ripple absolute inset-0 pointer-events-none z-10"
+			style="--ripple-x: {rippleX}%; --ripple-y: {rippleY}%; --ripple-color: {color};"></div>
 	{/if}
 
 	<!-- Payout popups -->
@@ -474,33 +505,46 @@
 	}
 
 	.tap-ripple {
-		animation: rippleFade 0.4s ease-out forwards;
+		background: radial-gradient(circle at var(--ripple-x) var(--ripple-y), var(--ripple-color) 0%, transparent 70%);
+		animation: rippleExpand 0.5s ease-out forwards;
 	}
 
-	@keyframes rippleFade {
-		0% { opacity: 0.15; }
-		100% { opacity: 0; }
+	@keyframes rippleExpand {
+		0% {
+			opacity: 0.25;
+			clip-path: circle(0% at var(--ripple-x) var(--ripple-y));
+		}
+		100% {
+			opacity: 0;
+			clip-path: circle(100% at var(--ripple-x) var(--ripple-y));
+		}
 	}
 
 	.payout-popup {
-		animation: payoutFloat 1.2s ease-out forwards;
+		animation: payoutFloat 1.4s cubic-bezier(0.2, 0, 0, 1) forwards;
 		transform: translate(-50%, -100%);
+		text-shadow: 0 0 8px currentColor, 0 1px 3px rgba(0, 0, 0, 0.6);
+		font-size: 16px;
 	}
 
 	@keyframes payoutFloat {
 		0% {
+			opacity: 0;
+			transform: translate(-50%, -100%) translateY(5px) scale(0.5);
+		}
+		10% {
 			opacity: 1;
-			transform: translate(-50%, -100%) translateY(0) scale(1);
+			transform: translate(-50%, -100%) translateY(0) scale(1.3);
 		}
-		20% {
-			transform: translate(-50%, -100%) translateY(-5px) scale(1.2);
+		25% {
+			transform: translate(-50%, -100%) translateY(-8px) scale(1);
 		}
-		70% {
+		65% {
 			opacity: 1;
 		}
 		100% {
 			opacity: 0;
-			transform: translate(-50%, -100%) translateY(-45px) scale(0.9);
+			transform: translate(-50%, -100%) translateY(-55px) scale(0.85);
 		}
 	}
 
@@ -525,8 +569,9 @@
 	}
 
 	@keyframes completionFlash {
-		0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); }
-		30% { transform: scale(1.015); box-shadow: 0 0 20px 4px rgba(255, 255, 255, 0.12); }
+		0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
+		15% { transform: scale(1.025); box-shadow: 0 0 25px 6px rgba(255, 255, 255, 0.18); }
+		40% { transform: scale(0.995); }
 		100% { transform: scale(1); box-shadow: none; }
 	}
 
@@ -535,8 +580,19 @@
 	}
 
 	@keyframes kachingGold {
-		0% { border-color: rgba(255, 215, 0, 0.8); box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+		0% { border-color: rgba(255, 215, 0, 0.9); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.1); }
 		100% { border-color: transparent; box-shadow: none; }
+	}
+
+	.purchase-glow {
+		animation: purchaseBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	@keyframes purchaseBounce {
+		0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(68, 255, 136, 0.5); }
+		25% { transform: scale(1.03); box-shadow: 0 0 20px 4px rgba(68, 255, 136, 0.3); }
+		50% { transform: scale(0.985); }
+		100% { transform: scale(1); box-shadow: none; }
 	}
 
 	@keyframes legendaryGlow {
