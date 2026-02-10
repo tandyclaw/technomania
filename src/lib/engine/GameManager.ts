@@ -18,6 +18,7 @@ import { tickTreasury, resetTreasuryAccumulators } from '$lib/systems/TreasurySy
 import { initFlavorMechanics, destroyFlavorMechanics, resetFlavorStats, getDefaultFlavorStats } from '$lib/systems/FlavorMechanics';
 import { resetCelebrations } from '$lib/stores/synergyCelebrationStore';
 import { initSoundListeners } from '$lib/systems/SoundManager';
+import { TECH_TREE } from '$lib/data/techTree';
 import { initMusicSystem, onPrestige as musicOnPrestige } from '$lib/systems/MusicManager';
 import { DIVISIONS } from '$lib/divisions';
 import { calculateVisionPoints, getStartingCashBonus, getAutoChiefsLevel, getPlanetInfo } from '$lib/systems/PrestigeSystem';
@@ -505,82 +506,62 @@ class GameManager {
 
 	/**
 	 * Calculate Mars Colony progress (0-100)
-	 * Based on: total income threshold, divisions unlocked, prestige count
+	 * Based on: divisions, tiers, tier levels, research, chiefs — all completion-based
 	 */
 	getMarsProgressBreakdown(state: GameState): {
-		income: number; incomeMax: number; incomeNext: string | null;
 		divisions: number; divisionsMax: number; divisionsUnlocked: number; divisionsTotal: number;
 		tiers: number; tiersMax: number; tiersUnlocked: number; tiersTotal: number;
-		prestige: number; prestigeMax: number; prestigeCount: number;
+		levels: number; levelsMax: number; levelsCurrent: number; levelsTarget: number;
+		research: number; researchMax: number; researchDone: number; researchTotal: number;
+		chiefs: number; chiefsMax: number; chiefsCurrent: number; chiefsTotal: number;
 	} {
-		const incomeThresholds = [1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
-		const labels = ['$1M', '$10M', '$100M', '$1B', '$10B', '$100B', '$1T', '$10T'];
-		let incomeHit = 0;
-		let incomeNext: string | null = null;
-		for (let i = 0; i < incomeThresholds.length; i++) {
-			if (state.stats.totalCashEarned >= incomeThresholds[i]) {
-				incomeHit++;
-			} else if (!incomeNext) {
-				incomeNext = labels[i];
-			}
-		}
-		const income = incomeHit * 5;
-
 		const divIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
+
+		// Divisions unlocked (15%)
 		let unlockedDivs = 0;
 		for (const id of divIds) { if (state.divisions[id].unlocked) unlockedDivs++; }
-		const divisions = Math.round((unlockedDivs / divIds.length) * 15 * 100) / 100;
+		const divisions = Math.round((unlockedDivs / 6) * 15 * 100) / 100;
 
-		let totalTiers = 0; let unlockedTiers = 0;
+		// Tiers unlocked (25%)
+		let unlockedTiers = 0;
 		for (const id of divIds) {
-			const div = state.divisions[id];
-			totalTiers += div.tiers.length;
-			unlockedTiers += div.tiers.filter(t => t.unlocked).length;
+			unlockedTiers += state.divisions[id].tiers.filter(t => t.unlocked).length;
 		}
-		const tiers = totalTiers > 0 ? Math.round((unlockedTiers / totalTiers) * 20 * 100) / 100 : 0;
+		const tiers = Math.round((unlockedTiers / 36) * 25 * 100) / 100;
 
-		const pCount = Math.min(state.prestigeCount, 5);
-		const prestige = pCount * 5;
+		// Tier levels (25%) — sum of min(count, 100) per tier vs 3600
+		let levelsCurrent = 0;
+		for (const id of divIds) {
+			for (const tier of state.divisions[id].tiers) {
+				levelsCurrent += Math.min(tier.count, 100);
+			}
+		}
+		const levels = Math.round((levelsCurrent / 3600) * 25 * 100) / 100;
+
+		// Research completed (20%)
+		const researchTotal = TECH_TREE.length;
+		const researchDone = state.unlockedResearch.length;
+		const research = Math.round((researchDone / researchTotal) * 20 * 100) / 100;
+
+		// Chiefs hired (15%) — sum of chiefLevel / 36
+		let chiefsCurrent = 0;
+		for (const id of divIds) {
+			chiefsCurrent += state.divisions[id].chiefLevel;
+		}
+		const chiefs = Math.round((chiefsCurrent / 36) * 15 * 100) / 100;
 
 		return {
-			income, incomeMax: 40, incomeNext,
-			divisions, divisionsMax: 15, divisionsUnlocked: unlockedDivs, divisionsTotal: divIds.length,
-			tiers, tiersMax: 20, tiersUnlocked: unlockedTiers, tiersTotal: totalTiers,
-			prestige, prestigeMax: 25, prestigeCount: pCount,
+			divisions, divisionsMax: 15, divisionsUnlocked: unlockedDivs, divisionsTotal: 6,
+			tiers, tiersMax: 25, tiersUnlocked: unlockedTiers, tiersTotal: 36,
+			levels, levelsMax: 25, levelsCurrent, levelsTarget: 3600,
+			research, researchMax: 20, researchDone, researchTotal,
+			chiefs, chiefsMax: 15, chiefsCurrent, chiefsTotal: 36,
 		};
 	}
 
 	private calculateMarsProgress(state: GameState): number {
-		let progress = 0;
-
-		// Income milestones (up to 40%)
-		const incomeThresholds = [1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
-		const incomePoints = 5; // 5% per threshold = 40%
-		for (const threshold of incomeThresholds) {
-			if (state.stats.totalCashEarned >= threshold) progress += incomePoints;
-		}
-
-		// All divisions unlocked (15%)
-		const divIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
-		let unlockedDivs = 0;
-		for (const id of divIds) {
-			if (state.divisions[id].unlocked) unlockedDivs++;
-		}
-		progress += (unlockedDivs / divIds.length) * 15;
-
-		// All tiers unlocked across divisions (20%)
-		let totalTiers = 0;
-		let unlockedTiers = 0;
-		for (const id of divIds) {
-			const div = state.divisions[id];
-			totalTiers += div.tiers.length;
-			unlockedTiers += div.tiers.filter(t => t.unlocked).length;
-		}
-		if (totalTiers > 0) progress += (unlockedTiers / totalTiers) * 20;
-
-		// Prestige count (up to 25%, 5% per prestige, max 5 prestiges)
-		progress += Math.min(state.prestigeCount, 5) * 5;
-
+		const b = this.getMarsProgressBreakdown(state);
+		const progress = b.divisions + b.tiers + b.levels + b.research + b.chiefs;
 		return Math.min(100, Math.round(progress * 100) / 100);
 	}
 

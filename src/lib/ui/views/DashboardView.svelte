@@ -282,26 +282,30 @@
 			{:else if marsProgress >= 25}
 				Supply lines established
 			{:else}
-				Build your empire to fund the {nextPlanet.name} mission
+				Complete all divisions, tiers, and research to colonize {nextPlanet.name}
 			{/if}
 		</p>
 		{#if showColonyBreakdown}
 			<div class="mt-3 pt-3 border-t border-white/5 space-y-1.5 text-[11px] text-text-secondary">
 				<div class="flex justify-between">
-					<span>💰 Income</span>
-					<span class="tabular-nums">{colonyBreakdown.income}/{colonyBreakdown.incomeMax}%{colonyBreakdown.incomeNext ? ` — Next: ${colonyBreakdown.incomeNext}` : ' ✓'}</span>
-				</div>
-				<div class="flex justify-between">
 					<span>🏢 Divisions</span>
-					<span class="tabular-nums">{colonyBreakdown.divisions}/{colonyBreakdown.divisionsMax}% — {colonyBreakdown.divisionsUnlocked}/{colonyBreakdown.divisionsTotal}</span>
+					<span class="tabular-nums">{colonyBreakdown.divisions}/{colonyBreakdown.divisionsMax}% — {colonyBreakdown.divisionsUnlocked}/{colonyBreakdown.divisionsTotal} unlocked</span>
 				</div>
 				<div class="flex justify-between">
-					<span>🔧 Tiers</span>
-					<span class="tabular-nums">{colonyBreakdown.tiers}/{colonyBreakdown.tiersMax}% — {colonyBreakdown.tiersUnlocked}/{colonyBreakdown.tiersTotal}</span>
+					<span>🔓 Tiers</span>
+					<span class="tabular-nums">{colonyBreakdown.tiers}/{colonyBreakdown.tiersMax}% — {colonyBreakdown.tiersUnlocked}/{colonyBreakdown.tiersTotal} unlocked</span>
 				</div>
 				<div class="flex justify-between">
-					<span>🚀 Prestige</span>
-					<span class="tabular-nums">{colonyBreakdown.prestige}/{colonyBreakdown.prestigeMax}% — {colonyBreakdown.prestigeCount}/5 launches</span>
+					<span>📈 Levels</span>
+					<span class="tabular-nums">{colonyBreakdown.levels}/{colonyBreakdown.levelsMax}% — {colonyBreakdown.levelsCurrent}/{colonyBreakdown.levelsTarget}</span>
+				</div>
+				<div class="flex justify-between">
+					<span>🔬 Research</span>
+					<span class="tabular-nums">{colonyBreakdown.research}/{colonyBreakdown.researchMax}% — {colonyBreakdown.researchDone}/{colonyBreakdown.researchTotal} completed</span>
+				</div>
+				<div class="flex justify-between">
+					<span>👔 Chiefs</span>
+					<span class="tabular-nums">{colonyBreakdown.chiefs}/{colonyBreakdown.chiefsMax}% — {colonyBreakdown.chiefsCurrent}/{colonyBreakdown.chiefsTotal} levels</span>
 				</div>
 			</div>
 		{/if}
