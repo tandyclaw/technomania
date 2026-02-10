@@ -153,6 +153,8 @@ function cloneState(state: GameState): GameState {
  * expensive multiplier lookups that don't change within a single tick.
  */
 export function tickProduction(deltaMs: number): void {
+	const pendingEvents: Array<{ event: keyof import('./EventBus').GameEvents; data: any }> = [];
+
 	gameState.update((state) => {
 		// --- Pre-compute expensive lookups ONCE per tick (read-only on old state) ---
 		const prestigeMultiplier = getPrestigeMultiplier(state);
@@ -222,11 +224,11 @@ export function tickProduction(deltaMs: number): void {
 			const prevSet = new Set(prevIds);
 			for (const synergy of activeSynergies) {
 				if (!prevSet.has(synergy.id)) {
-					eventBus.emit('synergy:discovered', {
+					pendingEvents.push({ event: 'synergy:discovered', data: {
 						source: synergy.requirement.sourceDivision,
 						target: synergy.requirement.targetDivision,
 						bonus: `${Math.round(synergy.effect.value * 100)}% ${synergy.effect.type.replace('_', ' ')}`,
-					});
+					}});
 					queueSynergyCelebration(synergy);
 				}
 			}
@@ -285,12 +287,12 @@ export function tickProduction(deltaMs: number): void {
 					newState.totalValueEarned += totalRevenue;
 					newState.stats.totalCashEarned += totalRevenue;
 
-					eventBus.emit('production:complete', {
+					pendingEvents.push({ event: 'production:complete', data: {
 						division: divId,
 						tier: i,
 						amount: totalRevenue,
 						automated: divState.chiefLevel > 0,
-					});
+					}});
 
 					if (divState.chiefLevel > 0) {
 						tier.progress = tier.progress - completedCycles;
@@ -304,6 +306,11 @@ export function tickProduction(deltaMs: number): void {
 
 		return changed ? newState : state;
 	});
+
+	// Emit events AFTER state update to prevent nested update overwrites
+	for (const { event, data } of pendingEvents) {
+		eventBus.emit(event, data);
+	}
 }
 
 /**
@@ -337,13 +344,15 @@ export function tapProduce(divisionId: string, tierIndex: number): boolean {
 
 		started = true;
 
+		return newState;
+	});
+
+	if (started) {
 		eventBus.emit('production:started', {
 			division: divisionId,
 			tier: tierIndex,
 		});
-
-		return newState;
-	});
+	}
 
 	return started;
 }
@@ -402,14 +411,16 @@ export function purchaseTier(divisionId: string, tierIndex: number): boolean {
 
 		success = true;
 
+		return newState;
+	});
+
+	if (success) {
 		eventBus.emit('upgrade:purchased', {
 			division: divisionId,
 			tier: tierIndex,
-			level: newTier.level,
+			level: 0, // level doesn't change on purchase
 		});
-
-		return newState;
-	});
+	}
 
 	return success;
 }

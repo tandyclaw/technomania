@@ -291,9 +291,13 @@
 					class="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
 					style="background-color: {color}15; color: {color};"
 				>
-					×{tier.count}
+					{#if nextMilestone}
+						{nextMilestone.current}/{nextMilestone.threshold}
+					{:else}
+						×{tier.count}
+					{/if}
 				</span>
-				<!-- Milestone badges -->
+				<!-- Milestone dots -->
 				{#if unlockedMilestoneCount > 0}
 					<div class="flex gap-0.5">
 						{#each tierMilestones as m}
@@ -356,20 +360,6 @@
 						{/if}
 					{/if}
 				</div>
-
-				<!-- Milestone progress indicator -->
-				{#if tier.count > 0 && nextMilestone}
-					{@const needed = nextMilestone.threshold - nextMilestone.current}
-					{@const pct = Math.min(100, Math.round((nextMilestone.current / nextMilestone.threshold) * 100))}
-					<div class="flex items-center gap-1.5 mt-1" title="Next milestone at {nextMilestone.threshold} units ({nextMilestone.rewardType === 'speed' ? '⚡' : '💰'}{nextMilestone.multiplier}x)">
-						<div class="flex-1 h-1 rounded-full bg-white/[0.06] overflow-hidden">
-							<div class="h-full rounded-full bg-solar-gold/60 transition-all duration-300" style="width: {pct}%;"></div>
-						</div>
-						<span class="text-[9px] font-mono tabular-nums text-text-muted shrink-0">
-							{nextMilestone.current}/{nextMilestone.threshold} 🏅
-						</span>
-					</div>
-				{/if}
 
 				<!-- Progress bar — always reserves space to prevent layout shift -->
 				<div class="mt-1.5" style="min-height: 26px;">
