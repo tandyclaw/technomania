@@ -523,14 +523,14 @@ class GameManager {
 		for (const id of divIds) { if (state.divisions[id].unlocked) unlockedDivs++; }
 		const divisions = Math.round((unlockedDivs / 6) * 15 * 100) / 100;
 
-		// Tiers unlocked (25%)
+		// Tiers unlocked (20%)
 		let unlockedTiers = 0;
 		for (const id of divIds) {
 			unlockedTiers += state.divisions[id].tiers.filter(t => t.unlocked).length;
 		}
 		const tiers = Math.round((unlockedTiers / 36) * 20 * 100) / 100;
 
-		// Tier levels (25%) — sum of min(count, 100) per tier vs 3600
+		// Tier levels (20%) — sum of min(count, 100) per tier vs 3600
 		let levelsCurrent = 0;
 		for (const id of divIds) {
 			for (const tier of state.divisions[id].tiers) {
