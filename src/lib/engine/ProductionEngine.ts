@@ -37,7 +37,7 @@ import { getActiveSynergies, getSynergyMultiplier, MVP_SYNERGIES, type Synergy }
 import { getBottleneckMultiplier } from '$lib/systems/BottleneckSystem';
 import { getMilestoneSpeedMultiplier, getMilestoneRevenueMultiplier } from '$lib/systems/MilestoneSystem';
 import { getUpgradeSpeedMultiplier, getUpgradeRevenueMultiplier } from '$lib/systems/UpgradeSystem';
-import { getMegaUpgradeSpeedMultiplier, getMegaUpgradeRevenueMultiplier, getVisionPointRevenueMultiplier } from '$lib/systems/PrestigeSystem';
+import { getMegaUpgradeSpeedMultiplier, getMegaUpgradeRevenueMultiplier, getVisionPointRevenueMultiplier, getMilestoneSpeedMultiplier as getPrestigeMilestoneSpeedMult, getMilestoneRevenueMultiplier as getPrestigeMilestoneRevMult } from '$lib/systems/PrestigeSystem';
 import { getDivisionStarSpeedMultiplier, getDivisionStarRevenueMultiplier } from '$lib/systems/DivisionPrestigeSystem';
 import { getWorkerEfficiencyMultiplier } from '$lib/systems/WorkerSystem';
 import { queueSynergyCelebration } from '$lib/stores/synergyCelebrationStore';
@@ -99,8 +99,11 @@ export function getEffectiveCycleDurationMs(
 	const divStarSpeedMult = getDivisionStarSpeedMultiplier(state, divisionId);
 	const workerMult = getWorkerEfficiencyMultiplier(state, divisionId);
 
+	// Prestige milestone speed bonus
+	const prestigeMilestoneSpeedMult = getPrestigeMilestoneSpeedMult(state.prestigeCount);
+
 	// Combined speed multiplier
-	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult;
+	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult * prestigeMilestoneSpeedMult;
 
 	// Effective duration (higher speed = shorter duration)
 	return baseDurationMs / combinedSpeedMult;
@@ -167,6 +170,8 @@ export function tickProduction(deltaMs: number): void {
 		const megaSpeedMult = getMegaUpgradeSpeedMultiplier(state);
 		const megaRevenueMult = getMegaUpgradeRevenueMultiplier(state);
 		const vpRevenueMult = getVisionPointRevenueMultiplier(state);
+		const prestigeMilestoneSpeedMult = getPrestigeMilestoneSpeedMult(state.prestigeCount);
+		const prestigeMilestoneRevMult = getPrestigeMilestoneRevMult(state.prestigeCount);
 
 		// --- Determine if anything needs to change before cloning ---
 		let needsClone = false;
@@ -266,7 +271,7 @@ export function tickProduction(deltaMs: number): void {
 				const cycleDurationMs = getCycleDurationMs(tierData.config, divState.chiefLevel);
 				const milestoneSpeedMult = getMilestoneSpeedMultiplier(divId, i, state);
 				const upgradeSpeedMult = getUpgradeSpeedMultiplier(divId, i, state);
-				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult;
+				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult * prestigeMilestoneSpeedMult;
 				const effectiveDurationMs = cycleDurationMs / combinedSpeedMult;
 				const progressDelta = deltaMs / effectiveDurationMs;
 				tier.progress += progressDelta;
@@ -278,7 +283,7 @@ export function tickProduction(deltaMs: number): void {
 					const revenue = calculateRevenue(tierData.config, tier.count, tier.level);
 					const milestoneRevMult = getMilestoneRevenueMultiplier(divId, i, state);
 					const upgradeRevMult = getUpgradeRevenueMultiplier(divId, i, state);
-					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier * milestoneRevMult * upgradeRevMult * megaRevenueMult * vpRevenueMult * divStarRevenueMult * workerMult;
+					const totalRevenue = revenue * completedCycles * synergyRevenueMult * prestigeMultiplier * milestoneRevMult * upgradeRevMult * megaRevenueMult * vpRevenueMult * divStarRevenueMult * workerMult * prestigeMilestoneRevMult;
 
 					newState.cash += totalRevenue;
 					newState.totalValueEarned += totalRevenue;
