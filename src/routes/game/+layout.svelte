@@ -30,7 +30,7 @@
 	import EventModal from '$lib/ui/EventModal.svelte';
 	import { flashSaveIndicator } from '$lib/stores/saveIndicator';
 	import { createSwipeDetector } from '$lib/utils/gestures';
-	import { tickContracts, initContractListeners, loadContractState } from '$lib/systems/ContractSystem';
+	import { tickContracts, initContractListeners } from '$lib/systems/ContractSystem';
 	import NewsTicker from '$lib/ui/NewsTicker.svelte';
 	import MiniGame from '$lib/ui/MiniGame.svelte';
 	import { initMiniGameListeners, tickMiniGame } from '$lib/systems/MiniGameSystem';
