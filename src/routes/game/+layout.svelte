@@ -36,7 +36,7 @@
 	import { initMiniGameListeners, tickMiniGame } from '$lib/systems/MiniGameSystem';
 	import SeasonalBanner from '$lib/ui/SeasonalBanner.svelte';
 	import { initBrowserNotifications } from '$lib/systems/BrowserNotificationService';
-	import WhatsNew from '$lib/ui/WhatsNew.svelte';
+	// WhatsNew removed
 	import { initSeasonalEvents } from '$lib/systems/SeasonalEventSystem';
 	import ErrorBoundary from '$lib/ui/ErrorBoundary.svelte';
 	import OfflineBadge from '$lib/ui/OfflineBadge.svelte';
@@ -390,7 +390,7 @@
 	<EventModal />
 
 	<!-- What's New modal -->
-	<WhatsNew />
+	<!-- WhatsNew removed -->
 
 	<!-- Daily reward removed -->
 

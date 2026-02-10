@@ -5,7 +5,7 @@
 	let visible = $state(false);
 
 	const features = [
-		{ icon: '🏢', text: '6 Divisions with 36 tiers to unlock and upgrade' },
+		{ icon: '🏢', text: '5 Divisions with 30 tiers to unlock and upgrade' },
 		{ icon: '👔', text: 'Chiefs for automated production while you\'re away' },
 		{ icon: '📋', text: 'Contracts system with timed challenges and rewards' },
 		{ icon: '🏆', text: '130+ Achievements including hidden ones to discover' },

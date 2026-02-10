@@ -52,7 +52,7 @@
 		if (headline) return headline;
 		if (milestone === 'colony') return `I just colonized ${planet.name}!`;
 		if (milestone === 'billion') return `I hit $1B/s income!`;
-		if (milestone === 'all-divisions') return `I unlocked all 6 divisions!`;
+		if (milestone === 'all-divisions') return `I unlocked all 5 divisions!`;
 		if (milestone === 'prestige') return `I launched a new colony!`;
 
 		// Fun dynamic taglines for "custom" / share progress
@@ -61,7 +61,7 @@
 		if (totalIncomePerSec >= 1e12) return `I'm making ${formatCurrency(totalIncomePerSec)}/s in Moonshot!`;
 		if (totalIncomePerSec >= 1e9) return `Billionaire status achieved 💰`;
 		if (totalIncomePerSec >= 1e6) return `From zero to ${formatCurrency(totalIncomePerSec)}/s!`;
-		if (divisionsUnlocked >= 6) return `All 6 divisions unlocked. Empire mode.`;
+		if (divisionsUnlocked >= 5) return `All 5 divisions unlocked. Empire mode.`;
 		if (coloniesLaunched > 0) return `${coloniesLaunched} ${coloniesLaunched === 1 ? 'colony' : 'colonies'} launched and counting!`;
 		if (divisionsUnlocked >= 3) return `Building an empire, ${divisionsUnlocked} divisions deep`;
 		return `I'm making ${formatCurrency(totalIncomePerSec)}/s in Moonshot!`;
