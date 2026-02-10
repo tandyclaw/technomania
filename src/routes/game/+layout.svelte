@@ -428,8 +428,8 @@
 			ontouchend={(e) => { handleTouchEnd(); swipe.onTouchEnd(e); }}
 			class="flex-1 overflow-y-auto overscroll-y-contain scroll-smooth"
 			style="
-				padding-top: calc(env(safe-area-inset-top, 0px) + 3.25rem);
-				padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 3.75rem);
+				padding-top: calc(env(safe-area-inset-top, 0px) + 5.5rem);
+				padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
 				transform: translateY({pullDistance}px);
 				transition: {pulling ? 'none' : 'transform 0.3s ease-out'};
 			"

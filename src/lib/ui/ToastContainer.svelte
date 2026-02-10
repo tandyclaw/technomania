@@ -41,10 +41,10 @@
 					</p>
 				</div>
 
-				<!-- Dismiss X -->
+				<!-- Dismiss X — 44x44px touch target per Apple HIG -->
 				<button
-					class="shrink-0 w-5 h-5 flex items-center justify-center text-text-muted hover:text-text-secondary
-						   transition-colors rounded-full text-xs leading-none"
+					class="shrink-0 w-11 h-11 flex items-center justify-center text-text-muted hover:text-text-secondary
+						   transition-colors rounded-full text-sm leading-none -mr-1.5 touch-manipulation"
 					onclick={(e) => { e.stopPropagation(); dismissToast(toast.id); }}
 					aria-label="Dismiss"
 				>

@@ -317,132 +317,87 @@
 							<Tooltip text={tierData.tooltip} {color} />
 						{/if}
 					</h3>
-					{#if tier.unlocked}
-						<p class="text-xs text-text-muted mt-0.5 line-clamp-1">
-							{tierData.description}
-						</p>
-						{#if tierData.flavor}
-							<p class="text-[10px] italic text-text-muted/60 mt-0.5 line-clamp-1">
-								{tierData.flavor}
-							</p>
-						{/if}
-					{:else}
+					{#if !tier.unlocked}
 						<p class="text-xs text-text-muted mt-0.5">
-							🔒 Unlock previous tier to access
+							🔒 Unlock previous tier
 						</p>
 					{/if}
 				</div>
 			</div>
 
 			{#if tier.unlocked}
-				<!-- Stats row -->
-				<div class="flex items-center gap-3 mt-2 flex-wrap">
+				<!-- Stats row (compact) -->
+				<div class="flex items-center gap-3 mt-1.5" style="min-height: 18px;">
 					{#if tier.count > 0}
 						{#if chiefLevel > 0}
-							<!-- AUTOMATED: Show rate prominently first -->
-							<div class="flex items-center gap-1">
-								<span class="text-sm font-bold tabular-nums" style="color: {color};">
-									{revenueDisplay}/s
-								</span>
-							</div>
-
-							<!-- Cycle info (secondary) -->
-							<div class="flex items-center gap-1">
-								<span class="text-[10px] text-text-muted uppercase tracking-wider">Cycle</span>
-								<span class="text-xs font-semibold tabular-nums text-text-secondary">
-									{cycleDurationDisplay}
-								</span>
-							</div>
+							<span class="text-sm font-bold tabular-nums" style="color: {color};">
+								{revenueDisplay}/s
+							</span>
+							<span class="text-[10px] text-text-muted tabular-nums">
+								{cycleDurationDisplay}/cycle
+							</span>
 						{:else}
-							<!-- MANUAL: Show per-cycle earnings first -->
-							<div class="flex items-center gap-1">
-								<span class="text-[10px] text-text-muted uppercase tracking-wider">Earn</span>
-								<span class="text-xs font-semibold tabular-nums" style="color: {color};">
-									{revenuePerCycle}
-								</span>
-							</div>
-
-							<!-- Cycle duration -->
-							<div class="flex items-center gap-1">
-								<span class="text-[10px] text-text-muted uppercase tracking-wider">Cycle</span>
-								<span class="text-xs font-semibold tabular-nums text-text-secondary">
-									{cycleDurationDisplay}
-								</span>
-							</div>
-
-							{#if !tier.producing}
-								<div class="flex items-center gap-1">
-									<span class="text-[10px] text-text-muted uppercase tracking-wider">Tap</span>
-									<span class="text-xs font-semibold text-text-secondary">to produce</span>
-								</div>
-							{/if}
+							<span class="text-xs font-semibold tabular-nums" style="color: {color};">
+								{revenuePerCycle}/cycle
+							</span>
+							<span class="text-[10px] text-text-muted tabular-nums">
+								{cycleDurationDisplay}
+							</span>
 						{/if}
 
 						{#if tierData.powerMW}
 							{@const totalPower = tierData.powerMW * tier.count}
-							<div class="flex items-center gap-1">
-								<span class="text-[10px]" aria-hidden="true">⚡</span>
-								<span class="text-xs font-semibold tabular-nums"
-									class:text-solar-gold={totalPower > 0}
-									class:text-rocket-red={totalPower < 0}
-								>
-									{totalPower > 0 ? '+' : ''}{formatNumber(Math.abs(totalPower), 2)} MW
-								</span>
-							</div>
-						{/if}
-
-						{#if nextMilestone}
-							<div class="flex items-center gap-1">
-								<span class="text-[10px]" aria-hidden="true">🏅</span>
-								<span class="text-[10px] font-semibold tabular-nums text-solar-gold/70">
-									{nextMilestone.current}/{nextMilestone.threshold}
-								</span>
-							</div>
+							<span class="text-xs font-semibold tabular-nums"
+								class:text-solar-gold={totalPower > 0}
+								class:text-rocket-red={totalPower < 0}
+							>
+								⚡{totalPower > 0 ? '+' : ''}{formatNumber(Math.abs(totalPower), 2)}
+							</span>
 						{/if}
 					{/if}
 				</div>
 
-				<!-- Production progress bar (always visible when count > 0, fixed height to prevent reflow) -->
-				{#if tier.count > 0}
-					<div class="mt-2">
-						<div class="flex items-center justify-between mb-1" style="min-height: 14px;">
-							{#if tier.producing}
-								<span class="text-[10px] text-text-muted uppercase tracking-wider font-medium">
-									Producing...
-								</span>
-								<span
-									class="text-[10px] font-mono tabular-nums font-semibold"
-									style="color: {color};"
-								>
-									{timeDisplay}
-								</span>
-							{:else}
-								<span class="text-[10px] text-text-muted/40 uppercase tracking-wider font-medium">
-									Ready
-								</span>
-							{/if}
-						</div>
-						<div
-							class="w-full rounded-full overflow-hidden"
-							style="height: 8px; background-color: var(--color-bg-tertiary);"
-							role="progressbar"
-							aria-valuenow={Math.round(tier.progress * 100)}
-							aria-valuemin={0}
-							aria-valuemax={100}
-							aria-label="Production progress"
-						>
-							<SmoothProgressBar
-								producing={tier.producing}
-								progress={tier.progress}
-								{cycleDurationMs}
-								{color}
-							/>
-						</div>
+				<!-- Progress bar — always reserves space to prevent layout shift -->
+				<div class="mt-1.5" style="min-height: 26px;">
+					<div class="flex items-center justify-between mb-0.5" style="min-height: 14px;">
+						{#if tier.count > 0 && tier.producing}
+							<span class="text-[10px] text-text-muted uppercase tracking-wider font-medium">
+								Producing...
+							</span>
+							<span
+								class="text-[10px] font-mono tabular-nums font-semibold"
+								style="color: {color};"
+							>
+								{timeDisplay}
+							</span>
+						{:else if tier.count > 0 && chiefLevel === 0}
+							<span class="text-[10px] text-text-muted/40 uppercase tracking-wider font-medium">
+								Tap to produce
+							</span>
+						{:else}
+							<span class="text-[10px] text-transparent">—</span>
+						{/if}
 					</div>
-				{/if}
+					<div
+						class="w-full rounded-full overflow-hidden"
+						style="height: 6px; background-color: var(--color-bg-tertiary); opacity: {tier.count > 0 ? 1 : 0.3};"
+						role="progressbar"
+						aria-valuenow={Math.round(tier.progress * 100)}
+						aria-valuemin={0}
+						aria-valuemax={100}
+						aria-label="Production progress"
+					>
+						<SmoothProgressBar
+							producing={tier.producing}
+							progress={tier.progress}
+							{cycleDurationMs}
+							{color}
+						/>
+					</div>
+				</div>
 
 				<!-- Buy button -->
-				<div class="mt-2.5">
+				<div class="mt-1.5">
 					<button
 						onclick={handleBuy}
 						data-tutorial-id="tier-buy-{tierIndex}"

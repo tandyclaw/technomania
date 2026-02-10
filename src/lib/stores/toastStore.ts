@@ -104,15 +104,13 @@ export function initToastListeners(): () => void {
 	// NOTE: No toast for regular production:complete — too spammy
 	// Cash flow is shown in the resource bar and tier cards instead
 
-	// Chief hired
+	// Chief hired — only first hire (automation unlocked), skip upgrades
 	unsubs.push(
 		eventBus.on('chief:hired', (data) => {
-			const divName = getDivisionName(data.division);
-			const color = getDivisionColor(data.division);
 			if (data.level === 1) {
+				const divName = getDivisionName(data.division);
+				const color = getDivisionColor(data.division);
 				addToast('success', '👔', `${divName} Chief Hired!`, 'Production is now automated.', { color, durationMs: 4000 });
-			} else {
-				addToast('info', '⬆️', `Chief Upgraded`, `${divName} chief is now Lv.${data.level}`, { color });
 			}
 		})
 	);
@@ -146,15 +144,7 @@ export function initToastListeners(): () => void {
 		})
 	);
 
-	// Tier unlocked
-	unsubs.push(
-		eventBus.on('tier:unlocked', (data) => {
-			const divName = getDivisionName(data.division);
-			const tierName = getTierName(data.division, data.tier);
-			const color = getDivisionColor(data.division);
-			addToast('success', '🔓', `${tierName} Unlocked!`, `New ${divName} tier available.`, { color, durationMs: 4000 });
-		})
-	);
+	// Tier unlocked — removed (too frequent, shown in news ticker instead)
 
 	// Division unlocked
 	unsubs.push(
@@ -165,13 +155,7 @@ export function initToastListeners(): () => void {
 		})
 	);
 
-	// Bottleneck resolved
-	unsubs.push(
-		eventBus.on('bottleneck:resolved', (data) => {
-			const color = getDivisionColor(data.division);
-			addToast('success', '✅', 'Bottleneck Resolved', `${getDivisionName(data.division)}: ${data.type} cleared!`, { color, durationMs: 4000 });
-		})
-	);
+	// Bottleneck resolved — removed (routine, shown in news ticker instead)
 
 	// Prestige complete
 	unsubs.push(
