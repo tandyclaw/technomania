@@ -2,6 +2,7 @@
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameState } from '$lib/stores/gameState';
 	import { playSound } from '$lib/systems/SoundManager';
+	import NotificationCenter from '$lib/ui/NotificationCenter.svelte';
 
 	interface TabItem {
 		id: string;
@@ -137,6 +138,11 @@
 				</span>
 			</button>
 		{/each}
+
+		<!-- Notifications -->
+		<div class="flex flex-col items-center justify-center py-2 px-1">
+			<NotificationCenter />
+		</div>
 
 		<!-- More tab -->
 		<button

@@ -4,7 +4,7 @@
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
 	import { getPowerStatus, calculatePowerEfficiency } from '$lib/systems/PowerSystem';
 	import AnimatedNumber from '$lib/ui/AnimatedNumber.svelte';
-	import NotificationCenter from '$lib/ui/NotificationCenter.svelte';
+	// NotificationCenter moved to bottom tab bar
 	import BuffIndicator from '$lib/ui/BuffIndicator.svelte';
 
 	let cash = $derived($gameState.cash);
@@ -52,9 +52,6 @@
 	aria-label="Player resources"
 >
 	<div class="flex items-center justify-between px-3 h-[3.25rem] max-w-2xl mx-auto gap-2">
-		<!-- Notification bell -->
-		<NotificationCenter />
-
 		<!-- Cash — taps to Treasury -->
 		<button
 			class="resource-btn flex items-center gap-1.5 min-w-0 flex-1"
