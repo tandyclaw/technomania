@@ -6,7 +6,6 @@
 import { writable, derived, get } from 'svelte/store';
 import { gameState } from '$lib/stores/gameState';
 import { addBuff } from '$lib/stores/eventStore';
-import { addNotification } from '$lib/stores/eventStore';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -244,7 +243,6 @@ export function initSeasonalEvents(): SeasonalEvent | null {
 			color: active.color,
 		});
 
-		addNotification('info', active.icon, active.name, active.description);
 	}
 
 	return active;

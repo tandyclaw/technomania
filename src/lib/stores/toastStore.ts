@@ -129,12 +129,7 @@ export function initToastListeners(): () => void {
 		})
 	);
 
-	// Synergy discovered
-	unsubs.push(
-		eventBus.on('synergy:discovered', (data) => {
-			addToast('synergy', '🔗', 'Synergy Discovered!', `${getDivisionName(data.source)} ↔ ${getDivisionName(data.target)}: ${data.bonus}`, { color: '#9944FF', durationMs: 5000 });
-		})
-	);
+	// Synergy discovered — removed (too frequent)
 
 	// Bottleneck hit
 	unsubs.push(

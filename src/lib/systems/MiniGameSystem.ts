@@ -13,7 +13,6 @@ import { writable, get } from 'svelte/store';
 import { eventBus } from '$lib/engine/EventBus';
 import { addBuff } from '$lib/stores/eventStore';
 import { triggerParticle } from '$lib/stores/particleStore';
-import { addNotification } from '$lib/stores/eventStore';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -271,10 +270,8 @@ function completeMiniGame(success: boolean): void {
 				break;
 		}
 		triggerParticle('confetti');
-		addNotification('event', s.game.icon, 'Mini-Game Complete!', `${s.game.title} — buff applied!`);
 		onCooldown = false;
 	} else {
-		addNotification('info', '❌', 'Mission Scrubbed', 'Next window in 10 minutes.');
 		onCooldown = true;
 		nextTriggerMs = FAILURE_COOLDOWN_MS;
 		setTimeout(() => {

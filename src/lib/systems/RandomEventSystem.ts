@@ -281,7 +281,7 @@ const EVENT_DEFS: EventDef[] = [
 					// Delayed payoff
 					setTimeout(() => {
 						gameState.update((s) => ({ ...s, cash: s.cash + cost * 2 }));
-						addNotification('info', '📈', 'Crypto Recovery!', 'Your dip buy paid off — 2x return!');
+						// notification removed — too frequent
 					}, 30000);
 				},
 			},
@@ -543,7 +543,6 @@ function fireEvent(def: EventDef): void {
 	if (choices.length === 0 && def.autoApply) {
 		// Unavoidable event — apply immediately, show as notification
 		def.autoApply();
-		addNotification('event', def.icon, def.title, def.description);
 		return;
 	}
 
@@ -552,7 +551,7 @@ function fireEvent(def: EventDef): void {
 		...c,
 		action: () => {
 			c.action();
-			addNotification('event', def.icon, def.title, `You chose: ${c.label}`);
+			// notification removed — too frequent
 		},
 	}));
 
@@ -674,12 +673,7 @@ export function getBuffSpeedMultiplier(divisionId?: string): number {
 export function initRandomEventListeners(): () => void {
 	const unsubs: (() => void)[] = [];
 
-	unsubs.push(
-		eventBus.on('achievement:unlocked', (data) => {
-			addNotification('achievement', '🏆', data.name, data.description);
-		})
-	);
-
+	// Only rare events get notifications: division unlocks and colony/prestige launches
 	unsubs.push(
 		eventBus.on('division:unlocked', (data) => {
 			const name = DIVISION_NAMES[data.division] ?? data.division;
@@ -690,12 +684,6 @@ export function initRandomEventListeners(): () => void {
 	unsubs.push(
 		eventBus.on('prestige:complete', (data) => {
 			addNotification('milestone', '🪐', 'Colony Launched!', `Earned ${data.visionEarned} Colony Tech.`);
-		})
-	);
-
-	unsubs.push(
-		eventBus.on('research:complete', (data) => {
-			addNotification('milestone', '🔬', 'Research Complete', data.name);
 		})
 	);
 
