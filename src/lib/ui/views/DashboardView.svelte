@@ -289,27 +289,27 @@
 			<div class="mt-3 pt-3 border-t border-white/5 space-y-1.5 text-[11px] text-text-secondary">
 				<div class="flex justify-between">
 					<span>🏢 Divisions</span>
-					<span class="tabular-nums">{colonyBreakdown.divisions}/{colonyBreakdown.divisionsMax}% — {colonyBreakdown.divisionsUnlocked}/{colonyBreakdown.divisionsTotal} unlocked</span>
+					<span class="tabular-nums" class:text-bio-green={colonyBreakdown.divisionsUnlocked >= colonyBreakdown.divisionsTotal}>{colonyBreakdown.divisionsUnlocked}/{colonyBreakdown.divisionsTotal} unlocked</span>
 				</div>
 				<div class="flex justify-between">
 					<span>🔓 Tiers</span>
-					<span class="tabular-nums">{colonyBreakdown.tiers}/{colonyBreakdown.tiersMax}% — {colonyBreakdown.tiersUnlocked}/{colonyBreakdown.tiersTotal} unlocked</span>
+					<span class="tabular-nums" class:text-bio-green={colonyBreakdown.tiersUnlocked >= colonyBreakdown.tiersTotal}>{colonyBreakdown.tiersUnlocked}/{colonyBreakdown.tiersTotal} unlocked</span>
 				</div>
 				<div class="flex justify-between">
 					<span>📈 Levels</span>
-					<span class="tabular-nums">{colonyBreakdown.levels}/{colonyBreakdown.levelsMax}% — {colonyBreakdown.levelsCurrent}/{colonyBreakdown.levelsTarget}</span>
+					<span class="tabular-nums" class:text-bio-green={colonyBreakdown.levelsCurrent >= colonyBreakdown.levelsTarget}>{colonyBreakdown.levelsCurrent}/{colonyBreakdown.levelsTarget}</span>
 				</div>
 				<div class="flex justify-between">
 					<span>🔬 Research</span>
-					<span class="tabular-nums">{colonyBreakdown.research}/{colonyBreakdown.researchMax}% — {colonyBreakdown.researchDone}/{colonyBreakdown.researchTotal} completed</span>
+					<span class="tabular-nums" class:text-bio-green={colonyBreakdown.researchDone >= colonyBreakdown.researchTotal}>{colonyBreakdown.researchDone}/{colonyBreakdown.researchTotal} completed</span>
 				</div>
 				<div class="flex justify-between">
 					<span>👔 Chiefs</span>
-					<span class="tabular-nums">{colonyBreakdown.chiefs}/{colonyBreakdown.chiefsMax}% — {colonyBreakdown.chiefsCurrent}/{colonyBreakdown.chiefsTotal} levels</span>
+					<span class="tabular-nums" class:text-bio-green={colonyBreakdown.chiefsCurrent >= colonyBreakdown.chiefsTotal}>{colonyBreakdown.chiefsCurrent}/{colonyBreakdown.chiefsTotal} levels</span>
 				</div>
 				<div class="flex justify-between">
 					<span>💰 Cash</span>
-					<span class="tabular-nums">{colonyBreakdown.cash}/{colonyBreakdown.cashMax}% — {formatCurrency(colonyBreakdown.cashCurrent)}/{formatCurrency(colonyBreakdown.cashTarget)}</span>
+					<span class="tabular-nums" class:text-bio-green={colonyBreakdown.cashCurrent >= colonyBreakdown.cashTarget}>{formatCurrency(colonyBreakdown.cashCurrent)} / {formatCurrency(colonyBreakdown.cashTarget)}</span>
 				</div>
 			</div>
 		{/if}
