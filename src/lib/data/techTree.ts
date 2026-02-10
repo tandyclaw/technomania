@@ -1,7 +1,7 @@
 /**
  * techTree.ts — Tech tree data for the Research system (T037)
  *
- * 18 research nodes across 7 categories.
+ * 17 research nodes across 7 categories.
  * Each node has prerequisites, RP cost, research time, and effects.
  * The tree is roughly shaped as a diamond:
  *   - 3 starter nodes (no prereqs)

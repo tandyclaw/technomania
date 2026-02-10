@@ -237,12 +237,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 	// === Research Achievements ===
 	{ id: 'research_5', name: 'Lab Rat', description: 'Complete 5 research projects', icon: '🐀', category: 'special', rarity: 'Common',
 		condition: (s) => s.unlockedResearch.length >= 5 },
-	{ id: 'research_20', name: 'Think Tank', description: 'Complete 20 research projects', icon: '🧠', category: 'special', rarity: 'Rare',
-		condition: (s) => s.unlockedResearch.length >= 20 },
+	{ id: 'research_20', name: 'Think Tank', description: 'Complete 15 research projects', icon: '🧠', category: 'special', rarity: 'Rare',
+		condition: (s) => s.unlockedResearch.length >= 15 },
 	{ id: 'rp_1k', name: 'Knowledge Economy', description: 'Complete 5 research projects', icon: '📚', category: 'special', rarity: 'Common',
 		condition: (s) => s.stats.totalResearchCompleted >= 5 },
-	{ id: 'rp_10k', name: 'Research University', description: 'Complete 30+ research projects', icon: '🎓', category: 'special', rarity: 'Epic',
-		condition: (s) => s.unlockedResearch.length >= 30 },
+	{ id: 'rp_10k', name: 'Research University', description: 'Complete all research projects', icon: '🎓', category: 'special', rarity: 'Epic',
+		condition: (s) => s.unlockedResearch.length >= TECH_TREE.length },
 
 	// === Prestige / Colony Achievements ===
 	{ id: 'prestige_7', name: 'Lucky Seven', description: 'Launch 7 colonies', icon: '🍀', category: 'prestige', rarity: 'Epic',

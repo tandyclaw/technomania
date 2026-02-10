@@ -826,7 +826,7 @@ export function tickBottlenecks(deltaMs: number): void {
 			continue;
 		}
 
-		const divId = def.division as 'teslaenergy' | 'tesla' | 'spacex';
+		const divId = def.division as 'teslaenergy' | 'tesla' | 'spacex' | 'ai' | 'robotics';
 		const divState = state.divisions[divId];
 		if (!divState.unlocked) continue;
 
