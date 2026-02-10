@@ -91,22 +91,24 @@
 			{#each availableUpgrades as upgrade}
 				{@const canAfford = cash >= upgrade.cost}
 				{@const color = getCategoryColor(upgrade.category)}
-				<div class="bg-bg-secondary/60 rounded-xl p-3.5 border border-white/[0.03] flex items-center gap-3">
-					<div class="text-2xl shrink-0">{getCategoryIcon(upgrade.category)}</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-sm font-semibold text-text-primary truncate">{upgrade.name}</div>
-						<div class="text-xs text-text-muted mt-0.5">{upgrade.description}</div>
+				<div class="bg-bg-secondary/60 rounded-xl p-3 border border-white/[0.03]">
+					<div class="flex items-center gap-3">
+						<div class="text-2xl shrink-0">{getCategoryIcon(upgrade.category)}</div>
+						<div class="flex-1 min-w-0">
+							<div class="text-sm font-semibold text-text-primary truncate">{upgrade.name}</div>
+							<div class="text-xs mt-0.5" style="color: {color};">{upgrade.description}</div>
+						</div>
 					</div>
 					<button
 						onclick={() => handleBuy(upgrade.id)}
 						disabled={!canAfford}
-						class="shrink-0 px-3 py-2 rounded-lg text-xs font-bold transition-all active:scale-95 touch-manipulation
+						class="mt-2 w-full py-2.5 rounded-lg text-sm font-bold transition-all active:scale-[0.97] touch-manipulation
 							   disabled:opacity-40 disabled:cursor-not-allowed"
-						style="background-color: {canAfford ? color + '15' : 'var(--color-bg-tertiary)'};
+						style="background-color: {canAfford ? color + '20' : 'var(--color-bg-tertiary)'};
 							   color: {canAfford ? color : 'var(--color-text-muted)'};
-							   border: 1px solid {canAfford ? color + '25' : 'transparent'};"
+							   border: 1.5px solid {canAfford ? color + '35' : 'transparent'};"
 					>
-						{formatCurrency(upgrade.cost)}
+						{canAfford ? '🔧 Buy' : '🔒'} · {formatCurrency(upgrade.cost)}
 					</button>
 				</div>
 			{/each}
