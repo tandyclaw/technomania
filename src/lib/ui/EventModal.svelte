@@ -17,7 +17,7 @@
 	<!-- Backdrop -->
 	<div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[80] flex items-center justify-center px-4 modal-mobile-fullscreen-container" role="dialog" aria-modal="true" aria-label={event.title}>
 		<div
-			class="bg-bg-secondary rounded-2xl p-5 max-w-sm w-full border border-white/10 shadow-2xl animate-in modal-mobile-fullscreen"
+			class="bg-bg-secondary rounded-2xl p-5 max-w-sm w-full border border-white/10 shadow-2xl animate-in modal-mobile-fullscreen max-h-[85vh] overflow-y-auto"
 		>
 			<!-- Header -->
 			<div class="text-center mb-4">

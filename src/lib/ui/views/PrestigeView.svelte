@@ -267,38 +267,22 @@
 		{/if}
 	</div>
 
-	<!-- Prestige Milestones -->
+	<!-- Prestige Milestones (compact badges) -->
 	{#if prestigeCount > 0 || canPrestige}
-		<div class="bg-bg-secondary/60 rounded-xl p-4 border border-white/[0.03]">
-			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-3">
-				🏆 Colony Milestones
+		<div class="bg-bg-secondary/60 rounded-xl p-3 border border-white/[0.03]">
+			<div class="text-xs text-text-muted uppercase tracking-wider font-medium mb-2">
+				🏆 Milestones {#if nextMilestone}<span class="text-text-muted/50 normal-case">· Next: {nextMilestone.name} ({nextMilestone.colonies - prestigeCount} more)</span>{/if}
 			</div>
-			<div class="space-y-2">
+			<div class="flex flex-wrap gap-1.5">
 				{#each PRESTIGE_MILESTONES as milestone}
 					{@const achieved = prestigeCount >= milestone.colonies}
 					{@const isNext = nextMilestone?.colonies === milestone.colonies}
-					<div class="flex items-center gap-3 p-2.5 rounded-lg transition-all {achieved ? 'bg-solar-gold/8' : isNext ? 'bg-white/[0.02] border border-white/5' : 'opacity-40'}">
-						<div class="text-xl shrink-0 {achieved ? '' : 'grayscale'}">{milestone.emoji}</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center gap-2">
-								<span class="text-sm font-semibold {achieved ? 'text-solar-gold' : 'text-text-secondary'}">{milestone.name}</span>
-								<span class="text-[10px] px-1.5 py-0.5 rounded-full font-mono {achieved ? 'bg-solar-gold/15 text-solar-gold' : 'bg-white/5 text-text-muted'}">
-									{milestone.colonies} colonies
-								</span>
-							</div>
-							<div class="text-xs text-text-muted">{milestone.description}</div>
-						</div>
-						<div class="shrink-0 text-right">
-							{#if achieved}
-								<span class="text-xs font-bold text-solar-gold">{milestone.bonus}</span>
-								<div class="text-[9px] text-solar-gold/60">Active</div>
-							{:else if isNext}
-								<span class="text-xs font-semibold text-text-secondary">{milestone.bonus}</span>
-								<div class="text-[9px] text-text-muted">{milestone.colonies - prestigeCount} more</div>
-							{:else}
-								<span class="text-xs text-text-muted">{milestone.bonus}</span>
-							{/if}
-						</div>
+					<div
+						class="flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-all {achieved ? 'bg-solar-gold/10' : isNext ? 'bg-white/[0.04] border border-white/10' : 'opacity-30'}"
+						title="{milestone.name}: {milestone.description} — {milestone.bonus}"
+					>
+						<span class="{achieved ? '' : 'grayscale'}">{milestone.emoji}</span>
+						<span class="font-medium {achieved ? 'text-solar-gold' : 'text-text-muted'}">{milestone.colonies}</span>
 					</div>
 				{/each}
 			</div>
@@ -445,10 +429,6 @@
 					<li class="text-xs">
 						<span class="text-bio-green font-semibold">Keep Research</span>
 						<div class="text-[10px] text-text-muted">All unlocks stay</div>
-					</li>
-					<li class="text-xs">
-						<span class="text-bio-green font-semibold">Keep Achievements</span>
-						<div class="text-[10px] text-text-muted">Progress preserved</div>
 					</li>
 					<li class="text-xs">
 						<span class="text-bio-green font-semibold">Keep All Divisions</span>
@@ -604,7 +584,7 @@
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border shadow-2xl confirm-enter" style="border-color: {nextPlanet.color}40;">
+		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border shadow-2xl confirm-enter max-h-[85vh] overflow-y-auto" style="border-color: {nextPlanet.color}40;">
 			<div class="text-center">
 				<!-- Planet transition visual -->
 				<div class="flex items-center justify-center gap-4 mb-4">

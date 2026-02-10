@@ -22,9 +22,6 @@
 
 	onMount(() => {
 		const unsubs = [
-			eventBus.on('achievement:unlocked', (data) => {
-				pushNews(`🏆 ACHIEVEMENT: "${data.name}" unlocked — ${data.description}`);
-			}),
 			eventBus.on('chief:hired', (data) => {
 				const chief = DIVISION_CHIEFS[data.division];
 				const meta = DIVISIONS[data.division];

@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameState } from '$lib/stores/gameState';
-	import { ACHIEVEMENTS } from '$lib/systems/AchievementSystem';
 	import { playSound } from '$lib/systems/SoundManager';
-
-	let achievementCount = $derived($gameState.achievements.length);
-	let totalAchievements = ACHIEVEMENTS.length;
-	let newAchievements = $derived(achievementCount);
 
 	interface TabItem {
 		id: string;
@@ -31,7 +26,6 @@
 		{ id: 'upgrades', name: 'Upgrades', shortName: 'Upgrades', icon: '🔧', color: '#FF8844' },
 		{ id: 'treasury', name: 'Treasury', shortName: 'Treasury', icon: '🏦', color: '#44AA77' },
 		{ id: 'research', name: 'Research', shortName: 'R&D', icon: '🔬', color: '#9944FF' },
-		{ id: 'achievements', name: 'Achievements', shortName: 'Trophies', icon: '🏆', color: '#FFCC44' },
 		{ id: 'prestige', name: 'New Colony', shortName: 'Colony', icon: '🪐', color: '#9944FF' },
 		{ id: 'stats', name: 'Statistics', shortName: 'Stats', icon: '📊', color: '#60a5fa' },
 		{ id: 'settings', name: 'Settings', shortName: 'Settings', icon: '⚙️', color: '#8899aa' },
@@ -87,13 +81,8 @@
 				role="menuitem"
 				aria-label={tab.name}
 			>
-				<span class="text-xl leading-none relative" aria-hidden="true">
+				<span class="text-xl leading-none" aria-hidden="true">
 					{tab.icon}
-					{#if tab.id === 'achievements' && newAchievements > 0 && !isActive}
-						<span class="absolute -top-1 -right-2 min-w-[14px] h-[14px] rounded-full bg-solar-gold text-[8px] text-black font-bold flex items-center justify-center px-0.5">
-							{newAchievements}
-						</span>
-					{/if}
 				</span>
 				<span
 					class="text-sm font-medium"

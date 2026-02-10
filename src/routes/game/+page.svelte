@@ -9,7 +9,6 @@
 		research: () => import('$lib/ui/views/ResearchView.svelte'),
 		prestige: () => import('$lib/ui/views/PrestigeView.svelte'),
 		treasury: () => import('$lib/ui/views/TreasuryView.svelte'),
-		achievements: () => import('$lib/ui/views/AchievementsView.svelte'),
 		contracts: () => import('$lib/ui/views/ContractsView.svelte'),
 		stats: () => import('$lib/ui/views/StatsView.svelte'),
 		settings: () => import('$lib/ui/views/SettingsView.svelte'),

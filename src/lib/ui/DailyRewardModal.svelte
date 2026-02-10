@@ -36,7 +36,7 @@
 
 {#if visible}
 	<div class="fixed inset-0 z-[95] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4" role="dialog" aria-modal="true">
-		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-solar-gold/30 shadow-2xl text-center daily-enter">
+		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-solar-gold/30 shadow-2xl text-center daily-enter max-h-[85vh] overflow-y-auto">
 			<div class="text-5xl mb-2">🎁</div>
 			<h2 class="text-xl font-black text-text-primary">Daily Reward!</h2>
 			<p class="text-sm text-text-secondary mt-1">Day {rewardCheck.newStreak} streak</p>

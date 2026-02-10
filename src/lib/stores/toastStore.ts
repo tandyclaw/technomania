@@ -141,13 +141,6 @@ export function initToastListeners(): () => void {
 		})
 	);
 
-	// Achievement unlocked
-	unsubs.push(
-		eventBus.on('achievement:unlocked', (data) => {
-			addToast('achievement', '🏆', data.name, data.description, { color: '#FFCC44', durationMs: 5000 });
-		})
-	);
-
 	// Synergy discovered — removed (too frequent)
 
 	// Bottleneck hit

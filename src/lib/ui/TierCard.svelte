@@ -425,7 +425,7 @@
 <!-- Long-press detailed tooltip -->
 {#if showLongPressTooltip}
 	<div class="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center px-4" onclick={dismissTooltip} onkeydown={(e) => { if (e.key === 'Escape') dismissTooltip(); }} role="dialog" aria-modal="true" aria-label="{tierData.name} details" tabindex="-1">
-		<div class="bg-bg-secondary rounded-xl p-4 max-w-xs w-full border border-white/10 shadow-2xl space-y-2 text-left" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
+		<div class="bg-bg-secondary rounded-xl p-4 max-w-xs w-full border border-white/10 shadow-2xl space-y-2 text-left max-h-[85vh] overflow-y-auto" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
 			<div class="flex items-center gap-2">
 				<div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold"
 					style="background-color: {color}15; color: {color};">T{tierIndex + 1}</div>

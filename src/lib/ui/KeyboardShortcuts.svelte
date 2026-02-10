@@ -16,7 +16,7 @@
 		'6': 'tunnels',
 		'7': 'treasury',
 		'8': 'research',
-		'9': 'achievements',
+		'9': 'prestige',
 	};
 
 	function isModalOpen(): boolean {
