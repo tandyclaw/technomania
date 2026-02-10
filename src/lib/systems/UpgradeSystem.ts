@@ -45,11 +45,11 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'rocket_speed_2', name: 'Mission Control AI', description: '2x all Rockets speed', category: 'speed', cost: 1_000_000, target: 'spacex', tierIndex: -1, value: 2 },
 	{ id: 'rocket_rev_2', name: 'Space Tourism', description: '3x Crew Capsule revenue', category: 'revenue', cost: 5_000_000, target: 'spacex', tierIndex: 2, value: 3, requiresTierCount: { divisionId: 'spacex', tierIndex: 2, count: 10 } },
 	{ id: 'rocket_cost_1', name: 'Reusability Savings', description: 'Rocket tiers cost 20% less', category: 'cost', cost: 250_000, target: 'spacex', tierIndex: -1, value: 0.8 },
-	{ id: 'rocket_speed_3', name: 'Orbital Refueling', description: '3x Starship speed', category: 'speed', cost: 50_000_000, target: 'spacex', tierIndex: 4, value: 3, requiresMilestone: { divisionId: 'spacex', tierIndex: 4, threshold: 25 } },
+	{ id: 'rocket_speed_3', name: 'Orbital Refueling', description: '3x Super Heavy Rocket speed', category: 'speed', cost: 50_000_000, target: 'spacex', tierIndex: 4, value: 3, requiresMilestone: { divisionId: 'spacex', tierIndex: 4, threshold: 25 } },
 
 	// === MANUFACTURING UPGRADES (6) ===
 	{ id: 'ev_speed_1', name: 'Gigapress', description: '2x Electric Cars speed', category: 'speed', cost: 15_000, target: 'tesla', tierIndex: 0, value: 2 },
-	{ id: 'ev_rev_1', name: 'Lean Production', description: '3x Gigafactory revenue', category: 'revenue', cost: 75_000, target: 'tesla', tierIndex: 1, value: 3 },
+	{ id: 'ev_rev_1', name: 'Lean Production', description: '3x Mega Factory revenue', category: 'revenue', cost: 75_000, target: 'tesla', tierIndex: 1, value: 3 },
 	{ id: 'ev_speed_2', name: 'Process Optimization', description: '2x all Manufacturing speed', category: 'speed', cost: 750_000, target: 'tesla', tierIndex: -1, value: 2 },
 	{ id: 'ev_rev_2', name: 'Vertical Integration', description: '3x Chip Fabrication revenue', category: 'revenue', cost: 3_000_000, target: 'tesla', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tesla', tierIndex: 3, count: 15 } },
 	{ id: 'ev_cost_1', name: 'Supply Chain Mastery', description: 'Manufacturing tiers cost 20% less', category: 'cost', cost: 200_000, target: 'tesla', tierIndex: -1, value: 0.8 },
@@ -69,7 +69,7 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'tunnel_speed_2', name: 'Prufrock TBM', description: '2x all Tunnel speed', category: 'speed', cost: 3_000_000, target: 'tunnels', tierIndex: -1, value: 2 },
 	{ id: 'tunnel_rev_2', name: 'Freight Monopoly', description: '3x Freight Network revenue', category: 'revenue', cost: 15_000_000, target: 'tunnels', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tunnels', tierIndex: 3, count: 10 } },
 	{ id: 'tunnel_cost_1', name: 'Modular Segments', description: 'Tunnel tiers cost 20% less', category: 'cost', cost: 750_000, target: 'tunnels', tierIndex: -1, value: 0.8 },
-	{ id: 'tunnel_speed_3', name: 'Vacuum Tube Tech', description: '3x Hyperloop speed', category: 'speed', cost: 75_000_000, target: 'tunnels', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tunnels', tierIndex: 5, threshold: 25 } },
+	{ id: 'tunnel_speed_3', name: 'Vacuum Tube Tech', description: '3x Vacuum Train speed', category: 'speed', cost: 75_000_000, target: 'tunnels', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tunnels', tierIndex: 5, threshold: 25 } },
 
 	// === ROBOTICS UPGRADES (6) ===
 	{ id: 'robot_speed_1', name: 'Servo Overclocking', description: '2x Assembly Bot speed', category: 'speed', cost: 40_000, target: 'robotics', tierIndex: 0, value: 2 },

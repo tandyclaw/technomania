@@ -2,6 +2,7 @@
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameState } from '$lib/stores/gameState';
 	import { playSound } from '$lib/systems/SoundManager';
+	import { unreadCount, markAllRead } from '$lib/stores/eventStore';
 	import NotificationCenter from '$lib/ui/NotificationCenter.svelte';
 
 	interface TabItem {
@@ -36,6 +37,8 @@
 	const moreTabIds = new Set(moreTabs.map(t => t.id));
 
 	let moreOpen = $state(false);
+	let notificationOpen = $state(false);
+	let notificationUnread = $derived($unreadCount);
 
 	// Is the active tab one of the "more" tabs?
 	let isMoreActive = $derived(moreTabIds.has($activeTab));
@@ -72,9 +75,9 @@
 		role="menu"
 		aria-label="More navigation options"
 	>
-		<!-- Notifications -->
-		<div class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.04] transition-colors duration-150">
-			<NotificationCenter />
+		<!-- Notifications — styled to match other menu items -->
+		<div class="notification-menu-item w-full rounded-xl hover:bg-white/[0.04] transition-colors duration-150 active:scale-[0.97] touch-manipulation">
+			<NotificationCenter menuStyle={true} onOpen={() => { moreOpen = false; }} />
 		</div>
 		<div class="border-b border-white/10 mx-2 mb-1"></div>
 

@@ -70,7 +70,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		}
 	},
 	{
-		name: 'Super Heavy Starship',
+		name: 'Super Heavy Rocket',
 		description: 'Fully reusable. 100+ tons to orbit.',
 		tooltip: 'A fully reusable super-heavy rocket changes everything. This is the Mars vehicle.',
 		flavor: 'Caught by chopsticks on the launch tower. Yes, really. No, we\'re not joking.',
@@ -84,7 +84,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		}
 	},
 	{
-		name: 'Starship Lander',
+		name: 'Planetary Lander',
 		description: 'Land on Mars and relaunch. Fully reusable interplanetary transport.',
 		tooltip: 'Landing on Mars is brutally hard. A successful lander is how you bootstrap a colony.',
 		flavor: '100% reusable. 80% of the time. The other 20% makes great content.',

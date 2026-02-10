@@ -29,9 +29,9 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		}
 	},
 	{
-		name: 'Gigafactory',
+		name: 'Mega Factory',
 		description: 'Massive automated facility. The machine that builds the machine.',
-		tooltip: 'A single building producing more battery capacity than the entire world did a decade ago. Vehicles, batteries, powerwalls — all under one roof. Vertical integration at unprecedented scale.',
+		tooltip: 'A single building producing more battery capacity than the entire world did a decade ago. Vehicles, batteries, home battery packs — all under one roof. Vertical integration at unprecedented scale.',
 		flavor: 'Visible from space. The parking lot alone has its own zip code.',
 		powerMW: -0.1,
 		config: {
@@ -87,7 +87,7 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 	{
 		name: 'Colony Kit Factory',
 		description: 'Prebuilt factories and habitats, ready to deploy on Mars.',
-		tooltip: 'Flat-pack factories, inflatable habitats, ISRU refineries, sealed rovers — everything a colony needs, prefabricated and packed into Starships. Land, unfold, power up, start building. Mars in a box.',
+		tooltip: 'Flat-pack factories, inflatable habitats, ISRU refineries, sealed rovers — everything a colony needs, prefabricated and packed into launch vehicles. Land, unfold, power up, start building. Mars in a box.',
 		flavor: 'IKEA for Mars, but the instructions are actually good. Mostly.',
 		powerMW: -30,
 		config: {

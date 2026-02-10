@@ -82,7 +82,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 	},
 	{
 		id: 'teslaenergy_tesla_batteries',
-		name: 'Gigafactory Synergy',
+		name: 'Factory Synergy',
 		description: 'Energy battery tech feeds back into manufacturing efficiency and throughput.',
 		flavorText: 'Next-gen cells change everything. Energy density is destiny.',
 		icon: '⚡🔋',
@@ -111,7 +111,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 	// ── AI Synergies ─────────────────────────────────────────────────────────
 	{
 		id: 'ai_tesla_autopilot',
-		name: 'AI-Powered Autopilot',
+		name: 'AI-Powered Self-Driving',
 		description: 'AI-trained models optimize factory output and quality control.',
 		flavorText: 'Neural nets trained on billions of miles of driving data — and factory floor telemetry.',
 		icon: '🤖🏭',

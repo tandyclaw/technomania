@@ -44,7 +44,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		}
 	},
 	{
-		name: 'Battery Megapack',
+		name: 'Grid Battery',
 		description: 'Grid-scale storage. Store gigawatt-hours for when you need them.',
 		tooltip: 'Massive lithium-ion battery installations that store excess energy and discharge on demand. Replace fossil fuel peaker plants. Stabilize entire cities during peak demand.',
 		flavor: 'The world\'s most expensive battery backup. Worth it when the grid goes dark.',
@@ -89,7 +89,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		name: 'Wireless Energy Beaming',
 		description: 'Beam power from orbit to anywhere on Earth — or to Mars.',
 		tooltip: 'Microwave or laser power transmission from space solar arrays to ground receivers. Power any location on Earth without wires. Eventually beam energy across interplanetary distances to fuel your Mars colony.',
-		flavor: 'Nikola Tesla\'s dream, 150 years late. Better late than never.',
+		flavor: 'A century-old dream, finally realized. Better late than never.',
 		powerMW: 500,
 		config: {
 			baseCost: 350000,

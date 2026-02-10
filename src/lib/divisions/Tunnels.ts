@@ -84,7 +84,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		}
 	},
 	{
-		name: 'Hyperloop',
+		name: 'Vacuum Train',
 		description: 'Near-vacuum tube transport. 700mph in a tunnel.',
 		tooltip: 'Partial vacuum + magnetic levitation + tunnel = faster than flying, cheaper than rockets.',
 		flavor: 'A pneumatic tube for humans. Your bank teller had the right idea all along.',

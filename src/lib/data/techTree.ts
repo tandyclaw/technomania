@@ -121,7 +121,7 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'software_autopilot',
-		name: 'Autopilot Software',
+		name: 'Self-Driving Software',
 		description: 'AI-driven quality control. Manufacturing revenue +20%.',
 		cost: 30,
 		timeMs: 35_000,
@@ -142,7 +142,7 @@ export const TECH_TREE: ResearchNode[] = [
 	{
 		id: 'grid_scale_storage',
 		name: 'Grid-Scale Storage',
-		description: 'Megapack infrastructure. Energy production speed +25% and revenue +10%.',
+		description: 'Grid-scale battery infrastructure. Energy production speed +25% and revenue +10%.',
 		cost: 50,
 		timeMs: 45_000,
 		category: 'energy',
@@ -164,7 +164,7 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'starship_heat_shield',
-		name: 'Starship Heat Shield',
+		name: 'Reentry Heat Shield',
 		description: 'Reusable heat tiles. Rockets production speed +25%.',
 		cost: 50,
 		timeMs: 45_000,

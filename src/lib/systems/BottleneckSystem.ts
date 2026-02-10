@@ -187,7 +187,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	{
 		id: 'sx_raptor_reliability',
 		name: 'Engine Reliability Crisis',
-		description: 'Engines keep exploding on the test stand. Production yield is abysmal.',
+		description: 'Rocket engines keep exploding on the test stand. Production yield is abysmal.',
 		division: 'spacex',
 		category: 'engineering',
 		severity: 0.25,
@@ -195,7 +195,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 6,
 		waitDurationMs: 240_000,
 		flavorText: 'Full-flow staged combustion: theoretically optimal, practically nightmarish.',
-		tooltip: 'Full-flow staged combustion engines are thermodynamically optimal but incredibly hard to build. Each super-heavy rocket uses 30+ engines.',
+		tooltip: 'Full-flow staged combustion rocket engines are thermodynamically optimal but incredibly hard to build. Each super-heavy rocket uses 30+ engines.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.spacex.tiers;
 			return tiers[2].count > 15;
@@ -264,7 +264,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 	},
 	{
 		id: 'ts_gigafactory_scaling',
-		name: 'Factory Scaling Crisis',
+		name: 'Mega Factory Scaling Crisis',
 		description: 'Scaling production requires an entirely new factory paradigm.',
 		division: 'tesla',
 		category: 'scaling',
@@ -273,7 +273,7 @@ export const BOTTLENECK_DEFS: BottleneckDef[] = [
 		researchCost: 18,
 		waitDurationMs: 540_000,
 		flavorText: 'The factory IS the product.',
-		tooltip: 'Gigafactories are among the largest buildings on Earth. "The machine that builds the machine" philosophy means factory design is as important as product design.',
+		tooltip: 'Mega factories are among the largest buildings on Earth. "The machine that builds the machine" philosophy means factory design is as important as product design.',
 		shouldActivate: (state) => {
 			const tiers = state.divisions.tesla.tiers;
 			return tiers[4].count > 8;

@@ -1,13 +1,24 @@
 <script lang="ts">
 	import { notifications, unreadCount, markAllRead, clearNotifications, dismissNotification } from '$lib/stores/eventStore';
 
+	let {
+		menuStyle = false,
+		onOpen,
+	}: {
+		menuStyle?: boolean;
+		onOpen?: () => void;
+	} = $props();
+
 	let open = $state(false);
 	let items = $derived($notifications);
 	let unread = $derived($unreadCount);
 
 	function toggle() {
 		open = !open;
-		if (open) markAllRead();
+		if (open) {
+			markAllRead();
+			onOpen?.();
+		}
 	}
 
 	function close() {
