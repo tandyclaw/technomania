@@ -10,7 +10,7 @@
  */
 
 import { writable, get } from 'svelte/store';
-import { eventBus } from '$lib/engine/EventBus';
+// eventBus no longer needed — mini-games are purely timer-based
 import { addBuff } from '$lib/stores/eventStore';
 import { triggerParticle } from '$lib/stores/particleStore';
 
@@ -100,15 +100,14 @@ export const miniGameState = writable<MiniGameState>(createDefaultState());
 
 // ─── Timing ──────────────────────────────────────────────────────────────────
 
-/** Time until next random mini-game trigger (ms). 10-20 min. */
-let nextTriggerMs = randomInterval();
-/** Cooldown after failure (10 min) */
-const FAILURE_COOLDOWN_MS = 10 * 60 * 1000;
+/** Time until next mini-game trigger (ms). Fixed 5 min cadence. */
+let nextTriggerMs = 5 * 60 * 1000; // First one at 5 min of gameplay
+/** Cooldown after failure (5 min) */
+const FAILURE_COOLDOWN_MS = 5 * 60 * 1000;
 let onCooldown = false;
 
-function randomInterval(): number {
-	return (10 + Math.random() * 10) * 60 * 1000; // 10-20 min
-}
+/** Fixed interval between mini-games: every 5 minutes of active play */
+const MINI_GAME_INTERVAL_MS = 5 * 60 * 1000;
 
 // ─── Public API ──────────────────────────────────────────────────────────────
 
@@ -202,7 +201,7 @@ export function tickMiniGame(deltaMs: number): void {
 	if (!onCooldown) {
 		nextTriggerMs -= deltaMs;
 		if (nextTriggerMs <= 0) {
-			nextTriggerMs = randomInterval();
+			nextTriggerMs = MINI_GAME_INTERVAL_MS;
 			const s = get(miniGameState);
 			if (!s.active) {
 				triggerMiniGame();
@@ -274,6 +273,7 @@ function completeMiniGame(success: boolean): void {
 	} else {
 		onCooldown = true;
 		nextTriggerMs = FAILURE_COOLDOWN_MS;
+		// Cooldown clears on next successful trigger timer expiry
 		setTimeout(() => {
 			onCooldown = false;
 		}, FAILURE_COOLDOWN_MS);
@@ -286,44 +286,11 @@ function completeMiniGame(success: boolean): void {
  * Initialize EventBus listeners to trigger mini-games from game events.
  * Returns cleanup function.
  */
+/**
+ * Initialize mini-game system. Mini-games trigger on a fixed 5-minute
+ * cadence via tickMiniGame — no random event-based triggers.
+ * Returns cleanup function (no-op since we use tick-based timing only).
+ */
 export function initMiniGameListeners(): () => void {
-	const cleanups: (() => void)[] = [];
-
-	// Trigger launch window when buying rockets tier
-	cleanups.push(
-		eventBus.on('upgrade:purchased', (data) => {
-			if (data.division === 'spacex' && Math.random() < 0.15) {
-				const s = get(miniGameState);
-				if (!s.active && !onCooldown) {
-					triggerMiniGame('launch-window');
-				}
-			}
-		})
-	);
-
-	// Trigger power surge on energy production
-	cleanups.push(
-		eventBus.on('production:complete', (data) => {
-			if (data.division === 'teslaenergy' && Math.random() < 0.002) {
-				const s = get(miniGameState);
-				if (!s.active && !onCooldown) {
-					triggerMiniGame('power-surge');
-				}
-			}
-		})
-	);
-
-	// Trigger hack mainframe on research complete
-	cleanups.push(
-		eventBus.on('research:complete', () => {
-			const s = get(miniGameState);
-			if (!s.active && !onCooldown && Math.random() < 0.25) {
-				triggerMiniGame('hack-mainframe');
-			}
-		})
-	);
-
-	return () => {
-		for (const cleanup of cleanups) cleanup();
-	};
+	return () => {};
 }
