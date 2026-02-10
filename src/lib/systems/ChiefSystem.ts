@@ -125,8 +125,8 @@ export const CHIEF_LEVELS: ChiefLevelData[] = [
 /** Division cost multipliers — later divisions have more expensive chiefs */
 const DIVISION_CHIEF_COST_MULT: Record<string, number> = {
 	teslaenergy: 1,     // Base costs (unlocks at $0)
-	spacex: 2,          // Unlocks at $1K
-	tesla: 5,           // Unlocks at $10K
+	tesla: 2,           // Unlocks at $1K
+	spacex: 5,          // Unlocks at $10K
 	ai: 15,             // Unlocks at $50K
 	tunnels: 40,        // Unlocks at $250K
 	robotics: 100,      // Unlocks at $1M

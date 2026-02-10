@@ -216,7 +216,7 @@
 	}
 
 	// Swipe between division tabs
-	const divisionTabOrder = ['dashboard', 'teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'];
+	const divisionTabOrder = ['dashboard', 'teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'];
 
 	const swipe = createSwipeDetector({
 		onSwipeLeft() {

@@ -3,8 +3,8 @@
  * 
  * PROGRESSION DESIGN (tested via simulation, Feb 2026):
  * - Energy: Always unlocked (foundation)
- * - Rockets: $1,000 (~5 min) — first milestone
- * - Manufacturing: $10,000 (~15 min) — real investment
+ * - Manufacturing: $1,000 (~5 min) — first expansion
+ * - Rockets: $10,000 (~15 min) — real investment
  * - AI: $50,000 (~30 min) — mid-game gate
  * - Tunnels: $250,000 (~50 min) — late-mid, feels earned
  * - Robotics: $1,000,000 (~80 min) — major commitment
@@ -24,15 +24,15 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		description: 'The foundation of everything.',
 		flavorText: 'Sustainable energy is the first step. Power your dreams.',
 	},
-	spacex: {
-		cost: 1_000,
-		description: 'Start your rocket program.',
-		flavorText: 'Getting to orbit is hard. Getting to Mars is harder.',
-	},
 	tesla: {
-		cost: 10_000,
+		cost: 1_000,
 		description: 'Scale production. Build anything.',
 		flavorText: 'The world runs on cars. Make them electric.',
+	},
+	spacex: {
+		cost: 10_000,
+		description: 'Start your rocket program.',
+		flavorText: 'Getting to orbit is hard. Getting to Mars is harder.',
 	},
 	ai: {
 		cost: 50_000,
