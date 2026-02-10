@@ -52,9 +52,9 @@
 	aria-label="Player resources"
 >
 	<div class="flex items-center justify-between px-3 h-[3.25rem] max-w-2xl mx-auto gap-2">
-		<!-- Cash — taps to Treasury -->
+		<!-- Cash — taps to Treasury (gets most space) -->
 		<button
-			class="resource-btn flex items-center gap-1.5 min-w-0 flex-1"
+			class="resource-btn flex items-center gap-1.5 min-w-0 flex-[2]"
 			aria-label="Cash — tap to open Treasury"
 			onclick={() => navigateTo('treasury')}
 		>
