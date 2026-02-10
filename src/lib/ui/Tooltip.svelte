@@ -31,9 +31,14 @@
 		visible = false;
 	}
 
+	let lastTouchToggle = 0;
+
 	function toggle(e: MouseEvent | TouchEvent) {
 		e.stopPropagation();
 		e.preventDefault();
+		// Ignore synthetic click events from touch (within 300ms of touch toggle)
+		if (e.type === 'click' && Date.now() - lastTouchToggle < 400) return;
+		if ('touches' in e) lastTouchToggle = Date.now();
 		if (visible) {
 			hide();
 		} else {

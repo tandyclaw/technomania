@@ -200,6 +200,10 @@
 	});
 
 	function handleTap(event: MouseEvent | TouchEvent) {
+		// Don't trigger production when tapping tooltip info icon
+		const target = event.target as HTMLElement;
+		if (target.closest('.tooltip-wrapper')) return;
+
 		if (!tier.unlocked || tier.count === 0 || !onTap) return;
 
 		// If already producing, tap does nothing (AdCap style)
