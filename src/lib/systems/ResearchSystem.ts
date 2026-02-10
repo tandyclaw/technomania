@@ -12,6 +12,7 @@ import { get } from 'svelte/store';
 import { gameState, type GameState } from '$lib/stores/gameState';
 import { TECH_TREE, TECH_TREE_MAP } from '$lib/data/techTree';
 import { eventBus } from '$lib/engine/EventBus';
+import { addToast } from '$lib/stores/toastStore';
 
 // ── Types ──
 
@@ -162,6 +163,9 @@ export function tickResearch(deltaMs: number): void {
 
 	if (completedResearch) {
 		eventBus.emit('research:complete', completedResearch);
+		addToast('success', '🔬', 'Research Complete', completedResearch.name, {
+			durationMs: 4000,
+		});
 	}
 }
 
