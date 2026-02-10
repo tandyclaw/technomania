@@ -13,7 +13,8 @@
 		"format": "prettier --write .",
 		"lint": "eslint .",
 		"test:e2e": "npx playwright test",
-		"test:e2e:headed": "npx playwright test --headed"
+		"test:e2e:headed": "npx playwright test --headed",
+		"deploy": "npm run build && npx wrangler pages deploy build"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.58.2",
