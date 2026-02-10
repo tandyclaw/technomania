@@ -206,6 +206,9 @@ export interface GameState {
 	// Worker allocation
 	workerAllocation?: Record<string, number>;
 
+	// Crypto (legacy migration field)
+	crypto?: CryptoState;
+
 	// Meta
 	achievements: string[];
 	achievementTimestamps?: Record<string, number>;

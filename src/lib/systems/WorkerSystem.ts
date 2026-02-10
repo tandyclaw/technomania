@@ -120,6 +120,76 @@ export function autoAllocateEven(): void {
 }
 
 /**
+ * Get the bonus percentage a single worker provides to a division.
+ */
+export function getWorkerBonusPercent(): number {
+	return BONUS_PER_WORKER * 100; // 2
+}
+
+/**
+ * Get total worker bonus percentage for a division.
+ */
+export function getTotalWorkerBonusPercent(state: GameState, divisionId: string): number {
+	return getWorkersForDivision(state, divisionId) * BONUS_PER_WORKER * 100;
+}
+
+/**
+ * Auto-allocate workers to maximize ROI — assigns each worker to the division
+ * where adding one more worker yields the highest marginal revenue gain.
+ *
+ * Uses tier counts * base revenue as a proxy for division income,
+ * then greedily assigns workers one-at-a-time to whichever division
+ * benefits most from the next +2% boost.
+ */
+export function autoAllocateSmart(): void {
+	gameState.update((state) => {
+		const total = getTotalWorkers(state);
+		const unlocked = DIVISION_IDS.filter((id) => state.divisions[id]?.unlocked);
+		if (unlocked.length === 0) return state;
+
+		// Estimate base income per division (sum of tier baseRevenue * count)
+		const baseIncome: Record<string, number> = {};
+		for (const id of unlocked) {
+			const divMeta = DIVISIONS[id];
+			const divState = state.divisions[id];
+			let income = 0;
+			if (divMeta && divState) {
+				for (let i = 0; i < divState.tiers.length; i++) {
+					const t = divState.tiers[i];
+					const td = divMeta.tiers[i];
+					if (t && td && t.unlocked && t.count > 0) {
+						income += td.config.baseRevenue * t.count;
+					}
+				}
+			}
+			baseIncome[id] = income;
+		}
+
+		// Greedy allocation: assign one worker at a time to division with best marginal gain
+		const alloc: Record<string, number> = {};
+		for (const id of unlocked) alloc[id] = 0;
+
+		for (let w = 0; w < total; w++) {
+			let bestId = unlocked[0];
+			let bestGain = -1;
+			for (const id of unlocked) {
+				// Marginal gain of adding 1 worker = baseIncome * BONUS_PER_WORKER
+				// (diminishing returns don't apply since bonus is linear, but divisions
+				//  with higher base income always benefit more per worker)
+				const gain = baseIncome[id] * BONUS_PER_WORKER;
+				if (gain > bestGain) {
+					bestGain = gain;
+					bestId = id;
+				}
+			}
+			alloc[bestId] = (alloc[bestId] || 0) + 1;
+		}
+
+		return { ...state, workerAllocation: alloc };
+	});
+}
+
+/**
  * Auto-allocate workers proportional to division revenue
  */
 export function autoAllocateByRevenue(): void {

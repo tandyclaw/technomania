@@ -6,22 +6,27 @@
 export type EventHandler<T = unknown> = (data: T) => void;
 
 export interface GameEvents {
-	'production:complete': { division: string; tier: number; amount: number };
+	'production:complete': { division: string; tier: number; amount: number; automated?: boolean };
 	'production:started': { division: string; tier: number };
-	'upgrade:purchased': { division: string; tier: number; level: number };
+	'upgrade:purchased': { division: string; tier: number; level: number; upgradeId?: string };
 	'tier:unlocked': { division: string; tier: number };
 	'division:unlocked': { division: string };
 	'research:complete': { id: string; name: string };
-	'bottleneck:hit': { division: string; type: string; description: string };
-	'bottleneck:resolved': { division: string; type: string };
+	'bottleneck:hit': { division: string; type: string; description: string; bottleneckId?: string };
+	'bottleneck:resolved': { division: string; type: string; bottleneckId?: string };
 	'synergy:discovered': { source: string; target: string; bonus: string };
 	'prestige:ready': { projectedVision: number };
-	'prestige:complete': { visionEarned: number; totalVision: number };
+	'prestige:complete': { visionEarned: number; totalVision: number; techEarned?: number };
 	'achievement:unlocked': { id: string; name: string; description: string };
 	'chief:hired': { division: string; level: number };
 	'power:shortage': { needed: number; available: number };
 	'save:complete': Record<string, never>;
 	'save:loaded': Record<string, never>;
+	'newgameplus:complete': Record<string, unknown>;
+	'minigame:complete': { id: string; score?: number };
+	'contract:completed': { id: string; reward?: number };
+	'tab:changed': { tab: string };
+	'division:prestige': { division: string; level?: number };
 }
 
 class EventBus {
