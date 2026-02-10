@@ -23,7 +23,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 			baseCost: 20000,
 			baseRevenue: 3500,
 			cycleDuration: 12,
-			costMultiplier: 1.09,
+			costMultiplier: 1.07,
 			revenueMultiplier: 1.0
 		}
 	},
@@ -37,7 +37,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 			baseCost: 200000,
 			baseRevenue: 30000,
 			cycleDuration: 28,
-			costMultiplier: 1.10,
+			costMultiplier: 1.07,
 			revenueMultiplier: 1.0
 		}
 	},
@@ -51,7 +51,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 			baseCost: 1500000,
 			baseRevenue: 200000,
 			cycleDuration: 70,
-			costMultiplier: 1.11,
+			costMultiplier: 1.08,
 			revenueMultiplier: 1.0
 		}
 	},
@@ -65,7 +65,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 			baseCost: 20000000,
 			baseRevenue: 3000000,
 			cycleDuration: 160,
-			costMultiplier: 1.11,
+			costMultiplier: 1.08,
 			revenueMultiplier: 1.0
 		}
 	},
@@ -79,7 +79,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 			baseCost: 250000000,
 			baseRevenue: 30000000,
 			cycleDuration: 360,
-			costMultiplier: 1.12,
+			costMultiplier: 1.07,
 			revenueMultiplier: 1.0
 		}
 	},
@@ -93,7 +93,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 			baseCost: 2500000000,
 			baseRevenue: 350000000,
 			cycleDuration: 800,
-			costMultiplier: 1.12,
+			costMultiplier: 1.07,
 			revenueMultiplier: 1.0
 		}
 	}
