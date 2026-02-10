@@ -433,13 +433,13 @@
 			ontouchend={(e) => { handleTouchEnd(); swipe.onTouchEnd(e); }}
 			class="flex-1 overflow-y-auto overscroll-y-contain scroll-smooth"
 			style="
-				padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem);
+				padding-top: calc(env(safe-area-inset-top, 0px) + 2.75rem);
 				padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
-				transform: translateY({pullDistance}px);
+				{pullDistance > 0 ? `transform: translateY(${pullDistance}px);` : ''}
 				transition: {pulling ? 'none' : 'transform 0.3s ease-out'};
 			"
 		>
-			<div class="max-w-2xl mx-auto px-3 py-4">
+			<div class="max-w-2xl mx-auto px-3 py-2">
 				{@render children()}
 			</div>
 		</main>
