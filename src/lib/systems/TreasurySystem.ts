@@ -194,17 +194,21 @@ export function sellIndex(shares: number): boolean {
 	if (shares <= 0 || shares > state.treasury.indexShares) return false;
 	
 	const value = shares * state.treasury.indexPrice;
-	const sellRatio = shares / state.treasury.indexShares;
 	
-	gameState.update(s => ({
-		...s,
-		cash: s.cash + value,
-		treasury: {
-			...s.treasury,
-			indexShares: s.treasury.indexShares - shares,
-			indexInvested: s.treasury.indexInvested * (1 - sellRatio),
-		},
-	}));
+	gameState.update(s => {
+		const ratio = Math.min(shares / s.treasury.indexShares, 1);
+		const newShares = ratio >= 1 ? 0 : s.treasury.indexShares - shares;
+		const newInvested = ratio >= 1 ? 0 : s.treasury.indexInvested * (1 - ratio);
+		return {
+			...s,
+			cash: s.cash + value,
+			treasury: {
+				...s.treasury,
+				indexShares: newShares,
+				indexInvested: newInvested,
+			},
+		};
+	});
 	
 	addToast('success', '💵', 'Sold Index', `${shares.toFixed(2)} shares for ${formatCurrency(value)}`, {
 		color: '#4488FF',
@@ -249,17 +253,21 @@ export function sellBtc(btcAmount: number): boolean {
 	if (btcAmount <= 0 || btcAmount > state.treasury.btcOwned) return false;
 	
 	const value = btcAmount * state.treasury.btcPrice;
-	const sellRatio = btcAmount / state.treasury.btcOwned;
 	
-	gameState.update(s => ({
-		...s,
-		cash: s.cash + value,
-		treasury: {
-			...s.treasury,
-			btcOwned: s.treasury.btcOwned - btcAmount,
-			btcInvested: s.treasury.btcInvested * (1 - sellRatio),
-		},
-	}));
+	gameState.update(s => {
+		const ratio = Math.min(btcAmount / s.treasury.btcOwned, 1);
+		const newOwned = ratio >= 1 ? 0 : s.treasury.btcOwned - btcAmount;
+		const newInvested = ratio >= 1 ? 0 : s.treasury.btcInvested * (1 - ratio);
+		return {
+			...s,
+			cash: s.cash + value,
+			treasury: {
+				...s.treasury,
+				btcOwned: newOwned,
+				btcInvested: newInvested,
+			},
+		};
+	});
 	
 	addToast('success', '💵', 'Sold BTC', `${btcAmount.toFixed(6)} BTC for ${formatCurrency(value)}`, {
 		color: '#F7931A',
@@ -312,17 +320,21 @@ export function sellDoge(dogeAmount: number): boolean {
 	if (dogeAmount <= 0 || dogeAmount > state.treasury.dogeOwned) return false;
 	
 	const value = dogeAmount * state.treasury.dogePrice;
-	const sellRatio = dogeAmount / state.treasury.dogeOwned;
 	
-	gameState.update(s => ({
-		...s,
-		cash: s.cash + value,
-		treasury: {
-			...s.treasury,
-			dogeOwned: s.treasury.dogeOwned - dogeAmount,
-			dogeInvested: s.treasury.dogeInvested * (1 - sellRatio),
-		},
-	}));
+	gameState.update(s => {
+		const ratio = Math.min(dogeAmount / s.treasury.dogeOwned, 1);
+		const newOwned = ratio >= 1 ? 0 : s.treasury.dogeOwned - dogeAmount;
+		const newInvested = ratio >= 1 ? 0 : s.treasury.dogeInvested * (1 - ratio);
+		return {
+			...s,
+			cash: s.cash + value,
+			treasury: {
+				...s.treasury,
+				dogeOwned: newOwned,
+				dogeInvested: newInvested,
+			},
+		};
+	});
 	
 	const dogeStr = dogeAmount >= 1000000 ? (dogeAmount / 1000000).toFixed(2) + 'M' :
 	                dogeAmount >= 1000 ? (dogeAmount / 1000).toFixed(1) + 'K' :
@@ -379,10 +391,12 @@ export function tickTreasury(deltaMs: number): void {
 		treasury.btcPrice = generateBtcPrice(gameTimeMs, treasury.btcPrice);
 		treasury.dogePrice = generateDogePrice(gameTimeMs, treasury.dogePrice);
 		
-		// Apply meme pump
+		// Apply meme pump — small per-tick boost, NOT compounding the full multiplier
 		if (treasury.memePumpMs > 0) {
 			treasury.memePumpMs = Math.max(0, treasury.memePumpMs - deltaMs);
-			treasury.dogePrice *= treasury.memePumpMultiplier;
+			// Apply a tiny per-tick nudge: (mult-1) spread over ~300 ticks (30s at 100ms)
+			const perTickBoost = 1 + (treasury.memePumpMultiplier - 1) / 300;
+			treasury.dogePrice *= perTickBoost;
 			
 			if (treasury.memePumpMs <= 0) {
 				treasury.memePumpMultiplier = 1;
@@ -458,9 +472,10 @@ export function tickTreasury(deltaMs: number): void {
 			}
 		}
 		
-		// Clamp prices
-		treasury.btcPrice = Math.max(1000, treasury.btcPrice);
-		treasury.dogePrice = Math.max(0.001, treasury.dogePrice);
+		// Clamp prices — max 1000x in each direction from starting price
+		treasury.btcPrice = Math.min(Math.max(42, treasury.btcPrice), 42_000_000); // $42 to $42M (starting $42K)
+		treasury.dogePrice = Math.min(Math.max(0.00008, treasury.dogePrice), 80); // $0.00008 to $80 (starting $0.08)
+		treasury.indexPrice = Math.min(Math.max(0.1, treasury.indexPrice), 100_000); // $0.10 to $100K (starting $100)
 		
 		// Record history
 		if (priceAccum >= PRICE_UPDATE_INTERVAL) {
