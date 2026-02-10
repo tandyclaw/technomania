@@ -4,20 +4,18 @@
 	let launched = $state(false);
 
 	const divisions = [
-		{ name: 'Energy', icon: '⚡', color: '#FFCC44', desc: 'Nuclear, solar, batteries & space power' },
-		{ name: 'Rockets', icon: '🚀', color: '#FF4444', desc: 'Reusable rockets & Mars colonization' },
-		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'Cars to chip fabs to orbital shipyards' },
-		{ name: 'AI', icon: '🤖', color: '#9944FF', desc: 'Chatbots to AGI' },
-		{ name: 'Tunnels', icon: '🚇', color: '#FF8844', desc: 'Underground transit & hyperloop' },
-		{ name: 'Robotics', icon: '🦾', color: '#FF6644', desc: 'Automate the physical world' },
+		{ name: 'Energy', icon: '⚡', color: '#FFCC44', desc: 'Solar & batteries. Power everything.' },
+		{ name: 'Rockets', icon: '🚀', color: '#FF4444', desc: 'Build rockets. Get to Mars.' },
+		{ name: 'Manufacturing', icon: '🏭', color: '#44AAFF', desc: 'Scale production. Build anything.' },
+		{ name: 'AI', icon: '🤖', color: '#9944FF', desc: 'From chatbots to AGI.' },
+		{ name: 'Tunnels', icon: '🚇', color: '#FF8844', desc: 'Move people underground.' },
+		{ name: 'Robotics', icon: '🦾', color: '#FF6644', desc: 'Automate everything.' },
 	];
 
 	const features = [
-		{ icon: '🎯', title: '120 Milestones', desc: 'Unlock speed and revenue multipliers as you scale each tier' },
 		{ icon: '🔗', title: 'Cross-Division Synergies', desc: 'AI powers robots. Robots run factories. Factories use your energy grid.' },
-		{ icon: '⚡', title: 'Random Events', desc: 'Government subsidies, viral tweets, tunnel collapses — adapt or lose' },
-		{ icon: '🔬', title: 'Research Tree', desc: 'Invest in R&D to unlock permanent upgrades across your empire' },
-		{ icon: '🔄', title: 'Colonies & New Game+', desc: 'Launch colonies for permanent mega-upgrades. Then do it all again — harder, faster.' },
+		{ icon: '🔬', title: 'Research Tree', desc: 'Invest in R&D to unlock permanent upgrades across your empire.' },
+		{ icon: '⚡', title: 'Random Events', desc: 'Government subsidies, viral tweets, tunnel collapses — adapt or lose.' },
 		{ icon: '🪐', title: 'Mars Endgame', desc: 'Everything builds toward one goal: a self-sustaining colony on Mars.' },
 	];
 
@@ -65,13 +63,9 @@
 			{/each}
 		</div>
 
-		<!-- Floating rocket -->
-		<div class="rocket-float absolute text-4xl opacity-10 pointer-events-none select-none" aria-hidden="true">🚀</div>
-
 		<!-- Floating orbs -->
 		<div class="absolute top-20 left-[10%] w-64 h-64 rounded-full blur-[100px] opacity-20 bg-electric-blue"></div>
 		<div class="absolute top-40 right-[10%] w-48 h-48 rounded-full blur-[80px] opacity-15 bg-neural-purple"></div>
-		<div class="absolute bottom-0 left-[40%] w-56 h-56 rounded-full blur-[90px] opacity-10 bg-solar-gold"></div>
 
 		<div class="relative z-10 max-w-5xl mx-auto px-4 pt-16 pb-14 md:pt-28 md:pb-24 text-center">
 			<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 mb-6 text-xs font-mono text-text-secondary tracking-wider">
@@ -94,7 +88,7 @@
 			</p>
 
 			<p class="text-sm text-text-muted mb-10 font-mono">
-				6 divisions · 36 tiers · 120 milestones · infinite colonies
+				6 divisions · 42 tiers · synergies · colonies
 			</p>
 
 			<button
@@ -108,7 +102,7 @@
 					   touch-manipulation"
 			>
 				<span class="relative z-10">
-					{launched ? '🚀 Launching...' : '🚀 Launch Game'}
+					{launched ? '🚀 Launching...' : '🚀 Start Building'}
 				</span>
 				<div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-solar-gold/90 to-tunnel-orange/90 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 			</button>
@@ -122,7 +116,7 @@
 	<!-- Divisions -->
 	<section class="max-w-5xl mx-auto px-4 py-16 md:py-24 w-full">
 		<h2 class="text-center text-text-secondary text-xs font-mono tracking-[0.3em] uppercase mb-10">
-			Six Divisions · One Mission · Mars
+			Six Divisions · One Mission
 		</h2>
 
 		<div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto">
@@ -146,11 +140,7 @@
 
 	<!-- Features -->
 	<section class="max-w-5xl mx-auto px-4 py-12 md:py-20 w-full">
-		<h2 class="text-center text-text-secondary text-xs font-mono tracking-[0.3em] uppercase mb-10">
-			What Makes It Addictive
-		</h2>
-
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-4xl mx-auto">
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 max-w-3xl mx-auto">
 			{#each features as feat}
 				<div class="p-5 rounded-xl border border-white/5 bg-bg-secondary/30">
 					<div class="text-2xl mb-2">{feat.icon}</div>
@@ -171,51 +161,25 @@
 			<div class="text-center px-4">
 				<div class="text-3xl mb-2">👆</div>
 				<p class="text-sm font-semibold text-text-primary">Tap to Produce</p>
-				<p class="text-xs text-text-muted mt-1">Start production cycles in each division</p>
+				<p class="text-xs text-text-muted mt-1">Start production in each division</p>
 			</div>
 			<div class="text-text-muted text-2xl hidden md:block">→</div>
 			<div class="text-center px-4">
 				<div class="text-3xl mb-2">👔</div>
 				<p class="text-sm font-semibold text-text-primary">Hire Chiefs</p>
-				<p class="text-xs text-text-muted mt-1">Automate production while you're away</p>
+				<p class="text-xs text-text-muted mt-1">Automate while you're away</p>
 			</div>
 			<div class="text-text-muted text-2xl hidden md:block">→</div>
 			<div class="text-center px-4">
 				<div class="text-3xl mb-2">📈</div>
-				<p class="text-sm font-semibold text-text-primary">Colonies & Colony Tech</p>
+				<p class="text-sm font-semibold text-text-primary">Launch Colonies</p>
 				<p class="text-xs text-text-muted mt-1">Reset with permanent multipliers</p>
 			</div>
 			<div class="text-text-muted text-2xl hidden md:block">→</div>
 			<div class="text-center px-4">
 				<div class="text-3xl mb-2">🪐</div>
 				<p class="text-sm font-semibold text-text-primary">Reach Mars</p>
-				<p class="text-xs text-text-muted mt-1">Complete the colony, start New Game+</p>
-			</div>
-		</div>
-	</section>
-
-	<!-- How Long -->
-	<section class="max-w-5xl mx-auto px-4 py-12 md:py-20 w-full">
-		<h2 class="text-center text-text-secondary text-xs font-mono tracking-[0.3em] uppercase mb-8">
-			How Long Will It Take?
-		</h2>
-		<div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 max-w-3xl mx-auto">
-			<div class="text-center">
-				<div class="text-2xl mb-1">💰</div>
-				<p class="text-sm font-semibold text-text-primary">First Million</p>
-				<p class="text-xs text-text-muted mt-0.5">~10 min</p>
-			</div>
-			<div class="text-text-muted text-lg hidden md:block">·</div>
-			<div class="text-center">
-				<div class="text-2xl mb-1">🪐</div>
-				<p class="text-sm font-semibold text-text-primary">First Colony</p>
-				<p class="text-xs text-text-muted mt-0.5">~2 hours</p>
-			</div>
-			<div class="text-text-muted text-lg hidden md:block">·</div>
-			<div class="text-center">
-				<div class="text-2xl mb-1">🌟</div>
-				<p class="text-sm font-semibold text-text-primary">Kepler-452b</p>
-				<p class="text-xs text-text-muted mt-0.5">Good luck 😏</p>
+				<p class="text-xs text-text-muted mt-1">Build a self-sustaining colony</p>
 			</div>
 		</div>
 	</section>
@@ -232,14 +196,14 @@
 				   hover:shadow-xl active:scale-95 transition-all duration-200
 				   touch-manipulation"
 		>
-			🚀 Launch Game
+			🚀 Start Building
 		</button>
 	</section>
 
 	<!-- Footer -->
 	<footer class="mt-auto py-8 text-center border-t border-white/5">
 		<p class="text-xs text-text-muted">
-			Moonshot v1.0 · An idle game about building the future
+			Moonshot · An idle game about building the future
 		</p>
 	</footer>
 </div>
@@ -263,18 +227,5 @@
 	@keyframes twinkle {
 		0%, 100% { opacity: 0.2; }
 		50% { opacity: 0.9; }
-	}
-
-	.rocket-float {
-		right: 15%;
-		bottom: -40px;
-		animation: rocketRise 20s linear infinite;
-	}
-
-	@keyframes rocketRise {
-		0% { transform: translateY(0) rotate(-30deg); opacity: 0; }
-		10% { opacity: 0.1; }
-		80% { opacity: 0.1; }
-		100% { transform: translateY(-600px) rotate(-30deg); opacity: 0; }
 	}
 </style>
