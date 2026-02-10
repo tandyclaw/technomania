@@ -100,10 +100,18 @@ export interface Notification {
 }
 
 let notifId = 0;
-const MAX_NOTIFICATIONS = 50;
+const MAX_NOTIFICATIONS = 20;
+/** Auto-expire read notifications after 10 minutes */
+const EXPIRY_MS = 10 * 60 * 1000;
 
 export const notifications = writable<Notification[]>([]);
 export const unreadCount = derived(notifications, ($n) => $n.filter((n) => !n.read).length);
+
+/** Prune expired read notifications */
+function pruneExpired(list: Notification[]): Notification[] {
+	const now = Date.now();
+	return list.filter((n) => !n.read || now - n.timestamp < EXPIRY_MS);
+}
 
 export function addNotification(type: NotificationType, icon: string, title: string, message: string): void {
 	notifications.update((list) => {
@@ -117,15 +125,19 @@ export function addNotification(type: NotificationType, icon: string, title: str
 				timestamp: Date.now(),
 				read: false,
 			},
-			...list,
+			...pruneExpired(list),
 		];
 		if (next.length > MAX_NOTIFICATIONS) return next.slice(0, MAX_NOTIFICATIONS);
 		return next;
 	});
 }
 
+export function dismissNotification(id: number): void {
+	notifications.update((list) => list.filter((n) => n.id !== id));
+}
+
 export function markAllRead(): void {
-	notifications.update((list) => list.map((n) => ({ ...n, read: true })));
+	notifications.update((list) => pruneExpired(list).map((n) => ({ ...n, read: true })));
 }
 
 export function clearNotifications(): void {

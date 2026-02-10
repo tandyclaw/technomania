@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { notifications, unreadCount, markAllRead, clearNotifications } from '$lib/stores/eventStore';
+	import { notifications, unreadCount, markAllRead, clearNotifications, dismissNotification } from '$lib/stores/eventStore';
 
 	let open = $state(false);
 	let items = $derived($notifications);
@@ -80,6 +80,11 @@
 							<div class="text-[11px] text-text-secondary truncate">{notif.message}</div>
 						</div>
 						<span class="text-[9px] text-text-muted shrink-0 mt-0.5">{formatTime(notif.timestamp)}</span>
+						<button
+							onclick={() => dismissNotification(notif.id)}
+							class="shrink-0 w-6 h-6 flex items-center justify-center text-text-muted hover:text-text-secondary transition-colors rounded-full text-[10px] leading-none touch-manipulation"
+							aria-label="Dismiss"
+						>✕</button>
 					</div>
 				{/each}
 			{/if}
