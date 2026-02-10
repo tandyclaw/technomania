@@ -76,6 +76,7 @@
 		background: linear-gradient(135deg, var(--color-bg-secondary) 0%, rgba(68, 136, 255, 0.15) 100%);
 		border: 1px solid rgba(68, 136, 255, 0.3);
 		border-radius: 16px;
+		-webkit-backdrop-filter: blur(12px);
 		backdrop-filter: blur(12px);
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 	}
