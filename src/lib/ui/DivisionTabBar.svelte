@@ -60,13 +60,13 @@
 <!-- More menu backdrop + popup -->
 {#if moreOpen}
 	<div
-		class="fixed inset-0 z-40 bg-black/50"
+		class="fixed inset-0 z-40 bg-black/50 more-backdrop"
 		onclick={handleBackdropClick}
 		onkeydown={(e) => { if (e.key === 'Escape') handleBackdropClick(); }}
 		role="presentation"
 	></div>
 	<div
-		class="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+3.75rem)] left-1/2 -translate-x-1/2 z-50
+		class="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+3.75rem)] left-1/2 z-50
 			   w-[min(20rem,calc(100vw-2rem))] bg-bg-secondary border border-white/10 rounded-2xl shadow-2xl
 			   p-2 more-popup"
 		role="menu"
@@ -187,18 +187,28 @@
 		min-width: 44px;
 	}
 
+	.more-backdrop {
+		animation: backdropFadeIn 0.15s ease-out both;
+	}
+
+	@keyframes backdropFadeIn {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+
 	.more-popup {
-		animation: moreSlideUp 0.15s ease-out;
+		animation: moreSlideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+		will-change: opacity;
 	}
 
 	@keyframes moreSlideUp {
 		from {
 			opacity: 0;
-			transform: translate(-50%, 8px);
+			transform: translate(-50%, 12px) scale(0.95);
 		}
 		to {
 			opacity: 1;
-			transform: translate(-50%, 0);
+			transform: translate(-50%, 0) scale(1);
 		}
 	}
 </style>
