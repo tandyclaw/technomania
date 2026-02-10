@@ -17,6 +17,7 @@ export interface TierData {
 	name: string;
 	description: string;
 	tooltip: string;
+	flavor?: string;
 	config: ProductionConfig;
 	powerMW?: number;
 }

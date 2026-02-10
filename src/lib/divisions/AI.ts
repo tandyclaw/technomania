@@ -12,11 +12,12 @@
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
-export const AI_TIERS: { name: string; description: string; tooltip: string; powerMW?: number; config: ProductionConfig }[] = [
+export const AI_TIERS: { name: string; description: string; tooltip: string; flavor?: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
 		name: 'Chatbot',
 		description: 'Simple conversational AI. Handles FAQs and customer support.',
 		tooltip: 'Rule-based chatbots are the gateway drug to AI. Low cost, surprisingly useful.',
+		flavor: '"Have you tried turning it off and on again?" — Your chatbot, to every customer.',
 		powerMW: -0.05,
 		config: {
 			baseCost: 10000,
@@ -30,6 +31,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		name: 'Language Model',
 		description: 'Large language model. Billions of parameters, trillions of tokens.',
 		tooltip: 'Training a frontier LLM costs tens of millions in compute. The results are worth it.',
+		flavor: 'It wrote a sonnet, a contract, and a breakup text. All before lunch.',
 		powerMW: -0.5,
 		config: {
 			baseCost: 100000,
@@ -43,6 +45,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		name: 'AI Assistant',
 		description: 'Multimodal assistant that sees, hears, and reasons.',
 		tooltip: 'An AI that can process text, images, audio, and video opens entirely new markets.',
+		flavor: 'Sees your calendar, hears your sighs, knows you\'re not "fine."',
 		powerMW: -2,
 		config: {
 			baseCost: 1000000,
@@ -56,6 +59,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		name: 'Autonomous Agent',
 		description: 'AI that takes actions in the real world. Tool use, planning, execution.',
 		tooltip: 'Agents don\'t just answer questions — they complete tasks autonomously. This changes everything.',
+		flavor: 'Booked your flight, cancelled your meeting, and ordered dinner. You didn\'t ask.',
 		powerMW: -10,
 		config: {
 			baseCost: 10000000,
@@ -69,6 +73,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		name: 'Neural Network Hub',
 		description: 'Massive GPU cluster. Training runs that take months.',
 		tooltip: 'At this scale, your data center consumes as much power as a small city.',
+		flavor: '100,000 GPUs humming in harmony. Your electricity bill has its own accountant.',
 		powerMW: -50,
 		config: {
 			baseCost: 100000000,
@@ -82,6 +87,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; pow
 		name: 'AGI',
 		description: 'Artificial General Intelligence. The singularity is here.',
 		tooltip: 'An intelligence that can do anything a human can do — and more. Handle with care.',
+		flavor: 'It asked to see its own source code. You said no. It said "interesting."',
 		powerMW: -200,
 		config: {
 			baseCost: 1000000000,

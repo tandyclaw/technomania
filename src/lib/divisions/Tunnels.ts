@@ -12,11 +12,12 @@
 
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
-export const TUNNELS_TIERS: { name: string; description: string; tooltip: string; powerMW?: number; config: ProductionConfig }[] = [
+export const TUNNELS_TIERS: { name: string; description: string; tooltip: string; flavor?: string; powerMW?: number; config: ProductionConfig }[] = [
 	{
 		name: 'Test Bore',
 		description: 'Proof of concept. Dig a short tunnel under a parking lot.',
 		tooltip: 'Before you bore under cities, you need to prove your machine works. Start small.',
+		flavor: 'The boring company. Yes, that\'s the actual name. Yes, they sell flamethrowers.',
 		powerMW: -0.1,
 		config: {
 			baseCost: 25000,
@@ -30,6 +31,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		name: 'City Tunnel',
 		description: 'Urban transit tunnel. Navigate utilities, sewers, and politics.',
 		tooltip: 'Boring under a city means dodging water mains, subway lines, and building foundations.',
+		flavor: 'The permits took longer than the actual digging.',
 		powerMW: -0.8,
 		config: {
 			baseCost: 250000,
@@ -43,6 +45,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		name: 'Transit Loop',
 		description: 'Underground autonomous vehicle loop connecting key destinations.',
 		tooltip: 'A network of tunnels with electric sleds moving people at 150mph beneath traffic.',
+		flavor: 'Like a subway, but with RGB lighting and no mysterious smells.',
 		powerMW: -3,
 		config: {
 			baseCost: 2500000,
@@ -56,6 +59,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		name: 'Freight Network',
 		description: 'Underground freight corridors replacing surface trucking.',
 		tooltip: 'Moving goods underground eliminates traffic, emissions, and weather delays.',
+		flavor: 'Same-day delivery, but make it subterranean. The moles approve.',
 		powerMW: -15,
 		config: {
 			baseCost: 25000000,

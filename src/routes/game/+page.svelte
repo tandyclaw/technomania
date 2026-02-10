@@ -29,8 +29,23 @@
 	{:else if $activeTab === 'upgrades'}
 		<UpgradesView />
 	{:else if isLazyTab($activeTab)}
-		{#await lazyViews[$activeTab]() then mod}
+		{#await lazyViews[$activeTab]()}
+			<div class="flex items-center justify-center py-20">
+				<div class="text-center">
+					<div class="loading-spinner mx-auto mb-3"></div>
+					<p class="text-text-muted text-sm">Loading…</p>
+				</div>
+			</div>
+		{:then mod}
 			<mod.default />
+		{:catch err}
+			<div class="flex items-center justify-center py-20">
+				<div class="text-center">
+					<div class="text-3xl mb-2">⚠️</div>
+					<p class="text-text-secondary text-sm mb-1">Failed to load view</p>
+					<p class="text-text-muted text-xs">{err?.message ?? 'Unknown error'}</p>
+				</div>
+			</div>
 		{/await}
 	{:else}
 		<DivisionView divisionId={$activeTab} />
@@ -40,6 +55,19 @@
 <style>
 	.view-container {
 		animation: viewFadeIn 0.2s ease-out;
+	}
+
+	.loading-spinner {
+		width: 24px;
+		height: 24px;
+		border: 2.5px solid rgba(255, 255, 255, 0.1);
+		border-top-color: #3b82f6;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
 	}
 
 	@keyframes viewFadeIn {

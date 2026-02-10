@@ -40,6 +40,7 @@ class GameManager {
 	private boundVisibilityChange: (() => void) | null = null;
 	private cleanupSounds: (() => void) | null = null;
 	private cleanupMusic: (() => void) | null = null;
+	private prestigeInProgress = false;
 
 	/**
 	 * Initialize the game — load saved state or create new, start systems
@@ -227,6 +228,18 @@ class GameManager {
 	 * Returns the amount of Colony Tech earned
 	 */
 	prestige(): number {
+		// Re-entrancy guard: prevent double-prestige from rapid clicks
+		if (this.prestigeInProgress) return 0;
+		this.prestigeInProgress = true;
+
+		try {
+			return this._doPrestige();
+		} finally {
+			this.prestigeInProgress = false;
+		}
+	}
+
+	private _doPrestige(): number {
 		const current = get(gameState);
 
 		// Calculate Colony Tech earned from total value
@@ -332,6 +345,7 @@ class GameManager {
 		resetTreasuryAccumulators();
 		resetFlavorStats();
 		resetCelebrations();
+		resetContracts();
 
 		eventBus.emit('prestige:complete', {
 			visionEarned: techEarned,
