@@ -264,13 +264,6 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 	{ id: 'ng_plus_3', name: 'Third Time\'s the Charm', description: 'Reach New Game+ level 3', icon: '🔄', category: 'prestige', rarity: 'Legendary',
 		condition: (s) => s.ngPlusLevel >= 3 },
 
-	// === Division Mastery / Stars ===
-	{ id: 'div_star_first', name: 'First Star', description: 'Earn a division star', icon: '⭐', category: 'divisions', rarity: 'Rare',
-		condition: (s) => Object.values(s.divisionStars ?? {}).some(v => v >= 1) },
-	{ id: 'div_star_all', name: 'All-Star', description: 'Earn a star in every division', icon: '🌟', category: 'divisions', rarity: 'Epic',
-		condition: (s) => { const stars = s.divisionStars ?? {}; return Object.keys(s.divisions).every(k => (stars[k] ?? 0) >= 1); } },
-	{ id: 'div_star_5_any', name: 'Five-Star General', description: 'Earn 5 stars in any division', icon: '⭐', category: 'divisions', rarity: 'Epic',
-		condition: (s) => Object.values(s.divisionStars ?? {}).some(v => v >= 5) },
 
 	// === Synergy Achievements ===
 	{ id: 'synergy_3', name: 'Synergist', description: 'Discover 3 synergies', icon: '🔗', category: 'special', rarity: 'Common',

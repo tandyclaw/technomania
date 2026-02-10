@@ -15,9 +15,7 @@
 	import { contractState } from '$lib/systems/ContractSystem';
 	import type { Contract } from '$lib/systems/ContractSystem';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
-	import WorkerPanel from '$lib/ui/WorkerPanel.svelte';
-	import { getDivisionStars } from '$lib/systems/DivisionPrestigeSystem';
-	import { getWorkersForDivision } from '$lib/systems/WorkerSystem';
+	// Workers and Division Prestige removed
 
 	// Division ordering for display
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
@@ -94,9 +92,7 @@
 			const unlockedTiers = divState.tiers.filter((t) => t.unlocked).length;
 			// Find the most active tier (highest progress if producing)
 			const activeTier = divState.tiers.find((t) => t.producing && t.unlocked);
-			const stars = getDivisionStars(state, id);
-			const workers = getWorkersForDivision(state, id);
-			return { id, meta, divState, incomePerSec, totalOwned, unlockedTiers, activeTier, stars, workers };
+			return { id, meta, divState, incomePerSec, totalOwned, unlockedTiers, activeTier };
 		})
 	);
 
@@ -227,8 +223,6 @@
 	<!-- Synergies -->
 	<SynergyPanel />
 
-	<!-- Workers -->
-	<WorkerPanel />
 
 	<!-- Active Contracts (compact) -->
 	{#if activeContracts.length > 0}
@@ -354,16 +348,6 @@
 										{#if div.divState.chiefLevel > 0}
 											<span class="text-[10px] font-semibold" style="color: {div.meta.color};">
 												👔 Lv.{div.divState.chiefLevel}
-											</span>
-										{/if}
-										{#if div.stars > 0}
-											<span class="text-[10px] font-semibold text-solar-gold">
-												⭐{div.stars}
-											</span>
-										{/if}
-										{#if div.workers > 0}
-											<span class="text-[10px] font-semibold text-electric-blue">
-												👷{div.workers}
 											</span>
 										{/if}
 									</div>

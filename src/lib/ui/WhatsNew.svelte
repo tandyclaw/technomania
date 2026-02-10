@@ -10,7 +10,6 @@
 		{ icon: '📋', text: 'Contracts system with timed challenges and rewards' },
 		{ icon: '🏆', text: '130+ Achievements including hidden ones to discover' },
 		{ icon: '🎄', text: 'Seasonal events with time-limited bonuses' },
-		{ icon: '👷', text: 'Worker allocation with Smart, Even & Revenue strategies' },
 		{ icon: '📊', text: 'Statistics page with fun facts about your empire' },
 		{ icon: '🃏', text: 'Share card for bragging rights' },
 		{ icon: '🌑', text: 'OLED dark mode + high contrast accessibility' },
