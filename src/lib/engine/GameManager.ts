@@ -497,7 +497,7 @@ class GameManager {
 	 */
 	private calculateTotalIncomePerSec(state: GameState): number {
 		let total = 0;
-		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+		for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 			total += getDivisionTrueIncomePerSec(state, divId);
 		}
 		return total;
@@ -526,7 +526,7 @@ class GameManager {
 		}
 		const income = incomeHit * 5;
 
-		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+		const divIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 		let unlockedDivs = 0;
 		for (const id of divIds) { if (state.divisions[id].unlocked) unlockedDivs++; }
 		const divisions = Math.round((unlockedDivs / divIds.length) * 15 * 100) / 100;
@@ -561,7 +561,7 @@ class GameManager {
 		}
 
 		// All divisions unlocked (15%)
-		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+		const divIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 		let unlockedDivs = 0;
 		for (const id of divIds) {
 			if (state.divisions[id].unlocked) unlockedDivs++;
@@ -627,7 +627,7 @@ class GameManager {
 				});
 			}
 			// Reset any in-progress production since timing model changed
-			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+			for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 				const div = migrated.divisions[divId];
 				if (div) {
 					for (const tier of div.tiers) {

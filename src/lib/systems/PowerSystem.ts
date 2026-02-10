@@ -12,7 +12,7 @@
 import type { GameState } from '$lib/stores/gameState';
 import { DIVISIONS } from '$lib/divisions';
 
-const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+const DIVISION_IDS = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 
 /**
  * Recalculate total power generated and consumed from current game state.

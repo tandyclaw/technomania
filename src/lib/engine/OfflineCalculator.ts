@@ -16,7 +16,7 @@ const OFFLINE_EFFICIENCY = 0.5;
 /** Minimum offline duration to trigger calculation (1 minute) */
 const MIN_OFFLINE_MS = 60_000;
 
-const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+const DIVISION_IDS = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 
 const DIVISION_NAMES: Record<string, string> = {
 	teslaenergy: 'Energy',

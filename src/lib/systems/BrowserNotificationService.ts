@@ -72,7 +72,7 @@ function sendNotification(title: string, body: string, icon?: string): void {
 function calculateIncomePerSec(): number {
 	const state = get(gameState);
 	let total = 0;
-	for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+	for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 		total += getDivisionTrueIncomePerSec(state, divId);
 	}
 	return total;

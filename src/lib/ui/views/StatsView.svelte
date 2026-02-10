@@ -5,12 +5,12 @@
 	import { getDivisionTrueIncomePerSec } from '$lib/engine/ProductionEngine';
 	import { getPlanetInfo } from '$lib/systems/PrestigeSystem';
 
-	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+	const divisionIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 	const divisionIcons: Record<string, string> = {
-		teslaenergy: '⚡', spacex: '🚀', tesla: '🏭', ai: '🤖', tunnels: '🚇', robotics: '🦾'
+		teslaenergy: '⚡', tesla: '🏭', spacex: '🚀', ai: '🤖', tunnels: '🚇', robotics: '🦾'
 	};
 	const divisionNames: Record<string, string> = {
-		teslaenergy: 'Energy', spacex: 'Rockets', tesla: 'Manufacturing', ai: 'AI', tunnels: 'Tunnels', robotics: 'Robotics'
+		teslaenergy: 'Energy', tesla: 'Manufacturing', spacex: 'Rockets', ai: 'AI', tunnels: 'Tunnels', robotics: 'Robotics'
 	};
 
 	let state = $derived($gameState);

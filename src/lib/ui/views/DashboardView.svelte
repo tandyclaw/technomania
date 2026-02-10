@@ -18,7 +18,7 @@
 	// Workers and Division Prestige removed
 
 	// Division ordering for display
-	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+	const divisionIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 
 	let state = $derived($gameState);
 	let prestigeCount = $derived(state.prestigeCount);

@@ -89,7 +89,7 @@ function randomSpawnInterval(): number {
 // ─── Contract Generation ─────────────────────────────────────────────────────
 
 function getUnlockedDivisions(state: GameState): string[] {
-	return (['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const).filter(
+	return (['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const).filter(
 		(id) => state.divisions[id].unlocked
 	);
 }

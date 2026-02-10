@@ -27,7 +27,7 @@ export interface BottleneckDef {
 	id: string;
 	name: string;
 	description: string;
-	division: 'teslaenergy' | 'spacex' | 'tesla' | 'ai' | 'tunnels' | 'robotics' | 'all';
+	division: 'teslaenergy' | 'tesla' | 'spacex' | 'ai' | 'tunnels' | 'robotics' | 'all';
 	category: BottleneckCategory;
 	severity: number; // 0.0 = no effect, 1.0 = total stop
 	resolveCost: number; // cash to fix instantly
@@ -583,7 +583,7 @@ export function activateBottleneck(divisionId: string, bottleneckId: string): vo
 	gameState.update((s) => {
 		if (def.division === 'all') {
 			// Power deficit is global — apply to all divisions
-			for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+			for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 				const divState = s.divisions[divId];
 				const existing = divState.bottlenecks.find((b) => b.id === bottleneckId);
 				if (!existing) {
@@ -767,7 +767,7 @@ export function checkAutoResolveBottlenecks(): void {
 		if (def.autoResolveCheck(state)) {
 			// Mark as resolved in all divisions
 			gameState.update((s) => {
-				for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+				for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 					const divState = s.divisions[divId];
 					const bottleneck = divState.bottlenecks.find((b) => b.id === def.id);
 					if (bottleneck && bottleneck.active) {
@@ -836,7 +836,7 @@ function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
 
 	if (shouldAutoResolve) {
 		// Auto-resolve in all divisions
-		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+		for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 			gameState.update((s) => {
 				const bottleneck = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
 				if (bottleneck?.active) {
@@ -850,7 +850,7 @@ function handleGlobalBottleneck(def: BottleneckDef, state: GameState): void {
 
 	if (shouldBeActive) {
 		// Activate in all divisions
-		for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+		for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 			gameState.update((s) => {
 				const existing = s.divisions[divId].bottlenecks.find((b) => b.id === def.id);
 				if (!existing) {
@@ -887,7 +887,7 @@ export function tickBottlenecks(deltaMs: number): void {
 			continue;
 		}
 
-		const divId = def.division as 'teslaenergy' | 'spacex' | 'tesla';
+		const divId = def.division as 'teslaenergy' | 'tesla' | 'spacex';
 		const divState = state.divisions[divId];
 		if (!divState.unlocked) continue;
 
@@ -910,7 +910,7 @@ export function tickBottlenecks(deltaMs: number): void {
 	}
 
 	// Check wait timers
-	for (const divId of ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const) {
+	for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
 		tickBottleneckWaits(divId);
 	}
 

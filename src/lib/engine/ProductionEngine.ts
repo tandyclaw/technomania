@@ -52,7 +52,7 @@ function getPrestigeMultiplier(state: GameState): number {
 	return 1 + (state.colonyTech ?? 0) * 0.03;
 }
 
-const DIVISION_IDS = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+const DIVISION_IDS = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
 
 /**
  * Get the EFFECTIVE cycle duration for a tier, including all speed modifiers:
