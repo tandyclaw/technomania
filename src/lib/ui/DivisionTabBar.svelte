@@ -75,7 +75,7 @@
 		<div class="notification-menu-item w-full rounded-xl hover:bg-white/[0.04] transition-colors duration-150 active:scale-[0.97] touch-manipulation">
 			<NotificationCenter menuStyle={true} onOpen={() => { moreOpen = false; }} />
 		</div>
-		<div class="border-b border-white/10 mx-2 mb-1"></div>
+		<!-- no separator -->
 
 		{#each moreTabs as tab}
 			{@const isActive = $activeTab === tab.id}
