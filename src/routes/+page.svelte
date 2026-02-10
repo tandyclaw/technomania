@@ -17,8 +17,8 @@
 		{ icon: '🔗', title: 'Cross-Division Synergies', desc: 'AI powers robots. Robots run factories. Factories use your energy grid.' },
 		{ icon: '⚡', title: 'Random Events', desc: 'Government subsidies, viral tweets, tunnel collapses — adapt or lose' },
 		{ icon: '🔬', title: 'Research Tree', desc: 'Invest in R&D to unlock permanent upgrades across your empire' },
-		{ icon: '🪐', title: 'Colonies & Colony Tech', desc: 'Launch colonies, reset, come back stronger with permanent mega-upgrades' },
-		{ icon: '🪐', title: 'Mars Colony Endgame', desc: 'Build toward colonization. Then do it again harder in New Game+' },
+		{ icon: '🔄', title: 'Colonies & New Game+', desc: 'Launch colonies for permanent mega-upgrades. Then do it all again — harder, faster.' },
+		{ icon: '🪐', title: 'Mars Endgame', desc: 'Everything builds toward one goal: a self-sustaining colony on Mars.' },
 	];
 
 	function handleStart() {
@@ -30,6 +30,13 @@
 <svelte:head>
 	<title>Moonshot — Build a Tech Empire</title>
 	<meta name="description" content="Build rockets, scale manufacturing, train AI, dig tunnels, and colonize Mars. An idle tycoon game about building the future — one tap at a time." />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Moonshot — Build a Tech Empire" />
+	<meta property="og:description" content="Build rockets, train AI, dig tunnels, and colonize Mars. A free idle tycoon game — no downloads, works on mobile." />
+	<meta property="og:image" content="/icon-512.png" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Moonshot — Build a Tech Empire" />
+	<meta name="twitter:description" content="Build rockets, train AI, dig tunnels, and colonize Mars. A free idle tycoon game." />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />

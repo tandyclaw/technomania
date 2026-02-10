@@ -38,7 +38,7 @@
 			if (document.getElementById('app-loader')) {
 				const observer = new MutationObserver(() => {
 					const loader = document.getElementById('app-loader');
-					if (loader && document.querySelector('.game-shell, .view-container')) {
+					if (loader && document.querySelector('.game-shell, .view-container, .min-h-screen')) {
 						loader.remove();
 						observer.disconnect();
 					}

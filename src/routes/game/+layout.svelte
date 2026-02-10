@@ -35,6 +35,7 @@
 	import MiniGame from '$lib/ui/MiniGame.svelte';
 	import { initMiniGameListeners, tickMiniGame } from '$lib/systems/MiniGameSystem';
 	import SeasonalBanner from '$lib/ui/SeasonalBanner.svelte';
+	import WhatsNew from '$lib/ui/WhatsNew.svelte';
 	import { initSeasonalEvents } from '$lib/systems/SeasonalEventSystem';
 
 	let { children } = $props();
@@ -335,6 +336,9 @@
 
 	<!-- Random event modal -->
 	<EventModal />
+
+	<!-- What's New modal -->
+	<WhatsNew />
 
 	<!-- Daily reward removed -->
 
