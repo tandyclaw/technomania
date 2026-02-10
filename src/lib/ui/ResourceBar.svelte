@@ -21,6 +21,9 @@
 	const rpFormatter = (n: number) => formatNumber(n, 0);
 	const powerConFormatter = (n: number) => formatNumber(n, 1);
 	const powerGenFormatter = (n: number) => formatNumber(n, 1);
+	// Compact mode: when either number > 9999, just show +/- net
+	let compactPower = $derived(powerGen > 9999 || powerCon > 9999);
+	let powerNet = $derived(powerGen - powerCon);
 
 	// Pulsing deficit animation
 	let deficitPulse = $derived(powerStatus === 'deficit');
@@ -112,7 +115,11 @@
 							class:text-solar-gold={powerStatus === 'warning'}
 							class:text-rocket-red={powerStatus === 'deficit'}
 						>
+							{#if compactPower}
+							{powerNet >= 0 ? '+' : ''}<AnimatedNumber value={powerNet} formatter={powerConFormatter} duration={350} />
+						{:else}
 							<AnimatedNumber value={powerCon} formatter={powerConFormatter} duration={350} />/<AnimatedNumber value={powerGen} formatter={powerGenFormatter} duration={350} />
+						{/if}
 						</span>
 						<span class="text-[10px] text-text-muted">MW</span>
 					</div>
