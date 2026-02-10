@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { activeTab } from '$lib/stores/navigation';
-	import { gameState } from '$lib/stores/gameState';
-	import { tapProduce } from '$lib/engine/ProductionEngine';
-	import { get } from 'svelte/store';
 
 	let showOverlay = $state(false);
 
@@ -21,21 +18,6 @@
 
 	function isModalOpen(): boolean {
 		return !!document.querySelector('[role="dialog"]');
-	}
-
-	function collectAllReady() {
-		const state = get(gameState);
-		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
-		for (const divId of divIds) {
-			const div = state.divisions[divId];
-			if (!div?.unlocked) continue;
-			for (let i = 0; i < div.tiers.length; i++) {
-				const tier = div.tiers[i];
-				if (tier.unlocked && tier.count > 0 && !tier.producing) {
-					tapProduce(divId, i);
-				}
-			}
-		}
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -60,11 +42,6 @@
 			return;
 		}
 
-		if (e.key === ' ') {
-			e.preventDefault();
-			collectAllReady();
-			return;
-		}
 	}
 
 	onMount(() => {
