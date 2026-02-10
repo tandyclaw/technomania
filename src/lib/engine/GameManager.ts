@@ -551,8 +551,8 @@ class GameManager {
 		}
 		const chiefs = Math.round((chiefsCurrent / 36) * 15 * 100) / 100;
 
-		// Cash on hand (10%) — need $10B to fund the mission
-		const cashTarget = 10_000_000_000;
+		// Cash on hand (10%) — need $100T to fund the mission (scales with late-game economy)
+		const cashTarget = 100_000_000_000_000;
 		const cashCurrent = Math.min(state.cash, cashTarget);
 		const cash = Math.round((cashCurrent / cashTarget) * 10 * 100) / 100;
 
