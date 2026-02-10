@@ -545,24 +545,10 @@
 	}
 
 	.colony-progress-bar {
-		background-size: 20px 20px;
-		background-image: linear-gradient(
-			45deg,
-			rgba(255,255,255,0.1) 25%,
-			transparent 25%,
-			transparent 50%,
-			rgba(255,255,255,0.1) 50%,
-			rgba(255,255,255,0.1) 75%,
-			transparent 75%,
-			transparent
-		);
-		animation: stripes 1s linear infinite;
+		/* Static bar — no animation */
 	}
 
-	@keyframes stripes {
-		from { background-position: 0 0; }
-		to { background-position: 20px 0; }
-	}
+	/* stripes animation removed */
 
 	.logo-shake {
 		animation: shake 0.4s ease-in-out 3;
