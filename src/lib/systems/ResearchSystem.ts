@@ -181,18 +181,18 @@ export function calculateRPPerSecond(state: GameState): number {
 		if (!div.unlocked) continue;
 
 		// Base RP from unlocked division
-		rpPerSec += 0.1;
+		rpPerSec += 0.02;
 
 		// RP from active tiers
 		for (const tier of div.tiers) {
 			if (tier.unlocked && tier.count > 0) {
-				rpPerSec += 0.05;
+				rpPerSec += 0.01;
 			}
 		}
 
 		// Chief bonus
 		if (div.chiefLevel > 0) {
-			rpPerSec += 0.2;
+			rpPerSec += 0.05;
 		}
 	}
 

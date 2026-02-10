@@ -65,7 +65,7 @@
 <!-- More menu backdrop + popup -->
 {#if moreOpen}
 	<div
-		class="fixed inset-0 z-40"
+		class="fixed inset-0 z-40 bg-black/50"
 		onclick={handleBackdropClick}
 		onkeydown={(e) => { if (e.key === 'Escape') handleBackdropClick(); }}
 		role="presentation"

@@ -82,13 +82,13 @@
 				</span>
 			</h1>
 
-			<p class="text-lg md:text-2xl text-text-secondary max-w-xl mx-auto mb-3 font-light leading-relaxed">
+			<p class="text-lg md:text-2xl text-text-secondary max-w-xl mx-auto mb-3 font-light leading-relaxed [text-wrap:balance]">
 				Build a tech empire from nothing.
 				<span class="text-text-primary font-medium">Colonize Mars.</span>
 			</p>
 
-			<p class="text-sm text-text-muted mb-10 font-mono">
-				6 divisions · 36 tiers · synergies · colonies
+			<p class="text-sm text-text-muted mb-10 font-mono [text-wrap:balance]">
+				6 divisions · 36 tiers · synergies ·&nbsp;colonies
 			</p>
 
 			<button
@@ -107,8 +107,8 @@
 				<div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-solar-gold/90 to-tunnel-orange/90 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 			</button>
 
-			<p class="mt-5 text-xs text-text-muted">
-				Free · No downloads · Works on mobile · Saves automatically
+			<p class="mt-5 text-xs text-text-muted [text-wrap:balance]">
+				Free · No downloads · Works on mobile · Saves&nbsp;automatically
 			</p>
 		</div>
 	</header>
