@@ -337,7 +337,7 @@
 						</div>
 					</div>
 					<button
-						onclick={() => handleSellPercent((amt) => sellIndex(amt / treasury.indexPrice), treasury.indexShares, indexSellPercent)}
+						onclick={() => handleSellPercent(sellIndex, treasury.indexShares, indexSellPercent)}
 						class="w-full py-2 rounded-lg text-xs font-semibold
 							   bg-rocket-red/10 text-rocket-red border border-rocket-red/20
 							   transition-all duration-150 active:scale-[0.97] touch-manipulation">
