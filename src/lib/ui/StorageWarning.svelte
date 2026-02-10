@@ -18,6 +18,11 @@
 				}
 			}).catch(() => {});
 		}
+
+		// Listen for quota exceeded events from SaveManager
+		const handler = () => { show = true; };
+		window.addEventListener('storage-quota-exceeded', handler);
+		return () => window.removeEventListener('storage-quota-exceeded', handler);
 	});
 
 	async function clearOldData() {

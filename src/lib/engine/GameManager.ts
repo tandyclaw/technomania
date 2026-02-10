@@ -758,8 +758,11 @@ class GameManager {
 			// Fall back to synchronous localStorage snapshot for beforeunload
 			try {
 				localStorage.setItem('tech_tycoon_emergency_save', data);
-			} catch {
-				// Storage full or unavailable — nothing we can do
+			} catch (err) {
+				// Storage full — dispatch event so UI can show warning
+				if (err instanceof DOMException && (err.name === 'QuotaExceededError' || err.code === 22)) {
+					window.dispatchEvent(new CustomEvent('storage-quota-exceeded'));
+				}
 			}
 		};
 
