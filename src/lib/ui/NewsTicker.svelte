@@ -4,10 +4,9 @@
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import { eventBus } from '$lib/engine/EventBus';
 	import { DIVISION_CHIEFS } from '$lib/systems/ChiefSystem';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { notifications } from '$lib/stores/eventStore';
 
-	let state = $derived($gameState);
 	let notifs = $derived($notifications);
 	let hidden = $state(false);
 
@@ -91,9 +90,23 @@
 
 	// ─── Snapshot-based news (re-derived each tick) ──────────────────────────
 
-	let snapshotNews = $derived(generateSnapshotNews(state));
+	// PERF: Snapshot news only needs to update every few seconds, not every tick.
+	// Use a cached version that updates on a timer instead of deriving from state directly.
+	let snapshotNews = $state<string[]>([]);
+	let snapshotTimer: ReturnType<typeof setInterval> | null = null;
 
-	function generateSnapshotNews(s: typeof state): string[] {
+	onMount(() => {
+		snapshotNews = generateSnapshotNews($gameState);
+		snapshotTimer = setInterval(() => {
+			snapshotNews = generateSnapshotNews($gameState);
+		}, 5000);
+	});
+
+	onDestroy(() => {
+		if (snapshotTimer) clearInterval(snapshotTimer);
+	});
+
+	function generateSnapshotNews(s: import('$lib/stores/gameState').GameState): string[] {
 		const msgs: string[] = [];
 
 		// Revenue milestones
@@ -194,6 +207,9 @@
 
 	// ─── Combine all sources, weighted toward dynamic content ────────────────
 
+	// PERF: Select tips once, not every derived re-evaluation (Math.random in $derived is non-deterministic)
+	let selectedTips = $state(TIPS.slice(0, 2));
+
 	let messages = $derived(buildTickerMessages());
 
 	function buildTickerMessages(): string[] {
@@ -213,10 +229,6 @@
 				deduped.push(msg);
 			}
 		}
-
-		// Mix in 1-2 tips among the dynamic news
-		const tipCount = Math.min(2, TIPS.length);
-		const selectedTips = TIPS.sort(() => Math.random() - 0.5).slice(0, tipCount);
 
 		return [...deduped, ...selectedTips];
 	}

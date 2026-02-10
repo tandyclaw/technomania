@@ -113,37 +113,28 @@ type DivisionId = (typeof DIVISION_IDS)[number];
 /**
  * Clone state with new references for the parts that changed.
  * This ensures Svelte 5's $derived() picks up changes.
+ *
+ * PERF: Only deep-clones divisions that have active/auto-startable production.
+ * Inactive divisions keep the same reference so Svelte skips re-rendering them.
  */
 function cloneState(state: GameState): GameState {
+	const divisions = { ...state.divisions } as GameState['divisions'];
+
+	for (const divId of DIVISION_IDS) {
+		const div = state.divisions[divId];
+		// Only clone divisions that might be mutated (unlocked with active tiers or chief)
+		if (div.unlocked && (div.chiefLevel > 0 || div.tiers.some(t => t.producing))) {
+			divisions[divId] = {
+				...div,
+				tiers: div.tiers.map(t => ({ ...t })),
+			};
+		}
+	}
+
 	return {
 		...state,
 		stats: { ...state.stats },
-		divisions: {
-			teslaenergy: {
-				...state.divisions.teslaenergy,
-				tiers: state.divisions.teslaenergy.tiers.map(t => ({ ...t })),
-			},
-			spacex: {
-				...state.divisions.spacex,
-				tiers: state.divisions.spacex.tiers.map(t => ({ ...t })),
-			},
-			tesla: {
-				...state.divisions.tesla,
-				tiers: state.divisions.tesla.tiers.map(t => ({ ...t })),
-			},
-			ai: {
-				...state.divisions.ai,
-				tiers: state.divisions.ai.tiers.map(t => ({ ...t })),
-			},
-			tunnels: {
-				...state.divisions.tunnels,
-				tiers: state.divisions.tunnels.tiers.map(t => ({ ...t })),
-			},
-			robotics: {
-				...state.divisions.robotics,
-				tiers: state.divisions.robotics.tiers.map(t => ({ ...t })),
-			},
-		},
+		divisions,
 	};
 }
 

@@ -8,25 +8,38 @@
 
 | ID | Description | Status |
 |----|-------------|--------|
-| F01 | **Remove Workers mechanic completely** — delete WorkerSystem.ts, WorkerPanel.svelte, all worker references in gameState, dashboard, division views | PLANNED |
-| F02 | **Remove Division Prestige (stars) completely** — delete DivisionPrestigeSystem.ts, star UI, division star fields. Keep the main colony prestige (New Colony) | PLANNED |
-| F03 | **Fix scrolling** — top resource bar and bottom tab bar block content. Ensure padding-top/padding-bottom on main content area accounts for fixed bars. Test on iPhone | PLANNED |
-| F04 | **Resource bar buttons → correct pages**: Research icon → Research view, Energy/Power icon → explain what power does, Cash icon → Treasury | PLANNED |
-| F05 | **Fix tier card height change on produce tap** — card height must NOT change when tapped/producing. Lock height, remove text that appears/disappears on state change | PLANNED |
-| F06 | **Reduce notifications** — only notify for special events (achievements, synergies, prestige). Remove toasts for routine purchases, production completions, etc. | PLANNED |
-| F07 | **Make notification X button bigger** — much larger close button, easy to tap on mobile. Consider swipe-to-dismiss | PLANNED |
-| F08 | **Lean out tier cards** — remove unnecessary text, make cards compact and easy to tap on mobile | PLANNED |
+| F01 | Remove Workers mechanic completely | ✅ DONE |
+| F02 | Remove Division Prestige (stars) completely | ✅ DONE |
+| F03 | Fix scrolling — padding for fixed bars | ✅ DONE |
+| F04 | Resource bar buttons → correct pages | ✅ DONE |
+| F05 | Fix tier card height change on produce tap | ✅ DONE |
+| F06 | Reduce notifications — special events only | ✅ DONE |
+| F07 | Make notification X button bigger (44×44px) | ✅ DONE |
+| F08 | Lean out tier cards — compact, mobile-friendly | ✅ DONE |
 
 ## 🟡 P1 — Polish
 
 | ID | Description | Status |
 |----|-------------|--------|
-| P01 | **Full text/icon congruency sweep** — verify all text, icons, descriptions match the Moonshot story. No stale references, no confusing labels | PLANNED |
-| P02 | **Homepage cleanup** — clean, clear, minimal, accurate. Remove anything that doesn't match current game state | PLANNED |
+| P01 | Full text/icon congruency sweep | ✅ DONE |
+| P02 | Homepage cleanup — minimal, accurate | ✅ DONE |
 
 ## 🟢 P2 — QA
 
 | ID | Description | Status |
 |----|-------------|--------|
-| QA01 | Full mobile playtest after P0 fixes | PLANNED |
-| QA02 | Integration build check | PLANNED |
+| QA01 | Fresh player playtest (first 15 min) | ✅ DONE |
+| QA02 | Integration build check (#4 — all clean) | ✅ DONE |
+| QA03 | Edge case audit (prestige, saves, formatting) | ✅ DONE |
+| QA04 | Save migration & corruption testing | ✅ DONE |
+| QA05 | UI view reachability test | ✅ DONE |
+| QA06 | Post-removal QA (workers/stars stubs) | ✅ DONE |
+| QA07 | Treasury QA — buy/sell, index fund bug fixed | ✅ DONE |
+| QA08 | Achievements QA — 3 bugs fixed, 105 reviewed | ✅ DONE |
+| QA09 | Visual look & feel audit | 🔄 IN PROGRESS |
+| QA10 | Mid-game balance test (30min-2hr progression) | PLANNED |
+| QA11 | Late-game / prestige test (prestige loop, planet chain) | PLANNED |
+| QA12 | Seasonal events test (date mocking) | PLANNED |
+| QA13 | Performance profiling (memory leaks, frame drops) | PLANNED |
+| QA14 | Theme visual checks (dark/oled/high-contrast) | PLANNED |
+| QA15 | Cross-browser test (Safari, Firefox, Chrome) | PLANNED |
