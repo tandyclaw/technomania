@@ -507,6 +507,49 @@ class GameManager {
 	 * Calculate Mars Colony progress (0-100)
 	 * Based on: total income threshold, divisions unlocked, prestige count
 	 */
+	getMarsProgressBreakdown(state: GameState): {
+		income: number; incomeMax: number; incomeNext: string | null;
+		divisions: number; divisionsMax: number; divisionsUnlocked: number; divisionsTotal: number;
+		tiers: number; tiersMax: number; tiersUnlocked: number; tiersTotal: number;
+		prestige: number; prestigeMax: number; prestigeCount: number;
+	} {
+		const incomeThresholds = [1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13];
+		const labels = ['$1M', '$10M', '$100M', '$1B', '$10B', '$100B', '$1T', '$10T'];
+		let incomeHit = 0;
+		let incomeNext: string | null = null;
+		for (let i = 0; i < incomeThresholds.length; i++) {
+			if (state.stats.totalCashEarned >= incomeThresholds[i]) {
+				incomeHit++;
+			} else if (!incomeNext) {
+				incomeNext = labels[i];
+			}
+		}
+		const income = incomeHit * 5;
+
+		const divIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
+		let unlockedDivs = 0;
+		for (const id of divIds) { if (state.divisions[id].unlocked) unlockedDivs++; }
+		const divisions = Math.round((unlockedDivs / divIds.length) * 15 * 100) / 100;
+
+		let totalTiers = 0; let unlockedTiers = 0;
+		for (const id of divIds) {
+			const div = state.divisions[id];
+			totalTiers += div.tiers.length;
+			unlockedTiers += div.tiers.filter(t => t.unlocked).length;
+		}
+		const tiers = totalTiers > 0 ? Math.round((unlockedTiers / totalTiers) * 20 * 100) / 100 : 0;
+
+		const pCount = Math.min(state.prestigeCount, 5);
+		const prestige = pCount * 5;
+
+		return {
+			income, incomeMax: 40, incomeNext,
+			divisions, divisionsMax: 15, divisionsUnlocked: unlockedDivs, divisionsTotal: divIds.length,
+			tiers, tiersMax: 20, tiersUnlocked: unlockedTiers, tiersTotal: totalTiers,
+			prestige, prestigeMax: 25, prestigeCount: pCount,
+		};
+	}
+
 	private calculateMarsProgress(state: GameState): number {
 		let progress = 0;
 

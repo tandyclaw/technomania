@@ -32,6 +32,8 @@
 	let nextPlanet = $derived(getPlanetInfo(prestigeCount + 1));
 	let futurePlanet = $derived(getPlanetInfo(prestigeCount + 2));
 	let showVictory = $state(false);
+	let showColonyBreakdown = $state(false);
+	let colonyBreakdown = $derived(gameManager.getMarsProgressBreakdown(state));
 	let showShareCard = $state(false);
 	let shareCardMilestone = $state<'colony' | 'billion' | 'all-divisions' | 'prestige' | 'custom'>('colony');
 
@@ -244,15 +246,24 @@
 	{/if}
 
 	<!-- Colony Progress -->
-	<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4">
+	<div
+		class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 cursor-pointer select-none"
+		onclick={() => showColonyBreakdown = !showColonyBreakdown}
+		role="button"
+		tabindex="0"
+		onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') showColonyBreakdown = !showColonyBreakdown; }}
+	>
 		<div class="flex items-center justify-between mb-2">
 			<div class="flex items-center gap-2">
 				<span class="text-lg">{nextPlanet.emoji}</span>
 				<h2 class="text-sm font-semibold text-text-primary">{nextPlanet.name} Colony</h2>
 			</div>
-			<span class="text-xs font-bold tabular-nums font-mono" style="color: {nextPlanet.color};">
-				{marsProgress.toFixed(1)}%
-			</span>
+			<div class="flex items-center gap-1.5">
+				<span class="text-xs font-bold tabular-nums font-mono" style="color: {nextPlanet.color};">
+					{marsProgress.toFixed(1)}%
+				</span>
+				<span class="text-[10px] text-text-muted transition-transform duration-200" class:rotate-180={showColonyBreakdown}>▼</span>
+			</div>
 		</div>
 		<div class="w-full h-3 rounded-full bg-bg-tertiary overflow-hidden" role="progressbar" aria-valuenow={Math.round(marsProgress)} aria-valuemin={0} aria-valuemax={100} aria-label="{nextPlanet.name} colony progress">
 			<div
@@ -274,6 +285,26 @@
 				Build your empire to fund the {nextPlanet.name} mission
 			{/if}
 		</p>
+		{#if showColonyBreakdown}
+			<div class="mt-3 pt-3 border-t border-white/5 space-y-1.5 text-[11px] text-text-secondary">
+				<div class="flex justify-between">
+					<span>💰 Income</span>
+					<span class="tabular-nums">{colonyBreakdown.income}/{colonyBreakdown.incomeMax}%{colonyBreakdown.incomeNext ? ` — Next: ${colonyBreakdown.incomeNext}` : ' ✓'}</span>
+				</div>
+				<div class="flex justify-between">
+					<span>🏢 Divisions</span>
+					<span class="tabular-nums">{colonyBreakdown.divisions}/{colonyBreakdown.divisionsMax}% — {colonyBreakdown.divisionsUnlocked}/{colonyBreakdown.divisionsTotal}</span>
+				</div>
+				<div class="flex justify-between">
+					<span>🔧 Tiers</span>
+					<span class="tabular-nums">{colonyBreakdown.tiers}/{colonyBreakdown.tiersMax}% — {colonyBreakdown.tiersUnlocked}/{colonyBreakdown.tiersTotal}</span>
+				</div>
+				<div class="flex justify-between">
+					<span>🚀 Prestige</span>
+					<span class="tabular-nums">{colonyBreakdown.prestige}/{colonyBreakdown.prestigeMax}% — {colonyBreakdown.prestigeCount}/5 launches</span>
+				</div>
+			</div>
+		{/if}
 	</div>
 
 	<!-- Division Cards -->
