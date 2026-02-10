@@ -40,20 +40,41 @@
 	};
 </script>
 
-<!-- Bell icon (inline in ResourceBar area) -->
-<button
-	onclick={toggle}
-	class="relative p-1.5 rounded-lg hover:bg-bg-tertiary/50 transition-colors touch-manipulation"
-	aria-label="Notifications"
->
-	<span class="text-base">🔔</span>
-	{#if unread > 0}
-		<span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center
-					 rounded-full bg-rocket-red text-[9px] font-bold text-white px-1 tabular-nums">
-			{unread > 9 ? '9+' : unread}
+{#if menuStyle}
+	<!-- Menu-style button (matches More menu items) -->
+	<button
+		onclick={toggle}
+		class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl touch-manipulation"
+		role="menuitem"
+		aria-label="Notifications"
+	>
+		<span class="text-xl leading-none relative" aria-hidden="true">
+			🔔
+			{#if unread > 0}
+				<span class="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 flex items-center justify-center
+							 rounded-full bg-rocket-red text-[8px] font-bold text-white px-0.5 tabular-nums">
+					{unread > 9 ? '9+' : unread}
+				</span>
+			{/if}
 		</span>
-	{/if}
-</button>
+		<span class="text-sm font-medium text-text-secondary">Notifications</span>
+	</button>
+{:else}
+	<!-- Bell icon (inline in ResourceBar area) -->
+	<button
+		onclick={toggle}
+		class="relative p-1.5 rounded-lg hover:bg-bg-tertiary/50 transition-colors touch-manipulation"
+		aria-label="Notifications"
+	>
+		<span class="text-base">🔔</span>
+		{#if unread > 0}
+			<span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center
+						 rounded-full bg-rocket-red text-[9px] font-bold text-white px-1 tabular-nums">
+				{unread > 9 ? '9+' : unread}
+			</span>
+		{/if}
+	</button>
+{/if}
 
 <!-- Dropdown -->
 {#if open}

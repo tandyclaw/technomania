@@ -2,7 +2,6 @@
 	import { activeTab } from '$lib/stores/navigation';
 	import { gameState } from '$lib/stores/gameState';
 	import { playSound } from '$lib/systems/SoundManager';
-	import { unreadCount, markAllRead } from '$lib/stores/eventStore';
 	import NotificationCenter from '$lib/ui/NotificationCenter.svelte';
 
 	interface TabItem {
@@ -37,8 +36,6 @@
 	const moreTabIds = new Set(moreTabs.map(t => t.id));
 
 	let moreOpen = $state(false);
-	let notificationOpen = $state(false);
-	let notificationUnread = $derived($unreadCount);
 
 	// Is the active tab one of the "more" tabs?
 	let isMoreActive = $derived(moreTabIds.has($activeTab));
