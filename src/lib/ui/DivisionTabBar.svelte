@@ -72,6 +72,12 @@
 		role="menu"
 		aria-label="More navigation options"
 	>
+		<!-- Notifications -->
+		<div class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.04] transition-colors duration-150">
+			<NotificationCenter />
+		</div>
+		<div class="border-b border-white/10 mx-2 mb-1"></div>
+
 		{#each moreTabs as tab}
 			{@const isActive = $activeTab === tab.id}
 			<button
@@ -138,11 +144,6 @@
 				</span>
 			</button>
 		{/each}
-
-		<!-- Notifications -->
-		<div class="flex flex-col items-center justify-center py-2 px-1">
-			<NotificationCenter />
-		</div>
 
 		<!-- More tab -->
 		<button
