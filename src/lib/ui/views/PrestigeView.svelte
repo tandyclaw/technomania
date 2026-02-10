@@ -45,12 +45,14 @@
 		Array.from({ length: Math.min(prestigeCount + 1, 13) }, (_, i) => getPlanetInfo(i))
 	);
 
-	// Threshold: $100M for first reset, then scales
-	const BASE_THRESHOLD = 100_000_000;
-	let threshold = $derived(BASE_THRESHOLD * Math.pow(10, techEarnable));
+	// Threshold: $200M for first Colony Tech point (log2(200M/100M) = 1)
+	const BASE_THRESHOLD = 200_000_000;
+	// Next tech point threshold: 100M * 2^(currentTech+1)
+	let nextTechThreshold = $derived(100_000_000 * Math.pow(2, techEarnable + 1));
+	let prevTechThreshold = $derived(techEarnable > 0 ? 100_000_000 * Math.pow(2, techEarnable) : 0);
 	let progressToNext = $derived(
 		techEarnable > 0
-			? Math.min(1, (totalValueEarned - threshold / 10) / (threshold - threshold / 10))
+			? Math.min(1, (totalValueEarned - prevTechThreshold) / (nextTechThreshold - prevTechThreshold))
 			: totalValueEarned / BASE_THRESHOLD
 	);
 

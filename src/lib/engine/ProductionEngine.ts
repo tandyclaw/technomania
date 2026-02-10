@@ -37,7 +37,7 @@ import { getActiveSynergies, getSynergyMultiplier, MVP_SYNERGIES, type Synergy }
 import { getBottleneckMultiplier } from '$lib/systems/BottleneckSystem';
 import { getMilestoneSpeedMultiplier, getMilestoneRevenueMultiplier } from '$lib/systems/MilestoneSystem';
 import { getUpgradeSpeedMultiplier, getUpgradeRevenueMultiplier } from '$lib/systems/UpgradeSystem';
-import { getMegaUpgradeSpeedMultiplier, getMegaUpgradeRevenueMultiplier, getVisionPointRevenueMultiplier, getMilestoneSpeedMultiplier as getPrestigeMilestoneSpeedMult, getMilestoneRevenueMultiplier as getPrestigeMilestoneRevMult } from '$lib/systems/PrestigeSystem';
+import { getMegaUpgradeSpeedMultiplier, getMegaUpgradeRevenueMultiplier, getVisionPointRevenueMultiplier, getMilestoneSpeedMultiplier as getPrestigeMilestoneSpeedMult, getMilestoneRevenueMultiplier as getPrestigeMilestoneRevMult, getWarpDriveMultiplier } from '$lib/systems/PrestigeSystem';
 import { getDivisionStarSpeedMultiplier, getDivisionStarRevenueMultiplier } from '$lib/systems/DivisionPrestigeSystem';
 import { getWorkerEfficiencyMultiplier } from '$lib/systems/WorkerSystem';
 import { queueSynergyCelebration } from '$lib/stores/synergyCelebrationStore';
@@ -102,11 +102,14 @@ export function getEffectiveCycleDurationMs(
 	// Prestige milestone speed bonus
 	const prestigeMilestoneSpeedMult = getPrestigeMilestoneSpeedMult(state.prestigeCount);
 
+	// Warp drive reduces cycle times (stacks multiplicatively, value < 1)
+	const warpMult = getWarpDriveMultiplier(state);
+
 	// Combined speed multiplier
 	const combinedSpeedMult = powerEfficiency * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult * prestigeMilestoneSpeedMult;
 
-	// Effective duration (higher speed = shorter duration)
-	return baseDurationMs / combinedSpeedMult;
+	// Effective duration (higher speed = shorter duration, warp reduces base)
+	return (baseDurationMs * warpMult) / combinedSpeedMult;
 }
 type DivisionId = (typeof DIVISION_IDS)[number];
 
@@ -163,6 +166,7 @@ export function tickProduction(deltaMs: number): void {
 		const vpRevenueMult = getVisionPointRevenueMultiplier(state);
 		const prestigeMilestoneSpeedMult = getPrestigeMilestoneSpeedMult(state.prestigeCount);
 		const prestigeMilestoneRevMult = getPrestigeMilestoneRevMult(state.prestigeCount);
+		const warpMult = getWarpDriveMultiplier(state);
 
 		// --- Determine if anything needs to change before cloning ---
 		let needsClone = false;
@@ -263,7 +267,7 @@ export function tickProduction(deltaMs: number): void {
 				const milestoneSpeedMult = getMilestoneSpeedMultiplier(divId, i, state);
 				const upgradeSpeedMult = getUpgradeSpeedMultiplier(divId, i, state);
 				const combinedSpeedMult = efficiencyMult * synergySpeedMult * bottleneckMult * milestoneSpeedMult * upgradeSpeedMult * megaSpeedMult * divStarSpeedMult * workerMult * prestigeMilestoneSpeedMult;
-				const effectiveDurationMs = cycleDurationMs / combinedSpeedMult;
+				const effectiveDurationMs = (cycleDurationMs * warpMult) / combinedSpeedMult;
 				const progressDelta = deltaMs / effectiveDurationMs;
 				tier.progress += progressDelta;
 				changed = true;
