@@ -71,7 +71,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 		name: 'Integrated Supply Chain',
 		description: 'EV manufacturing and Energy share battery cell production, boosting output for both.',
 		flavorText: 'Same cells, same factory, two products. Vertical integration.',
-		icon: '🏭☀️',
+		icon: '🏭⚡',
 		requirement: {
 			sourceDivision: 'tesla',
 			sourceMinTiers: 2,
@@ -85,7 +85,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 		name: 'Gigafactory Synergy',
 		description: 'Energy battery tech feeds back into manufacturing efficiency and throughput.',
 		flavorText: 'Next-gen cells change everything. Energy density is destiny.',
-		icon: '☀️🔋',
+		icon: '⚡🔋',
 		requirement: {
 			sourceDivision: 'teslaenergy',
 			sourceMinTiers: 3,
@@ -142,7 +142,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 		name: 'Solar-Powered Data Centers',
 		description: 'Clean energy reduces AI compute costs significantly.',
 		flavorText: 'GPU clusters running on free photons from the sun.',
-		icon: '☀️🤖',
+		icon: '⚡🤖',
 		requirement: {
 			sourceDivision: 'teslaenergy',
 			sourceMinTiers: 3,
@@ -171,7 +171,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 		name: 'Geothermal Boring',
 		description: 'Tunnel boring tech enables geothermal energy extraction.',
 		flavorText: 'The same machines that dig transit tunnels can tap Earth\'s heat.',
-		icon: '🚇☀️',
+		icon: '🚇⚡',
 		requirement: {
 			sourceDivision: 'tunnels',
 			sourceMinTiers: 3,
@@ -242,7 +242,7 @@ export const MVP_SYNERGIES: Synergy[] = [
 		name: 'Solar-Powered Mission Control',
 		description: 'Battery farms provide backup power for mission-critical launch systems.',
 		flavorText: 'Redundancy is everything when you\'re landing rockets.',
-		icon: '☀️🚀',
+		icon: '⚡🚀',
 		requirement: {
 			sourceDivision: 'teslaenergy',
 			sourceMinTiers: 4,

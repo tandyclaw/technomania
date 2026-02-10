@@ -17,7 +17,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		name: 'Test Bore',
 		description: 'Proof of concept. Dig a short tunnel under a parking lot.',
 		tooltip: 'Before you bore under cities, you need to prove your machine works. Start small.',
-		flavor: 'The boring company. Yes, that\'s the actual name. Yes, they sell flamethrowers.',
+		flavor: 'A hole in the ground has never been this exciting. Or this expensive.',
 		powerMW: -0.1,
 		config: {
 			baseCost: 12000,

@@ -224,7 +224,7 @@ class GameManager {
 	}
 
 	/**
-	 * Prestige reset (IPO) — keep permanent progress, reset everything else
+	 * Prestige reset (New Colony) — keep permanent progress, reset everything else
 	 * Returns the amount of Colony Tech earned
 	 */
 	prestige(): number {

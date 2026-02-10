@@ -147,7 +147,7 @@
 			msgs.push('BREAKING: Mars colony successfully established — a new era for humanity begins');
 		}
 
-		// SpaceX
+		// Rockets
 		if (s.divisions.spacex.unlocked) {
 			const rockets = s.divisions.spacex.tiers.reduce((sum, t) => sum + t.count, 0);
 			if (rockets > 10) {

@@ -7,7 +7,7 @@
 
 	const divisionIds = ['teslaenergy', 'spacex', 'tesla', 'ai', 'tunnels', 'robotics'] as const;
 	const divisionIcons: Record<string, string> = {
-		teslaenergy: '☀️', spacex: '🚀', tesla: '🏭', ai: '🤖', tunnels: '🚇', robotics: '🦾'
+		teslaenergy: '⚡', spacex: '🚀', tesla: '🏭', ai: '🤖', tunnels: '🚇', robotics: '🦾'
 	};
 	const divisionNames: Record<string, string> = {
 		teslaenergy: 'Energy', spacex: 'Rockets', tesla: 'Manufacturing', ai: 'AI', tunnels: 'Tunnels', robotics: 'Robotics'

@@ -154,10 +154,10 @@
 
 					<div class="mt-2.5 pt-2 border-t border-white/5 space-y-1">
 						<p class="text-[10px] text-text-muted leading-tight">
-							<span class="text-bio-green font-semibold">Tesla Energy</span> generates power.
+							<span class="text-bio-green font-semibold">Energy</span> generates power.
 						</p>
 						<p class="text-[10px] text-text-muted leading-tight">
-							<span class="text-text-secondary font-semibold">SpaceX, Tesla, AI, Tunnels, Robotics</span> consume power.
+							<span class="text-text-secondary font-semibold">Rockets, Manufacturing, AI, Tunnels, Robotics</span> consume power.
 						</p>
 						{#if powerStatus === 'deficit'}
 							<p class="text-[10px] text-rocket-red leading-tight font-medium mt-1">

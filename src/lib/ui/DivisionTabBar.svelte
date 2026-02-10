@@ -18,7 +18,7 @@
 
 	const mainTabs: TabItem[] = [
 		{ id: 'dashboard', name: 'Dashboard', shortName: 'Home', icon: '📊', color: '#e8ecf1' },
-		{ id: 'teslaenergy', name: 'Energy', shortName: 'Energy', icon: '☀️', color: '#FFCC44' },
+		{ id: 'teslaenergy', name: 'Energy', shortName: 'Energy', icon: '⚡', color: '#FFCC44' },
 		{ id: 'spacex', name: 'Rockets', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
 		{ id: 'tesla', name: 'Manufacturing', shortName: 'Mfg', icon: '🏭', color: '#44AAFF' },
 		{ id: 'ai', name: 'AI', shortName: 'AI', icon: '🤖', color: '#AA44FF' },
