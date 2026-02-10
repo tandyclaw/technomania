@@ -309,7 +309,7 @@
 				</div>
 				<div class="flex justify-between">
 					<span>💰 Cash</span>
-					<span class="tabular-nums">{colonyBreakdown.cash}/{colonyBreakdown.cashMax}% — ${colonyBreakdown.cashCurrent >= 1e9 ? (colonyBreakdown.cashCurrent / 1e9).toFixed(1) + 'B' : colonyBreakdown.cashCurrent >= 1e6 ? (colonyBreakdown.cashCurrent / 1e6).toFixed(0) + 'M' : colonyBreakdown.cashCurrent.toFixed(0)}/$10B</span>
+					<span class="tabular-nums">{colonyBreakdown.cash}/{colonyBreakdown.cashMax}% — {formatCurrency(colonyBreakdown.cashCurrent)}/{formatCurrency(colonyBreakdown.cashTarget)}</span>
 				</div>
 			</div>
 		{/if}
