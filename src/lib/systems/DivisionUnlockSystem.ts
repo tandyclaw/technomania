@@ -39,7 +39,7 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		flavorText: 'From data centers to AGI. Compute needs power.',
 	},
 	robotics: {
-		cost: 1_000_000,
+		cost: 500_000,
 		description: 'Build robots that automate everything.',
 		flavorText: 'From assembly bots to general purpose robots. The end of manual labor.',
 	},

@@ -121,7 +121,7 @@ const DIVISION_CHIEF_COST_MULT: Record<string, number> = {
 	tesla: 2,           // Unlocks at $1K
 	spacex: 5,          // Unlocks at $10K
 	ai: 20,             // Unlocks at $100K
-	robotics: 100,      // Unlocks at $1M
+	robotics: 60,       // Unlocks at $500K
 };
 
 /**

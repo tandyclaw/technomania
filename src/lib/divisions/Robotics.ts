@@ -20,8 +20,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Doesn\'t need coffee breaks. Or coffee. Or breaks.',
 		powerMW: -0.05,
 		config: {
-			baseCost: 40000,
-			baseRevenue: 6000,
+			baseCost: 20000,
+			baseRevenue: 3500,
 			cycleDuration: 12,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
@@ -34,8 +34,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Knows where everything is. Judges you for your impulse purchases.',
 		powerMW: -0.5,
 		config: {
-			baseCost: 400000,
-			baseRevenue: 56000,
+			baseCost: 200000,
+			baseRevenue: 30000,
 			cycleDuration: 28,
 			costMultiplier: 1.10,
 			revenueMultiplier: 1.0
@@ -48,8 +48,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Falls down 47 times a day. Gets up 48. Boston Dynamics energy.',
 		powerMW: -5,
 		config: {
-			baseCost: 2500000,
-			baseRevenue: 350000,
+			baseCost: 1500000,
+			baseRevenue: 200000,
 			cycleDuration: 70,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
@@ -62,8 +62,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Rosie from the Jetsons, minus the attitude. Okay, maybe a little attitude.',
 		powerMW: -20,
 		config: {
-			baseCost: 40000000,
-			baseRevenue: 5000000,
+			baseCost: 20000000,
+			baseRevenue: 3000000,
 			cycleDuration: 160,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
@@ -76,8 +76,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Pacific Rim was a documentary. We just haven\'t met the kaiju yet.',
 		powerMW: -80,
 		config: {
-			baseCost: 400000000,
-			baseRevenue: 50000000,
+			baseCost: 250000000,
+			baseRevenue: 30000000,
 			cycleDuration: 360,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
@@ -90,8 +90,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Can do anything you can do, but better. Try not to think about it.',
 		powerMW: -150,
 		config: {
-			baseCost: 4000000000,
-			baseRevenue: 600000000,
+			baseCost: 2500000000,
+			baseRevenue: 350000000,
 			cycleDuration: 800,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
