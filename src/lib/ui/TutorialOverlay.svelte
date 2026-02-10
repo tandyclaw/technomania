@@ -239,14 +239,7 @@
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 16px rgba(255, 204, 68, 0.08);
 	}
 
-	.animate-positioned {
-		animation: tooltipIn 0.3s ease-out forwards;
-	}
 
-	@keyframes tooltipIn {
-		from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-		to { opacity: 1; transform: translateX(-50%) translateY(0); }
-	}
 
 	.animate-center {
 		animation: tooltipCenterIn 0.35s ease-out forwards;

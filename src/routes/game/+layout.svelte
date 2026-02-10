@@ -38,10 +38,15 @@
 	import { initBrowserNotifications } from '$lib/systems/BrowserNotificationService';
 	import WhatsNew from '$lib/ui/WhatsNew.svelte';
 	import { initSeasonalEvents } from '$lib/systems/SeasonalEventSystem';
+	import ErrorBoundary from '$lib/ui/ErrorBoundary.svelte';
+	import OfflineBadge from '$lib/ui/OfflineBadge.svelte';
+	import StorageWarning from '$lib/ui/StorageWarning.svelte';
 
 	let { children } = $props();
 	let loading = $state(true);
+	let initError = $state('');
 	let mainEl: HTMLElement | undefined = $state();
+	let storageWarningRef: StorageWarning | undefined = $state();
 	let pullDistance = $state(0);
 	let pulling = $state(false);
 	let pullStartY = $state(0);
@@ -69,7 +74,21 @@
 		cleanupAchievements = initAchievementListeners();
 		cleanupActivity = initActivityListeners();
 
-		const result = await gameManager.initialize();
+		let result;
+		try {
+			result = await gameManager.initialize();
+		} catch (err) {
+			console.error('[GameLayout] Initialization failed:', err);
+			const msg = err instanceof DOMException && err.name === 'QuotaExceededError'
+				? 'Storage is full. Try clearing old data.'
+				: (err instanceof Error ? err.message : 'Failed to initialize game');
+			initError = msg;
+			loading = false;
+			if (err instanceof DOMException && err.name === 'QuotaExceededError') {
+				storageWarningRef?.showWarning();
+			}
+			return;
+		}
 		isNewGame = result.isNewGame;
 		offlineMs = result.offlineMs;
 		offlineReport = result.offlineReport;
@@ -224,6 +243,9 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
 </svelte:head>
 
+<StorageWarning bind:this={storageWarningRef} />
+<OfflineBadge />
+
 {#if loading}
 	<!-- Branded loading screen -->
 	<div class="fixed inset-0 bg-bg-primary flex items-center justify-center z-[100]">
@@ -234,7 +256,28 @@
 			<div class="loading-spinner mx-auto"></div>
 		</div>
 	</div>
+{:else if initError}
+	<!-- Initialization error screen -->
+	<div class="fixed inset-0 bg-bg-primary flex items-center justify-center z-[100] px-4">
+		<div class="text-center max-w-sm w-full">
+			<div class="text-5xl mb-4">🔧</div>
+			<h1 class="text-xl font-bold text-text-primary mb-2">Couldn't Start the Game</h1>
+			<p class="text-text-secondary text-sm mb-1">{initError}</p>
+			<p class="text-text-muted text-xs mb-6">Your save data may still be intact.</p>
+			<button
+				onclick={() => window.location.reload()}
+				class="w-full py-3 px-6 rounded-xl bg-electric-blue text-white font-semibold
+					   transition-all duration-200 active:scale-95 touch-manipulation mb-2"
+			>
+				Try Again
+			</button>
+			<a href="/" class="block text-text-muted text-xs mt-2 hover:text-white transition-colors">
+				Back to home
+			</a>
+		</div>
+	</div>
 {:else}
+<ErrorBoundary>
 	<!-- Welcome back overlay -->
 	{#if showWelcomeBack}
 		<div class="fixed inset-0 bg-bg-primary/95 backdrop-blur-sm flex items-center justify-center z-[90] px-4">
@@ -402,6 +445,7 @@
 		<!-- Fixed bottom tab bar -->
 		<DivisionTabBar />
 	</div>
+</ErrorBoundary>
 {/if}
 
 <style>
