@@ -194,6 +194,7 @@ export function sellIndex(shares: number): boolean {
 	if (shares <= 0 || shares > state.treasury.indexShares) return false;
 	
 	const value = shares * state.treasury.indexPrice;
+	const sellRatio = shares / state.treasury.indexShares;
 	
 	gameState.update(s => ({
 		...s,
@@ -201,6 +202,7 @@ export function sellIndex(shares: number): boolean {
 		treasury: {
 			...s.treasury,
 			indexShares: s.treasury.indexShares - shares,
+			indexInvested: s.treasury.indexInvested * (1 - sellRatio),
 		},
 	}));
 	
@@ -247,6 +249,7 @@ export function sellBtc(btcAmount: number): boolean {
 	if (btcAmount <= 0 || btcAmount > state.treasury.btcOwned) return false;
 	
 	const value = btcAmount * state.treasury.btcPrice;
+	const sellRatio = btcAmount / state.treasury.btcOwned;
 	
 	gameState.update(s => ({
 		...s,
@@ -254,6 +257,7 @@ export function sellBtc(btcAmount: number): boolean {
 		treasury: {
 			...s.treasury,
 			btcOwned: s.treasury.btcOwned - btcAmount,
+			btcInvested: s.treasury.btcInvested * (1 - sellRatio),
 		},
 	}));
 	
@@ -308,6 +312,7 @@ export function sellDoge(dogeAmount: number): boolean {
 	if (dogeAmount <= 0 || dogeAmount > state.treasury.dogeOwned) return false;
 	
 	const value = dogeAmount * state.treasury.dogePrice;
+	const sellRatio = dogeAmount / state.treasury.dogeOwned;
 	
 	gameState.update(s => ({
 		...s,
@@ -315,6 +320,7 @@ export function sellDoge(dogeAmount: number): boolean {
 		treasury: {
 			...s.treasury,
 			dogeOwned: s.treasury.dogeOwned - dogeAmount,
+			dogeInvested: s.treasury.dogeInvested * (1 - sellRatio),
 		},
 	}));
 	
