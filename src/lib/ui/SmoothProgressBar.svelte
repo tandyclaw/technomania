@@ -24,16 +24,20 @@
 		label?: string;
 	} = $props();
 
+	// If cycle is faster than ~200ms, production completes multiple times per game tick
+	// so the progress bar would just flicker. Show it as permanently full instead.
+	let instantProduction = $derived(cycleDurationMs < 200);
+
 	// Transition duration = time between ticks (100ms) for smooth interpolation
 	// Cap it so very fast cycles don't have sluggish transitions
-	let transitionMs = $derived(Math.min(100, cycleDurationMs / 10));
+	let transitionMs = $derived(instantProduction ? 0 : Math.min(100, cycleDurationMs / 10));
 </script>
 
 <div
 	class="h-full rounded-full bar-fill"
 	class:bar-near-complete={producing && progress > 0.9}
 	style="
-		width: {producing ? progress * 100 : 0}%;
+		width: {producing ? (instantProduction ? 100 : progress * 100) : 0}%;
 		background-color: {color};
 		transition: width {transitionMs}ms linear;
 		contain: strict;
