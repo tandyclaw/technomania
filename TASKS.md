@@ -4,7 +4,7 @@
 
 ---
 
-## 🔴 P0 — Critical Fixes (from master feedback)
+## 🔴 P0 — Critical Fixes ✅ ALL DONE
 
 | ID | Description | Status |
 |----|-------------|--------|
@@ -17,14 +17,14 @@
 | F07 | Make notification X button bigger (44×44px) | ✅ DONE |
 | F08 | Lean out tier cards — compact, mobile-friendly | ✅ DONE |
 
-## 🟡 P1 — Polish
+## 🟡 P1 — Polish ✅ ALL DONE
 
 | ID | Description | Status |
 |----|-------------|--------|
 | P01 | Full text/icon congruency sweep | ✅ DONE |
 | P02 | Homepage cleanup — minimal, accurate | ✅ DONE |
 
-## 🟢 P2 — QA
+## 🟢 P2 — QA ✅ ALL DONE
 
 | ID | Description | Status |
 |----|-------------|--------|
@@ -34,12 +34,17 @@
 | QA04 | Save migration & corruption testing | ✅ DONE |
 | QA05 | UI view reachability test | ✅ DONE |
 | QA06 | Post-removal QA (workers/stars stubs) | ✅ DONE |
-| QA07 | Treasury QA — buy/sell, index fund bug fixed | ✅ DONE |
+| QA07 | Treasury QA — index fund sell bug fixed | ✅ DONE |
 | QA08 | Achievements QA — 3 bugs fixed, 105 reviewed | ✅ DONE |
-| QA09 | Visual look & feel audit | 🔄 IN PROGRESS |
-| QA10 | Mid-game balance test (30min-2hr progression) | PLANNED |
-| QA11 | Late-game / prestige test (prestige loop, planet chain) | PLANNED |
-| QA12 | Seasonal events test (date mocking) | PLANNED |
-| QA13 | Performance profiling (memory leaks, frame drops) | PLANNED |
-| QA14 | Theme visual checks (dark/oled/high-contrast) | PLANNED |
-| QA15 | Cross-browser test (Safari, Firefox, Chrome) | PLANNED |
+| QA09 | Visual look & feel — padding, scrim, orphans fixed | ✅ DONE |
+| QA10 | Mid-game balance — RP rates, dead zones fixed | ✅ DONE |
+| QA11 | Prestige — warp drive wired, threshold fixed | ✅ DONE |
+| QA12 | Seasonal events — Black Friday bleed fixed | ✅ DONE |
+| QA13 | Performance — ticker derivation, clone optimization | ✅ DONE |
+| QA14 | Theme — flash fix, WCAG contrast fix | ✅ DONE |
+| QA15 | Cross-browser — dvh fallback, webkit prefix | ✅ DONE |
+| QA16 | Final integration — console.logs removed | ✅ DONE |
+
+## 🚀 Ready to Deploy
+
+All tasks complete. Run `npm run deploy` to push to Cloudflare Pages.
