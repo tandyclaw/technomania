@@ -9,7 +9,6 @@ import { SPACEX_TIERS, SPACEX_COLOR, SPACEX_ICON, SPACEX_NAME } from './SpaceX';
 import { TESLA_TIERS, TESLA_COLOR, TESLA_ICON, TESLA_NAME } from './Tesla';
 import { TESLA_ENERGY_TIERS, TESLA_ENERGY_COLOR, TESLA_ENERGY_ICON, TESLA_ENERGY_NAME } from './TeslaEnergy';
 import { AI_TIERS, AI_COLOR, AI_ICON, AI_NAME } from './AI';
-import { TUNNELS_TIERS, TUNNELS_COLOR, TUNNELS_ICON, TUNNELS_NAME } from './Tunnels';
 import { ROBOTICS_TIERS, ROBOTICS_COLOR, ROBOTICS_ICON, ROBOTICS_NAME } from './Robotics';
 import type { ProductionConfig } from '$lib/systems/ProductionSystem';
 
@@ -63,14 +62,6 @@ export const DIVISIONS: Record<string, DivisionMeta> = {
 		color: AI_COLOR,
 		description: 'Build intelligence. From data centers to AGI.',
 		tiers: AI_TIERS,
-	},
-	tunnels: {
-		id: 'tunnels',
-		name: TUNNELS_NAME,
-		icon: TUNNELS_ICON,
-		color: TUNNELS_COLOR,
-		description: 'Dig tunnels. Move people and freight underground.',
-		tiers: TUNNELS_TIERS,
 	},
 	robotics: {
 		id: 'robotics',

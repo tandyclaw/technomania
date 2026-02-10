@@ -151,49 +151,6 @@ export const MVP_SYNERGIES: Synergy[] = [
 		},
 		effect: { type: 'cost_reduction', value: 0.15 },
 	},
-	// ── Tunnels Synergies ────────────────────────────────────────────────────
-	{
-		id: 'tesla_tunnels_evtransit',
-		name: 'Underground Logistics',
-		description: 'Factory output ships through tunnel freight networks.',
-		flavorText: 'Manufactured goods move underground — no traffic, no delays.',
-		icon: '🏭🚇',
-		requirement: {
-			sourceDivision: 'tesla',
-			sourceMinTiers: 3,
-			targetDivision: 'tunnels',
-			targetMinTiers: 2,
-		},
-		effect: { type: 'revenue_boost', value: 0.20 },
-	},
-	{
-		id: 'tunnels_teslaenergy_geothermal',
-		name: 'Geothermal Boring',
-		description: 'Tunnel boring tech enables geothermal energy extraction.',
-		flavorText: 'The same machines that dig transit tunnels can tap Earth\'s heat.',
-		icon: '🚇⚡',
-		requirement: {
-			sourceDivision: 'tunnels',
-			sourceMinTiers: 3,
-			targetDivision: 'teslaenergy',
-			targetMinTiers: 3,
-		},
-		effect: { type: 'revenue_boost', value: 0.15 },
-	},
-	{
-		id: 'ai_tunnels_routing',
-		name: 'AI-Optimized Routing',
-		description: 'AI plans optimal tunnel routes through complex geology.',
-		flavorText: 'Ground-penetrating radar + neural nets = perfect bore paths.',
-		icon: '🤖🚇',
-		requirement: {
-			sourceDivision: 'ai',
-			sourceMinTiers: 2,
-			targetDivision: 'tunnels',
-			targetMinTiers: 2,
-		},
-		effect: { type: 'speed_boost', value: 0.15 },
-	},
 	// ── Robotics Synergies ───────────────────────────────────────────────────
 	{
 		id: 'robotics_tesla_assembly',
@@ -208,20 +165,6 @@ export const MVP_SYNERGIES: Synergy[] = [
 			targetMinTiers: 2,
 		},
 		effect: { type: 'speed_boost', value: 0.20 },
-	},
-	{
-		id: 'robotics_tunnels_boring',
-		name: 'Robotic Boring',
-		description: 'Robots operate boring machines, reducing tunnel construction costs.',
-		flavorText: 'Autonomous robots work in conditions too dangerous for humans.',
-		icon: '🦾🚇',
-		requirement: {
-			sourceDivision: 'robotics',
-			sourceMinTiers: 3,
-			targetDivision: 'tunnels',
-			targetMinTiers: 2,
-		},
-		effect: { type: 'cost_reduction', value: 0.15 },
 	},
 	{
 		id: 'ai_robotics_neural',

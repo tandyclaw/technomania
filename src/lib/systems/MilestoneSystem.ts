@@ -27,7 +27,6 @@ function generateAllMilestones(): Milestone[] {
 		{ id: 'spacex', tiers: ['Small Orbital Rocket', 'Reusable Booster', 'Crew Capsule', 'Heavy Lift Vehicle', 'Super Heavy Rocket', 'Planetary Lander'] },
 		{ id: 'tesla', tiers: ['Electric Cars', 'Mega Factory', 'Raw Material Processing', 'Chip Fabrication', 'Orbital Shipyard', 'Colony Kit Factory'] },
 		{ id: 'ai', tiers: ['Data Centers', 'Model Training', 'Agents', 'Neural Interface', 'Embodied AI', 'AGI'] },
-		{ id: 'tunnels', tiers: ['Test Bore', 'City Tunnel', 'Transit Loop', 'Freight Network', 'Continental Link', 'Vacuum Train'] },
 		{ id: 'robotics', tiers: ['Assembly Bot', 'Warehouse Drone', 'Humanoid Prototype', 'Home Robot', 'Construction Mech', 'General Purpose Robot'] },
 	];
 

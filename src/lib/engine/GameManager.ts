@@ -26,7 +26,7 @@ import { getDivisionTrueIncomePerSec } from './ProductionEngine';
 import { triggerParticle } from '$lib/stores/particleStore';
 
 /** Current save version — increment when state schema changes */
-const CURRENT_VERSION = 3;
+const CURRENT_VERSION = 4;
 
 /** Auto-save interval in milliseconds */
 const AUTO_SAVE_INTERVAL_MS = 30_000;
@@ -498,7 +498,7 @@ class GameManager {
 	 */
 	private calculateTotalIncomePerSec(state: GameState): number {
 		let total = 0;
-		for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
+		for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'robotics'] as const) {
 			total += getDivisionTrueIncomePerSec(state, divId);
 		}
 		return total;
@@ -516,40 +516,40 @@ class GameManager {
 		chiefs: number; chiefsMax: number; chiefsCurrent: number; chiefsTotal: number;
 		cash: number; cashMax: number; cashCurrent: number; cashTarget: number;
 	} {
-		const divIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const;
+		const divIds = ['teslaenergy', 'tesla', 'spacex', 'ai', 'robotics'] as const;
 
 		// Divisions unlocked (15%)
 		let unlockedDivs = 0;
 		for (const id of divIds) { if (state.divisions[id].unlocked) unlockedDivs++; }
-		const divisions = Math.round((unlockedDivs / 6) * 15 * 100) / 100;
+		const divisions = Math.round((unlockedDivs / 5) * 15 * 100) / 100;
 
 		// Tiers unlocked (20%)
 		let unlockedTiers = 0;
 		for (const id of divIds) {
 			unlockedTiers += state.divisions[id].tiers.filter(t => t.unlocked).length;
 		}
-		const tiers = Math.round((unlockedTiers / 36) * 20 * 100) / 100;
+		const tiers = Math.round((unlockedTiers / 30) * 20 * 100) / 100;
 
-		// Tier levels (20%) — sum of min(count, 100) per tier vs 3600
+		// Tier levels (20%) — sum of min(count, 100) per tier vs 3000
 		let levelsCurrent = 0;
 		for (const id of divIds) {
 			for (const tier of state.divisions[id].tiers) {
 				levelsCurrent += Math.min(tier.count, 100);
 			}
 		}
-		const levels = Math.round((levelsCurrent / 3600) * 20 * 100) / 100;
+		const levels = Math.round((levelsCurrent / 3000) * 20 * 100) / 100;
 
 		// Research completed (20%)
 		const researchTotal = TECH_TREE.length;
 		const researchDone = state.unlockedResearch.length;
 		const research = Math.round((researchDone / researchTotal) * 20 * 100) / 100;
 
-		// Chiefs hired (15%) — sum of chiefLevel / 36
+		// Chiefs hired (15%) — sum of chiefLevel / 30
 		let chiefsCurrent = 0;
 		for (const id of divIds) {
 			chiefsCurrent += state.divisions[id].chiefLevel;
 		}
-		const chiefs = Math.round((chiefsCurrent / 36) * 15 * 100) / 100;
+		const chiefs = Math.round((chiefsCurrent / 30) * 15 * 100) / 100;
 
 		// Cash on hand (10%) — need $10Qi to fund the mission (scales with late-game economy)
 		const cashTarget = 1e19;
@@ -557,11 +557,11 @@ class GameManager {
 		const cash = Math.round((cashCurrent / cashTarget) * 10 * 100) / 100;
 
 		return {
-			divisions, divisionsMax: 15, divisionsUnlocked: unlockedDivs, divisionsTotal: 6,
-			tiers, tiersMax: 20, tiersUnlocked: unlockedTiers, tiersTotal: 36,
-			levels, levelsMax: 20, levelsCurrent, levelsTarget: 3600,
+			divisions, divisionsMax: 15, divisionsUnlocked: unlockedDivs, divisionsTotal: 5,
+			tiers, tiersMax: 20, tiersUnlocked: unlockedTiers, tiersTotal: 30,
+			levels, levelsMax: 20, levelsCurrent, levelsTarget: 3000,
 			research, researchMax: 20, researchDone, researchTotal,
-			chiefs, chiefsMax: 15, chiefsCurrent, chiefsTotal: 36,
+			chiefs, chiefsMax: 15, chiefsCurrent, chiefsTotal: 30,
 			cash, cashMax: 10, cashCurrent, cashTarget,
 		};
 	}
@@ -615,7 +615,7 @@ class GameManager {
 				});
 			}
 			// Reset any in-progress production since timing model changed
-			for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const) {
+			for (const divId of ['teslaenergy', 'tesla', 'spacex', 'ai', 'robotics'] as const) {
 				const div = migrated.divisions[divId];
 				if (div) {
 					for (const tier of div.tiers) {
@@ -686,7 +686,7 @@ class GameManager {
 			migrated.crypto = { ...migrated.treasury };
 		}
 
-		// Ensure AI and Tunnels divisions exist (added with T057/T058)
+		// Ensure AI division exists (added with T057)
 		if (!migrated.divisions.ai) {
 			migrated.divisions.ai = {
 				unlocked: false,
@@ -701,19 +701,9 @@ class GameManager {
 				bottlenecks: [],
 			};
 		}
-		if (!migrated.divisions.tunnels) {
-			migrated.divisions.tunnels = {
-				unlocked: false,
-				tiers: Array.from({ length: 6 }, (_, i) => ({
-					unlocked: i === 0,
-					count: 0,
-					level: 0,
-					producing: false,
-					progress: 0,
-				})),
-				chiefLevel: 0,
-				bottlenecks: [],
-			};
+		// Remove deprecated Tunnels division (v4)
+		if ((migrated.divisions as any).tunnels) {
+			delete (migrated.divisions as any).tunnels;
 		}
 
 		// Ensure Robotics division exists (added with Robotics division)

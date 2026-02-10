@@ -150,7 +150,7 @@ export interface GameState {
 		tesla: DivisionState;
 		teslaenergy: DivisionState;
 		ai: DivisionState;
-		tunnels: DivisionState;
+		tunnels?: DivisionState; // DEPRECATED: removed in v4, kept for save migration
 		robotics: DivisionState;
 	};
 
@@ -246,7 +246,6 @@ export function createDefaultState(): GameState {
 			tesla: createDefaultDivision(6),
 			teslaenergy: createDefaultDivision(6),
 			ai: createDefaultDivision(6),
-			tunnels: createDefaultDivision(6),
 			robotics: createDefaultDivision(6)
 		},
 

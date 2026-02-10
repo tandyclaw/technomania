@@ -18,7 +18,6 @@
 		{ id: 'tesla', name: 'Manufacturing', shortName: 'Mfg', icon: '🏭', color: '#44AAFF' },
 		{ id: 'spacex', name: 'Rockets', shortName: 'Rockets', icon: '🚀', color: '#FF4444' },
 		{ id: 'ai', name: 'AI', shortName: 'AI', icon: '🤖', color: '#AA44FF' },
-		{ id: 'tunnels', name: 'Tunnels', shortName: 'Tunnels', icon: '🚇', color: '#CC7744' },
 		{ id: 'robotics', name: 'Robotics', shortName: 'Robots', icon: '🦾', color: '#FF6644' },
 	];
 

@@ -40,13 +40,12 @@ const DIVISION_NAMES: Record<string, string> = {
 	spacex: 'Rockets',
 	tesla: 'Manufacturing',
 	ai: 'AI',
-	tunnels: 'Tunnels',
 	robotics: 'Robotics',
 };
 
 function getUnlockedDivisions(): string[] {
 	const s = get(gameState);
-	return (['teslaenergy', 'tesla', 'spacex', 'ai', 'tunnels', 'robotics'] as const).filter(
+	return (['teslaenergy', 'tesla', 'spacex', 'ai', 'robotics'] as const).filter(
 		(id) => s.divisions[id].unlocked
 	);
 }
@@ -166,27 +165,6 @@ const EVENT_DEFS: EventDef[] = [
 				},
 			},
 		],
-	},
-	// 4. Tunnel Collapse (unavoidable bad event)
-	{
-		id: 'tunnel_collapse',
-		title: 'Tunnel Collapse!',
-		icon: '💥',
-		description: 'A section of tunnel has collapsed. Production is impacted while crews repair.',
-		color: '#FF4444',
-		timerMs: 0,
-		condition: () => get(gameState).divisions.tunnels.unlocked,
-		choices: () => [],
-		autoApply: () => {
-			addBuff({
-				id: 'tunnel_collapse',
-				name: 'Tunnel Collapse',
-				icon: '💥',
-				durationMs: 30000,
-				effect: '-10% Tunnel production',
-				color: 'text-rocket-red',
-			});
-		},
 	},
 	// 5. Viral Tweet
 	{
@@ -659,7 +637,6 @@ export function getBuffSpeedMultiplier(divisionId?: string): number {
 
 	for (const b of buffs) {
 		if (b.id === 'ai_speed' && divisionId === 'ai') mult *= 2;
-		if (b.id === 'tunnel_collapse' && divisionId === 'tunnels') mult *= 0.9;
 		if (b.id === 'power_surge' && divisionId === 'teslaenergy') mult *= 2;
 		if (divisionId && b.id === `talent_${divisionId}`) mult *= 1.3;
 	}

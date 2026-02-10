@@ -63,14 +63,6 @@ export const ALL_UPGRADES: Upgrade[] = [
 	{ id: 'ai_cost_1', name: 'Open Source Models', description: 'AI tiers cost 20% less', category: 'cost', cost: 500_000, target: 'ai', tierIndex: -1, value: 0.8 },
 	{ id: 'ai_speed_3', name: 'Recursive Self-Improvement', description: '5x AGI speed', category: 'speed', cost: 100_000_000, target: 'ai', tierIndex: 5, value: 5, requiresMilestone: { divisionId: 'ai', tierIndex: 5, threshold: 25 } },
 
-	// === TUNNEL UPGRADES (6) ===
-	{ id: 'tunnel_speed_1', name: 'Better Boring', description: '2x Test Bore speed', category: 'speed', cost: 30_000, target: 'tunnels', tierIndex: 0, value: 2 },
-	{ id: 'tunnel_rev_1', name: 'City Contracts', description: '3x City Tunnel revenue', category: 'revenue', cost: 150_000, target: 'tunnels', tierIndex: 1, value: 3 },
-	{ id: 'tunnel_speed_2', name: 'Prufrock TBM', description: '2x all Tunnel speed', category: 'speed', cost: 3_000_000, target: 'tunnels', tierIndex: -1, value: 2 },
-	{ id: 'tunnel_rev_2', name: 'Freight Monopoly', description: '3x Freight Network revenue', category: 'revenue', cost: 15_000_000, target: 'tunnels', tierIndex: 3, value: 3, requiresTierCount: { divisionId: 'tunnels', tierIndex: 3, count: 10 } },
-	{ id: 'tunnel_cost_1', name: 'Modular Segments', description: 'Tunnel tiers cost 20% less', category: 'cost', cost: 750_000, target: 'tunnels', tierIndex: -1, value: 0.8 },
-	{ id: 'tunnel_speed_3', name: 'Vacuum Tube Tech', description: '3x Vacuum Train speed', category: 'speed', cost: 75_000_000, target: 'tunnels', tierIndex: 5, value: 3, requiresMilestone: { divisionId: 'tunnels', tierIndex: 5, threshold: 25 } },
-
 	// === ROBOTICS UPGRADES (6) ===
 	{ id: 'robot_speed_1', name: 'Servo Overclocking', description: '2x Assembly Bot speed', category: 'speed', cost: 40_000, target: 'robotics', tierIndex: 0, value: 2 },
 	{ id: 'robot_rev_1', name: 'Logistics Contracts', description: '3x Warehouse Drone revenue', category: 'revenue', cost: 200_000, target: 'robotics', tierIndex: 1, value: 3 },

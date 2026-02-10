@@ -10,8 +10,7 @@
 		'3': 'tesla',
 		'4': 'teslaenergy',
 		'5': 'ai',
-		'6': 'tunnels',
-		'7': 'treasury',
+		'6': 'treasury',
 		'8': 'research',
 		'9': 'prestige',
 	};

@@ -5,8 +5,7 @@
  * - Energy: Always unlocked (foundation)
  * - Manufacturing: $1,000 (~5 min) — first expansion
  * - Rockets: $10,000 (~15 min) — real investment
- * - AI: $50,000 (~30 min) — mid-game gate
- * - Tunnels: $250,000 (~50 min) — late-mid, feels earned
+ * - AI: $100,000 (~45 min) — mid-game gate
  * - Robotics: $1,000,000 (~80 min) — major commitment
  * 
  * Goal: each division is a real achievement. Steeper curve like AdCap.
@@ -35,14 +34,9 @@ export const DIVISION_UNLOCK_REQUIREMENTS: Record<string, DivisionUnlockRequirem
 		flavorText: 'Getting to orbit is hard. Getting to Mars is harder.',
 	},
 	ai: {
-		cost: 50_000,
+		cost: 100_000,
 		description: 'Build artificial intelligence.',
 		flavorText: 'From data centers to AGI. Compute needs power.',
-	},
-	tunnels: {
-		cost: 250_000,
-		description: 'Bore tunnels under cities.',
-		flavorText: 'Move people and freight underground. Slow but lucrative.',
 	},
 	robotics: {
 		cost: 1_000_000,

@@ -60,13 +60,6 @@ export const DIVISION_CHIEFS: Record<string, ChiefData> = {
 		quip: '"Intelligence isn\'t artificial when it\'s making you money."',
 		portrait: '👩‍💻',
 	},
-	tunnels: {
-		name: 'Marcus Stone',
-		title: 'VP of Underground Operations',
-		inspired: 'Steve Davis',
-		quip: '"The fastest route is always through."',
-		portrait: '👷‍♂️',
-	},
 	robotics: {
 		name: 'Yuki Tanaka',
 		title: 'VP of Robotics Engineering',
@@ -127,8 +120,7 @@ const DIVISION_CHIEF_COST_MULT: Record<string, number> = {
 	teslaenergy: 1,     // Base costs (unlocks at $0)
 	tesla: 2,           // Unlocks at $1K
 	spacex: 5,          // Unlocks at $10K
-	ai: 15,             // Unlocks at $50K
-	tunnels: 40,        // Unlocks at $250K
+	ai: 20,             // Unlocks at $100K
 	robotics: 100,      // Unlocks at $1M
 };
 
