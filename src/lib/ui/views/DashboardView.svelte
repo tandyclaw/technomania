@@ -23,7 +23,9 @@
 	let state = $derived($gameState);
 	let prestigeCount = $derived(state.prestigeCount);
 	let colonyTech = $derived(state.colonyTech);
-	let marsProgress = $derived(state.marsColony?.progress ?? 0);
+	let marsProgressRaw = $derived(state.marsColony?.progress ?? 0);
+	// Quantize to 0.5% steps to prevent constant micro-updates from cash changes
+	let marsProgress = $derived(Math.round(marsProgressRaw * 2) / 2);
 	let marsCompleted = $derived(state.marsColony?.completed ?? false);
 	let ngPlusLevel = $derived(state.ngPlusLevel ?? 0);
 	let ngAccent = $derived(getNgPlusAccentColor(ngPlusLevel));
@@ -260,14 +262,14 @@
 			</div>
 			<div class="flex items-center gap-1.5">
 				<span class="text-xs font-bold tabular-nums font-mono" style="color: {nextPlanet.color};">
-					{marsProgress.toFixed(1)}%
+					{marsProgressRaw.toFixed(1)}%
 				</span>
 				<span class="text-[10px] text-text-muted transition-transform duration-200" class:rotate-180={showColonyBreakdown}>▼</span>
 			</div>
 		</div>
 		<div class="w-full h-3 rounded-full bg-bg-tertiary overflow-hidden" role="progressbar" aria-valuenow={Math.round(marsProgress)} aria-valuemin={0} aria-valuemax={100} aria-label="{nextPlanet.name} colony progress">
 			<div
-				class="h-full rounded-full transition-all duration-500 colony-progress-bar"
+				class="h-full rounded-full transition-[width] duration-700 ease-out colony-progress-bar"
 				style="width: {marsProgress}%; background: linear-gradient(90deg, {currentPlanet.color}, {nextPlanet.color}); --bar-color-1: {currentPlanet.color}; --bar-color-2: {nextPlanet.color};"
 			></div>
 		</div>
