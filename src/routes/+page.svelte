@@ -88,7 +88,7 @@
 			</p>
 
 			<p class="text-sm text-text-muted mb-10 font-mono">
-				6 divisions · 42 tiers · synergies · colonies
+				6 divisions · 36 tiers · synergies · colonies
 			</p>
 
 			<button

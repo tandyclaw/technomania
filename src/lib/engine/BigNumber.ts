@@ -32,7 +32,7 @@ export function formatNumber(value: Decimal | number, decimals = 2): string {
 	const dec = value instanceof Decimal ? value : new Decimal(value);
 
 	// Handle edge cases: NaN, Infinity, negative
-	if (!dec.isFinite()) return dec.toString();
+	if (!isFinite(dec.mantissa) || !isFinite(dec.exponent)) return dec.toString();
 	if (dec.lt(0)) return '-' + formatNumber(dec.neg(), decimals);
 
 	if (dec.lt(1000)) {
@@ -65,7 +65,7 @@ export function formatCurrency(value: Decimal | number, decimals = 2): string {
 	const dec = value instanceof Decimal ? value : new Decimal(value);
 
 	// Handle edge cases
-	if (!dec.isFinite()) return '$' + dec.toString();
+	if (!isFinite(dec.mantissa) || !isFinite(dec.exponent)) return '$' + dec.toString();
 	if (dec.lt(0)) return '-$' + formatNumber(dec.neg(), decimals);
 
 	if (dec.lt(1000)) {

@@ -89,6 +89,7 @@
 			}
 			return;
 		}
+		console.log('[Layout] initialize() returned', result);
 		isNewGame = result.isNewGame;
 		offlineMs = result.offlineMs;
 		offlineReport = result.offlineReport;
@@ -159,7 +160,9 @@
 			tickRandomEvents(deltaMs);
 		});
 
+		console.log('[Layout] About to set loading=false');
 		loading = false;
+		console.log('[Layout] loading is now false');
 	});
 
 	onDestroy(() => {
