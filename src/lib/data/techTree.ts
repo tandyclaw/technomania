@@ -16,8 +16,8 @@ export const TECH_TREE: ResearchNode[] = [
 
 	{
 		id: 'basic_photovoltaics',
-		name: 'Basic Photovoltaics',
-		description: 'Improved solar cell efficiency. Energy production speed +15%.',
+		name: 'Mars-Grade Solar Cells',
+		description: 'High-efficiency photovoltaics that power Earth operations and future Mars habitats. Energy production speed +15%.',
 		cost: 10,
 		timeMs: 15_000,
 		category: 'energy',
@@ -33,8 +33,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'composite_materials',
-		name: 'Composite Materials',
-		description: 'Lighter, stronger rocket bodies. Rockets production speed +15%.',
+		name: 'Lightweight Composites',
+		description: 'Lighter spacecraft means more cargo capacity for Mars missions. Rockets production speed +15%.',
 		cost: 10,
 		timeMs: 15_000,
 		category: 'materials',
@@ -50,8 +50,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'production_optimization',
-		name: 'Production Optimization',
-		description: 'Production line optimization. Manufacturing revenue +15%.',
+		name: 'Lean Manufacturing',
+		description: 'Streamlined production lines to scale Mars equipment output. Manufacturing revenue +15%.',
 		cost: 10,
 		timeMs: 15_000,
 		category: 'manufacturing',
@@ -70,8 +70,8 @@ export const TECH_TREE: ResearchNode[] = [
 
 	{
 		id: 'battery_chemistry_v2',
-		name: 'Battery Chemistry V2',
-		description: 'Next-gen 4680 cells. Energy revenue +20%.',
+		name: 'Advanced Battery Chemistry',
+		description: 'Long-duration energy storage critical for Mars surface operations. Energy revenue +20%.',
 		cost: 25,
 		timeMs: 30_000,
 		category: 'energy',
@@ -87,8 +87,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'rapid_reusability',
-		name: 'Rapid Reusability',
-		description: 'Faster booster turnaround. Rockets cost reduction -10%.',
+		name: 'Rapid Launch Reusability',
+		description: 'Frequent Mars transit windows require rapid launch turnaround. Rockets cost reduction -10%.',
 		cost: 25,
 		timeMs: 30_000,
 		category: 'aerospace',
@@ -104,8 +104,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'gigacasting',
-		name: 'Gigacasting',
-		description: 'Gigacasting automation. Manufacturing production speed +20%.',
+		name: 'Mega Casting',
+		description: 'Single-piece structural casting accelerates Mars equipment production. Manufacturing production speed +20%.',
 		cost: 25,
 		timeMs: 30_000,
 		category: 'manufacturing',
@@ -121,8 +121,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'software_autopilot',
-		name: 'Self-Driving Software',
-		description: 'AI-driven quality control. Manufacturing revenue +20%.',
+		name: 'Autonomous Quality Control',
+		description: 'AI-driven inspection ensures Mars-bound hardware meets zero-defect standards. Manufacturing revenue +20%.',
 		cost: 30,
 		timeMs: 35_000,
 		category: 'software',
@@ -141,8 +141,8 @@ export const TECH_TREE: ResearchNode[] = [
 
 	{
 		id: 'grid_scale_storage',
-		name: 'Grid-Scale Storage',
-		description: 'Grid-scale battery infrastructure. Energy production speed +25% and revenue +10%.',
+		name: 'Mission-Scale Energy Storage',
+		description: 'Massive battery arrays for the long journey and Mars surface deployment. Energy production speed +25% and revenue +10%.',
 		cost: 50,
 		timeMs: 45_000,
 		category: 'energy',
@@ -164,8 +164,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'starship_heat_shield',
-		name: 'Reentry Heat Shield',
-		description: 'Reusable heat tiles. Rockets production speed +25%.',
+		name: 'Mars Entry Heat Shield',
+		description: 'Reusable thermal protection for Mars atmospheric entry. Rockets production speed +25%.',
 		cost: 50,
 		timeMs: 45_000,
 		category: 'aerospace',
@@ -181,8 +181,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'fsd_v12',
-		name: 'Full Self-Driving V12',
-		description: 'Fully autonomous production lines. Manufacturing revenue +30%.',
+		name: 'Autonomous Production AI',
+		description: 'Fully autonomous factory lines building Mars-bound hardware around the clock. Manufacturing revenue +30%.',
 		cost: 60,
 		timeMs: 50_000,
 		category: 'software',
@@ -198,8 +198,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'orbital_refueling',
-		name: 'Orbital Refueling',
-		description: 'In-space propellant transfer. Rockets revenue +25%.',
+		name: 'Orbital Fuel Depot',
+		description: 'In-space propellant transfer enables fully loaded Mars transit vehicles. Rockets revenue +25%.',
 		cost: 60,
 		timeMs: 50_000,
 		category: 'aerospace',
@@ -218,8 +218,8 @@ export const TECH_TREE: ResearchNode[] = [
 
 	{
 		id: 'shared_battery_platform',
-		name: 'Shared Battery Platform',
-		description: 'Unified cell design across divisions. All divisions revenue +10%.',
+		name: 'Unified Power Platform',
+		description: 'Standardized energy cells across all Mars-bound systems reduce costs and complexity. All divisions revenue +10%.',
 		cost: 80,
 		timeMs: 60_000,
 		category: 'manufacturing',
@@ -247,8 +247,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'ai_manufacturing',
-		name: 'AI Manufacturing',
-		description: 'Robot-optimized assembly lines. All divisions production speed +15%.',
+		name: 'AI-Driven Assembly',
+		description: 'Machine-learning-optimized factories mass-producing Mars colony components. All divisions production speed +15%.',
 		cost: 90,
 		timeMs: 60_000,
 		category: 'software',
@@ -276,8 +276,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'solar_launch_grid',
-		name: 'Solar Launch Grid',
-		description: 'Solar-powered launch complex. Power output +30%.',
+		name: 'Solar Launch Complex',
+		description: 'Renewable-powered launch infrastructure for sustained Mars mission cadence. Power output +30%.',
 		cost: 75,
 		timeMs: 55_000,
 		category: 'infrastructure',
@@ -296,8 +296,8 @@ export const TECH_TREE: ResearchNode[] = [
 
 	{
 		id: 'optimus_workforce',
-		name: 'Optimus Workforce',
-		description: 'Humanoid robot labor. All divisions cost reduction -15%.',
+		name: 'Robotic Workforce',
+		description: 'Humanoid robots for hazardous Mars construction tasks no human should do. All divisions cost reduction -15%.',
 		cost: 120,
 		timeMs: 75_000,
 		category: 'manufacturing',
@@ -325,8 +325,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'mars_colony_alpha',
-		name: 'Mars Colony Alpha',
-		description: 'First permanent Mars settlement. Rockets revenue +50%.',
+		name: 'Mars Habitat Blueprint',
+		description: 'Complete architectural design for a self-sustaining Mars habitat. Rockets revenue +50%.',
 		cost: 150,
 		timeMs: 90_000,
 		category: 'aerospace',
@@ -342,8 +342,8 @@ export const TECH_TREE: ResearchNode[] = [
 	},
 	{
 		id: 'neural_link_v2',
-		name: 'Neural Link V2',
-		description: 'Brain-computer interface at scale. All revenue +20%.',
+		name: 'Neural Interface',
+		description: 'Brain-computer links for remote control of Mars robots across the 20-minute signal delay. All revenue +20%.',
 		cost: 140,
 		timeMs: 80_000,
 		category: 'biotech',
