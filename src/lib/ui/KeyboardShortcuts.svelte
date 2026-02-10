@@ -68,7 +68,6 @@
 			<div class="space-y-2 text-sm">
 				{#each [
 					['1-9', 'Switch tabs'],
-					['Space', 'Start idle productions'],
 					['?', 'Toggle this overlay'],
 					['Esc', 'Close overlay'],
 				] as [key, desc]}
