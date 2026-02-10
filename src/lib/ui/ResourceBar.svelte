@@ -56,7 +56,7 @@
 		<button
 			class="resource-btn flex items-center gap-1.5 min-w-0 flex-1"
 			aria-label="Cash — tap to open Treasury"
-			on:click={() => navigateTo('treasury')}
+			onclick={() => navigateTo('treasury')}
 		>
 			<span class="text-base leading-none shrink-0" aria-hidden="true">💰</span>
 			<div class="flex flex-col min-w-0 text-left">
@@ -74,7 +74,7 @@
 		<button
 			class="resource-btn flex items-center gap-1.5 min-w-0 flex-1 justify-center"
 			aria-label="Research Points — tap to open Research"
-			on:click={() => navigateTo('research')}
+			onclick={() => navigateTo('research')}
 		>
 			<span class="text-base leading-none shrink-0" aria-hidden="true">🔬</span>
 			<div class="flex flex-col min-w-0 text-left">
@@ -125,7 +125,7 @@
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class="power-tooltip absolute top-full right-0 mt-2 w-64 bg-bg-secondary border border-white/10 rounded-xl shadow-xl p-3 z-[60]"
-					on:click|stopPropagation
+					onclick={(e) => e.stopPropagation()}
 				>
 					<h3 class="text-xs font-semibold text-text-primary uppercase tracking-wider mb-2">⚡ Power Overview</h3>
 

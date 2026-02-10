@@ -80,42 +80,42 @@ export const DIVISION_CHIEFS: Record<string, ChiefData> = {
 export const CHIEF_LEVELS: ChiefLevelData[] = [
 	{
 		level: 1,
-		cost: 5000, // ~10-15 min in, first big milestone
+		cost: 7500, // ~20-25 min in, first big milestone
 		speedMultiplier: 1,
 		label: 'Hired',
 		description: 'Basic automation — production runs automatically',
 	},
 	{
 		level: 2,
-		cost: 50000,
+		cost: 75000,
 		speedMultiplier: 2,
 		label: 'Experienced',
 		description: '2x production speed',
 	},
 	{
 		level: 3,
-		cost: 1000000,
+		cost: 1500000,
 		speedMultiplier: 5,
 		label: 'Expert',
 		description: '5x production speed',
 	},
 	{
 		level: 4,
-		cost: 25000000,
+		cost: 40000000,
 		speedMultiplier: 10,
 		label: 'Legendary',
 		description: '10x production speed',
 	},
 	{
 		level: 5,
-		cost: 1000000000,
+		cost: 1500000000,
 		speedMultiplier: 50,
 		label: 'Visionary',
 		description: '50x production speed',
 	},
 	{
 		level: 6,
-		cost: 100000000000,
+		cost: 150000000000,
 		speedMultiplier: 100,
 		label: 'Full Autonomy',
 		description: '100x production speed — runs itself',

@@ -3,14 +3,14 @@
  * 
  * PROGRESSION DESIGN (tested via simulation, Feb 2026):
  * - Energy: Always unlocked (foundation)
- * - Rockets: $500 (~1.5 min) — first milestone, feels exciting
- * - Manufacturing: $2,500 (~4.5 min) — money engine kicks in
- * - AI: $5,000 (~8.5 min) — breaks the mid-game dead zone
- * - Tunnels: $12,000 (~12 min) — slow-cycle money engine
- * - Robotics: $40,000 (~16 min) — late-mid unlock, new item types
+ * - Rockets: $500 (~3 min) — first milestone, feels exciting
+ * - Manufacturing: $2,500 (~9 min) — money engine kicks in
+ * - AI: $5,000 (~17 min) — breaks the mid-game dead zone
+ * - Tunnels: $12,000 (~24 min) — slow-cycle money engine
+ * - Robotics: $40,000 (~32 min) — late-mid unlock, new item types
  * 
- * Goal: new division every 3-5 minutes. No dead zones > 5 min.
- * Verified via simulation Feb 2026: gaps are 3.0, 4.0, 3.6, 4.0 min.
+ * Goal: new division every 5-10 minutes. AdCap-style pacing.
+ * Cycle durations doubled from original Feb 2026 values.
  */
 
 export interface DivisionUnlockRequirement {
