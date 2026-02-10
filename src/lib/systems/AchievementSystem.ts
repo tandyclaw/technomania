@@ -245,7 +245,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 		condition: (s) => s.unlockedResearch.length >= 5 },
 	{ id: 'research_20', name: 'Think Tank', description: 'Complete 20 research projects', icon: '🧠', category: 'special', rarity: 'Rare',
 		condition: (s) => s.unlockedResearch.length >= 20 },
-	{ id: 'rp_1k', name: 'Knowledge Economy', description: 'Spend 1K research points total', icon: '📚', category: 'special', rarity: 'Common',
+	{ id: 'rp_1k', name: 'Knowledge Economy', description: 'Complete 5 research projects', icon: '📚', category: 'special', rarity: 'Common',
 		condition: (s) => s.stats.totalResearchCompleted >= 5 },
 	{ id: 'rp_10k', name: 'Research University', description: 'Complete 30+ research projects', icon: '🎓', category: 'special', rarity: 'Epic',
 		condition: (s) => s.unlockedResearch.length >= 30 },
@@ -306,7 +306,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 	// === Hidden / Secret (Easter Eggs) ===
 	{ id: 'hidden_midnight', name: 'Witching Hour', description: 'Play at exactly midnight (00:00)', icon: '🕛', category: 'special', rarity: 'Rare', hidden: true,
 		condition: () => { const now = new Date(); return now.getHours() === 0 && now.getMinutes() === 0; } },
-	{ id: 'hidden_weekend', name: 'Weekend Warrior', description: 'Play on both Saturday and Sunday', icon: '🎉', category: 'special', rarity: 'Common', hidden: true,
+	{ id: 'hidden_weekend', name: 'Weekend Warrior', description: 'Play on the weekend', icon: '🎉', category: 'special', rarity: 'Common', hidden: true,
 		condition: () => { const d = new Date().getDay(); return d === 0 || d === 6; } },
 	{ id: 'hidden_logo_tap', name: 'Easter Egg Hunter', description: 'Tap the logo 10 times', icon: '🥚', category: 'special', rarity: 'Rare', hidden: true,
 		condition: (s) => !!(s as any)._achievementFlags?.logoTap10 },

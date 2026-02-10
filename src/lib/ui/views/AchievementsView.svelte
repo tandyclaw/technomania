@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { gameState } from '$lib/stores/gameState';
-	import { ACHIEVEMENTS, getRarityColor, type AchievementCategory, type AchievementDef } from '$lib/systems/AchievementSystem';
+	import { ACHIEVEMENTS, getRarityColor, getVisibleCount, type AchievementCategory, type AchievementDef } from '$lib/systems/AchievementSystem';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import ShareCard from '$lib/ui/ShareCard.svelte';
 
@@ -13,6 +13,7 @@
 	let hallOfFame = $derived(gs.hallOfFame ?? { fastestColonyTimes: [], highestIncomePerSec: 0, mostColoniesLaunched: 0, totalCashAllTime: 0 });
 	let streak = $derived(gs.dailyRewardStreak ?? 0);
 	let unlockedCount = $derived(unlockedIds.size);
+	let visibleCounts = $derived(getVisibleCount(unlockedIds));
 	let totalCount = ACHIEVEMENTS.length;
 
 	// Recently unlocked (last 5, sorted newest first)
@@ -52,7 +53,10 @@
 	<div>
 		<h1 class="text-xl font-bold text-text-primary">Achievements</h1>
 		<p class="text-sm text-text-secondary mt-0.5">
-			<span class="text-solar-gold font-semibold">{unlockedCount}</span> / {totalCount} unlocked
+			<span class="text-solar-gold font-semibold">{unlockedCount}</span> / {visibleCounts.visible} unlocked
+			{#if unlockedCount > 0 && visibleCounts.visible < visibleCounts.total}
+				<span class="text-text-muted text-xs ml-1">(+ secrets)</span>
+			{/if}
 		</p>
 	</div>
 
@@ -68,10 +72,10 @@
 	{/if}
 
 	<!-- Progress bar -->
-	<div class="w-full h-2 rounded-full bg-bg-tertiary overflow-hidden" role="progressbar" aria-valuenow={unlockedCount} aria-valuemin={0} aria-valuemax={totalCount} aria-label="Achievement progress: {unlockedCount} of {totalCount}">
+	<div class="w-full h-2 rounded-full bg-bg-tertiary overflow-hidden" role="progressbar" aria-valuenow={unlockedCount} aria-valuemin={0} aria-valuemax={visibleCounts.visible} aria-label="Achievement progress: {unlockedCount} of {visibleCounts.visible}">
 		<div
 			class="h-full rounded-full transition-all duration-500"
-			style="width: {(unlockedCount / totalCount) * 100}%; background: linear-gradient(90deg, #FFCC44, #FF8844);"
+			style="width: {(unlockedCount / visibleCounts.visible) * 100}%; background: linear-gradient(90deg, #FFCC44, #FF8844);"
 		></div>
 	</div>
 
