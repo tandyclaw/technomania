@@ -79,6 +79,8 @@
 			   hover:scale-110 active:scale-95 touch-manipulation"
 		style="background-color: {color}18; color: {color}90; border: 1px solid {color}25;"
 		onclick={toggle}
+		ontouchstart={(e: TouchEvent) => e.stopPropagation()}
+		ontouchend={(e: TouchEvent) => { e.stopPropagation(); toggle(e); }}
 		onmouseenter={show}
 		onmouseleave={hide}
 		aria-label="More info"
