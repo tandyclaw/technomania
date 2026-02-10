@@ -3,7 +3,7 @@
  * From test bores to hyperloop — slow cycles, massive revenue
  *
  * PROGRESSION DESIGN (balanced Feb 2026):
- * - Unlocks at $25,000 (~12 min) — keeps mid-game momentum
+ * - Unlocks at $12,000 (~12 min) — keeps mid-game momentum
  * - Slowest cycles in the game (infrastructure projects take time)
  * - Highest per-cycle revenue to compensate
  * - Heavy power consumer (boring machines eat electricity)
@@ -20,8 +20,8 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		flavor: 'The boring company. Yes, that\'s the actual name. Yes, they sell flamethrowers.',
 		powerMW: -0.1,
 		config: {
-			baseCost: 25000,
-			baseRevenue: 4500,
+			baseCost: 12000,
+			baseRevenue: 2200,
 			cycleDuration: 5,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
@@ -34,8 +34,8 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		flavor: 'The permits took longer than the actual digging.',
 		powerMW: -0.8,
 		config: {
-			baseCost: 250000,
-			baseRevenue: 40000,
+			baseCost: 120000,
+			baseRevenue: 19200,
 			cycleDuration: 12,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
@@ -48,8 +48,8 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		flavor: 'Like a subway, but with RGB lighting and no mysterious smells.',
 		powerMW: -3,
 		config: {
-			baseCost: 2500000,
-			baseRevenue: 375000,
+			baseCost: 1200000,
+			baseRevenue: 180000,
 			cycleDuration: 30,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
@@ -62,8 +62,8 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		flavor: 'Same-day delivery, but make it subterranean. The moles approve.',
 		powerMW: -15,
 		config: {
-			baseCost: 25000000,
-			baseRevenue: 3750000,
+			baseCost: 12000000,
+			baseRevenue: 1800000,
 			cycleDuration: 70,
 			costMultiplier: 1.14,
 			revenueMultiplier: 1.0
@@ -76,8 +76,8 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		flavor: 'NY to LA in 45 minutes. Still faster than getting through TSA.',
 		powerMW: -60,
 		config: {
-			baseCost: 250000000,
-			baseRevenue: 37500000,
+			baseCost: 120000000,
+			baseRevenue: 18000000,
 			cycleDuration: 160,
 			costMultiplier: 1.16,
 			revenueMultiplier: 1.0
@@ -90,8 +90,8 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		flavor: 'A pneumatic tube for humans. Your bank teller had the right idea all along.',
 		powerMW: -250,
 		config: {
-			baseCost: 2500000000,
-			baseRevenue: 500000000,
+			baseCost: 1200000000,
+			baseRevenue: 240000000,
 			cycleDuration: 360,
 			costMultiplier: 1.20,
 			revenueMultiplier: 1.0

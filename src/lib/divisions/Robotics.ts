@@ -3,7 +3,7 @@
  * From assembly bots to general purpose robots — slow cycles, heavy manufacturing
  *
  * PROGRESSION DESIGN (balanced Feb 2026):
- * - Unlocks at $75,000 (~18 min) — final early-game unlock
+ * - Unlocks at $40,000 (~16 min) — final early-game unlock
  * - Slower cycles (manufacturing is physical)
  * - Higher revenue to compensate
  * - Power consumer (factories need electricity)
@@ -20,8 +20,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Doesn\'t need coffee breaks. Or coffee. Or breaks.',
 		powerMW: -0.05,
 		config: {
-			baseCost: 75000,
-			baseRevenue: 11250,
+			baseCost: 40000,
+			baseRevenue: 6000,
 			cycleDuration: 6,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
@@ -34,8 +34,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Knows where everything is. Judges you for your impulse purchases.',
 		powerMW: -0.5,
 		config: {
-			baseCost: 750000,
-			baseRevenue: 105000,
+			baseCost: 400000,
+			baseRevenue: 56000,
 			cycleDuration: 14,
 			costMultiplier: 1.10,
 			revenueMultiplier: 1.0
@@ -48,8 +48,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Falls down 47 times a day. Gets up 48. Boston Dynamics energy.',
 		powerMW: -5,
 		config: {
-			baseCost: 7500000,
-			baseRevenue: 937500,
+			baseCost: 4000000,
+			baseRevenue: 500000,
 			cycleDuration: 35,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
@@ -62,8 +62,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Rosie from the Jetsons, minus the attitude. Okay, maybe a little attitude.',
 		powerMW: -20,
 		config: {
-			baseCost: 75000000,
-			baseRevenue: 9375000,
+			baseCost: 40000000,
+			baseRevenue: 5000000,
 			cycleDuration: 80,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
@@ -76,8 +76,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Pacific Rim was a documentary. We just haven\'t met the kaiju yet.',
 		powerMW: -80,
 		config: {
-			baseCost: 750000000,
-			baseRevenue: 93750000,
+			baseCost: 400000000,
+			baseRevenue: 50000000,
 			cycleDuration: 180,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0

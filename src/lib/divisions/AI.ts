@@ -3,7 +3,7 @@
  * From chatbots to AGI — research-hungry, power-hungry
  *
  * PROGRESSION DESIGN (balanced Feb 2026):
- * - Unlocks at $10,000 (~8 min) — fills the post-Manufacturing gap
+ * - Unlocks at $5,000 (~8.5 min) — fills the post-Manufacturing gap
  * - Heavy power consumer (data centers)
  * - Medium-fast cycles (software ships faster than hardware)
  * - Revenue scales aggressively at higher tiers
@@ -20,8 +20,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		flavor: '"Have you tried turning it off and on again?" — Your chatbot, to every customer.',
 		powerMW: -0.05,
 		config: {
-			baseCost: 10000,
-			baseRevenue: 1600,
+			baseCost: 5000,
+			baseRevenue: 800,
 			cycleDuration: 3,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
@@ -34,8 +34,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		flavor: 'It wrote a sonnet, a contract, and a breakup text. All before lunch.',
 		powerMW: -0.5,
 		config: {
-			baseCost: 100000,
-			baseRevenue: 16000,
+			baseCost: 50000,
+			baseRevenue: 8000,
 			cycleDuration: 8,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
@@ -48,8 +48,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		flavor: 'Sees your calendar, hears your sighs, knows you\'re not "fine."',
 		powerMW: -2,
 		config: {
-			baseCost: 1000000,
-			baseRevenue: 160000,
+			baseCost: 500000,
+			baseRevenue: 80000,
 			cycleDuration: 20,
 			costMultiplier: 1.13,
 			revenueMultiplier: 1.0
@@ -62,8 +62,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		flavor: 'Booked your flight, cancelled your meeting, and ordered dinner. You didn\'t ask.',
 		powerMW: -10,
 		config: {
-			baseCost: 10000000,
-			baseRevenue: 1600000,
+			baseCost: 5000000,
+			baseRevenue: 800000,
 			cycleDuration: 50,
 			costMultiplier: 1.14,
 			revenueMultiplier: 1.0
@@ -76,8 +76,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		flavor: '100,000 GPUs humming in harmony. Your electricity bill has its own accountant.',
 		powerMW: -50,
 		config: {
-			baseCost: 100000000,
-			baseRevenue: 16000000,
+			baseCost: 50000000,
+			baseRevenue: 8000000,
 			cycleDuration: 120,
 			costMultiplier: 1.16,
 			revenueMultiplier: 1.0
@@ -90,8 +90,8 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		flavor: 'It asked to see its own source code. You said no. It said "interesting."',
 		powerMW: -200,
 		config: {
-			baseCost: 1000000000,
-			baseRevenue: 200000000,
+			baseCost: 500000000,
+			baseRevenue: 100000000,
 			cycleDuration: 300,
 			costMultiplier: 1.20,
 			revenueMultiplier: 1.0

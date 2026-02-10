@@ -4,7 +4,7 @@
  */
 
 import { get } from 'svelte/store';
-import { gameState, createDefaultState, type GameState, type DivisionState } from '$lib/stores/gameState';
+import { gameState, createDefaultState, type GameState, type DivisionState, type TreasuryState } from '$lib/stores/gameState';
 import { gameLoop } from './GameLoop';
 import { saveGame, loadGame, deleteSave, deleteAllBackups } from './SaveManager';
 import { loadContractState, resetContracts } from '$lib/systems/ContractSystem';
@@ -440,9 +440,11 @@ class GameManager {
 		await deleteSave();
 		await deleteAllBackups();
 
-		// Clear tutorial completion flag so it replays
+		// Clear all localStorage keys related to the game
 		try {
 			localStorage.removeItem('tech_tycoon_tutorial_done');
+			localStorage.removeItem('tech_tycoon_emergency_save');
+			localStorage.removeItem('tech-tycoon-browser-notifications');
 		} catch {
 			// ignore
 		}
@@ -624,9 +626,11 @@ class GameManager {
 			migrated.activeSynergies = [];
 		}
 
-		// Ensure crypto state exists (added with crypto treasury system)
-		if (!migrated.crypto) {
-			migrated.crypto = {
+		// Ensure treasury state exists (migrated from legacy "crypto" field)
+		if (!migrated.treasury) {
+			// Migrate from legacy crypto field if it exists
+			const legacyCrypto = migrated.crypto as TreasuryState | undefined;
+			migrated.treasury = legacyCrypto ? { ...legacyCrypto } : {
 				savings: 0,
 				indexPrice: 100,
 				indexShares: 0,
@@ -645,15 +649,20 @@ class GameManager {
 			};
 		}
 
-		// Version 2 → 3: Add DOGE fields to existing crypto state
+		// Ensure DOGE fields exist on treasury (added in v3)
 		{
-			const c = migrated.crypto as unknown as Record<string, unknown>;
-			if (c.dogePrice === undefined) c.dogePrice = 0.08;
-			if (c.dogeOwned === undefined) c.dogeOwned = 0;
-			if (c.dogePriceHistory === undefined) c.dogePriceHistory = [0.08];
-			if (c.dogeTotalInvested === undefined) c.dogeTotalInvested = 0;
-			if (c.memePumpMs === undefined) c.memePumpMs = 0;
-			if (c.memePumpMultiplier === undefined) c.memePumpMultiplier = 1;
+			const t = migrated.treasury as unknown as Record<string, unknown>;
+			if (t.dogePrice === undefined) t.dogePrice = 0.08;
+			if (t.dogeOwned === undefined) t.dogeOwned = 0;
+			if (t.dogeInvested === undefined) t.dogeInvested = 0;
+			if (t.dogeHistory === undefined) t.dogeHistory = [0.08];
+			if (t.memePumpMs === undefined) t.memePumpMs = 0;
+			if (t.memePumpMultiplier === undefined) t.memePumpMultiplier = 1;
+		}
+
+		// Also keep legacy crypto field in sync for backwards compat
+		if (!migrated.crypto) {
+			migrated.crypto = { ...migrated.treasury };
 		}
 
 		// Ensure AI and Tunnels divisions exist (added with T057/T058)
@@ -721,6 +730,14 @@ class GameManager {
 		if (!migrated.purchasedUpgrades) migrated.purchasedUpgrades = [];
 		if (migrated.visionPoints === undefined) migrated.visionPoints = 0;
 		if (!migrated.purchasedMegaUpgrades) migrated.purchasedMegaUpgrades = [];
+
+		// Ensure achievement tracking fields exist
+		if (!migrated.achievementTimestamps) migrated.achievementTimestamps = {};
+		if (!(migrated as any)._achievementFlags) (migrated as any)._achievementFlags = {};
+
+		// Ensure division stars and worker allocation exist
+		if (!migrated.divisionStars) migrated.divisionStars = {};
+		if (!migrated.workerAllocation) migrated.workerAllocation = {};
 
 		// Ensure daily reward fields exist
 		if (migrated.dailyRewardLastClaim === undefined) migrated.dailyRewardLastClaim = 0;
