@@ -9,7 +9,7 @@
  * - Start $25, buy 4 reactors immediately ($5 * 1.07^0..3 ≈ $22)
  * - Each earns $1/0.6s = $1.67/s → 4 reactors = $6.67/s
  * - Exponential buying: ~68 reactors + 25 solars by ~2min
- * - Reach $500 (Rockets) at ~1 min, $2500 (Mfg) at ~3.5 min
+ * - Reach $500 (Rockets) at ~1.5 min, $2500 (Mfg) at ~4.5 min
  * - This is the "flying" feeling — new division every few minutes
  */
 

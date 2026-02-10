@@ -90,8 +90,8 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		flavor: 'Can do anything you can do, but better. Try not to think about it.',
 		powerMW: -150,
 		config: {
-			baseCost: 7500000000,
-			baseRevenue: 1125000000,
+			baseCost: 4000000000,
+			baseRevenue: 600000000,
 			cycleDuration: 400,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0

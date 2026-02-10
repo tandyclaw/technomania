@@ -3,7 +3,7 @@
  * From small orbital rockets to Mars landers
  *
  * PROGRESSION DESIGN (verified Feb 2026):
- * - Unlocks at $500 (~1 min of Energy play)
+ * - Unlocks at $500 (~1.5 min of Energy play)
  * - Slower cycles than Energy (launches are events, not taps)
  * - Higher revenue per cycle compensates for longer waits
  * - Power CONSUMER — need Energy infrastructure to support
