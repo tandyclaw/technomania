@@ -47,7 +47,6 @@ class GameManager {
 	 * Call this once when the game view mounts
 	 */
 	async initialize(): Promise<{ isNewGame: boolean; offlineMs: number; offlineReport: OfflineReport | null }> {
-		console.log('[GameManager] initialize() called, initialized=', this.initialized);
 		if (this.initialized || typeof window === 'undefined') {
 			return { isNewGame: false, offlineMs: 0, offlineReport: null };
 		}
@@ -56,7 +55,6 @@ class GameManager {
 		let offlineMs = 0;
 		let offlineReport: OfflineReport | null = null;
 
-		console.log('[GameManager] Starting load...');
 		// Try loading saved state (with corrupted save handling + timeout)
 		let savedState: GameState | null = null;
 		try {
@@ -119,19 +117,12 @@ class GameManager {
 		}
 
 		// Start systems
-		console.log('[GameManager] Starting systems...');
 		this.startAutoSave();
-		console.log('[GameManager] autoSave started');
 		this.addBrowserListeners();
-		console.log('[GameManager] browser listeners added');
 		initFlavorMechanics();
-		console.log('[GameManager] flavor mechanics init');
 		this.cleanupSounds = initSoundListeners();
-		console.log('[GameManager] sound listeners init');
 		this.cleanupMusic = initMusicSystem();
-		console.log('[GameManager] music system init');
 		gameLoop.start();
-		console.log('[GameManager] game loop started');
 
 		// Wire up game tick to update play time, production, and bottlenecks
 		let playTimeAccumulator = 0;
