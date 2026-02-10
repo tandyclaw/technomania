@@ -122,13 +122,25 @@ export const CHIEF_LEVELS: ChiefLevelData[] = [
 	},
 ];
 
+/** Division cost multipliers — later divisions have more expensive chiefs */
+const DIVISION_CHIEF_COST_MULT: Record<string, number> = {
+	teslaenergy: 1,     // Base costs (unlocks at $0)
+	spacex: 2,          // Unlocks at $1K
+	tesla: 5,           // Unlocks at $10K
+	ai: 15,             // Unlocks at $50K
+	tunnels: 40,        // Unlocks at $250K
+	robotics: 100,      // Unlocks at $1M
+};
+
 /**
- * Get the cost for the next chief level
+ * Get the cost for the next chief level, scaled by division
  * Returns null if already at max level
  */
-export function getNextChiefCost(currentLevel: number): number | null {
+export function getNextChiefCost(currentLevel: number, divisionId?: string): number | null {
 	if (currentLevel >= CHIEF_LEVELS.length) return null;
-	return CHIEF_LEVELS[currentLevel].cost;
+	const baseCost = CHIEF_LEVELS[currentLevel].cost;
+	const mult = divisionId ? (DIVISION_CHIEF_COST_MULT[divisionId] ?? 1) : 1;
+	return baseCost * mult;
 }
 
 /**

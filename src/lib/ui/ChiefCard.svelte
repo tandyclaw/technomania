@@ -20,7 +20,7 @@
 	let chief = $derived(DIVISION_CHIEFS[divisionId]);
 	let currentLevelData = $derived(getChiefLevelData(chiefLevel));
 	let nextLevelData = $derived(getNextChiefLevelData(chiefLevel));
-	let baseNextCost = $derived(getNextChiefCost(chiefLevel));
+	let baseNextCost = $derived(getNextChiefCost(chiefLevel, divisionId));
 	let nextCost = $derived(baseNextCost !== null ? baseNextCost * $ngPlusCostMultiplier : null);
 	let canAfford = $derived(nextCost !== null && cash >= nextCost);
 	let isMaxLevel = $derived(chiefLevel >= CHIEF_LEVELS.length);

@@ -509,7 +509,7 @@ export function hireChief(divisionId: string): number {
 		const divState = state.divisions[divisionId as DivisionId];
 		if (!divState?.unlocked) return state;
 
-		const baseCost = getNextChiefCost(divState.chiefLevel);
+		const baseCost = getNextChiefCost(divState.chiefLevel, divisionId);
 		if (baseCost === null) return state;
 		const cost = baseCost * getCostMultiplier(state);
 		if (state.cash < cost) return state;
