@@ -617,6 +617,7 @@ export function activateBottleneck(divisionId: string, bottleneckId: string): vo
 		// Emit event for toast
 		eventBus.emit('bottleneck:hit', {
 			division: divisionId,
+			type: def.category,
 			bottleneckId,
 			description: def.description,
 		});

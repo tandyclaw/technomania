@@ -22,7 +22,7 @@ export interface ActiveBuff {
 
 export const activeBuffs = writable<ActiveBuff[]>([]);
 
-export function addBuff(buff: Omit<ActiveBuff, 'remainingMs'> & { durationMs: number }): void {
+export function addBuff(buff: Omit<ActiveBuff, 'remainingMs' | 'totalMs'> & { durationMs: number; totalMs?: number }): void {
 	activeBuffs.update((list) => {
 		// Replace existing buff with same id
 		const filtered = list.filter((b) => b.id !== buff.id);

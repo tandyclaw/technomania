@@ -11,6 +11,7 @@
 		treasury: () => import('$lib/ui/views/TreasuryView.svelte'),
 		achievements: () => import('$lib/ui/views/AchievementsView.svelte'),
 		contracts: () => import('$lib/ui/views/ContractsView.svelte'),
+		stats: () => import('$lib/ui/views/StatsView.svelte'),
 		settings: () => import('$lib/ui/views/SettingsView.svelte'),
 	} as const;
 

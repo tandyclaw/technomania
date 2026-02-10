@@ -334,8 +334,9 @@ class GameManager {
 		resetCelebrations();
 
 		eventBus.emit('prestige:complete', {
+			visionEarned: techEarned,
+			totalVision: fresh.colonyTech,
 			techEarned,
-			totalColonyTech: fresh.colonyTech,
 		});
 
 		// Auto-save after prestige
@@ -609,14 +610,19 @@ class GameManager {
 		// Ensure crypto state exists (added with crypto treasury system)
 		if (!migrated.crypto) {
 			migrated.crypto = {
+				savings: 0,
+				indexPrice: 100,
+				indexShares: 0,
+				indexInvested: 0,
+				indexHistory: [100],
 				btcPrice: 42_000,
 				btcOwned: 0,
-				btcPriceHistory: [42_000],
-				totalInvested: 0,
+				btcInvested: 0,
+				btcHistory: [42_000],
 				dogePrice: 0.08,
 				dogeOwned: 0,
-				dogePriceHistory: [0.08],
-				dogeTotalInvested: 0,
+				dogeInvested: 0,
+				dogeHistory: [0.08],
 				memePumpMs: 0,
 				memePumpMultiplier: 1,
 			};

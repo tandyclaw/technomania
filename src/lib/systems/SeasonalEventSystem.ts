@@ -243,13 +243,7 @@ export function initSeasonalEvents(): SeasonalEvent | null {
 			color: active.color,
 		});
 
-		addNotification({
-			id: `seasonal_${active.id}`,
-			title: active.name,
-			message: active.description,
-			icon: active.icon,
-			color: active.color,
-		});
+		addNotification('info', active.icon, active.name, active.description);
 	}
 
 	return active;

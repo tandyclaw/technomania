@@ -33,6 +33,7 @@
 		{ id: 'research', name: 'Research', shortName: 'R&D', icon: '🔬', color: '#9944FF' },
 		{ id: 'achievements', name: 'Achievements', shortName: 'Trophies', icon: '🏆', color: '#FFCC44' },
 		{ id: 'prestige', name: 'New Colony', shortName: 'Colony', icon: '🪐', color: '#9944FF' },
+		{ id: 'stats', name: 'Statistics', shortName: 'Stats', icon: '📊', color: '#60a5fa' },
 		{ id: 'settings', name: 'Settings', shortName: 'Settings', icon: '⚙️', color: '#8899aa' },
 	];
 
