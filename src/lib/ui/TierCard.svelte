@@ -9,7 +9,7 @@
 	import SmoothProgressBar from './SmoothProgressBar.svelte';
 	import Tooltip from './Tooltip.svelte';
 	import { triggerParticle } from '$lib/stores/particleStore';
-	import { getNextMilestone, getTierMilestones } from '$lib/systems/MilestoneSystem';
+	import { getNextMilestone } from '$lib/systems/MilestoneSystem';
 	import { createLongPressDetector } from '$lib/utils/gestures';
 
 	// Rarity system based on tier count
@@ -78,8 +78,7 @@
 
 	// Milestone info
 	let nextMilestone = $derived(gameState ? getNextMilestone(divisionId, tierIndex, gameState) : null);
-	let tierMilestones = $derived(gameState ? getTierMilestones(divisionId, tierIndex, gameState) : []);
-	let unlockedMilestoneCount = $derived(tierMilestones.filter(m => m.unlocked).length);
+	// milestone dots removed — just using inline count badge
 
 	let costDisplay = $derived(formatCurrency(cost));
 	let revenueDisplay = $derived(formatCurrency(revenuePerSec, 1));
@@ -297,17 +296,7 @@
 						×{tier.count}
 					{/if}
 				</span>
-				<!-- Milestone dots -->
-				{#if unlockedMilestoneCount > 0}
-					<div class="flex gap-0.5">
-						{#each tierMilestones as m}
-							<span
-								class="w-2 h-2 rounded-full {m.unlocked ? 'bg-solar-gold' : 'bg-white/10'}"
-								title={m.label}
-							></span>
-						{/each}
-					</div>
-				{/if}
+				<!-- Milestone info is in the count badge above -->
 			{/if}
 		</div>
 
@@ -453,11 +442,6 @@
 					<div><span class="text-text-muted">Power:</span> <span class="font-bold" class:text-solar-gold={tierData.powerMW > 0} class:text-rocket-red={tierData.powerMW < 0}>{tierData.powerMW > 0 ? '+' : ''}{formatNumber(tierData.powerMW * tier.count, 2)} MW</span></div>
 				{/if}
 			</div>
-			{#if nextMilestone}
-				<div class="text-xs text-text-muted border-t border-white/5 pt-2">
-					🏅 Next milestone: {nextMilestone.current}/{nextMilestone.threshold}
-				</div>
-			{/if}
 			<button onclick={dismissTooltip} class="w-full text-center text-xs text-text-muted mt-2 py-1">Tap to close</button>
 		</div>
 	</div>

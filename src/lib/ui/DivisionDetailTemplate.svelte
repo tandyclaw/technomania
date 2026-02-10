@@ -16,7 +16,7 @@
 	import { gameState } from '$lib/stores/gameState';
 	import { formatCurrency } from '$lib/engine/BigNumber';
 	import { calculateRevenue, getCycleDurationMs } from '$lib/systems/ProductionSystem';
-	import MilestonePanel from './MilestonePanel.svelte';
+	// MilestonePanel removed — milestone info shown inline on tier badge
 
 	// Division income calculation for stats summary
 	function getDivIncomePerSec(): number {
@@ -191,10 +191,7 @@
 		/>
 	{/if}
 
-	<!-- Milestones panel -->
-	{#if divState.unlocked}
-		<MilestonePanel divisionId={division.id} />
-	{/if}
+	<!-- Milestone info shown inline on tier cards -->
 
 
 	<!-- Active bottlenecks -->

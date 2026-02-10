@@ -3,23 +3,14 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import { get } from 'svelte/store';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { exportSave as exportBase64, importSave as importBase64, listBackups, restoreBackup, getCloudSaveStatus, type BackupInfo } from '$lib/engine/SaveManager';
+	import { listBackups, restoreBackup, getCloudSaveStatus, type BackupInfo } from '$lib/engine/SaveManager';
 	import { setMusicEnabled, setMusicVolume } from '$lib/systems/MusicManager';
-	import ShareCard from '$lib/ui/ShareCard.svelte';
 	import { tutorialStore } from '$lib/stores/tutorialStore';
 	import { isBrowserNotificationsEnabled, setBrowserNotificationsEnabled, requestPermissionIfNeeded } from '$lib/systems/BrowserNotificationService';
 
 	const GAME_VERSION = '0.1.0';
 
-	let showShareCard = $state(false);
 	let showResetConfirm = $state(false);
-	let showImportModal = $state(false);
-	let showBase64Import = $state(false);
-	let base64Input = $state('');
-	let importError = $state('');
-	let importSuccess = $state(false);
-	let exportSuccess = $state(false);
-	let clipboardCopied = $state(false);
 
 	// Backup system state
 	let backups = $state<BackupInfo[]>([]);
@@ -167,96 +158,9 @@
 		setMusicVolume(val);
 	}
 
-	function exportSave() {
-		const state = get(gameState);
-		const json = JSON.stringify(state, null, 2);
-		const blob = new Blob([json], { type: 'application/json' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = `tech-tycoon-save-${new Date().toISOString().slice(0, 10)}.json`;
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-		URL.revokeObjectURL(url);
-		exportSuccess = true;
-		setTimeout(() => (exportSuccess = false), 2000);
-	}
-
-	function openImportModal() {
-		showImportModal = true;
-		importError = '';
-		importSuccess = false;
-	}
-
-	function handleImportFile(event: Event) {
-		const input = event.target as HTMLInputElement;
-		const file = input.files?.[0];
-		if (!file) return;
-
-		const reader = new FileReader();
-		reader.onload = () => {
-			try {
-				const data = JSON.parse(reader.result as string) as GameState;
-				// Basic validation
-				if (!data.divisions || !data.cash === undefined || !data.stats) {
-					importError = 'Invalid save file format.';
-					return;
-				}
-				gameState.set(data);
-				gameManager.save();
-				importSuccess = true;
-				importError = '';
-				setTimeout(() => {
-					showImportModal = false;
-					importSuccess = false;
-				}, 1500);
-			} catch {
-				importError = 'Could not parse save file. Make sure it\'s a valid JSON file.';
-			}
-		};
-		reader.onerror = () => {
-			importError = 'Failed to read file.';
-		};
-		reader.readAsText(file);
-	}
-
 	async function confirmHardReset() {
 		await gameManager.hardReset();
 		showResetConfirm = false;
-	}
-
-	function exportBase64Save() {
-		const state = get(gameState);
-		const encoded = exportBase64(state);
-		navigator.clipboard.writeText(encoded).then(() => {
-			clipboardCopied = true;
-			setTimeout(() => (clipboardCopied = false), 2000);
-		}).catch(() => {
-			// Fallback: prompt
-			prompt('Copy this save code:', encoded);
-		});
-	}
-
-	function handleBase64Import() {
-		if (!base64Input.trim()) {
-			importError = 'Please paste a save code.';
-			return;
-		}
-		const data = importBase64(base64Input.trim());
-		if (!data || !data.divisions || data.cash === undefined) {
-			importError = 'Invalid save code. Check and try again.';
-			return;
-		}
-		gameState.set(data);
-		gameManager.save();
-		importSuccess = true;
-		importError = '';
-		base64Input = '';
-		setTimeout(() => {
-			showBase64Import = false;
-			importSuccess = false;
-		}, 1500);
 	}
 
 	// Stats for display
@@ -508,82 +412,6 @@
 					<span class="toggle-thumb" class:active={highContrast}></span>
 				</button>
 			</div>
-		</div>
-	</section>
-
-	<!-- Share Progress -->
-	<section class="space-y-1">
-		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Share</h2>
-		<button
-			onclick={() => showShareCard = true}
-			class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
-				   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
-		>
-			<span class="text-lg" aria-hidden="true">📤</span>
-			<div class="text-left flex-1">
-				<span class="text-sm font-medium text-text-primary block">Share Progress</span>
-				<span class="text-[10px] text-text-muted">Show off your stats with a shareable card</span>
-			</div>
-		</button>
-	</section>
-
-	<!-- Save Management -->
-	<section class="space-y-1">
-		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Save Data</h2>
-		<div class="space-y-2">
-			<button
-				onclick={exportSave}
-				class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
-					   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
-			>
-				<span class="text-lg" aria-hidden="true">📤</span>
-				<div class="text-left flex-1">
-					<span class="text-sm font-medium text-text-primary block">Export Save</span>
-					<span class="text-[10px] text-text-muted">Download your save as JSON</span>
-				</div>
-				{#if exportSuccess}
-					<span class="text-xs text-bio-green font-semibold">✓ Saved!</span>
-				{/if}
-			</button>
-
-			<button
-				onclick={openImportModal}
-				class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
-					   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
-			>
-				<span class="text-lg" aria-hidden="true">📥</span>
-				<div class="text-left flex-1">
-					<span class="text-sm font-medium text-text-primary block">Import Save</span>
-					<span class="text-[10px] text-text-muted">Load a save file from disk</span>
-				</div>
-			</button>
-
-			<button
-				onclick={exportBase64Save}
-				class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
-					   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
-			>
-				<span class="text-lg" aria-hidden="true">📋</span>
-				<div class="text-left flex-1">
-					<span class="text-sm font-medium text-text-primary block">Copy Save Code</span>
-					<span class="text-[10px] text-text-muted">Copy base64 save to clipboard</span>
-				</div>
-				{#if clipboardCopied}
-					<span class="text-xs text-bio-green font-semibold">✓ Copied!</span>
-				{/if}
-			</button>
-
-			<button
-				onclick={() => { showBase64Import = true; importError = ''; importSuccess = false; base64Input = ''; }}
-				class="w-full flex items-center gap-3 px-4 py-3 bg-bg-secondary/40 rounded-xl border border-white/5
-					   hover:border-white/10 transition-all active:scale-[0.98] touch-manipulation"
-			>
-				<span class="text-lg" aria-hidden="true">📝</span>
-				<div class="text-left flex-1">
-					<span class="text-sm font-medium text-text-primary block">Paste Save Code</span>
-					<span class="text-[10px] text-text-muted">Import from base64 string</span>
-				</div>
-			</button>
 		</div>
 	</section>
 
