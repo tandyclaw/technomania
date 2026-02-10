@@ -7,7 +7,7 @@ import { writable } from 'svelte/store';
 import { eventBus } from '$lib/engine/EventBus';
 import { DIVISIONS } from '$lib/divisions';
 import { formatCurrency } from '$lib/engine/BigNumber';
-import { addFloatingText } from '$lib/stores/floatingTextStore';
+// floating text removed — was tied to production:complete spam
 
 export interface ActivityEntry {
 	id: number;
@@ -44,10 +44,7 @@ function tierName(divId: string, tier: number): string {
 export function initActivityListeners(): () => void {
 	const unsubs: (() => void)[] = [];
 
-	unsubs.push(eventBus.on('production:complete', (d) => {
-		addEntry('💰', `${tierName(d.division, d.tier)} produced ${formatCurrency(d.amount)}`);
-		addFloatingText(`+${formatCurrency(d.amount)}`, d.division, d.tier);
-	}));
+	// production:complete removed — too spammy, fires every cycle
 	unsubs.push(eventBus.on('tier:unlocked', (d) => {
 		addEntry('🔓', `${tierName(d.division, d.tier)} unlocked`);
 	}));
