@@ -6,8 +6,7 @@
 	import ChiefCard from './ChiefCard.svelte';
 	import BottleneckCard from './BottleneckCard.svelte';
 	import BuyQuantityToggle from './BuyQuantityToggle.svelte';
-	import LaunchCadencePanel from './LaunchCadencePanel.svelte';
-	import ProductionRatePanel from './ProductionRatePanel.svelte';
+	// LaunchCadencePanel and ProductionRatePanel removed — flavor stats with no gameplay impact
 	import { getUnlockCost } from '$lib/engine/ProductionEngine';
 	import { ngPlusCostMultiplier } from '$lib/stores/ngPlus';
 	import { getActiveBottlenecks, resolveBottleneck, resolveBottleneckWithRP, startBottleneckWait, getBottleneckDef, type BottleneckDef } from '$lib/systems/BottleneckSystem';
@@ -172,15 +171,7 @@
 		</div>
 	{/if}
 
-	<!-- Division-specific flavor panels (T024, T028) -->
-	{#if divState.unlocked && division.id === 'spacex'}
-		<LaunchCadencePanel color={division.color} />
-	{/if}
-	{#if divState.unlocked && division.id === 'tesla'}
-		<ProductionRatePanel color={division.color} />
-	{/if}
-
-	<!-- Chief card (THE key hire mechanic) -->
+		<!-- Chief card (THE key hire mechanic) -->
 	{#if divState.unlocked}
 		<ChiefCard
 			divisionId={division.id}
