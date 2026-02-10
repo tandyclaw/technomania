@@ -272,7 +272,7 @@
 				<div class="mt-3 grid grid-cols-3 gap-2">
 					<div>
 						<div class="text-[10px] text-text-muted uppercase">Shares</div>
-						<div class="text-sm font-bold tabular-nums text-text-primary">{treasury.indexShares.toFixed(2)}</div>
+						<div class="text-sm font-bold tabular-nums text-text-primary">{formatNumber(treasury.indexShares)}</div>
 					</div>
 					<div>
 						<div class="text-[10px] text-text-muted uppercase">Value</div>
@@ -364,7 +364,7 @@
 				<div class="mt-3 grid grid-cols-3 gap-2">
 					<div>
 						<div class="text-[10px] text-text-muted uppercase">Owned</div>
-						<div class="text-sm font-bold tabular-nums text-text-primary">{treasury.btcOwned.toFixed(6)}</div>
+						<div class="text-sm font-bold tabular-nums text-text-primary">{treasury.btcOwned >= 1000 ? formatNumber(treasury.btcOwned) : treasury.btcOwned.toFixed(4)}</div>
 					</div>
 					<div>
 						<div class="text-[10px] text-text-muted uppercase">Value</div>
