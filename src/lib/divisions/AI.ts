@@ -3,7 +3,7 @@
  * From chatbots to AGI — research-hungry, power-hungry
  *
  * PROGRESSION DESIGN (balanced Feb 2026):
- * - Unlocks at $5,000 (~8.5 min) — fills the post-Manufacturing gap
+ * - Unlocks at $5,000 (~17 min) — fills the post-Manufacturing gap
  * - Heavy power consumer (data centers)
  * - Medium-fast cycles (software ships faster than hardware)
  * - Revenue scales aggressively at higher tiers
@@ -22,7 +22,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		config: {
 			baseCost: 5000,
 			baseRevenue: 800,
-			cycleDuration: 3,
+			cycleDuration: 6,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
 		}
@@ -36,7 +36,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		config: {
 			baseCost: 50000,
 			baseRevenue: 8000,
-			cycleDuration: 8,
+			cycleDuration: 16,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
 		}
@@ -50,7 +50,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		config: {
 			baseCost: 500000,
 			baseRevenue: 80000,
-			cycleDuration: 20,
+			cycleDuration: 40,
 			costMultiplier: 1.13,
 			revenueMultiplier: 1.0
 		}
@@ -64,7 +64,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		config: {
 			baseCost: 5000000,
 			baseRevenue: 800000,
-			cycleDuration: 50,
+			cycleDuration: 100,
 			costMultiplier: 1.14,
 			revenueMultiplier: 1.0
 		}
@@ -78,7 +78,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		config: {
 			baseCost: 50000000,
 			baseRevenue: 8000000,
-			cycleDuration: 120,
+			cycleDuration: 240,
 			costMultiplier: 1.16,
 			revenueMultiplier: 1.0
 		}
@@ -92,7 +92,7 @@ export const AI_TIERS: { name: string; description: string; tooltip: string; fla
 		config: {
 			baseCost: 500000000,
 			baseRevenue: 100000000,
-			cycleDuration: 300,
+			cycleDuration: 600,
 			costMultiplier: 1.20,
 			revenueMultiplier: 1.0
 		}

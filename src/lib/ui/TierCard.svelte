@@ -529,10 +529,10 @@
 
 	.tier-card {
 		-webkit-tap-highlight-color: transparent;
-		/* PERF: Promote to own layer so animations (scale, box-shadow) don't
-		   trigger layout recalc on siblings. 36 cards × 10 ticks/sec = 360 potential repaints. */
-		will-change: transform;
-		contain: layout style;
+		/* NOTE: Removed will-change:transform + contain:layout — they created 36+
+		   compositing layers which caused iOS Safari to intermittently drop touch
+		   events on buy buttons. contain:style is safe (scopes counters only). */
+		contain: style;
 	}
 
 	.legendary-pulse {

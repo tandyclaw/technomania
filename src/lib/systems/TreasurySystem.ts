@@ -380,12 +380,14 @@ export function tickTreasury(deltaMs: number): void {
 			
 			if (treasury.memePumpMs <= 0) {
 				treasury.memePumpMultiplier = 1;
-				setTimeout(() => {
-					addToast('info', '📉', 'Hype Fading', 'Meme pump wearing off...', {
-						color: '#C2A633',
-						durationMs: 3000,
-					});
-				}, 0);
+				if (treasury.dogeOwned > 0) {
+					setTimeout(() => {
+						addToast('info', '📉', 'Hype Fading', 'Meme pump wearing off...', {
+							color: '#C2A633',
+							durationMs: 3000,
+						});
+					}, 0);
+				}
 			}
 		}
 		
@@ -398,21 +400,25 @@ export function tickTreasury(deltaMs: number): void {
 			if (btcRoll < BTC_CRASH_PROB) {
 				const crash = 0.7 + Math.random() * 0.1; // -20% to -30%
 				treasury.btcPrice *= crash;
-				setTimeout(() => {
-					addToast('warning', '📉', 'BTC Crash!', `Price dropped to ${formatCurrency(treasury.btcPrice)}`, {
-						color: '#FF4444',
-						durationMs: 4000,
-					});
-				}, 0);
+				if (treasury.btcOwned > 0) {
+					setTimeout(() => {
+						addToast('warning', '📉', 'BTC Crash!', `Price dropped to ${formatCurrency(treasury.btcPrice)}`, {
+							color: '#FF4444',
+							durationMs: 4000,
+						});
+					}, 0);
+				}
 			} else if (btcRoll < BTC_CRASH_PROB + BTC_MOON_PROB) {
 				const moon = 1.2 + Math.random() * 0.2; // +20% to +40%
 				treasury.btcPrice *= moon;
-				setTimeout(() => {
-					addToast('success', '🚀', 'BTC Moon!', `Price surged to ${formatCurrency(treasury.btcPrice)}`, {
-						color: '#F7931A',
-						durationMs: 4000,
-					});
-				}, 0);
+				if (treasury.btcOwned > 0) {
+					setTimeout(() => {
+						addToast('success', '🚀', 'BTC Moon!', `Price surged to ${formatCurrency(treasury.btcPrice)}`, {
+							color: '#F7931A',
+							durationMs: 4000,
+						});
+					}, 0);
+				}
 			}
 			
 			// Meme coin events
@@ -424,21 +430,25 @@ export function tickTreasury(deltaMs: number): void {
 				treasury.memePumpMs = duration;
 				const msg = MEME_MESSAGES[Math.floor(Math.random() * MEME_MESSAGES.length)];
 				const pct = Math.round((mult - 1) * 100);
-				setTimeout(() => {
-					addToast('success', '🐕', `Meme Pump! +${pct}%`, msg, {
-						color: '#C2A633',
-						durationMs: 5000,
-					});
-				}, 0);
+				if (treasury.dogeOwned > 0) {
+					setTimeout(() => {
+						addToast('success', '🐕', `Meme Pump! +${pct}%`, msg, {
+							color: '#C2A633',
+							durationMs: 5000,
+						});
+					}, 0);
+				}
 			} else if (dogeRoll < MEME_PUMP_PROB + DOGE_CRASH_PROB && treasury.memePumpMs <= 0) {
 				const crash = 0.5 + Math.random() * 0.25; // -25% to -50%
 				treasury.dogePrice *= crash;
-				setTimeout(() => {
-					addToast('warning', '📉', 'Meme Dump!', `Price crashed to $${treasury.dogePrice.toFixed(4)}`, {
-						color: '#FF4444',
-						durationMs: 4000,
-					});
-				}, 0);
+				if (treasury.dogeOwned > 0) {
+					setTimeout(() => {
+						addToast('warning', '📉', 'Meme Dump!', `Price crashed to $${treasury.dogePrice.toFixed(4)}`, {
+							color: '#FF4444',
+							durationMs: 4000,
+						});
+					}, 0);
+				}
 			}
 		}
 		

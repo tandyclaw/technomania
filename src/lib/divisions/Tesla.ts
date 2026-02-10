@@ -4,7 +4,7 @@
  *
  * PROGRESSION: cars → mass production → vertical integration → orbital → colony kits
  *
- * - Unlocks at $2,500 (reachable ~4.5 min)
+ * - Unlocks at $2,500 (reachable ~9 min)
  * - Medium cycle times (manufacturing is factory work)
  * - This becomes the MONEY ENGINE at scale
  * - Highest revenue potential but steep late-game costs
@@ -23,7 +23,7 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		config: {
 			baseCost: 15,
 			baseRevenue: 3,
-			cycleDuration: 3,
+			cycleDuration: 6,
 			costMultiplier: 1.08,
 			revenueMultiplier: 1.0
 		}
@@ -37,7 +37,7 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		config: {
 			baseCost: 500,
 			baseRevenue: 90,
-			cycleDuration: 8,
+			cycleDuration: 16,
 			costMultiplier: 1.10,
 			revenueMultiplier: 1.0
 		}
@@ -51,7 +51,7 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		config: {
 			baseCost: 25000,
 			baseRevenue: 5000,
-			cycleDuration: 18,
+			cycleDuration: 36,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
 		}
@@ -65,7 +65,7 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		config: {
 			baseCost: 5000000,
 			baseRevenue: 1000000,
-			cycleDuration: 40,
+			cycleDuration: 80,
 			costMultiplier: 1.13,
 			revenueMultiplier: 1.0
 		}
@@ -79,7 +79,7 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		config: {
 			baseCost: 500000000,
 			baseRevenue: 100000000,
-			cycleDuration: 100,
+			cycleDuration: 200,
 			costMultiplier: 1.15,
 			revenueMultiplier: 1.0
 		}
@@ -93,7 +93,7 @@ export const TESLA_TIERS: { name: string; description: string; tooltip: string; 
 		config: {
 			baseCost: 50000000000,
 			baseRevenue: 10000000000,
-			cycleDuration: 200,
+			cycleDuration: 400,
 			costMultiplier: 1.18,
 			revenueMultiplier: 1.0
 		}

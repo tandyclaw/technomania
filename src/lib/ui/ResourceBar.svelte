@@ -41,7 +41,7 @@
 	}
 </script>
 
-<svelte:window on:click={closePowerTooltip} />
+<svelte:window onclick={closePowerTooltip} />
 
 <header
 	class="fixed top-0 left-0 right-0 z-50 bg-bg-primary/90 backdrop-blur-md border-b border-white/5"
@@ -94,7 +94,7 @@
 				class="resource-btn flex items-center gap-1.5 min-w-0 w-full justify-end"
 				class:deficit-pulse={deficitPulse}
 				aria-label="Power usage — tap for details"
-				on:click|stopPropagation={togglePowerTooltip}
+				onclick={(e) => { e.stopPropagation(); togglePowerTooltip(); }}
 			>
 				<span class="text-base leading-none shrink-0" aria-hidden="true">⚡</span>
 				<div class="flex flex-col min-w-0 text-left">

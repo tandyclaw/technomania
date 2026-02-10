@@ -3,7 +3,7 @@
  * From test bores to hyperloop — slow cycles, massive revenue
  *
  * PROGRESSION DESIGN (balanced Feb 2026):
- * - Unlocks at $12,000 (~12 min) — keeps mid-game momentum
+ * - Unlocks at $12,000 (~24 min) — keeps mid-game momentum
  * - Slowest cycles in the game (infrastructure projects take time)
  * - Highest per-cycle revenue to compensate
  * - Heavy power consumer (boring machines eat electricity)
@@ -22,7 +22,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		config: {
 			baseCost: 12000,
 			baseRevenue: 2200,
-			cycleDuration: 5,
+			cycleDuration: 10,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
 		}
@@ -36,7 +36,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		config: {
 			baseCost: 120000,
 			baseRevenue: 19200,
-			cycleDuration: 12,
+			cycleDuration: 24,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
 		}
@@ -50,7 +50,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		config: {
 			baseCost: 1200000,
 			baseRevenue: 180000,
-			cycleDuration: 30,
+			cycleDuration: 60,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
 		}
@@ -64,7 +64,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		config: {
 			baseCost: 8000000,
 			baseRevenue: 1200000,
-			cycleDuration: 70,
+			cycleDuration: 140,
 			costMultiplier: 1.14,
 			revenueMultiplier: 1.0
 		}
@@ -78,7 +78,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		config: {
 			baseCost: 120000000,
 			baseRevenue: 18000000,
-			cycleDuration: 160,
+			cycleDuration: 320,
 			costMultiplier: 1.16,
 			revenueMultiplier: 1.0
 		}
@@ -92,7 +92,7 @@ export const TUNNELS_TIERS: { name: string; description: string; tooltip: string
 		config: {
 			baseCost: 1200000000,
 			baseRevenue: 240000000,
-			cycleDuration: 360,
+			cycleDuration: 720,
 			costMultiplier: 1.20,
 			revenueMultiplier: 1.0
 		}

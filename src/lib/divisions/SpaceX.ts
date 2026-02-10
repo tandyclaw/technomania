@@ -3,7 +3,7 @@
  * From small orbital rockets to Mars landers
  *
  * PROGRESSION DESIGN (verified Feb 2026):
- * - Unlocks at $500 (~1.5 min of Energy play)
+ * - Unlocks at $500 (~3 min of Energy play)
  * - Slower cycles than Energy (launches are events, not taps)
  * - Higher revenue per cycle compensates for longer waits
  * - Power CONSUMER — need Energy infrastructure to support
@@ -22,7 +22,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		config: {
 			baseCost: 30,
 			baseRevenue: 6,
-			cycleDuration: 2.5,      // Launches take time
+			cycleDuration: 5,        // Launches take time
 			costMultiplier: 1.08,
 			revenueMultiplier: 1.0
 		}
@@ -36,7 +36,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		config: {
 			baseCost: 250,
 			baseRevenue: 50,
-			cycleDuration: 6,
+			cycleDuration: 12,
 			costMultiplier: 1.10,
 			revenueMultiplier: 1.0
 		}
@@ -50,7 +50,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		config: {
 			baseCost: 2000,
 			baseRevenue: 400,
-			cycleDuration: 15,
+			cycleDuration: 30,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
 		}
@@ -64,7 +64,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		config: {
 			baseCost: 15000,
 			baseRevenue: 3000,
-			cycleDuration: 35,
+			cycleDuration: 70,
 			costMultiplier: 1.13,
 			revenueMultiplier: 1.0
 		}
@@ -78,7 +78,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		config: {
 			baseCost: 120000,
 			baseRevenue: 25000,
-			cycleDuration: 90,
+			cycleDuration: 180,
 			costMultiplier: 1.15,
 			revenueMultiplier: 1.0
 		}
@@ -92,7 +92,7 @@ export const SPACEX_TIERS: { name: string; description: string; tooltip: string;
 		config: {
 			baseCost: 1000000,
 			baseRevenue: 200000,
-			cycleDuration: 180,      // 3 minutes — a real event
+			cycleDuration: 360,      // 6 minutes — a real event
 			costMultiplier: 1.17,
 			revenueMultiplier: 1.0
 		}

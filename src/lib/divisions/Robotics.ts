@@ -3,7 +3,7 @@
  * From assembly bots to general purpose robots — slow cycles, heavy manufacturing
  *
  * PROGRESSION DESIGN (balanced Feb 2026):
- * - Unlocks at $40,000 (~16 min) — final early-game unlock
+ * - Unlocks at $40,000 (~32 min) — final early-game unlock
  * - Slower cycles (manufacturing is physical)
  * - Higher revenue to compensate
  * - Power consumer (factories need electricity)
@@ -22,7 +22,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		config: {
 			baseCost: 40000,
 			baseRevenue: 6000,
-			cycleDuration: 6,
+			cycleDuration: 12,
 			costMultiplier: 1.09,
 			revenueMultiplier: 1.0
 		}
@@ -36,7 +36,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		config: {
 			baseCost: 400000,
 			baseRevenue: 56000,
-			cycleDuration: 14,
+			cycleDuration: 28,
 			costMultiplier: 1.10,
 			revenueMultiplier: 1.0
 		}
@@ -50,7 +50,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		config: {
 			baseCost: 2500000,
 			baseRevenue: 350000,
-			cycleDuration: 35,
+			cycleDuration: 70,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
 		}
@@ -64,7 +64,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		config: {
 			baseCost: 40000000,
 			baseRevenue: 5000000,
-			cycleDuration: 80,
+			cycleDuration: 160,
 			costMultiplier: 1.11,
 			revenueMultiplier: 1.0
 		}
@@ -78,7 +78,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		config: {
 			baseCost: 400000000,
 			baseRevenue: 50000000,
-			cycleDuration: 180,
+			cycleDuration: 360,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
 		}
@@ -92,7 +92,7 @@ export const ROBOTICS_TIERS: { name: string; description: string; tooltip: strin
 		config: {
 			baseCost: 4000000000,
 			baseRevenue: 600000000,
-			cycleDuration: 400,
+			cycleDuration: 800,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
 		}

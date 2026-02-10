@@ -24,7 +24,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		config: {
 			baseCost: 5,
 			baseRevenue: 1,
-			cycleDuration: 0.6,
+			cycleDuration: 1.2,
 			costMultiplier: 1.07,
 			revenueMultiplier: 1.0
 		}
@@ -38,7 +38,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		config: {
 			baseCost: 75,
 			baseRevenue: 10,
-			cycleDuration: 1.5,
+			cycleDuration: 3,
 			costMultiplier: 1.08,
 			revenueMultiplier: 1.0
 		}
@@ -52,7 +52,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		config: {
 			baseCost: 600,
 			baseRevenue: 75,
-			cycleDuration: 4,
+			cycleDuration: 8,
 			costMultiplier: 1.10,
 			revenueMultiplier: 1.0
 		}
@@ -66,7 +66,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		config: {
 			baseCost: 5000,
 			baseRevenue: 600,
-			cycleDuration: 12,
+			cycleDuration: 24,
 			costMultiplier: 1.12,
 			revenueMultiplier: 1.0
 		}
@@ -80,7 +80,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		config: {
 			baseCost: 40000,
 			baseRevenue: 5000,
-			cycleDuration: 30,
+			cycleDuration: 60,
 			costMultiplier: 1.14,
 			revenueMultiplier: 1.0
 		}
@@ -94,7 +94,7 @@ export const TESLA_ENERGY_TIERS: { name: string; description: string; tooltip: s
 		config: {
 			baseCost: 350000,
 			baseRevenue: 45000,
-			cycleDuration: 60,
+			cycleDuration: 120,
 			costMultiplier: 1.16,
 			revenueMultiplier: 1.0
 		}

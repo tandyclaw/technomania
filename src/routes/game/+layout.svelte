@@ -198,8 +198,10 @@
 	function handleTouchMove(e: TouchEvent) {
 		if (!pulling) return;
 		const dy = e.touches[0].clientY - pullStartY;
-		if (dy > 0) {
-			pullDistance = Math.min(dy * 0.4, 80);
+		// Dead zone: ignore < 10px to prevent micro-movements from applying
+		// transforms that can confuse mobile browsers' tap detection
+		if (dy > 10) {
+			pullDistance = Math.min((dy - 10) * 0.4, 80);
 		}
 	}
 
