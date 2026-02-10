@@ -3,7 +3,7 @@
 	import { gameManager } from '$lib/engine/GameManager';
 	import { get } from 'svelte/store';
 	import { formatCurrency, formatNumber } from '$lib/engine/BigNumber';
-	import { listBackups, restoreBackup, getCloudSaveStatus, type BackupInfo } from '$lib/engine/SaveManager';
+	import { listBackups, restoreBackup, type BackupInfo } from '$lib/engine/SaveManager';
 	import { setMusicEnabled, setMusicVolume } from '$lib/systems/MusicManager';
 	import { tutorialStore } from '$lib/stores/tutorialStore';
 	import { isBrowserNotificationsEnabled, setBrowserNotificationsEnabled, requestPermissionIfNeeded } from '$lib/systems/BrowserNotificationService';
@@ -19,9 +19,6 @@
 	let backupRestoreSuccess = $state(false);
 	let backupRestoreError = $state('');
 	let showRestoreConfirm = $state<number | null>(null);
-
-	// Cloud save stub
-	const cloudStatus = getCloudSaveStatus();
 
 	async function loadBackups() {
 		backupLoading = true;
@@ -482,37 +479,6 @@
 		</div>
 	</section>
 
-	<!-- Cloud Save (Stub) -->
-	<section class="space-y-1">
-		<h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Cloud Save</h2>
-		<div class="bg-bg-secondary/40 rounded-xl border border-white/5 p-4 space-y-3 opacity-60">
-			<div class="flex items-center gap-3">
-				<span class="text-lg" aria-hidden="true">☁️</span>
-				<div class="flex-1">
-					<span class="text-sm font-medium text-text-primary block">Cloud Sync</span>
-					<span class="text-[10px] text-text-muted">{cloudStatus.message}</span>
-				</div>
-				<span class="text-[9px] px-2 py-1 rounded-full bg-bg-tertiary text-text-muted font-semibold uppercase">Coming Soon</span>
-			</div>
-			<div class="flex gap-2">
-				<button
-					disabled
-					class="flex-1 py-2.5 px-3 rounded-lg bg-bg-tertiary/30 border border-white/5
-						   text-xs font-medium text-text-muted cursor-not-allowed"
-				>
-					⬆️ Upload
-				</button>
-				<button
-					disabled
-					class="flex-1 py-2.5 px-3 rounded-lg bg-bg-tertiary/30 border border-white/5
-						   text-xs font-medium text-text-muted cursor-not-allowed"
-				>
-					⬇️ Download
-				</button>
-			</div>
-		</div>
-	</section>
-
 	<!-- Danger Zone -->
 	<section class="space-y-1">
 		<h2 class="text-xs font-semibold text-rocket-red uppercase tracking-wider mb-2">Danger Zone</h2>
@@ -610,109 +576,6 @@
 	</div>
 {/if}
 
-<!-- Import Save Modal -->
-{#if showImportModal}
-	<div
-		class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] px-4"
-		role="dialog"
-		aria-modal="true"
-		aria-label="Import save file"
-	>
-		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-white/10">
-			<div class="text-center">
-				<div class="text-4xl mb-3">📥</div>
-				<h2 class="text-lg font-bold text-text-primary mb-2">Import Save</h2>
-				<p class="text-sm text-text-secondary mb-4">
-					Select a Moonshot save file (.json) to load.
-				</p>
-			</div>
-
-			{#if importSuccess}
-				<div class="text-center py-4">
-					<span class="text-2xl">✅</span>
-					<p class="text-sm text-bio-green font-semibold mt-2">Save imported successfully!</p>
-				</div>
-			{:else}
-				<label
-					class="block w-full py-8 px-4 rounded-xl border-2 border-dashed border-white/10
-						   hover:border-electric-blue/50 transition-colors cursor-pointer text-center"
-				>
-					<span class="text-sm text-text-secondary">Tap to select file</span>
-					<input
-						type="file"
-						accept=".json,application/json"
-						onchange={handleImportFile}
-						class="hidden"
-					/>
-				</label>
-				{#if importError}
-					<p class="text-xs text-rocket-red mt-2 text-center">{importError}</p>
-				{/if}
-			{/if}
-
-			<button
-				onclick={() => { showImportModal = false; importError = ''; importSuccess = false; }}
-				class="w-full mt-4 py-3 px-4 rounded-xl bg-bg-tertiary text-text-secondary font-semibold text-sm
-					   transition-all active:scale-95 touch-manipulation"
-			>
-				{importSuccess ? 'Done' : 'Cancel'}
-			</button>
-		</div>
-	</div>
-{/if}
-
-<!-- Base64 Import Modal -->
-{#if showBase64Import}
-	<div
-		class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] px-4"
-		role="dialog"
-		aria-modal="true"
-		aria-label="Import save code"
-	>
-		<div class="bg-bg-secondary rounded-2xl p-6 max-w-sm w-full border border-white/10">
-			<div class="text-center">
-				<div class="text-4xl mb-3">📝</div>
-				<h2 class="text-lg font-bold text-text-primary mb-2">Import Save Code</h2>
-				<p class="text-sm text-text-secondary mb-4">
-					Paste a base64 save code below. This will overwrite your current save.
-				</p>
-			</div>
-
-			{#if importSuccess}
-				<div class="text-center py-4">
-					<span class="text-2xl">✅</span>
-					<p class="text-sm text-bio-green font-semibold mt-2">Save imported successfully!</p>
-				</div>
-			{:else}
-				<textarea
-					bind:value={base64Input}
-					placeholder="Paste save code here..."
-					class="w-full h-24 px-3 py-2 rounded-xl bg-bg-tertiary border border-white/10 text-sm text-text-primary
-						   placeholder:text-text-muted/50 resize-none focus:outline-none focus:border-electric-blue/50"
-				></textarea>
-				{#if importError}
-					<p class="text-xs text-rocket-red mt-2 text-center">{importError}</p>
-				{/if}
-				<button
-					onclick={handleBase64Import}
-					class="w-full mt-3 py-3 px-4 rounded-xl bg-electric-blue text-white font-semibold text-sm
-						   transition-all active:scale-95 touch-manipulation"
-				>
-					Import & Overwrite
-				</button>
-			{/if}
-
-			<button
-				onclick={() => { showBase64Import = false; importError = ''; importSuccess = false; }}
-				class="w-full mt-2 py-3 px-4 rounded-xl bg-bg-tertiary text-text-secondary font-semibold text-sm
-					   transition-all active:scale-95 touch-manipulation"
-			>
-				{importSuccess ? 'Done' : 'Cancel'}
-			</button>
-		</div>
-	</div>
-{/if}
-
 <!-- Restore Backup Confirmation Modal -->
 {#if showRestoreConfirm !== null}
 	<div
@@ -750,10 +613,6 @@
 			</div>
 		</div>
 	</div>
-{/if}
-
-{#if showShareCard}
-	<ShareCard milestone="custom" onClose={() => showShareCard = false} />
 {/if}
 
 <style>
