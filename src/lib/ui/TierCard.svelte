@@ -152,11 +152,9 @@
 	// Track previous producing state to detect completion
 	let prevProducing = $state(false);
 	let prevProgress = $state(0);
-	let completionPulse = $state(false);
 	let kachingFlash = $state(false);
 
 	// PERF: Track timeouts for cleanup
-	let pulseTimeout: ReturnType<typeof setTimeout> | undefined;
 	let flashTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	// Listen for production completion — only show popups for MANUAL taps (no chief)
@@ -171,11 +169,7 @@
 
 		if (justCompleted || cycleCompleted) {
 			if (chiefLevel === 0) {
-				// Manual tap: full pulse + flash
-				completionPulse = true;
-				clearTimeout(pulseTimeout);
-				pulseTimeout = setTimeout(() => { completionPulse = false; }, 600);
-
+				// Manual tap: kaching flash (no scale animations)
 				kachingFlash = true;
 				clearTimeout(flashTimeout);
 				flashTimeout = setTimeout(() => { kachingFlash = false; }, 400);
@@ -262,7 +256,6 @@
 				: 'bg-bg-secondary/60 border-white/5'
 			: 'bg-bg-secondary/20 border-white/[0.02] opacity-40'}
 		{rarity.name === 'legendary' ? 'legendary-pulse' : ''}
-		{completionPulse ? 'completion-pulse' : ''}
 		{kachingFlash ? 'kaching-flash' : ''}
 		{purchaseGlow ? 'purchase-glow' : ''}"
 	style="{tier.unlocked && tier.count > 0
@@ -540,21 +533,6 @@
 		animation: legendaryGlow 2s ease-in-out infinite;
 	}
 
-	.completion-pulse {
-		animation: completionFlash 0.6s ease-out;
-	}
-
-	.completion-pulse {
-		animation: completionFlash 0.6s ease-out;
-	}
-
-	@keyframes completionFlash {
-		0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
-		15% { transform: scale(1.025); box-shadow: 0 0 25px 6px rgba(255, 255, 255, 0.18); }
-		40% { transform: scale(0.995); }
-		100% { transform: scale(1); box-shadow: none; }
-	}
-
 	.kaching-flash {
 		animation: kachingGold 0.4s ease-out;
 	}
@@ -569,10 +547,9 @@
 	}
 
 	@keyframes purchaseBounce {
-		0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(68, 255, 136, 0.5); }
-		25% { transform: scale(1.03); box-shadow: 0 0 20px 4px rgba(68, 255, 136, 0.3); }
-		50% { transform: scale(0.985); }
-		100% { transform: scale(1); box-shadow: none; }
+		0% { box-shadow: 0 0 0 0 rgba(68, 255, 136, 0.5); }
+		25% { box-shadow: 0 0 20px 4px rgba(68, 255, 136, 0.3); }
+		100% { box-shadow: none; }
 	}
 
 	.count-bump {
