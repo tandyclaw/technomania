@@ -447,7 +447,18 @@ export function tapProduce(divisionId: string, tierIndex: number): boolean {
 		if (tier.producing) return state;
 
 		// Clone state and start production
+		// NOTE: cloneState may skip cloning this division if no tiers are producing
+		// and chiefLevel is 0 (the common case for first manual tap). We must ensure
+		// the target division is deep-cloned so Svelte detects the reference change.
 		const newState = cloneState(state);
+		const existingDiv = newState.divisions[divisionId as DivisionId];
+		if (existingDiv === state.divisions[divisionId as DivisionId]) {
+			// Division wasn't cloned — do it now
+			newState.divisions[divisionId as DivisionId] = {
+				...existingDiv,
+				tiers: existingDiv.tiers.map(t => ({ ...t })),
+			} as typeof existingDiv;
+		}
 		const newTier = newState.divisions[divisionId as DivisionId].tiers[tierIndex];
 		newTier.producing = true;
 		newTier.progress = 0;

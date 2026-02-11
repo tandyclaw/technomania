@@ -385,8 +385,8 @@
 								{timeDisplay}
 							</span>
 						{:else if tier.count > 0 && chiefLevel === 0}
-							<span class="text-[10px] text-text-muted/40 uppercase tracking-wider font-medium">
-								Tap to produce
+							<span class="text-[10px] text-text-muted uppercase tracking-wider font-medium animate-pulse">
+								▶ Tap to produce
 							</span>
 						{:else}
 							<span class="text-[10px] text-transparent">—</span>
