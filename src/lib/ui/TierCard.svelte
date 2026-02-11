@@ -92,9 +92,9 @@
 	// Buy button label
 	let buyLabel = $derived.by(() => {
 		if (tier.count === 0 && effectiveQty <= 1) return 'Build';
-		if (qty === 'max') return effectiveQty > 0 ? `Buy ×${effectiveQty}` : 'Buy';
-		if (qty === 1) return tier.count === 0 ? 'Build' : 'Buy';
-		return `Buy ×${effectiveQty}`;
+		if (qty === 'max') return effectiveQty > 0 ? `Upgrade ×${effectiveQty}` : 'Upgrade';
+		if (qty === 1) return tier.count === 0 ? 'Build' : 'Upgrade';
+		return `Upgrade ×${effectiveQty}`;
 	});
 
 	// Format cycle duration for display
@@ -233,6 +233,7 @@
 
 	function handleBuy(event: MouseEvent) {
 		event.stopPropagation();
+		if (!canAfford) return;
 		// Get position for spark effect
 		const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
 		const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
@@ -409,8 +410,8 @@
 					</div>
 				</div>
 
-				<!-- Buy button -->
-				<div class="mt-1.5">
+				<!-- Buy button — wrapper div stops propagation even when button is disabled -->
+				<div class="mt-1.5" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="presentation">
 					<button
 						onclick={handleBuy}
 						data-tutorial-id="tier-buy-{tierIndex}"

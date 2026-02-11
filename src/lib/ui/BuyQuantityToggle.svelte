@@ -15,7 +15,7 @@
 </script>
 
 <div class="flex items-center gap-1">
-	<span class="text-[10px] text-text-muted uppercase tracking-wider font-semibold mr-1">Buy</span>
+	<span class="text-[10px] text-text-muted uppercase tracking-wider font-semibold mr-1">Upgrade</span>
 	{#each options as opt}
 		{@const isActive = $buyQuantity === opt}
 		<button
@@ -25,7 +25,7 @@
 			style={isActive
 				? `background-color: ${color}25; color: ${color}; border: 1px solid ${color}35;`
 				: 'background-color: var(--color-bg-tertiary); color: var(--color-text-muted); border: 1px solid transparent;'}
-			aria-label="Buy quantity: {getLabel(opt)}"
+			aria-label="Upgrade quantity: {getLabel(opt)}"
 			aria-pressed={isActive}
 		>
 			{getLabel(opt)}

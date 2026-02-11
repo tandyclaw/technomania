@@ -4,47 +4,20 @@
 
 ---
 
-## 🔴 P0 — Critical Fixes ✅ ALL DONE
+## 🔴 Current Sprint — Master Feedback 2026-02-11
 
 | ID | Description | Status |
 |----|-------------|--------|
-| F01 | Remove Workers mechanic completely | ✅ DONE |
-| F02 | Remove Division Prestige (stars) completely | ✅ DONE |
-| F03 | Fix scrolling — padding for fixed bars | ✅ DONE |
-| F04 | Resource bar buttons → correct pages | ✅ DONE |
-| F05 | Fix tier card height change on produce tap | ✅ DONE |
-| F06 | Reduce notifications — special events only | ✅ DONE |
-| F07 | Make notification X button bigger (44×44px) | ✅ DONE |
-| F08 | Lean out tier cards — compact, mobile-friendly | ✅ DONE |
+| B01 | **Seasonal banner text cut off** — Valentine's description truncated on mobile. Make banner text always fully visible (wrap, not truncate). Consider making description 2 lines max with larger font or shorter text | PLANNED |
+| B02 | **Buy/Upgrade button click-through on disabled state** — When buy button is disabled (can't afford), clicking it still produces a visual effect / seems to "do something". Disabled buttons should be completely inert — no click handler, no visual feedback, no propagation to parent card | PLANNED |
+| B03 | **First click on tier not registering** — Nuclear reactor (first tier) needs 4-5 clicks before anything happens. Debug: check if first tap is being swallowed by tutorial, long-press detector, ripple, or other event handlers. Ensure first tap always triggers production immediately | PLANNED |
+| B04 | **Production doesn't show until manually tapped** — After building a tier, the production progress bar doesn't appear until you tap. If you have count >= 1, the tier should auto-start producing (or clearly show "Tap to produce" state with visible progress area) | PLANNED |
+| B05 | **Rename "Buy" → "Upgrade" everywhere** — Change all user-facing "Buy" labels to "Upgrade". Includes: TierCard buy button, BuyQuantityToggle label, TreasuryView "Buy Shares"/"Buy BTC"/"Buy Meme Coins", about page, any aria-labels. Do NOT change internal function names or variable names — only user-facing text | PLANNED |
+| B06 | **Unlock button QA** — Verify all unlock buttons work: division unlocks, tier unlocks, chief hire buttons. Test the full flow from fresh game: Energy → first tier unlock → build → produce → unlock next tier. Document any broken paths | PLANNED |
+| B07 | **Disabled buy button should not propagate click to parent** — Currently clicking disabled buy button may trigger the parent tier card's tap-to-produce handler via event bubbling. Add `event.stopPropagation()` to disabled button clicks, or prevent the event entirely | PLANNED |
 
-## 🟡 P1 — Polish ✅ ALL DONE
+---
 
-| ID | Description | Status |
-|----|-------------|--------|
-| P01 | Full text/icon congruency sweep | ✅ DONE |
-| P02 | Homepage cleanup — minimal, accurate | ✅ DONE |
+## ✅ Completed (previous sprints)
 
-## 🟢 P2 — QA ✅ ALL DONE
-
-| ID | Description | Status |
-|----|-------------|--------|
-| QA01 | Fresh player playtest (first 15 min) | ✅ DONE |
-| QA02 | Integration build check (#4 — all clean) | ✅ DONE |
-| QA03 | Edge case audit (prestige, saves, formatting) | ✅ DONE |
-| QA04 | Save migration & corruption testing | ✅ DONE |
-| QA05 | UI view reachability test | ✅ DONE |
-| QA06 | Post-removal QA (workers/stars stubs) | ✅ DONE |
-| QA07 | Treasury QA — index fund sell bug fixed | ✅ DONE |
-| QA08 | Achievements QA — 3 bugs fixed, 105 reviewed | ✅ DONE |
-| QA09 | Visual look & feel — padding, scrim, orphans fixed | ✅ DONE |
-| QA10 | Mid-game balance — RP rates, dead zones fixed | ✅ DONE |
-| QA11 | Prestige — warp drive wired, threshold fixed | ✅ DONE |
-| QA12 | Seasonal events — Black Friday bleed fixed | ✅ DONE |
-| QA13 | Performance — ticker derivation, clone optimization | ✅ DONE |
-| QA14 | Theme — flash fix, WCAG contrast fix | ✅ DONE |
-| QA15 | Cross-browser — dvh fallback, webkit prefix | ✅ DONE |
-| QA16 | Final integration — console.logs removed | ✅ DONE |
-
-## 🚀 Ready to Deploy
-
-All tasks complete. Run `npm run deploy` to push to Cloudflare Pages.
+All previous F01-F08, P01-P02, QA01-QA16 tasks complete. See git history.

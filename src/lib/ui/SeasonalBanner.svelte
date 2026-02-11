@@ -25,11 +25,11 @@
 			{/each}
 		</div>
 
-		<div class="relative flex items-center gap-3">
+		<div class="relative flex items-start gap-3">
 			<span class="text-2xl flex-shrink-0">{$activeSeasonalEvent.icon}</span>
 			<div class="flex-1 min-w-0">
 				<div class="font-bold text-white text-sm leading-tight">{$activeSeasonalEvent.name}</div>
-				<div class="text-white/80 text-xs leading-snug mt-0.5">{$activeSeasonalEvent.description}</div>
+				<div class="text-white/80 text-xs leading-snug mt-0.5 break-words">{$activeSeasonalEvent.description}</div>
 				<div class="flex gap-2 mt-1">
 					{#if $activeSeasonalEvent.revenueMultiplier > 1}
 						<span class="text-[10px] bg-white/20 rounded-full px-2 py-0.5 text-white font-medium">
