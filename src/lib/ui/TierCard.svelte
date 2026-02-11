@@ -142,6 +142,8 @@
 
 	// Purchase glow state
 	let purchaseGlow = $state(false);
+	let countBump = $state(false);
+	let costFlash = $state(false);
 
 	// Payout popup state
 	let payoutPopups = $state<{ id: number; amount: string; x: number; y: number }[]>([]);
@@ -240,9 +242,13 @@
 		const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
 		triggerParticle('spark', x, y);
 
-		// Purchase glow + bounce
+		// Purchase glow + bounce + count bump + cost flash
 		purchaseGlow = true;
+		countBump = true;
+		costFlash = true;
 		setTimeout(() => { purchaseGlow = false; }, 500);
+		setTimeout(() => { countBump = false; }, 400);
+		setTimeout(() => { costFlash = false; }, 400);
 
 		onBuy?.();
 	}
@@ -300,7 +306,7 @@
 			</div>
 			{#if tier.unlocked && tier.count > 0}
 				<span
-					class="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full"
+					class="text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full {countBump ? 'count-bump' : ''}"
 					style="background-color: {color}15; color: {color};"
 				>
 					{#if nextMilestone}
@@ -426,7 +432,7 @@
 						<span>
 							{buyLabel}
 						</span>
-						<span class="font-mono tabular-nums opacity-80">
+						<span class="font-mono tabular-nums opacity-80 {costFlash ? 'cost-flash' : ''}">
 							{costDisplay}
 						</span>
 					</button>
@@ -567,6 +573,26 @@
 		25% { transform: scale(1.03); box-shadow: 0 0 20px 4px rgba(68, 255, 136, 0.3); }
 		50% { transform: scale(0.985); }
 		100% { transform: scale(1); box-shadow: none; }
+	}
+
+	.count-bump {
+		animation: countBump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	@keyframes countBump {
+		0% { transform: scale(1); }
+		30% { transform: scale(1.5); }
+		60% { transform: scale(0.9); }
+		100% { transform: scale(1); }
+	}
+
+	.cost-flash {
+		animation: costFlash 0.4s ease-out;
+	}
+
+	@keyframes costFlash {
+		0% { color: #4ADE80; transform: scale(1.1); }
+		100% { color: inherit; transform: scale(1); }
 	}
 
 	@keyframes legendaryGlow {

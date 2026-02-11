@@ -236,14 +236,13 @@ function cloneState(state: GameState): GameState {
 
 	for (const divId of DIVISION_IDS) {
 		const div = state.divisions[divId];
-		// Clone divisions that might be mutated: unlocked with active tiers/chief,
-		// OR locked (may be unlocked by this update — must clone to get new reference)
-		if (!div.unlocked || div.chiefLevel > 0 || div.tiers.some(t => t.producing)) {
-			divisions[divId] = {
-				...div,
-				tiers: div.tiers.map(t => ({ ...t })),
-			};
-		}
+		// Always clone all divisions to ensure Svelte 5 reactivity detects changes.
+		// Previous optimization skipped unlocked divisions with no chief/production,
+		// which caused purchaseTier mutations to go undetected.
+		divisions[divId] = {
+			...div,
+			tiers: div.tiers.map(t => ({ ...t })),
+		};
 	}
 
 	return {
