@@ -292,7 +292,7 @@
 
 			<!-- Buy -->
 			<div class="mt-4 space-y-2">
-				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Buy Shares</div>
+				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Invest in Shares</div>
 				<div class="flex items-center gap-2">
 					{#each QUICK_PERCENTS as percent}
 						<button
@@ -383,7 +383,7 @@
 			{/if}
 
 			<div class="mt-4 space-y-2">
-				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Buy BTC</div>
+				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Invest in BTC</div>
 				<div class="flex items-center gap-2">
 					{#each QUICK_PERCENTS as percent}
 						<button
@@ -489,7 +489,7 @@
 			{/if}
 
 			<div class="mt-4 space-y-2">
-				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Buy Meme Coins</div>
+				<div class="text-[10px] text-text-muted uppercase tracking-wider font-medium">Invest in Meme Coins</div>
 				<div class="flex items-center gap-2">
 					{#each QUICK_PERCENTS as percent}
 						<button

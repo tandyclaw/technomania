@@ -32,7 +32,7 @@
 		<h2 class="text-2xl font-bold mb-4">How It Works</h2>
 		<div class="space-y-3 text-sm text-text-secondary leading-relaxed mb-12">
 			<p><span class="text-text-primary font-medium">Tap to produce.</span> Each division has 6 tiers. Tap to start a production cycle and earn cash.</p>
-			<p><span class="text-text-primary font-medium">Buy more units.</span> Spend cash to scale up. More units = more revenue per cycle.</p>
+			<p><span class="text-text-primary font-medium">Upgrade your units.</span> Spend cash to scale up. More units = more revenue per cycle.</p>
 			<p><span class="text-text-primary font-medium">Hire Chiefs.</span> Chiefs automate production so you earn while you're away.</p>
 			<p><span class="text-text-primary font-medium">Unlock divisions.</span> Start with Energy, then expand into Manufacturing, Rockets, AI, and Robotics.</p>
 			<p><span class="text-text-primary font-medium">Research.</span> Invest in R&D for permanent production boosts across your empire.</p>
